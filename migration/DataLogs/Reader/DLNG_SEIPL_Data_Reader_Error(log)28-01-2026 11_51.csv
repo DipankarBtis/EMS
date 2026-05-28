@@ -1,0 +1,66 @@
+
+<<ERROR IN FMS_DLNG_INVOICE_MST_CR_DR()>>
+**********AutomationEMS Error  (28-JAN-2026 11:51:28) **********
+java.sql.SQLException: ORA-00904: "CRITERIA": invalid identifier
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_INVOICE_MST_CR_DR(DLNG_SEIPL_Data_Reader.java:15744)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:286)
+**************************************************
+
+<<FUNCTION FMS_DLNG_INVOICE_MST_CR_DR() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_DLNG_INV_CRDR_REF()>>
+**********AutomationEMS Error  (28-JAN-2026 11:51:28) **********
+java.sql.SQLException: ORA-00904: "CRITERIA": invalid identifier
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_INV_CRDR_REF(DLNG_SEIPL_Data_Reader.java:16140)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:290)
+**************************************************
+
+<<FUNCTION FMS_DLNG_INV_CRDR_REF() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_DLNG_INVOICE_MST_LP()>>
+**********AutomationEMS Error  (28-JAN-2026 11:51:28) **********
+java.sql.SQLException: ORA-00904: "CRITERIA": invalid identifier
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_INVOICE_MST_LP(DLNG_SEIPL_Data_Reader.java:17218)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:297)
+**************************************************
+
+<<FUNCTION FMS_DLNG_INVOICE_MST_LP() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_DLNG_INV_FILE_DTL_LP()>>
+**********AutomationEMS Error  (28-JAN-2026 11:51:28) **********
+java.sql.SQLException: ORA-00904: "EMAIL_SENT_DT": invalid identifier
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_INV_FILE_DTL_LP(DLNG_SEIPL_Data_Reader.java:17449)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:300)
+**************************************************
+
+<<FUNCTION FMS_DLNG_INV_FILE_DTL_LP() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_DLNG_FFLOW_INV_FILE_DTL_SERV()>>
+**********AutomationEMS Error  (28-JAN-2026 11:51:29) **********
+java.sql.SQLException: ORA-00913: too many values
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_FFLOW_INV_FILE_DTL_SERV(DLNG_SEIPL_Data_Reader.java:18375)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:307)
+**************************************************
+
+<<FUNCTION FMS_DLNG_FFLOW_INV_FILE_DTL_SERV() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_DLNG_INVOICE_MST_CR_DR()>>
+**********AutomationEMS Error  (28-JAN-2026 11:51:43) **********
+java.sql.SQLException: ORA-00904: "CRITERIA": invalid identifier
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_INVOICE_MST_CR_DR(DLNG_SEIPL_Data_Reader.java:15744)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:286)
+**************************************************
+
+<<FUNCTION FMS_DLNG_INVOICE_MST_CR_DR() ENDED WITH ERRORS>>

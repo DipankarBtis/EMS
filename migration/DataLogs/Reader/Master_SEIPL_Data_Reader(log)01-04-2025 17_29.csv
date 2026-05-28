@@ -1,0 +1,14 @@
+
+
+<<START>>,<<FMS_SAC_MST>>, 	(01-APR-2025 17:29:25)
+ 
+SAC_NAME,TIMESTAMP,
+**********AutomationEMS Error  (01-APR-2025 17:29:25) **********
+java.sql.SQLSyntaxErrorException: ORA-00904: "SAC_NAME": invalid identifier
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_SAC_MST(Master_SEIPL_Data_Reader.java:7293)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:242)
+**************************************************
+
+<<FUNCTION FMS_SAC_MST() ENDED WITH ERRORS>>

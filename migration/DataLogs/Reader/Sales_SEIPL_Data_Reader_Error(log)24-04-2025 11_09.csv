@@ -1,0 +1,22 @@
+
+<<ERROR IN LOG_FMS_SECURITY_MST(S)()>>
+**********AutomationEMS Error  (24-APR-2025 11:09:09) **********
+java.sql.SQLException: ORA-12899: value too large for column "MIGRATE2EMS"."LOG_FMS_SECURITY_MST"."STATUS" (actual: 7, maximum: 1)
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.LOG_FMS_SECURITY_MST(Sales_SEIPL_Data_Reader.java:4707)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:161)
+**************************************************
+
+<<FUNCTION LOG_FMS_SECURITY_MST(S)() ENDED WITH ERRORS>>
+
+<<ERROR IN LOG_FMS_SECURITY_MST(S)()>>
+**********AutomationEMS Error  (24-APR-2025 11:09:28) **********
+java.sql.SQLException: ORA-12899: value too large for column "MIGRATE2EMS"."LOG_FMS_SECURITY_MST"."STATUS" (actual: 7, maximum: 1)
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.LOG_FMS_SECURITY_MST(Sales_SEIPL_Data_Reader.java:4707)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:161)
+**************************************************
+
+<<FUNCTION LOG_FMS_SECURITY_MST(S)() ENDED WITH ERRORS>>

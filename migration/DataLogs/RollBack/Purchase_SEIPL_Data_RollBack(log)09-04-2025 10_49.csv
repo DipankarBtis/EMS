@@ -1,0 +1,49 @@
+
+
+<<ROLLBACK_START>>,<<FMS_CARGO_SVC_CONT_SVC_BU>>,,,,,,, 	(09-APR-2025 10:49:03)
+ 
+,TIMESTAMP
+2,126,325001,Y,1, 	(09-APR-2025 10:49:03)
+2,264,325002,Y,1, 	(09-APR-2025 10:49:03)
+2,265,125001,H,1, 	(09-APR-2025 10:49:03)
+
+TOTAL DATA DELETED :, 3,,,,,,, 	(09-APR-2025 10:49:03)
+ 
+<<ROLLBACK_END>>,<<FMS_CARGO_SVC_CONT_SVC_BU()>>,,,,,,, 	(09-APR-2025 10:49:03)
+ 
+
+<<ROLLBACK_START>>,<<FMS_CARGO_SVC_CONT_BU>>,,,,,,, 	(09-APR-2025 10:49:03)
+ 
+,TIMESTAMP
+2,126,325001,Y,1, 	(09-APR-2025 10:49:03)
+2,264,325002,Y,1, 	(09-APR-2025 10:49:03)
+2,265,125001,H,1, 	(09-APR-2025 10:49:03)
+
+TOTAL DATA DELETED :, 3,,,,,,, 	(09-APR-2025 10:49:03)
+ 
+<<ROLLBACK_END>>,<<FMS_CARGO_SVC_CONT_BU()>>,,,,,,, 	(09-APR-2025 10:49:03)
+ 
+
+<<ROLLBACK_START>>,<<FMS_CARGO_SVC_CONT_MST>>,,,,,,, 	(09-APR-2025 10:49:16)
+ 
+,TIMESTAMP
+2,126,S,325001,Y, 	(09-APR-2025 10:49:16)
+2,264,S,325002,Y, 	(09-APR-2025 10:49:16)
+2,265,H,125001,H, 	(09-APR-2025 10:49:16)
+
+TOTAL DATA DELETED :, 3,,,,,,, 	(09-APR-2025 10:49:16)
+ 
+<<ROLLBACK_END>>,<<FMS_CARGO_SVC_CONT_MST()>>,,,,,,, 	(09-APR-2025 10:49:16)
+ 
+
+<<ROLLBACK_START>>,<<FMS_CONT_PRICE_DTL>>,,,,,,, 	(09-APR-2025 10:49:26)
+ 
+,TIMESTAMP
+**********AutomationEMS Error  (09-APR-2025 10:49:26) **********
+java.lang.ArrayIndexOutOfBoundsException: 23
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.FMS_CONT_PRICE_DTL(Purchase_SEIPL_Data_RollBack.java:1450)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:138)
+**************************************************
+
+<<FUNCTION FMS_CONT_PRICE_DTL() ENDED WITH ERRORS>>

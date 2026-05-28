@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<curves>
+  <curve name="RLNG_PHYS_INDIA" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">RLNG</property>
+      <property name="FMS_CURVE_TYPE">Forward</property>
+      <property name="FMS_PHYSICAL_FINANCIAL">Physical</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <contract code="11" label="November" year="2024">13.753</contract>
+      <contract code="12" label="December" year="2024">13.793</contract>
+      <contract code="1" label="January" year="2025">13.835</contract>
+      <contract code="2" label="February" year="2025">13.498</contract>
+      <contract code="3" label="March" year="2025">13.329</contract>
+      <contract code="4" label="April" year="2025">13.142</contract>
+      <contract code="5" label="May" year="2025">13.113</contract>
+      <contract code="6" label="June" year="2025">13.259</contract>
+      <contract code="7" label="July" year="2025">13.249</contract>
+      <contract code="8" label="August" year="2025">13.272</contract>
+      <contract code="9" label="September" year="2025">13.214</contract>
+      <contract code="10" label="October" year="2025">12.962</contract>
+      <contract code="11" label="November" year="2025">12.919</contract>
+      <contract code="12" label="December" year="2025">13.041</contract>
+      <contract code="1" label="January" year="2026">13.065</contract>
+      <contract code="2" label="February" year="2026">12.981</contract>
+      <contract code="3" label="March" year="2026">12.322</contract>
+      <contract code="4" label="April" year="2026">11.565</contract>
+      <contract code="5" label="May" year="2026">11.277</contract>
+      <contract code="6" label="June" year="2026">11.161</contract>
+      <contract code="7" label="July" year="2026">11.301</contract>
+      <contract code="8" label="August" year="2026">11.403</contract>
+      <contract code="9" label="September" year="2026">11.43</contract>
+      <contract code="10" label="October" year="2026">11.471</contract>
+      <contract code="11" label="November" year="2026">11.588</contract>
+      <contract code="12" label="December" year="2026">11.842</contract>
+      <contract code="1" label="January" year="2027">11.849</contract>
+      <contract code="2" label="February" year="2027">11.601</contract>
+      <contract code="3" label="March" year="2027">11.288</contract>
+      <contract code="4" label="April" year="2027">10.27</contract>
+      <contract code="5" label="May" year="2027">10.103</contract>
+      <contract code="6" label="June" year="2027">10.023</contract>
+      <contract code="7" label="July" year="2027">9.979</contract>
+      <contract code="8" label="August" year="2027">9.975</contract>
+      <contract code="9" label="September" year="2027">10.078</contract>
+      <contract code="10" label="October" year="2027">10.03</contract>
+      <contract code="11" label="November" year="2027">10.455</contract>
+      <contract code="12" label="December" year="2027">10.705</contract>
+      <contract code="1" label="January" year="2028">10.565</contract>
+      <contract code="2" label="February" year="2028">10.451</contract>
+      <contract code="3" label="March" year="2028">10.337</contract>
+      <contract code="4" label="April" year="2028">9.512</contract>
+      <contract code="5" label="May" year="2028">9.236</contract>
+      <contract code="6" label="June" year="2028">9.135</contract>
+      <contract code="7" label="July" year="2028">9.047</contract>
+      <contract code="8" label="August" year="2028">9.139</contract>
+      <contract code="9" label="September" year="2028">9.147</contract>
+      <contract code="10" label="October" year="2028">9.376</contract>
+      <contract code="11" label="November" year="2028">9.512</contract>
+      <contract code="12" label="December" year="2028">9.912</contract>
+    </type>
+  </curve>
+  <curve name="LNG_PHYS_INDIA" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Forward</property>
+      <property name="FMS_PHYSICAL_FINANCIAL">Physical</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <contract code="11" label="November" year="2024">12.642</contract>
+      <contract code="12" label="December" year="2024">12.681</contract>
+      <contract code="1" label="January" year="2025">12.722</contract>
+      <contract code="2" label="February" year="2025">12.395</contract>
+      <contract code="3" label="March" year="2025">12.231</contract>
+      <contract code="4" label="April" year="2025">12.051</contract>
+      <contract code="5" label="May" year="2025">12.023</contract>
+      <contract code="6" label="June" year="2025">12.164</contract>
+      <contract code="7" label="July" year="2025">12.154</contract>
+      <contract code="8" label="August" year="2025">12.176</contract>
+      <contract code="9" label="September" year="2025">12.12</contract>
+      <contract code="10" label="October" year="2025">11.876</contract>
+      <contract code="11" label="November" year="2025">11.834</contract>
+      <contract code="12" label="December" year="2025">11.953</contract>
+      <contract code="1" label="January" year="2026">11.976</contract>
+      <contract code="2" label="February" year="2026">11.894</contract>
+      <contract code="3" label="March" year="2026">11.256</contract>
+      <contract code="4" label="April" year="2026">10.523</contract>
+      <contract code="5" label="May" year="2026">10.244</contract>
+      <contract code="6" label="June" year="2026">10.131</contract>
+      <contract code="7" label="July" year="2026">10.267</contract>
+      <contract code="8" label="August" year="2026">10.366</contract>
+      <contract code="9" label="September" year="2026">10.392</contract>
+      <contract code="10" label="October" year="2026">10.432</contract>
+      <contract code="11" label="November" year="2026">10.545</contract>
+      <contract code="12" label="December" year="2026">10.791</contract>
+      <contract code="1" label="January" year="2027">10.798</contract>
+      <contract code="2" label="February" year="2027">10.557</contract>
+      <contract code="3" label="March" year="2027">10.254</contract>
+      <contract code="4" label="April" year="2027">9.269</contract>
+      <contract code="5" label="May" year="2027">9.107</contract>
+      <contract code="6" label="June" year="2027">9.03</contract>
+      <contract code="7" label="July" year="2027">8.987</contract>
+      <contract code="8" label="August" year="2027">8.983</contract>
+      <contract code="9" label="September" year="2027">9.082</contract>
+      <contract code="10" label="October" year="2027">9.036</contract>
+      <contract code="11" label="November" year="2027">9.448</contract>
+      <contract code="12" label="December" year="2027">9.69</contract>
+      <contract code="1" label="January" year="2028">9.555</contract>
+      <contract code="2" label="February" year="2028">9.444</contract>
+      <contract code="3" label="March" year="2028">9.333</contract>
+      <contract code="4" label="April" year="2028">8.534</contract>
+      <contract code="5" label="May" year="2028">8.267</contract>
+      <contract code="6" label="June" year="2028">8.17</contract>
+      <contract code="7" label="July" year="2028">8.084</contract>
+      <contract code="8" label="August" year="2028">8.174</contract>
+      <contract code="9" label="September" year="2028">8.181</contract>
+      <contract code="10" label="October" year="2028">8.403</contract>
+      <contract code="11" label="November" year="2028">8.535</contract>
+      <contract code="12" label="December" year="2028">8.922</contract>
+    </type>
+  </curve>
+  <curve name="JKM_PLATTS_SETTLEMENT" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">13.889</value>
+    </type>
+  </curve>
+  <curve name="ICE_JKM" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Forward</property>
+      <property name="FMS_PHYSICAL_FINANCIAL">Financial</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <contract code="12" label="December" year="2024">13.972</contract>
+      <contract code="1" label="January" year="2025">13.93</contract>
+      <contract code="2" label="February" year="2025">13.842</contract>
+      <contract code="3" label="March" year="2025">13.633</contract>
+      <contract code="4" label="April" year="2025">13.4</contract>
+      <contract code="5" label="May" year="2025">13.368</contract>
+      <contract code="6" label="June" year="2025">13.561</contract>
+      <contract code="7" label="July" year="2025">13.554</contract>
+      <contract code="8" label="August" year="2025">13.589</contract>
+      <contract code="9" label="September" year="2025">13.522</contract>
+      <contract code="10" label="October" year="2025">13.207</contract>
+      <contract code="11" label="November" year="2025">13.159</contract>
+      <contract code="12" label="December" year="2025">13.324</contract>
+      <contract code="1" label="January" year="2026">13.362</contract>
+      <contract code="2" label="February" year="2026">13.26</contract>
+      <contract code="3" label="March" year="2026">12.421</contract>
+      <contract code="4" label="April" year="2026">11.456</contract>
+      <contract code="5" label="May" year="2026">11.095</contract>
+      <contract code="6" label="June" year="2026">10.951</contract>
+      <contract code="7" label="July" year="2026">11.136</contract>
+      <contract code="8" label="August" year="2026">11.272</contract>
+      <contract code="9" label="September" year="2026">11.311</contract>
+      <contract code="10" label="October" year="2026">11.368</contract>
+      <contract code="11" label="November" year="2026">11.522</contract>
+      <contract code="12" label="December" year="2026">11.853</contract>
+      <contract code="1" label="January" year="2027">11.866</contract>
+      <contract code="2" label="February" year="2027">11.551</contract>
+      <contract code="3" label="March" year="2027">11.152</contract>
+      <contract code="4" label="April" year="2027">9.85</contract>
+      <contract code="5" label="May" year="2027">9.637</contract>
+      <contract code="6" label="June" year="2027">9.537</contract>
+      <contract code="7" label="July" year="2027">9.483</contract>
+      <contract code="8" label="August" year="2027">9.482</contract>
+      <contract code="9" label="September" year="2027">9.618</contract>
+      <contract code="10" label="October" year="2027">9.561</contract>
+      <contract code="11" label="November" year="2027">10.109</contract>
+      <contract code="12" label="December" year="2027">10.431</contract>
+      <contract code="1" label="January" year="2028">10.253</contract>
+      <contract code="2" label="February" year="2028">10.109</contract>
+      <contract code="3" label="March" year="2028">9.964</contract>
+      <contract code="4" label="April" year="2028">8.908</contract>
+      <contract code="5" label="May" year="2028">8.556</contract>
+      <contract code="6" label="June" year="2028">8.427</contract>
+      <contract code="7" label="July" year="2028">8.316</contract>
+      <contract code="8" label="August" year="2028">8.437</contract>
+      <contract code="9" label="September" year="2028">8.45</contract>
+      <contract code="10" label="October" year="2028">8.746</contract>
+      <contract code="11" label="November" year="2028">8.924</contract>
+      <contract code="12" label="December" year="2028">9.438</contract>
+    </type>
+  </curve>
+  <curve name="DES_WES_INDIA_0_HALFMONTH" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">13.45</value>
+    </type>
+  </curve>
+  <curve name="DES_WES_INDIA_2_HALFMONTH" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">13.575</value>
+    </type>
+  </curve>
+  <curve name="DES_WES_INDIA_3_HALFMONTH" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">13.625</value>
+    </type>
+  </curve>
+  <curve name="DES_WES_INDIA_4_HALFMONTH" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">13.65</value>
+    </type>
+  </curve>
+  <curve name="JKM_SWAP_Mo02" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">13.9</value>
+    </type>
+  </curve>
+  <curve name="JKM_SWAP_Mo03" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">13.65</value>
+    </type>
+  </curve>
+  <curve name="Middle East_JKM Freight" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">FREIGHT</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">0.83</value>
+    </type>
+  </curve>
+  <curve name="Middle East_WIndia_Freight" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">FREIGHT</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">0.21</value>
+    </type>
+  </curve>
+  <curve name="DES_WES_INDIA_1_HALFMONTH" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">13.45</value>
+    </type>
+  </curve>
+  <curve name="ICE_BRENT" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">OIL</property>
+      <property name="FMS_CURVE_TYPE">Forward</property>
+      <property name="FMS_PHYSICAL_FINANCIAL">Financial</property>
+      <property name="FMS_UNIT">$/bbl</property>
+    </properties>
+    <type name="SETTLE">
+      <contract code="1" label="January" year="2025">73.87</contract>
+      <contract code="2" label="February" year="2025">73.61</contract>
+      <contract code="3" label="March" year="2025">73.39</contract>
+      <contract code="4" label="April" year="2025">73.21</contract>
+      <contract code="5" label="May" year="2025">73.08</contract>
+      <contract code="6" label="June" year="2025">72.96</contract>
+      <contract code="7" label="July" year="2025">72.82</contract>
+      <contract code="8" label="August" year="2025">72.67</contract>
+      <contract code="9" label="September" year="2025">72.5</contract>
+      <contract code="10" label="October" year="2025">72.32</contract>
+      <contract code="11" label="November" year="2025">72.14</contract>
+      <contract code="12" label="December" year="2025">71.97</contract>
+      <contract code="1" label="January" year="2026">71.78</contract>
+      <contract code="2" label="February" year="2026">71.61</contract>
+      <contract code="3" label="March" year="2026">71.47</contract>
+      <contract code="4" label="April" year="2026">71.33</contract>
+      <contract code="5" label="May" year="2026">71.2</contract>
+      <contract code="6" label="June" year="2026">71.08</contract>
+      <contract code="7" label="July" year="2026">70.95</contract>
+      <contract code="8" label="August" year="2026">70.82</contract>
+      <contract code="9" label="September" year="2026">70.7</contract>
+      <contract code="10" label="October" year="2026">70.6</contract>
+      <contract code="11" label="November" year="2026">70.5</contract>
+      <contract code="12" label="December" year="2026">70.4</contract>
+      <contract code="1" label="January" year="2027">70.28</contract>
+      <contract code="2" label="February" year="2027">70.19</contract>
+      <contract code="3" label="March" year="2027">70.12</contract>
+      <contract code="4" label="April" year="2027">70.07</contract>
+      <contract code="5" label="May" year="2027">70</contract>
+      <contract code="6" label="June" year="2027">69.95</contract>
+      <contract code="7" label="July" year="2027">69.91</contract>
+      <contract code="8" label="August" year="2027">69.84</contract>
+      <contract code="9" label="September" year="2027">69.74</contract>
+      <contract code="10" label="October" year="2027">69.65</contract>
+      <contract code="11" label="November" year="2027">69.55</contract>
+      <contract code="12" label="December" year="2027">69.49</contract>
+      <contract code="1" label="January" year="2028">69.45</contract>
+      <contract code="2" label="February" year="2028">69.43</contract>
+      <contract code="3" label="March" year="2028">69.37</contract>
+      <contract code="4" label="April" year="2028">69.32</contract>
+      <contract code="5" label="May" year="2028">69.28</contract>
+      <contract code="6" label="June" year="2028">69.23</contract>
+      <contract code="7" label="July" year="2028">69.23</contract>
+      <contract code="8" label="August" year="2028">69.17</contract>
+      <contract code="9" label="September" year="2028">69.12</contract>
+      <contract code="10" label="October" year="2028">69.05</contract>
+      <contract code="11" label="November" year="2028">68.99</contract>
+      <contract code="12" label="December" year="2028">68.91</contract>
+      <contract code="1" label="January" year="2029">68.89</contract>
+      <contract code="2" label="February" year="2029">68.88</contract>
+      <contract code="3" label="March" year="2029">68.86</contract>
+      <contract code="4" label="April" year="2029">68.84</contract>
+      <contract code="5" label="May" year="2029">68.79</contract>
+      <contract code="6" label="June" year="2029">68.73</contract>
+      <contract code="7" label="July" year="2029">68.72</contract>
+      <contract code="8" label="August" year="2029">68.71</contract>
+      <contract code="9" label="September" year="2029">68.69</contract>
+      <contract code="10" label="October" year="2029">68.66</contract>
+      <contract code="11" label="November" year="2029">68.59</contract>
+      <contract code="12" label="December" year="2029">68.55</contract>
+      <contract code="1" label="January" year="2030">68.53</contract>
+      <contract code="2" label="February" year="2030">68.52</contract>
+      <contract code="3" label="March" year="2030">68.51</contract>
+      <contract code="4" label="April" year="2030">68.5</contract>
+      <contract code="5" label="May" year="2030">68.47</contract>
+      <contract code="6" label="June" year="2030">68.44</contract>
+      <contract code="7" label="July" year="2030">68.42</contract>
+      <contract code="8" label="August" year="2030">68.41</contract>
+      <contract code="9" label="September" year="2030">68.4</contract>
+      <contract code="10" label="October" year="2030">68.4</contract>
+      <contract code="11" label="November" year="2030">68.36</contract>
+      <contract code="12" label="December" year="2030">68.3</contract>
+    </type>
+  </curve>
+  <curve name="ICE_BRENT_FIRST_LINE" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">OIL</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/bbl</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">73.87</value>
+    </type>
+  </curve>
+  <curve name="PPAC" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">GAS</property>
+      <property name="FMS_CURVE_TYPE">Forward</property>
+      <property name="FMS_PHYSICAL_FINANCIAL">Financial</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <contract code="10" label="October" year="2021">6.13</contract>
+      <contract code="11" label="November" year="2021">6.13</contract>
+      <contract code="12" label="December" year="2021">6.13</contract>
+      <contract code="1" label="January" year="2022">6.13</contract>
+      <contract code="2" label="February" year="2022">6.13</contract>
+      <contract code="3" label="March" year="2022">6.13</contract>
+      <contract code="4" label="April" year="2022">9.92</contract>
+      <contract code="5" label="May" year="2022">9.92</contract>
+      <contract code="6" label="June" year="2022">9.92</contract>
+      <contract code="7" label="July" year="2022">9.92</contract>
+      <contract code="8" label="August" year="2022">9.92</contract>
+      <contract code="9" label="September" year="2022">9.92</contract>
+      <contract code="10" label="October" year="2022">12.46</contract>
+      <contract code="11" label="November" year="2022">12.46</contract>
+      <contract code="12" label="December" year="2022">12.46</contract>
+      <contract code="1" label="January" year="2023">12.46</contract>
+      <contract code="2" label="February" year="2023">12.46</contract>
+      <contract code="3" label="March" year="2023">12.46</contract>
+      <contract code="4" label="April" year="2023">12.12</contract>
+      <contract code="5" label="May" year="2023">12.12</contract>
+      <contract code="6" label="June" year="2023">12.12</contract>
+      <contract code="7" label="July" year="2023">12.12</contract>
+      <contract code="8" label="August" year="2023">12.12</contract>
+      <contract code="9" label="September" year="2023">12.12</contract>
+      <contract code="10" label="October" year="2023">9.96</contract>
+      <contract code="11" label="November" year="2023">9.96</contract>
+      <contract code="12" label="December" year="2023">9.96</contract>
+      <contract code="1" label="January" year="2024">9.96</contract>
+      <contract code="2" label="February" year="2024">9.96</contract>
+      <contract code="3" label="March" year="2024">9.96</contract>
+      <contract code="4" label="April" year="2024">9.87</contract>
+      <contract code="5" label="May" year="2024">9.87</contract>
+      <contract code="6" label="June" year="2024">9.87</contract>
+      <contract code="7" label="July" year="2024">9.87</contract>
+      <contract code="8" label="August" year="2024">9.87</contract>
+      <contract code="9" label="September" year="2024">9.87</contract>
+      <contract code="10" label="October" year="2024">10.16</contract>
+      <contract code="11" label="November" year="2024">10.16</contract>
+      <contract code="12" label="December" year="2024">10.16</contract>
+      <contract code="1" label="January" year="2025">10.16</contract>
+      <contract code="2" label="February" year="2025">10.16</contract>
+      <contract code="3" label="March" year="2025">10.16</contract>
+      <contract code="4" label="April" year="2025">10.116</contract>
+      <contract code="5" label="May" year="2025">10.116</contract>
+      <contract code="6" label="June" year="2025">10.116</contract>
+      <contract code="7" label="July" year="2025">10.116</contract>
+      <contract code="8" label="August" year="2025">10.116</contract>
+      <contract code="9" label="September" year="2025">10.116</contract>
+      <contract code="10" label="October" year="2025">9.834</contract>
+      <contract code="11" label="November" year="2025">9.834</contract>
+      <contract code="12" label="December" year="2025">9.834</contract>
+      <contract code="1" label="January" year="2026">9.834</contract>
+      <contract code="2" label="February" year="2026">9.834</contract>
+      <contract code="3" label="March" year="2026">9.834</contract>
+      <contract code="4" label="April" year="2026">9.591</contract>
+      <contract code="5" label="May" year="2026">9.591</contract>
+      <contract code="6" label="June" year="2026">9.591</contract>
+      <contract code="7" label="July" year="2026">9.591</contract>
+      <contract code="8" label="August" year="2026">9.591</contract>
+      <contract code="9" label="September" year="2026">9.591</contract>
+      <contract code="10" label="October" year="2026">9.443</contract>
+      <contract code="11" label="November" year="2026">9.443</contract>
+      <contract code="12" label="December" year="2026">9.443</contract>
+      <contract code="1" label="January" year="2027">9.443</contract>
+      <contract code="2" label="February" year="2027">9.443</contract>
+      <contract code="3" label="March" year="2027">9.443</contract>
+      <contract code="4" label="April" year="2027">9.392</contract>
+      <contract code="5" label="May" year="2027">9.392</contract>
+      <contract code="6" label="June" year="2027">9.392</contract>
+      <contract code="7" label="July" year="2027">9.392</contract>
+      <contract code="8" label="August" year="2027">9.392</contract>
+      <contract code="9" label="September" year="2027">9.392</contract>
+      <contract code="10" label="October" year="2027">9.392</contract>
+      <contract code="11" label="November" year="2027">9.392</contract>
+      <contract code="12" label="December" year="2027">9.392</contract>
+      <contract code="1" label="January" year="2028">9.392</contract>
+      <contract code="2" label="February" year="2028">9.392</contract>
+      <contract code="3" label="March" year="2028">9.392</contract>
+      <contract code="4" label="April" year="2028">9.392</contract>
+      <contract code="5" label="May" year="2028">9.392</contract>
+      <contract code="6" label="June" year="2028">9.392</contract>
+      <contract code="7" label="July" year="2028">9.392</contract>
+      <contract code="8" label="August" year="2028">9.392</contract>
+      <contract code="9" label="September" year="2028">9.392</contract>
+      <contract code="10" label="October" year="2028">9.199</contract>
+      <contract code="11" label="November" year="2028">9.199</contract>
+      <contract code="12" label="December" year="2028">9.199</contract>
+      <contract code="1" label="January" year="2029">9.199</contract>
+      <contract code="2" label="February" year="2029">9.199</contract>
+      <contract code="3" label="March" year="2029">9.199</contract>
+    </type>
+  </curve>
+  <curve name="NYM_HH" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">GAS</property>
+      <property name="FMS_CURVE_TYPE">Forward</property>
+      <property name="FMS_PHYSICAL_FINANCIAL">Financial</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <contract code="12" label="December" year="2024">2.669</contract>
+      <contract code="1" label="January" year="2025">2.922</contract>
+      <contract code="2" label="February" year="2025">2.827</contract>
+      <contract code="3" label="March" year="2025">2.608</contract>
+      <contract code="4" label="April" year="2025">2.59</contract>
+      <contract code="5" label="May" year="2025">2.694</contract>
+      <contract code="6" label="June" year="2025">2.848</contract>
+      <contract code="7" label="July" year="2025">3.021</contract>
+      <contract code="8" label="August" year="2025">3.065</contract>
+      <contract code="9" label="September" year="2025">3.047</contract>
+      <contract code="10" label="October" year="2025">3.132</contract>
+      <contract code="11" label="November" year="2025">3.401</contract>
+      <contract code="12" label="December" year="2025">3.825</contract>
+      <contract code="1" label="January" year="2026">4.053</contract>
+      <contract code="2" label="February" year="2026">3.865</contract>
+      <contract code="3" label="March" year="2026">3.428</contract>
+      <contract code="4" label="April" year="2026">3.142</contract>
+      <contract code="5" label="May" year="2026">3.172</contract>
+      <contract code="6" label="June" year="2026">3.304</contract>
+      <contract code="7" label="July" year="2026">3.45</contract>
+      <contract code="8" label="August" year="2026">3.486</contract>
+      <contract code="9" label="September" year="2026">3.459</contract>
+      <contract code="10" label="October" year="2026">3.531</contract>
+      <contract code="11" label="November" year="2026">3.782</contract>
+      <contract code="12" label="December" year="2026">4.182</contract>
+    </type>
+  </curve>
+  <curve name="NYM_HH_SETTLEMENT" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">GAS</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">2.669</value>
+    </type>
+  </curve>
+  <curve name="DATEDBRENT_PLATTS_SETTLEMENT" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">OIL</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/bbl</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">74.065</value>
+    </type>
+  </curve>
+  <curve name="ICE_DATED_BRENT" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">OIL</property>
+      <property name="FMS_CURVE_TYPE">Forward</property>
+      <property name="FMS_PHYSICAL_FINANCIAL">Financial</property>
+      <property name="FMS_UNIT">$/bbl</property>
+    </properties>
+    <type name="SETTLE">
+      <contract code="11" label="November" year="2024">74.138</contract>
+      <contract code="12" label="December" year="2024">73.753</contract>
+      <contract code="1" label="January" year="2025">73.362</contract>
+      <contract code="2" label="February" year="2025">73.174</contract>
+      <contract code="3" label="March" year="2025">73.024</contract>
+      <contract code="4" label="April" year="2025">72.913</contract>
+      <contract code="5" label="May" year="2025">72.773</contract>
+      <contract code="6" label="June" year="2025">72.622</contract>
+      <contract code="7" label="July" year="2025">72.502</contract>
+      <contract code="8" label="August" year="2025">72.321</contract>
+      <contract code="9" label="September" year="2025">72.142</contract>
+      <contract code="10" label="October" year="2025">71.962</contract>
+      <contract code="11" label="November" year="2025">71.772</contract>
+      <contract code="12" label="December" year="2025">71.597</contract>
+      <contract code="1" label="January" year="2026">71.453</contract>
+      <contract code="2" label="February" year="2026">71.314</contract>
+      <contract code="3" label="March" year="2026">71.185</contract>
+      <contract code="4" label="April" year="2026">70.994</contract>
+      <contract code="5" label="May" year="2026">70.863</contract>
+      <contract code="6" label="June" year="2026">70.735</contract>
+      <contract code="7" label="July" year="2026">70.626</contract>
+      <contract code="8" label="August" year="2026">70.525</contract>
+      <contract code="9" label="September" year="2026">70.425</contract>
+      <contract code="10" label="October" year="2026">70.325</contract>
+      <contract code="11" label="November" year="2026">70.206</contract>
+      <contract code="12" label="December" year="2026">70.113</contract>
+      <contract code="1" label="January" year="2027">70.028</contract>
+      <contract code="2" label="February" year="2027">69.977</contract>
+      <contract code="3" label="March" year="2027">69.908</contract>
+      <contract code="4" label="April" year="2027">69.858</contract>
+      <contract code="5" label="May" year="2027">69.816</contract>
+      <contract code="6" label="June" year="2027">69.745</contract>
+      <contract code="7" label="July" year="2027">69.646</contract>
+      <contract code="8" label="August" year="2027">69.555</contract>
+      <contract code="9" label="September" year="2027">69.457</contract>
+      <contract code="10" label="October" year="2027">69.398</contract>
+      <contract code="11" label="November" year="2027">69.359</contract>
+      <contract code="12" label="December" year="2027">69.334</contract>
+      <contract code="1" label="January" year="2028">69.278</contract>
+      <contract code="2" label="February" year="2028">69.228</contract>
+      <contract code="3" label="March" year="2028">69.188</contract>
+      <contract code="4" label="April" year="2028">69.14</contract>
+      <contract code="5" label="May" year="2028">69.137</contract>
+      <contract code="6" label="June" year="2028">69.078</contract>
+      <contract code="7" label="July" year="2028">69.027</contract>
+      <contract code="8" label="August" year="2028">68.957</contract>
+      <contract code="9" label="September" year="2028">68.896</contract>
+      <contract code="10" label="October" year="2028">68.819</contract>
+      <contract code="11" label="November" year="2028">68.8</contract>
+      <contract code="12" label="December" year="2028">68.788</contract>
+    </type>
+  </curve>
+  <curve name="LNG_FRONT_MONTH" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">RLNG</property>
+      <property name="FMS_CURVE_TYPE">Forward</property>
+      <property name="FMS_PHYSICAL_FINANCIAL">Physical</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <contract code="11" label="November" year="2024">12.642</contract>
+    </type>
+  </curve>
+  <curve name="D6_MARGIN_CAPPED" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">RLNG</property>
+      <property name="FMS_CURVE_TYPE">Forward</property>
+      <property name="FMS_PHYSICAL_FINANCIAL">Physical</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <contract code="11" label="November" year="2024">10.36</contract>
+      <contract code="12" label="December" year="2024">10.36</contract>
+      <contract code="1" label="January" year="2025">10.36</contract>
+      <contract code="2" label="February" year="2025">10.36</contract>
+      <contract code="3" label="March" year="2025">10.36</contract>
+      <contract code="4" label="April" year="2025">10.316</contract>
+      <contract code="5" label="May" year="2025">10.316</contract>
+      <contract code="6" label="June" year="2025">10.316</contract>
+      <contract code="7" label="July" year="2025">10.316</contract>
+      <contract code="8" label="August" year="2025">10.316</contract>
+      <contract code="9" label="September" year="2025">10.316</contract>
+      <contract code="10" label="October" year="2025">10.034</contract>
+      <contract code="11" label="November" year="2025">10.034</contract>
+      <contract code="12" label="December" year="2025">10.034</contract>
+      <contract code="1" label="January" year="2026">10.034</contract>
+      <contract code="2" label="February" year="2026">10.034</contract>
+      <contract code="3" label="March" year="2026">10.034</contract>
+      <contract code="4" label="April" year="2026">9.791</contract>
+      <contract code="5" label="May" year="2026">9.791</contract>
+      <contract code="6" label="June" year="2026">9.791</contract>
+      <contract code="7" label="July" year="2026">9.791</contract>
+      <contract code="8" label="August" year="2026">9.791</contract>
+      <contract code="9" label="September" year="2026">9.791</contract>
+      <contract code="10" label="October" year="2026">9.643</contract>
+      <contract code="11" label="November" year="2026">9.643</contract>
+      <contract code="12" label="December" year="2026">9.643</contract>
+      <contract code="1" label="January" year="2027">9.643</contract>
+      <contract code="2" label="February" year="2027">9.643</contract>
+      <contract code="3" label="March" year="2027">9.643</contract>
+      <contract code="4" label="April" year="2027">9.592</contract>
+      <contract code="5" label="May" year="2027">9.592</contract>
+      <contract code="6" label="June" year="2027">9.592</contract>
+      <contract code="7" label="July" year="2027">9.592</contract>
+      <contract code="8" label="August" year="2027">9.592</contract>
+      <contract code="9" label="September" year="2027">9.592</contract>
+      <contract code="10" label="October" year="2027">9.592</contract>
+      <contract code="11" label="November" year="2027">9.592</contract>
+      <contract code="12" label="December" year="2027">9.592</contract>
+      <contract code="1" label="January" year="2028">9.592</contract>
+      <contract code="2" label="February" year="2028">9.592</contract>
+      <contract code="3" label="March" year="2028">9.592</contract>
+      <contract code="4" label="April" year="2028">9.512</contract>
+      <contract code="5" label="May" year="2028">9.236</contract>
+      <contract code="6" label="June" year="2028">9.135</contract>
+      <contract code="7" label="July" year="2028">9.047</contract>
+      <contract code="8" label="August" year="2028">9.139</contract>
+      <contract code="9" label="September" year="2028">9.147</contract>
+    </type>
+  </curve>
+  <curve name="ICE_WIM" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Forward</property>
+      <property name="FMS_PHYSICAL_FINANCIAL">Financial</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <contract code="12" label="December" year="2024">13.248</contract>
+      <contract code="1" label="January" year="2025">13.553</contract>
+      <contract code="2" label="February" year="2025">13.465</contract>
+      <contract code="3" label="March" year="2025">13.256</contract>
+      <contract code="4" label="April" year="2025">13.023</contract>
+      <contract code="5" label="May" year="2025">12.991</contract>
+      <contract code="6" label="June" year="2025">13.184</contract>
+      <contract code="7" label="July" year="2025">13.177</contract>
+      <contract code="8" label="August" year="2025">13.212</contract>
+      <contract code="9" label="September" year="2025">13.145</contract>
+      <contract code="10" label="October" year="2025">12.83</contract>
+      <contract code="11" label="November" year="2025">12.782</contract>
+      <contract code="12" label="December" year="2025">12.948</contract>
+      <contract code="1" label="January" year="2026">12.986</contract>
+      <contract code="2" label="February" year="2026">12.884</contract>
+      <contract code="3" label="March" year="2026">12.045</contract>
+      <contract code="4" label="April" year="2026">11.079</contract>
+      <contract code="5" label="May" year="2026">10.719</contract>
+      <contract code="6" label="June" year="2026">10.575</contract>
+      <contract code="7" label="July" year="2026">10.76</contract>
+      <contract code="8" label="August" year="2026">10.896</contract>
+      <contract code="9" label="September" year="2026">10.934</contract>
+      <contract code="10" label="October" year="2026">10.992</contract>
+      <contract code="11" label="November" year="2026">11.145</contract>
+      <contract code="12" label="December" year="2026">11.477</contract>
+      <contract code="1" label="January" year="2027">11.49</contract>
+      <contract code="2" label="February" year="2027">11.175</contract>
+      <contract code="3" label="March" year="2027">10.776</contract>
+      <contract code="4" label="April" year="2027">9.474</contract>
+      <contract code="5" label="May" year="2027">9.261</contract>
+      <contract code="6" label="June" year="2027">9.161</contract>
+      <contract code="7" label="July" year="2027">9.107</contract>
+      <contract code="8" label="August" year="2027">9.106</contract>
+      <contract code="9" label="September" year="2027">9.242</contract>
+      <contract code="10" label="October" year="2027">9.185</contract>
+      <contract code="11" label="November" year="2027">9.733</contract>
+      <contract code="12" label="December" year="2027">10.055</contract>
+      <contract code="1" label="January" year="2028">9.877</contract>
+      <contract code="2" label="February" year="2028">9.733</contract>
+      <contract code="3" label="March" year="2028">9.588</contract>
+      <contract code="4" label="April" year="2028">8.532</contract>
+      <contract code="5" label="May" year="2028">8.18</contract>
+      <contract code="6" label="June" year="2028">8.051</contract>
+      <contract code="7" label="July" year="2028">7.94</contract>
+      <contract code="8" label="August" year="2028">8.061</contract>
+      <contract code="9" label="September" year="2028">8.074</contract>
+      <contract code="10" label="October" year="2028">8.37</contract>
+      <contract code="11" label="November" year="2028">8.548</contract>
+      <contract code="12" label="December" year="2028">9.062</contract>
+    </type>
+  </curve>
+  <curve name="WIM_PLATTS_SETTLEMENT" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">LNG</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MMbtu</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">13.513</value>
+    </type>
+  </curve>
+  <curve name="ICE_FO180_AG" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">OIL</property>
+      <property name="FMS_CURVE_TYPE">Forward</property>
+      <property name="FMS_PHYSICAL_FINANCIAL">Financial</property>
+      <property name="FMS_UNIT">$/MT</property>
+    </properties>
+    <type name="SETTLE">
+      <contract code="11" label="November" year="2024">424.745</contract>
+      <contract code="12" label="December" year="2024">411.364</contract>
+      <contract code="1" label="January" year="2025">406.087</contract>
+      <contract code="2" label="February" year="2025">403.256</contract>
+      <contract code="3" label="March" year="2025">403.222</contract>
+      <contract code="4" label="April" year="2025">403.202</contract>
+      <contract code="5" label="May" year="2025">402.298</contract>
+      <contract code="6" label="June" year="2025">400.298</contract>
+      <contract code="7" label="July" year="2025">396.938</contract>
+      <contract code="8" label="August" year="2025">392.438</contract>
+      <contract code="9" label="September" year="2025">386.688</contract>
+      <contract code="10" label="October" year="2025">379.726</contract>
+      <contract code="11" label="November" year="2025">376.726</contract>
+      <contract code="12" label="December" year="2025">374.976</contract>
+    </type>
+  </curve>
+  <curve name="FO180AG_PLATTS_SETTLEMENT" opr_date="2024-11-08">
+    <properties>
+      <property name="FMS_COMMODITY_TYPE">OIL</property>
+      <property name="FMS_CURVE_TYPE">Spot</property>
+      <property name="FMS_UNIT">$/MT</property>
+    </properties>
+    <type name="SETTLE">
+      <value opr_date="2024-11-08">431.53</value>
+    </type>
+  </curve>
+</curves>

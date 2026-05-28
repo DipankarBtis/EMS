@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_TRADER_CN_MST()>>
+**********AutomationEMS Error  (17-MAY-2025 17:42:49) **********
+java.sql.SQLDataException: ORA-01861: literal does not match format string
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.FMS_TRADER_CN_MST(Purchase_SEIPL_Data_RollBack.java:322)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:166)
+**************************************************
+
+<<FUNCTION FMS_TRADER_CN_MST() ENDED WITH ERRORS>>

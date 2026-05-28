@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_INVOICE_MST_TAXCD_UPDATE()>>
+**********AutomationEMS Error  (22-JAN-2026 16:07:26) **********
+java.lang.ArrayIndexOutOfBoundsException: Index 2 out of bounds for length 2
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST_TAXCD_UPDATE(Sales_SEIPL_Data_Reader.java:16268)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:279)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST_TAXCD_UPDATE() ENDED WITH ERRORS>>

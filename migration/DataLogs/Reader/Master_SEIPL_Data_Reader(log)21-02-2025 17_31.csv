@@ -1,0 +1,35 @@
+
+
+<<START>>,<<FMS_PRODUCT_MST>>, 	(21-FEB-2025 17:31:37)
+ 
+PROD_CD,PROD_ABBR,TIMESTAMP,
+1 , LNG, 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+2 , RLNG, 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+3 , DOMG, 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+201 , ImpLNG, 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+202 , ITankPur, 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+203 , TP(RLNG), 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+301 , IGX(DOMG), 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+302 , D6(DOMG), 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+303 , CBM(DOMG), 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+304 , ONGC Gas, 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+305 , SEMTIPL(DOMG), 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+306 , RIL(DOMG), 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+307 , BP(DOMG), 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+308 , HPCL(DOMG), 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+309 , AMNS(DOMG), 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+310 , D6(DOMG-CAP), 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+311 , IGX(DOMG-CAP), 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+312 , RLNG - IGS, 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+313 , RLNG - Essar, 	(21-FEB-2025 17:31:37)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,19, 	(21-FEB-2025 17:31:37)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(21-FEB-2025 17:31:37)
+ 
+
+TOTAL SKIPPED DATA ,19, 	(21-FEB-2025 17:31:37)
+ 
+<<END>>,<<FMS_HOLIDAY_DTL>>, 	(21-FEB-2025 17:31:37)
+ 

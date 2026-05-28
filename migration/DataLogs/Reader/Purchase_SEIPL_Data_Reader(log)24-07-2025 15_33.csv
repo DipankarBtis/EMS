@@ -1,0 +1,29 @@
+
+
+<<START>>,<<FMS_PUR_PG_INV_MST>>,,,,,,,,, 	(24-JUL-2025 15:33:35)
+ 
+COMNPANY_CD,CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,DOM_BUY_FLAG,BU_SEQ,PLANT_SEQ,INV_SEQ,FREQ,PLANT_CONTACT,BU_CONTACT,START_DT,END_DT,INVOICE_NO,TIMESTAMP
+2,20, 0, 0,822017, 0,T,1,1,,2,1,5,16/11/2022 00:00:00,30/11/2022 00:00:00,68, 	(24-JUL-2025 15:33:37)
+**********AutomationEMS Error  (24-JUL-2025 15:33:37) **********
+java.sql.SQLException: Missing IN or OUT parameter at index:: 1
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_PUR_PG_INV_MST(Purchase_SEIPL_Data_Reader.java:13052)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:234)
+**************************************************
+
+<<FUNCTION FMS_PUR_PG_INV_MST() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_PUR_PG_INV_TAX_DTL>>, 	(24-JUL-2025 15:33:37)
+ 
+
+TOTAL DATA IN EXCEL : ,0, 	(24-JUL-2025 15:33:37)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(24-JUL-2025 15:33:37)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(24-JUL-2025 15:33:37)
+ 
+<<END>>,<<FMS_PUR_PG_INV_TAX_DTL>>, 	(24-JUL-2025 15:33:37)
+ 

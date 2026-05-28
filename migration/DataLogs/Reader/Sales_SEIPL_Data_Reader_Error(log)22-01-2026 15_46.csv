@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_INVOICE_MST_TAXCD_UPDATE()>>
+**********AutomationEMS Error  (22-JAN-2026 15:46:09) **********
+java.sql.SQLException: ORA-00904: "INV_SEQ": invalid identifier
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST_TAXCD_UPDATE(Sales_SEIPL_Data_Reader.java:16047)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:279)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST_TAXCD_UPDATE() ENDED WITH ERRORS>>

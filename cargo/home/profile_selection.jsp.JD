@@ -1,0 +1,106 @@
+<%@page import="com.etrm.fms.util.CommonVariable"%>
+<%@page import="java.util.Vector"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<%@ include file="../util/common_js.jsp"%>
+<script>
+function refresh(comp_cd)
+{
+	var url = "profile_selection.jsp?comp_profile="+comp_cd;
+	location.replace(url);
+}
+</script>
+</head>
+<jsp:useBean class="com.etrm.fms.util.DataBean_LoginAlter" id="LoginAlter" scope="page"></jsp:useBean>
+<%
+String comp_profile = request.getParameter("comp_profile")==null?"":request.getParameter("comp_profile");
+
+LoginAlter.setCallFlag("LOGIN_PAGE");
+LoginAlter.init();
+
+String comp_logo = LoginAlter.getComp_logo();
+
+if(!comp_profile.equals(""))
+{
+	LoginAlter.setCompany_cd(comp_profile);
+	LoginAlter.setCallFlag("ENTITY_DETAIL");
+	LoginAlter.init();
+	
+	String comp_cd = LoginAlter.getComp_cd();
+	String comp_abbr = LoginAlter.getComp_abbr();
+	String comp_nm = LoginAlter.getComp_nm();
+	
+	session.setAttribute("comp_cd", comp_cd);
+	session.setAttribute("comp_abbr", comp_abbr);
+	session.setAttribute("comp_nm", comp_nm);
+	session.setAttribute("comp_logo", comp_logo);
+	
+	String url = "fms.jsp";
+	response.sendRedirect(url);
+}
+Vector VCOMPANY_CD = LoginAlter.getVCOMPANY_CD();
+Vector VCOMPANY_NM = LoginAlter.getVCOMPANY_NM();
+Vector VCOMPANY_ABBR = LoginAlter.getVCOMPANY_ABBR();
+%>
+
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--header_color);">
+	<div class="container-fluid">
+    	<a class="navbar-brand" href="#" style="padding-top: 2px;padding-left: 4px;padding-right: 2px;" onclick="homepage();">
+    		<img src="<%if(!comp_logo.equals("")){%>../<%=CommonVariable.company_logo_path %>/<%=comp_logo%><%} %>" height="30px">&nbsp;<font style="font-size:24px; color:azure">FMS<sup style="color:maroon;"><b>NG</b></sup></font>
+    	</a>
+    	<button class="navbar-toggler" style="border-color:var(--header_font_color);" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      		<!-- <span class="navbar-toggler-icon"></span> -->
+      		<font><i class="fa fa-bars" style="color:var(--header_font_color);"></i></font>
+    	</button>
+    	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+      		<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      		</ul>
+      		<div class="d-flex">
+      		<%-- Timer for session time out --%>
+      		<%--<%@ include file="../util/common_js.jsp"  %> --%>
+      			<label class="btn" onclick="" style="padding-left:0px;"><b><span id = "min"></span>:<span id = "sec"></span></b></label>
+      			<label class="btn" onclick="" style="padding-left:0px;">
+      				<b>
+      					<i class="fa fa-user-circle fa-lg"></i>&nbsp;
+      					<%=session.getAttribute("emp_nm")==null?"":session.getAttribute("emp_nm")%>,
+      					<%=session.getAttribute("comp_abbr")==null?"":session.getAttribute("comp_abbr")%>
+      				</b>
+      			</label>
+      			<label class="btn" onclick="logout();" style="padding-left:0px;"><b><i title="Logout" class="fa fa-sign-out fa-lg"></i>&nbsp;</b></label>
+		  	</div>
+    	</div>
+  	</div>
+</nav>
+      		
+<body>
+
+<div class="box-body">
+	<div class="row">
+		<div class="card cardmain">
+			<div class="card-header cdheader ">
+			    <div class="d-flex justify-content-between">
+				    <div class="topheader">
+				    	Entity Profile
+				    </div>
+				</div>
+			</div>
+			<div class="card-body cdbody">
+				<div class="row m-b-5">
+				<%for(int i=0; i<VCOMPANY_CD.size(); i++){ %>
+					<div class="col-sm-6 col-xs-6 col-md-6">  
+						<div class="form-group row">
+			    			<div class="col-sm-12 col-xs-12 col-md-12" align="center">
+			    				<input type="button" class="btn btn-warning com-btn" value="<%=VCOMPANY_ABBR.elementAt(i)%>" onclick="refresh('<%=VCOMPANY_CD.elementAt(i)%>');">
+			    			</div>
+			  			</div>
+					</div>
+				<%} %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

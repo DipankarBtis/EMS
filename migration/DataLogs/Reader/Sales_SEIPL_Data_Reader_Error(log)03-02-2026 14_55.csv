@@ -1,0 +1,22 @@
+
+<<ERROR IN FMS_INVOICE_MST_LP()>>
+**********AutomationEMS Error  (03-FEB-2026 14:55:53) **********
+java.sql.SQLException: ORA-00904: "CRITERIA": invalid identifier
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST_LP(Sales_SEIPL_Data_Reader.java:24568)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:337)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST_LP() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_INV_FILE_DTL_LP()>>
+**********AutomationEMS Error  (03-FEB-2026 14:55:53) **********
+java.sql.SQLException: ORA-00904: "EMAIL_SENT_DT": invalid identifier
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INV_FILE_DTL_LP(Sales_SEIPL_Data_Reader.java:25039)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:342)
+**************************************************
+
+<<FUNCTION FMS_INV_FILE_DTL_LP() ENDED WITH ERRORS>>

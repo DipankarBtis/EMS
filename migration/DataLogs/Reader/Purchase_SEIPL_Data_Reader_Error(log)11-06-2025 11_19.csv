@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_BUY_DAILY_ALLOCATION()>>
+**********AutomationEMS Error  (11-JUN-2025 11:19:49) **********
+org.apache.poi.openxml4j.exceptions.InvalidOperationException: Can't open the specified file: 'C:\Program Files\Apache Software Foundation\Tomcat 9.0\temp\poifiles\poi-ooxml-1640740417367087702.tmp'
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_BUY_DAILY_ALLOCATION(Purchase_SEIPL_Data_Reader.java:8227)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:223)
+**************************************************
+
+<<FUNCTION FMS_BUY_DAILY_ALLOCATION() ENDED WITH ERRORS>>

@@ -1,0 +1,33 @@
+
+<<ERROR IN FMS_LTCORA_CONT_TRANSPTR()>>
+**********AutomationEMS Error  (19-MAY-2025 15:18:06) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_LTCORA_CONT_TRANSPTR"."AGMT_NO")
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_LTCORA_CONT_TRANSPTR(Sales_SEIPL_Data_Reader.java:7117)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:195)
+**************************************************
+
+<<FUNCTION FMS_LTCORA_CONT_TRANSPTR() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_LTCORA_CONT_TRANSPTR()>>
+**********AutomationEMS Error  (19-MAY-2025 15:18:25) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_LTCORA_CONT_TRANSPTR"."AGMT_NO")
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_LTCORA_CONT_TRANSPTR(Sales_SEIPL_Data_Reader.java:7117)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:195)
+**************************************************
+
+<<FUNCTION FMS_LTCORA_CONT_TRANSPTR() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_LTCORA_CONT_TRANSPTR()>>
+**********AutomationEMS Error  (19-MAY-2025 15:18:51) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_LTCORA_CONT_TRANSPTR"."AGMT_NO")
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_LTCORA_CONT_TRANSPTR(Sales_SEIPL_Data_Reader.java:7117)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:195)
+**************************************************
+
+<<FUNCTION FMS_LTCORA_CONT_TRANSPTR() ENDED WITH ERRORS>>

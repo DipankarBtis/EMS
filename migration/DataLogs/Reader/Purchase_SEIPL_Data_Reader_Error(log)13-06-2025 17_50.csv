@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_TRADER_CONT_MST()>>
+**********AutomationEMS Error  (13-JUN-2025 17:50:16) **********
+java.lang.StringIndexOutOfBoundsException: String index out of range: -2
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_TRADER_CONT_MST(Purchase_SEIPL_Data_Reader.java:6599)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:193)
+**************************************************
+
+<<FUNCTION FMS_TRADER_CONT_MST() ENDED WITH ERRORS>>

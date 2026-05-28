@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_SUPPLY_CONT_MST()>>
+**********AutomationEMS Error  (21-APR-2025 16:14:54) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Extractor.FMS_SUPPLY_CONT_MST(Sales_SEIPL_Data_Extractor.java:1555)
+com.etrm.fms.migration.Sales_SEIPL_Data_Extractor.init(Sales_SEIPL_Data_Extractor.java:133)
+**************************************************
+
+<<FUNCTION FMS_SUPPLY_CONT_MST() ENDED WITH ERRORS>>

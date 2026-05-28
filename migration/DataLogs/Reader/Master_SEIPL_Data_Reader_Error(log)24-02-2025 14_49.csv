@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_METER_MST()>>
+**********AutomationEMS Error  (24-FEB-2025 14:49:54) **********
+java.sql.SQLException: Invalid column index
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_METER_MST(Master_SEIPL_Data_Reader.java:4348)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:194)
+**************************************************
+
+<<FUNCTION FMS_METER_MST() ENDED WITH ERRORS>>

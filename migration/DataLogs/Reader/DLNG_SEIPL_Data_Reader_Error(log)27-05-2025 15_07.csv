@@ -1,0 +1,30 @@
+
+<<ERROR IN FMS_AGMT_MST(DLNG)()>>
+**********AutomationEMS Error  (27-MAY-2025 15:07:10) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_AGMT_MST(DLNG_SEIPL_Data_Reader.java:2352)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:139)
+**************************************************
+
+<<FUNCTION FMS_AGMT_MST(DLNG)() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_AGMT_MST(DLNG)()>>
+**********AutomationEMS Error  (27-MAY-2025 15:07:20) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_AGMT_MST(DLNG_SEIPL_Data_Reader.java:2352)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:139)
+**************************************************
+
+<<FUNCTION FMS_AGMT_MST(DLNG)() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_AGMT_MST(DLNG)()>>
+**********AutomationEMS Error  (27-MAY-2025 15:07:39) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_AGMT_MST(DLNG_SEIPL_Data_Reader.java:2352)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:139)
+**************************************************
+
+<<FUNCTION FMS_AGMT_MST(DLNG)() ENDED WITH ERRORS>>

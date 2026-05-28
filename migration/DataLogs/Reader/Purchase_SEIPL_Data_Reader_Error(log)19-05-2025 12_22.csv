@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_PUR_SG_INV_MST()>>
+**********AutomationEMS Error  (19-MAY-2025 12:22:54) **********
+java.sql.SQLSyntaxErrorException: ORA-00904: "TAX_STRUCT_DT": invalid identifier
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_PUR_SG_INV_MST(Purchase_SEIPL_Data_Reader.java:9095)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:224)
+**************************************************
+
+<<FUNCTION FMS_PUR_SG_INV_MST() ENDED WITH ERRORS>>

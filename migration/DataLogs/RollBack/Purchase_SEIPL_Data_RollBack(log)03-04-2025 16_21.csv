@@ -1,0 +1,13 @@
+
+
+<<ROLLBACK_START>>,<<FMS_TRADER_CARGO_MST>>,, 	(03-APR-2025 16:21:19)
+ 
+COMPANY_CD, COUNTERPARTY_CD, AGMT_TYPE, AGMT_NO, AGMT_REV,CONTRACT_TYPE, CONT_REV, CARGO_NO,CARGO_REF,TIMESTAMP
+**********AutomationEMS Error  (03-APR-2025 16:21:19) **********
+java.lang.StringIndexOutOfBoundsException: String index out of range: -2
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.FMS_TRADER_CARGO_MST(Purchase_SEIPL_Data_RollBack.java:426)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:97)
+**************************************************
+
+<<FUNCTION FMS_TRADER_CARGO_MST() ENDED WITH ERRORS>>

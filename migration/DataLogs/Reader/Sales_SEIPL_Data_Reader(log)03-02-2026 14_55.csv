@@ -1,0 +1,45 @@
+
+
+<<START>>,<<FMS_INVOICE_MST_LP>>,, 	(03-FEB-2026 14:55:53)
+ 
+COMPANY_CD,COUNTERPARTY_CD,FINANCIAL_YEAR,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,CONTRACT_TYPE,BU_UNIT,BU_STATE_TIN,BU_CONTACT_PERSON_CD,PLANT_SEQ_NO,CONTACT_PERSON_CD,INV_SEQ,START_DT,END_DT,TIMESTAMP,
+2,15 , 2021-2022,2,0,9,0,S,1,24,5,1,11,11,16/05/2021,03/06/2021 00:00:00, 	(03-FEB-2026 14:55:53)
+**********AutomationEMS Error  (03-FEB-2026 14:55:53) **********
+java.sql.SQLException: ORA-00904: "CRITERIA": invalid identifier
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST_LP(Sales_SEIPL_Data_Reader.java:24568)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:337)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST_LP() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_INV_TAX_DTL_LP>>, 	(03-FEB-2026 14:55:53)
+ 
+COMPANY_CD,BU_STATE_TIN,INVOICE_SEQ,FINANCIAL_YEAR,TAX_STRUCT_CD,TAX_CODE,TAX_AMT,TIMESTAMP
+
+TOTAL DATA IN EXCEL : ,0, 	(03-FEB-2026 14:55:53)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(03-FEB-2026 14:55:53)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(03-FEB-2026 14:55:53)
+ 
+<<END>>,<<FMS_INV_TAX_DTL_LP>>, 	(03-FEB-2026 14:55:53)
+ 
+
+<<START>>,<<FMS_INV_FILE_DTL_LP>>,, 	(03-FEB-2026 14:55:53)
+ 
+COMPANY_CD,BU_STATE_TIN,INVOICE_SEQ,FINANCIAL_YEAR,PDF_TYPE,FILE_NAME,TIMESTAMP,
+2,0,0,2021-2022,O,LATEPAY_INVOICE-17062021-HPCL-HPCL_Mumbai_Refinery-I-11-O.pdf, 	(03-FEB-2026 14:55:53)
+**********AutomationEMS Error  (03-FEB-2026 14:55:53) **********
+java.sql.SQLException: ORA-00904: "EMAIL_SENT_DT": invalid identifier
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INV_FILE_DTL_LP(Sales_SEIPL_Data_Reader.java:25039)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:342)
+**************************************************
+
+<<FUNCTION FMS_INV_FILE_DTL_LP() ENDED WITH ERRORS>>

@@ -1,0 +1,41 @@
+
+
+<<START>>,<<FMS_BUY_CARGO_ALLOC>>,,,, 	(03-APR-2025 20:52:19)
+ 
+COMPANY_CD,CD,AGMT_TYPE,AGMT_NO,AGMT_REV,CONTRACT_TYPE,CONT_NO,CONT_REV,CARGO_NO,ALLOC_REV,TIMESTAMP
+2,20, M, 1 ,0, N, 725001 ,0, 1, 0, 	(03-APR-2025 20:52:19)
+
+<<START>>,<<FMS_TRADER_BILLING_DTL>>,,,,,, 	(03-APR-2025 20:52:27)
+ 
+COMNPANY_CD,CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,CONTRACT_TYPE,TIMESTAMP
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,, , ,, ,, 	(03-APR-2025 20:52:27)	 (Not Inserted)
+2,0, 0, 0,825132, 4,D, 	(03-APR-2025 20:52:27)

@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_METER_MST()>>
+**********AutomationEMS Error  (18-FEB-2025 13:20:08) **********
+java.io.FileNotFoundException: D:\Projects\EMSNG_Workspace\EMSNG\migration\EXPORT\FMS_METER_MST_01012007_18022025.xlsx (The process cannot access the file because it is being used by another process)
+
+com.etrm.fms.migration.Master_SEIPL_Data_Extractor.FMS_METER_MST(Master_SEIPL_Data_Extractor.java:4644)
+com.etrm.fms.migration.Master_SEIPL_Data_Extractor.init(Master_SEIPL_Data_Extractor.java:180)
+**************************************************
+
+<<FUNCTION FMS_METER_MST() ENDED WITH ERRORS>>

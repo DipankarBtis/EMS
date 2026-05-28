@@ -1,0 +1,22 @@
+
+<<ERROR IN FMS_PUR_SG_INV_MST()>>
+**********AutomationEMS Error  (19-MAY-2025 12:03:07) **********
+java.sql.SQLSyntaxErrorException: ORA-00904: "TAX_STRUCT_DT": invalid identifier
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_PUR_SG_INV_MST(Purchase_SEIPL_Data_Reader.java:9095)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:224)
+**************************************************
+
+<<FUNCTION FMS_PUR_SG_INV_MST() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_TRADER_CONT_MST()>>
+**********AutomationEMS Error  (19-MAY-2025 12:03:19) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_TRADER_CONT_MST) violated
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_TRADER_CONT_MST(Purchase_SEIPL_Data_Reader.java:6359)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:188)
+**************************************************
+
+<<FUNCTION FMS_TRADER_CONT_MST() ENDED WITH ERRORS>>

@@ -1,0 +1,20 @@
+
+<<ERROR IN FMS_TRADER_CONT_PLANT1()>>
+**********AutomationEMS Error  (20-FEB-2026 11:27:49) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_TRADER_CONT_PLANT1(Purchase_SEIPL_Data_Reader.java:1542)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:143)
+**************************************************
+
+<<FUNCTION FMS_TRADER_CONT_PLANT1() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_TRADER_CONT_BU1()>>
+**********AutomationEMS Error  (20-FEB-2026 11:27:49) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_TRADER_CONT_BU1(Purchase_SEIPL_Data_Reader.java:1668)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:144)
+**************************************************
+
+<<FUNCTION FMS_TRADER_CONT_BU1() ENDED WITH ERRORS>>

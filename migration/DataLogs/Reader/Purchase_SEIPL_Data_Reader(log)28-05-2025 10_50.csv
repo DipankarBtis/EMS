@@ -1,0 +1,114 @@
+
+
+<<START>>,<<FMS_PSEUDO_CARGO_DTL>>,,,,, 	(28-MAY-2025 10:50:49)
+ 
+COMPANY_CD,CONTRACT_TYPE,CARGO_NO,SEQ_NO,QTY,ENT_DT,ENT_BY,TIMESTAMP
+2, N, 1, 6,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 11,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 12,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 9,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, D, 2, 2,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 2,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 13,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 3,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 5,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 7,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 1,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, D, 2, 1,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 4,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 8,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 10,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, D, 2, 3,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 15,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 17,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 18,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 14,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, D, 2, 4,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 19,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, D, 2, 5,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 16,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 20,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2, N, 1, 21,  	(28-MAY-2025 10:50:49)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : 26 	(28-MAY-2025 10:50:49)
+ 
+
+TOTAL DATA INSERTED : 0 	(28-MAY-2025 10:50:49)
+ 
+
+TOTAL SKIPPED DATA 26 	(28-MAY-2025 10:50:49)
+ 
+<<END>><<FMS_PSEUDO_CARGO_DTL>> 	(28-MAY-2025 10:50:49)
+ 
+
+<<START>>,<<FMS_CONT_PRICE_MIN_DTL(P)>>,,,, 	(28-MAY-2025 10:50:49)
+ 
+COMPANY_CD,MAPPING_ID,CONTRACT_TYPE,SEQ_NO,CURVE_NM,TIMESTAMP
+2 ,154--, D ,1, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,1, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,2, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,1, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,1, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,2, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,2, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,1, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,1, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,1, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,1, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,1, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,154--, D ,1, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,1--, D ,1, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,1--, D ,1, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,1--, D ,1, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,1--, D ,1, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,1--, D ,1, ICE_DATED_BRENT, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,1--, D ,1, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,1--, D ,2, ICE_DATED_BRENT, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,278--, D ,1, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,278--, D ,2, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,278--, D ,2, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,278--, D ,1, ICE_JKM, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,278--, D ,1, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,278--, T ,1, ICE_DATED_BRENT, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2 ,278--, T ,1, PPAC, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : 27 	(28-MAY-2025 10:50:49)
+ 
+
+TOTAL DATA INSERTED : 0 	(28-MAY-2025 10:50:49)
+ 
+
+TOTAL SKIPPED DATA 27 	(28-MAY-2025 10:50:49)
+ 
+<<END>><<FMS_CONT_PRICE_MIN_DTL(P)>> 	(28-MAY-2025 10:50:49)
+ 
+
+<<START>>,<<FMS_TRADER_CONT_PLANT_CHRG>>,,,,,, 	(28-MAY-2025 10:50:49)
+ 
+COMNPANY_CD,CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,CONTRACT_TYPE,TIMESTAMP
+2,154, 0, 0,823091, 0,D, 	(28-MAY-2025 10:50:49)
+2,154, 0, 0,823091, 0,D, 	(28-MAY-2025 10:50:49)
+2,154, 0, 0,823091, 0,D, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2,154, 0, 0,823091, 0,D, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2,154, 0, 0,823091, 0,D, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2,154, 0, 0,823091, 0,D, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2,154, 0, 0,823090, 1,D, 	(28-MAY-2025 10:50:49)
+2,154, 0, 0,823090, 1,D, 	(28-MAY-2025 10:50:49)
+2,154, 0, 0,823090, 1,D, 	(28-MAY-2025 10:50:49)
+2,154, 0, 0,823090, 1,D, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2,154, 0, 0,823090, 1,D, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2,154, 0, 0,823090, 1,D, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2,154, 0, 0,823090, 1,D, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2,154, 0, 0,823090, 1,D, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+2,154, 0, 0,823090, 1,D, 	(28-MAY-2025 10:50:49)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : 15,,,,,,, 	(28-MAY-2025 10:50:49)
+ 
+
+TOTAL DATA INSERTED : 5,,,,,,, 	(28-MAY-2025 10:50:49)
+ 
+
+TOTAL SKIPPED DATA 10,,,,,,, 	(28-MAY-2025 10:50:49)
+ 
+<<END>><<FMS_TRADER_CONT_PLANT_CHRG>> 	(28-MAY-2025 10:50:49)
+ 

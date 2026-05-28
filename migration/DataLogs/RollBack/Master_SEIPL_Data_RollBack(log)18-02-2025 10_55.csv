@@ -1,0 +1,13 @@
+
+
+<<ROLLBACK_START>>,<<FMS_METER_MST()>>,,,, 	(18-FEB-2025 10:55:57)
+ 
+COMPANY_CD,COUNTERPARTY_CD,PLANT_SEQ,METER_TYPE,METER_SEQ,TIMESTAMP
+**********AutomationEMS Error  (18-FEB-2025 10:55:58) **********
+java.sql.SQLException: Missing IN or OUT parameter at index:: 11
+
+com.etrm.fms.migration.Master_SEIPL_Data_RollBack.FMS_METER_MST(Master_SEIPL_Data_RollBack.java:3071)
+com.etrm.fms.migration.Master_SEIPL_Data_RollBack.init(Master_SEIPL_Data_RollBack.java:159)
+**************************************************
+
+<<FUNCTION FMS_METER_MST() ENDED WITH ERRORS>>

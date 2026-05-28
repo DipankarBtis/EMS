@@ -1,0 +1,20 @@
+
+<<START>>,<<FMS_ENTITY_CONTACT_MST>>,, 	(01-MAR-2025 11:17:18)
+ 
+ABBR,COUNTERPARTY_CD,ENTITY,SEQ_NO,EFF_DT,TYPE,TIMESTAMP
+RIL,1,C,1,14/09/2008 00:00:00,RLNG, 	(01-MAR-2025 11:17:19)
+RIL,1,C,1,14/09/2008 00:00:00,RLNG, 	(01-MAR-2025 11:17:19)
+RIL,1,C,2,14/09/2008 00:00:00,RLNG, 	(01-MAR-2025 11:17:19)
+RIL,1,C,2,14/09/2008 00:00:00,RLNG, 	(01-MAR-2025 11:17:19)
+RIL,1,C,3,14/09/2008 00:00:00,RLNG, 	(01-MAR-2025 11:17:19)
+RIL,1,C,3,14/09/2008 00:00:00,RLNG, 	(01-MAR-2025 11:17:19)
+RIL,1,C,3,10/02/2012 00:00:00,RLNG, 	(01-MAR-2025 11:17:19)
+RIL,1,C,3,10/02/2012 00:00:00,RLNG, 	(01-MAR-2025 11:17:19)
+**********AutomationEMS Error  (01-MAR-2025 11:17:19) **********
+java.lang.NullPointerException: Cannot invoke "String.toUpperCase()" because the return value of "java.sql.ResultSet.getString(int)" is null
+
+com.etrm.fms.migration.Master_SEIPL_Data_Extractor.FMS_ENTITY_CONTACT_MST(Master_SEIPL_Data_Extractor.java:4024)
+com.etrm.fms.migration.Master_SEIPL_Data_Extractor.init(Master_SEIPL_Data_Extractor.java:184)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_CONTACT_MST() ENDED WITH ERRORS>>

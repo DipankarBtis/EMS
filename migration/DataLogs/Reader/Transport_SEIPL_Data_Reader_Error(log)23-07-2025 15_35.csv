@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_GTA_SG_INV_MST()>>
+**********AutomationEMS Error  (23-JUL-2025 15:35:28) **********
+java.lang.ArrayIndexOutOfBoundsException: 1
+
+com.etrm.fms.migration.Transport_SEIPL_Data_Reader.FMS_GTA_SG_INV_MST(Transport_SEIPL_Data_Reader.java:3763)
+com.etrm.fms.migration.Transport_SEIPL_Data_Reader.init(Transport_SEIPL_Data_Reader.java:141)
+**************************************************
+
+<<FUNCTION FMS_GTA_SG_INV_MST() ENDED WITH ERRORS>>

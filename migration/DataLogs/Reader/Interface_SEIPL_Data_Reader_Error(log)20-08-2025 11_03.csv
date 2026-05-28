@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_TAX_STRUCTURE_SUN()>>
+**********AutomationEMS Error  (20-AUG-2025 11:03:26) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_TAX_STRUCTURE_SUN"."ACCOUNT_TYPE")
+
+
+com.etrm.fms.migration.Interface_SEIPL_Data_Reader.FMS_TAX_STRUCTURE_SUN(Interface_SEIPL_Data_Reader.java:546)
+com.etrm.fms.migration.Interface_SEIPL_Data_Reader.init(Interface_SEIPL_Data_Reader.java:114)
+**************************************************
+
+<<FUNCTION FMS_TAX_STRUCTURE_SUN() ENDED WITH ERRORS>>

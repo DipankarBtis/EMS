@@ -1,0 +1,45 @@
+
+
+<<START>>,<<FMS_SAC_MST>>, 	(26-FEB-2025 13:15:07)
+ 
+SAC_CODE,TIMESTAMP,
+Other Miscellaneous services - Other Services n.e.c. ,  	(26-FEB-2025 13:15:07)
+**********AutomationEMS Error  (26-FEB-2025 13:15:07) **********
+java.sql.SQLSyntaxErrorException: ORA-00913: too many values
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_SAC_MST(Master_SEIPL_Data_Reader.java:7284)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:238)
+**************************************************
+
+<<FUNCTION FMS_SAC_MST() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_ENTITY_CONTACT_MST>>,,,,,, 	(26-FEB-2025 13:15:46)
+ 
+COMPANY_CD,CD,ABBR,ENTITY,SEQ_NO,EFF_DT,ADDR_FLAG,TIMESTAMP
+2 ,284 , KSFL , C , 7 , 20/12/2007 00:00:00 , 0, 	(26-FEB-2025 13:15:46)
+**********AutomationEMS Error  (26-FEB-2025 13:15:46) **********
+java.sql.SQLSyntaxErrorException: ORA-00917: missing comma
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_ENTITY_CONTACT_MST(Master_SEIPL_Data_Reader.java:4158)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:188)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_CONTACT_MST() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_ENTITY_CONTACT_MST>>,,,,,, 	(26-FEB-2025 13:15:56)
+ 
+COMPANY_CD,CD,ABBR,ENTITY,SEQ_NO,EFF_DT,ADDR_FLAG,TIMESTAMP
+2 ,1 , RIL , C , 52 , 31/01/2018 00:00:00 , P8, 	(26-FEB-2025 13:15:56)
+**********AutomationEMS Error  (26-FEB-2025 13:15:56) **********
+java.sql.SQLSyntaxErrorException: ORA-00917: missing comma
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_ENTITY_CONTACT_MST(Master_SEIPL_Data_Reader.java:4158)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:188)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_CONTACT_MST() ENDED WITH ERRORS>>

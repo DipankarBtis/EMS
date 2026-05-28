@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_TRADER_BILLING_DTL()>>
+**********AutomationEMS Error  (31-MAY-2025 16:01:35) **********
+java.sql.SQLSyntaxErrorException: ORA-00933: SQL command not properly ended
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_TRADER_BILLING_DTL(Purchase_SEIPL_Data_Reader.java:6814)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:206)
+**************************************************
+
+<<FUNCTION FMS_TRADER_BILLING_DTL() ENDED WITH ERRORS>>

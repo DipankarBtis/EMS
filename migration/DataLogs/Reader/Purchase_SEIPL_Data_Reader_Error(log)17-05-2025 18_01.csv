@@ -1,0 +1,20 @@
+
+<<ERROR IN FMS_CARGO_SVC_CONT_MST()>>
+**********AutomationEMS Error  (17-MAY-2025 18:01:45) **********
+java.sql.SQLException: Invalid column index
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_CARGO_SVC_CONT_MST(Purchase_SEIPL_Data_Reader.java:3761)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:163)
+**************************************************
+
+<<FUNCTION FMS_CARGO_SVC_CONT_MST() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_CARGO_SVC_CONT_MST()>>
+**********AutomationEMS Error  (17-MAY-2025 18:01:55) **********
+java.sql.SQLException: Invalid column index
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_CARGO_SVC_CONT_MST(Purchase_SEIPL_Data_Reader.java:3761)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:163)
+**************************************************
+
+<<FUNCTION FMS_CARGO_SVC_CONT_MST() ENDED WITH ERRORS>>

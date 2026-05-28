@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_DLNG_INVOICE_MST_LP()>>
+**********AutomationEMS Error  (23-DEC-2025 18:07:49) **********
+java.sql.SQLSyntaxErrorException: ORA-00904: "INT_RATE": invalid identifier
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_INVOICE_MST_LP(DLNG_SEIPL_Data_Reader.java:15704)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:286)
+**************************************************
+
+<<FUNCTION FMS_DLNG_INVOICE_MST_LP() ENDED WITH ERRORS>>

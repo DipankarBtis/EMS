@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_HOLIDAY_DTL()>>
+**********AutomationEMS Error  (26-FEB-2025 11:57:52) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_HOLIDAY_DTL(Master_SEIPL_Data_Reader.java:6864)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:232)
+**************************************************
+
+<<FUNCTION FMS_HOLIDAY_DTL() ENDED WITH ERRORS>>

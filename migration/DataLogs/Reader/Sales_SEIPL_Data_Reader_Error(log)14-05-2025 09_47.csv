@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_DAILY_ALLOCATION_DTL_CT()>>
+**********AutomationEMS Error  (14-MAY-2025 09:47:56) **********
+java.sql.SQLSyntaxErrorException: ORA-01722: invalid number
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_DAILY_ALLOCATION_DTL_CT(Sales_SEIPL_Data_Reader.java:12973)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:251)
+**************************************************
+
+<<FUNCTION FMS_DAILY_ALLOCATION_DTL_CT() ENDED WITH ERRORS>>

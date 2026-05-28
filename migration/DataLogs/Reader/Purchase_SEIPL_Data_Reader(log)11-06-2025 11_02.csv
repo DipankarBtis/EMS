@@ -1,0 +1,15 @@
+
+
+<<START>>,<<FMS_SECURITY_DEAL_MAP(P)>>,,,, 	(11-JUN-2025 11:02:03)
+ 
+COMPANY_CD,CD,SEQ_NO,MAP_SEQ_NO,SEQ_REV_NO,GX,TIMESTAMP
+2, 1, 1, 0, 0 ,null,RIL-1-9-D-22009-0,22001,D, 	(11-JUN-2025 11:02:03)
+**********AutomationEMS Error  (11-JUN-2025 11:02:03) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_SECURITY_DEAL_MAP) violated
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_SECURITY_DEAL_MAP(Purchase_SEIPL_Data_Reader.java:2512)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:151)
+**************************************************
+
+<<FUNCTION FMS_SECURITY_DEAL_MAP(P)() ENDED WITH ERRORS>>

@@ -1,0 +1,32 @@
+
+
+<<ROLLBACK_START>>,<<FMS_BANK_MST()>>,,, 	(13-MAR-2025 11:25:27)
+ 
+BANK_CD,BANK_NAME,BANK_ABBR,EFF_DATE,TIMESTAMP
+1001,STANDARD CHARTERED BANK,null , 01/01/2010 00:00:00, 	(13-MAR-2025 11:25:27)
+1004,ICICI Bank Ltd,ICICI , 24/03/2021 00:00:00, 	(13-MAR-2025 11:25:27)
+1005,HDFC Bank Ltd,HDFC , 24/03/2021 00:00:00, 	(13-MAR-2025 11:25:27)
+1006,Axis Bank Ltd,Axis , 24/03/2021 00:00:00, 	(13-MAR-2025 11:25:27)
+1007,Bank of Baroda,BoB , 24/03/2021 00:00:00, 	(13-MAR-2025 11:25:27)
+1008,Indian Bank,IB , 24/03/2021 00:00:00, 	(13-MAR-2025 11:25:27)
+1009,Standard Chartered Bank ,SCB , 24/03/2021 00:00:00, 	(13-MAR-2025 11:25:27)
+1010,IDBI Bank Ltd,IDBI , 24/03/2021 00:00:00, 	(13-MAR-2025 11:25:27)
+1011,State Bank of India,SBI , 24/03/2021 00:00:00, 	(13-MAR-2025 11:25:27)
+1012,Federal Bank Ltd,FBL , 24/03/2021 00:00:00, 	(13-MAR-2025 11:25:27)
+1018,Punjab National Bank,PNB , 13/05/2021 00:00:00, 	(13-MAR-2025 11:25:27)
+1022,INDUSIND BANK LIMITED,INDUSIND , 08/12/2022 00:00:00, 	(13-MAR-2025 11:25:27)
+1002,Mizuho Bank, Ltd,Mizuho , 01/06/2023 00:00:00, 	(13-MAR-2025 11:25:27)	 (Not Deleted)
+1003,RBL Bank Ltd,RBL , 26/02/2024 00:00:00, 	(13-MAR-2025 11:25:27)	 (Not Deleted)
+1013,The Hongkong & Shanghai Banking Corporation Ltd,HSBC , 14/06/2022 00:00:00, 	(13-MAR-2025 11:25:27)	 (Not Deleted)
+1014,Citibank N.A. ? India Branches,Citi India , 19/07/2022 00:00:00, 	(13-MAR-2025 11:25:27)	 (Not Deleted)
+1015,Kotak Mahindra Bank Limited,KMB , 03/06/2022 00:00:00, 	(13-MAR-2025 11:25:27)	 (Not Deleted)
+1016,Yes Bank Ltd,YBL , 04/01/2023 00:00:00, 	(13-MAR-2025 11:25:27)	 (Not Deleted)
+1017,Union Bank of India,UBI , 10/01/2023 00:00:00, 	(13-MAR-2025 11:25:27)	 (Not Deleted)
+1019,Credit Agricole Corporate and Investment Bank (India),CACIB , 18/05/2022 00:00:00, 	(13-MAR-2025 11:25:27)	 (Not Deleted)
+1020,Sumitomo Mitsui Banking Corporation,SMBC-Delhi , 22/09/2022 00:00:00, 	(13-MAR-2025 11:25:27)	 (Not Deleted)
+1021,Deutsche Bank AG ,DB India , 22/09/2022 00:00:00, 	(13-MAR-2025 11:25:27)	 (Not Deleted)
+
+TOTAL DATA DELETED : ,12,,, 	(13-MAR-2025 11:25:27)
+ 
+<<ROLLBACK_END>>,<<FMS_BANK_MST()>>,,, 	(13-MAR-2025 11:25:27)
+ 

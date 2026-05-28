@@ -1,0 +1,18 @@
+
+
+<<ROLLBACK_START>>,<<FMS_CONT_PRICE_DTL>>,,, 	(02-APR-2025 13:21:31)
+ 
+COMPANY_CD, MAPPING_ID, CONTRACT_TYPE, SEQ_NO,TIMESTAMP
+2,110-1-725012-1,N,1, 	(02-APR-2025 13:21:31)
+2,110-1-725013-1,N,1, 	(02-APR-2025 13:21:31)
+2,110-1-725014-1,N,1, 	(02-APR-2025 13:21:31)
+2,110-1-725015-1,N,1, 	(02-APR-2025 13:21:31)
+2,110-1-725016-1,N,1, 	(02-APR-2025 13:21:31)
+**********AutomationEMS Error  (02-APR-2025 13:21:31) **********
+java.sql.SQLException: org.apache.tomcat.dbcp.dbcp2.DelegatingPreparedStatement with address: "NULL" is closed.
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.FMS_CONT_PRICE_DTL(Purchase_SEIPL_Data_RollBack.java:1421)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:109)
+**************************************************
+
+<<FUNCTION FMS_CONT_PRICE_DTL() ENDED WITH ERRORS>>

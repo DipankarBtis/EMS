@@ -1,0 +1,32 @@
+
+<<ERROR IN FMS_ENTITY_CONTACT_MST()>>
+**********AutomationEMS Error  (26-FEB-2025 13:12:23) **********
+java.sql.SQLSyntaxErrorException: ORA-00917: missing comma
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_ENTITY_CONTACT_MST(Master_SEIPL_Data_Reader.java:4158)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:188)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_CONTACT_MST() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_HOLIDAY_DTL()>>
+**********AutomationEMS Error  (26-FEB-2025 13:12:47) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("EMS"."FMS_HOLIDAY_DTL"."STATE_TIN")
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_HOLIDAY_DTL(Master_SEIPL_Data_Reader.java:6931)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:232)
+**************************************************
+
+<<FUNCTION FMS_HOLIDAY_DTL() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_HOLIDAY_DTL()>>
+**********AutomationEMS Error  (26-FEB-2025 13:12:53) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_HOLIDAY_DTL(Master_SEIPL_Data_Reader.java:6864)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:232)
+**************************************************
+
+<<FUNCTION FMS_HOLIDAY_DTL() ENDED WITH ERRORS>>

@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_AGMT_MST()>>
+**********AutomationEMS Error  (28-FEB-2025 13:23:15) **********
+java.sql.SQLException: ORA-01791: not a SELECTed expression
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Extractor.FMS_AGMT_MST(Sales_SEIPL_Data_Extractor.java:199)
+com.etrm.fms.migration.Sales_SEIPL_Data_Extractor.init(Sales_SEIPL_Data_Extractor.java:110)
+**************************************************
+
+<<FUNCTION FMS_AGMT_MST() ENDED WITH ERRORS>>

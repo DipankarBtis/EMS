@@ -1,0 +1,399 @@
+package com.etrm.fms.util;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
+//Coded By          : Harsh Patel
+//Code Reviewed by	:  
+//CR Date			: 12/09/2022 
+//Status	  		: Developing
+public class DataBean_Menu 
+{
+	String db_src_file_name="DataBean_Menu.java";
+	Connection conn; 
+	PreparedStatement stmt;
+	PreparedStatement stmt1;
+	PreparedStatement stmt2;
+	PreparedStatement stmt3;
+	ResultSet rset; 
+	ResultSet rset1;
+	ResultSet rset2;
+	ResultSet rset3;
+	String queryString="";
+	String queryString1="";
+	String queryString2="";
+	String queryString3="";
+	String queryString4="";
+	String queryString5="";
+	
+	public void init()
+	{
+		String function_nm="init()";
+		try
+		{
+			Context initContext = new InitialContext();
+	    	if(initContext == null)
+	    	{
+	    		throw new Exception("Boom - No Context");
+	    	}
+	    	
+	    	Context envContext  = (Context)initContext.lookup("java:/comp/env");
+	    	DataSource ds = (DataSource)envContext.lookup(RuntimeConf.security_database);
+	    	if(ds != null) 
+	    	{
+	    		conn = ds.getConnection();       
+	    		if(conn != null)  
+	    		{
+	    			if(callFlag.equalsIgnoreCase("MODULE_MST"))
+	    			{
+	    				ModuleMaster();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("MENU_MST"))
+	    			{
+	    				MenuMaster();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("MENU_ACCESS"))
+	    			{
+	    				getMenuAccessPermission();
+	    			}
+	    		}
+	    		
+	    		conn.close();
+    			conn = null;
+	    	}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		finally
+	    {
+	    	if(rset != null){try{rset.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset1 != null){try{rset1.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset2 != null){try{rset2.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset3 != null){try{rset3.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt != null){try{stmt.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt1 != null){try{stmt1.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt2 != null){try{stmt2.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt3 != null){try{stmt3.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(conn != null){try{conn.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    }
+	}
+	
+	public void ModuleMaster()
+	{
+		String function_nm="ModuleMaster()";
+		try
+		{
+			queryString = "SELECT DISTINCT D.MODULE_NAME, D.MODULE_CD, D.MODULE_PRIORITY "
+					+ "FROM FMS_EMP_GROUP_DTL A, FMS_GROUP_ACCESS B, FMS_FORM_MST C, FMS_MODULE_MST D, FMS_EMP_MST E "
+					+ "WHERE D.MODULE_CD=C.MODULE_CD AND C.FORM_CD=B.FORM_CD AND A.COMPANY_CD=? AND C.FLAG='Y' "
+					+ "AND B.GROUP_CD = A.GROUP_CD AND A.EMP_CD=E.EMP_CD AND A.COMPANY_CD=E.COMPANY_CD AND B.COMPANY_CD=E.COMPANY_CD "
+					+ "AND B.READ_ACCESS=? AND E.EMP_UID=? AND E.COMPANY_CD=? AND D.ACTIVE=? "
+					+ "AND A.GROUP_CD=(SELECT F.GROUP_CD FROM FMS_GROUP_MST F WHERE F.GROUP_CD=A.GROUP_CD AND F.ACTIVE=?) "
+					+ "AND (A.FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY')) "
+					+ "ORDER BY D.MODULE_PRIORITY";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, "Y");
+			stmt.setString(3, username);
+			stmt.setString(4, comp_cd);
+			stmt.setString(5, "Y");
+			stmt.setString(6, "Y");
+			rset = stmt.executeQuery();
+			while(rset.next())
+			{
+				VMENU_MODULE_NM.add(rset.getString(1)==null?"":rset.getString(1));
+				VMENU_MODULE_CD.add(rset.getString(2)==null?"":rset.getString(2));
+			}
+			rset.close();
+			stmt.close();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void MenuMaster()
+	{
+		String function_nm="MenuMaster()";
+		try
+		{
+			queryString="SELECT A.FORM_NAME, A.FORM_CD, A.CLASSPATH, A.FORM_TYPE, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=(SELECT EMP_CD FROM FMS_EMP_MST WHERE EMP_UID=? AND COMPANY_CD=?) AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.READ_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) READ_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=(SELECT EMP_CD FROM FMS_EMP_MST WHERE EMP_UID=? AND COMPANY_CD=?) AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.WRITE_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) WRITE_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=(SELECT EMP_CD FROM FMS_EMP_MST WHERE EMP_UID=? AND COMPANY_CD=?) AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.CHECK_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) CHECK_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=(SELECT EMP_CD FROM FMS_EMP_MST WHERE EMP_UID=? AND COMPANY_CD=?) AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.PRINT_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) PRINT_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=(SELECT EMP_CD FROM FMS_EMP_MST WHERE EMP_UID=? AND COMPANY_CD=?) AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.DELETE_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) DELETE_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=(SELECT EMP_CD FROM FMS_EMP_MST WHERE EMP_UID=? AND COMPANY_CD=?) AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.AUDIT_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) AUDIT_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=(SELECT EMP_CD FROM FMS_EMP_MST WHERE EMP_UID=? AND COMPANY_CD=?) AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.AUTHORIZE_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) AUTHORIZE_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=(SELECT EMP_CD FROM FMS_EMP_MST WHERE EMP_UID=? AND COMPANY_CD=?) AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.APPROVE_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) APPROVE_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=(SELECT EMP_CD FROM FMS_EMP_MST WHERE EMP_UID=? AND COMPANY_CD=?) AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.EXECUTE_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) EXECUTE_ACCESS, "
+					+ "A.SUB_MENU_CD "
+					+ "FROM FMS_FORM_MST A, FMS_MODULE_MST B "
+					+ "WHERE A.MODULE_CD=B.MODULE_CD AND B.MODULE_CD=? AND A.FLAG='Y' "
+					+ "AND (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D "
+					+ "WHERE D.EMP_CD=(SELECT EMP_CD FROM FMS_EMP_MST WHERE EMP_UID=? AND COMPANY_CD=?) "
+					+ "AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') "
+					+ "AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') "
+					+ "AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.READ_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 "
+					+ "ORDER BY A.SUB_MENU_CD, A.SUB_MENU_SEQ ";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, username);
+			stmt.setString(2, comp_cd);
+			stmt.setString(3, comp_cd);
+			stmt.setString(4, username);
+			stmt.setString(5, comp_cd);
+			stmt.setString(6, comp_cd);
+			stmt.setString(7, username);
+			stmt.setString(8, comp_cd);
+			stmt.setString(9, comp_cd);
+			stmt.setString(10, username);
+			stmt.setString(11, comp_cd);
+			stmt.setString(12, comp_cd);
+			stmt.setString(13, username);
+			stmt.setString(14, comp_cd);
+			stmt.setString(15, comp_cd);
+			stmt.setString(16, username);
+			stmt.setString(17, comp_cd);
+			stmt.setString(18, comp_cd);
+			stmt.setString(19, username);
+			stmt.setString(20, comp_cd);
+			stmt.setString(21, comp_cd);
+			stmt.setString(22, username);
+			stmt.setString(23, comp_cd);
+			stmt.setString(24, comp_cd);
+			stmt.setString(25, username);
+			stmt.setString(26, comp_cd);
+			stmt.setString(27, comp_cd);
+			stmt.setString(28, module_cd);
+			stmt.setString(29, username);
+			stmt.setString(30, comp_cd);
+			stmt.setString(31, comp_cd);
+			rset = stmt.executeQuery();
+			while(rset.next())
+			{
+				//System.out.println(rset.getString(1)+"----"+rset.getString(2)+"---"+rset.getString(5));
+				String formCd=rset.getString(2)==null?"":rset.getString(2);
+				String mapping=formCd+"-"+module_cd;
+				
+				StringBuffer encrypt = new EncryptTest().URLencrypt(mapping);
+				VU.add(encrypt);
+				
+				VFORM_NM.add(rset.getString(1)==null?"":rset.getString(1));
+				VFORM_CD.add(rset.getString(2)==null?"":rset.getString(2));
+				VFORM_PATH.add(rset.getString(3)==null?"":rset.getString(3));
+				
+				VREAD_ACCESS.add(rset.getString(5)==null?"N":rset.getString(5));
+				VWRITE_ACCESS.add(rset.getString(6)==null?"N":rset.getString(6));
+				VCHECK_ACCESS.add(rset.getString(7)==null?"N":rset.getString(7));
+				VPRINT_ACCESS.add(rset.getString(8)==null?"N":rset.getString(8));
+				VDELETE_ACCESS.add(rset.getString(9)==null?"N":rset.getString(9));
+				VAUDIT_ACCESS.add(rset.getString(10)==null?"N":rset.getString(10));
+				VAUTHORIZE_ACCESS.add(rset.getString(11)==null?"N":rset.getString(11));
+				VAPPROVE_ACCESS.add(rset.getString(12)==null?"N":rset.getString(12));
+				VEXECUTE_ACCESS.add(rset.getString(13)==null?"N":rset.getString(13));
+				
+				VGRP_CD.add(rset.getString(14)==null?"":rset.getString(14));
+			}
+			rset.close();
+			stmt.close();
+			
+			queryString="SELECT DISTINCT A.SUB_MENU_CD, A.SUB_MENU_NM "
+					+ "FROM FMS_FORM_MST A, FMS_MODULE_MST B "
+					+ "WHERE A.MODULE_CD=B.MODULE_CD AND B.MODULE_CD=? AND A.FLAG='Y' "
+					+ "AND (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D "
+					+ "WHERE D.EMP_CD=(SELECT EMP_CD FROM FMS_EMP_MST WHERE EMP_UID=? AND COMPANY_CD=?) "
+					+ "AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') "
+					+ "AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') "
+					+ "AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.READ_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 "
+					+ "ORDER BY A.SUB_MENU_CD ";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, module_cd);
+			stmt.setString(2, username);
+			stmt.setString(3, comp_cd);
+			stmt.setString(4, comp_cd);
+			rset = stmt.executeQuery();
+			while(rset.next())
+			{
+				VSUB_MENU_CD.add(rset.getString(1)==null?"":rset.getString(1));
+				VSUB_MENU_NM.add(rset.getString(2)==null?"":rset.getString(2));
+			}
+			rset.close();
+			stmt.close();
+		}
+		catch(Exception e) 
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getMenuAccessPermission()
+	{
+		String function_nm="getMenuAccessPermission()";
+		try
+		{
+			queryString="SELECT A.FORM_NAME, A.FORM_CD, A.CLASSPATH, A.FORM_TYPE, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=? AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.READ_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) READ_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=? AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.WRITE_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) WRITE_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=? AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.CHECK_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) CHECK_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=? AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.PRINT_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) PRINT_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=? AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.DELETE_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) DELETE_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=? AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.AUDIT_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) AUDIT_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=? AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.AUTHORIZE_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) AUTHORIZE_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=? AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.APPROVE_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) APPROVE_ACCESS, "
+					+ "(CASE WHEN (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D WHERE D.EMP_CD=? AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.EXECUTE_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 THEN 'Y' ELSE 'N' END) EXECUTE_ACCESS, "
+					+ "A.SUB_MENU_CD,B.MODULE_NAME "
+					+ "FROM FMS_FORM_MST A, FMS_MODULE_MST B "
+					+ "WHERE A.MODULE_CD=B.MODULE_CD AND B.MODULE_CD=? AND A.FORM_CD=? AND A.FLAG='Y' "
+					+ "AND (SELECT COUNT(*) FROM FMS_GROUP_ACCESS C WHERE C.GROUP_CD IN (SELECT D.GROUP_CD FROM FMS_EMP_GROUP_DTL D "
+					+ "WHERE D.EMP_CD=? "
+					+ "AND D.GROUP_CD=(SELECT E.GROUP_CD FROM FMS_GROUP_MST E WHERE E.GROUP_CD=D.GROUP_CD AND E.ACTIVE='Y') "
+					+ "AND (FROM_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') "
+					+ "AND TO_DT >= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))) AND C.READ_ACCESS='Y' AND C.FORM_CD=A.FORM_CD AND C.COMPANY_CD=?) > 0 "
+					+ "ORDER BY A.SUB_MENU_CD, A.SUB_MENU_SEQ ";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, empCd);
+			stmt.setString(2, comp_cd);
+			stmt.setString(3, empCd);
+			stmt.setString(4, comp_cd);
+			stmt.setString(5, empCd);
+			stmt.setString(6, comp_cd);
+			stmt.setString(7, empCd);
+			stmt.setString(8, comp_cd);
+			stmt.setString(9, empCd);
+			stmt.setString(10, comp_cd);
+			stmt.setString(11, empCd);
+			stmt.setString(12, comp_cd);
+			stmt.setString(13, empCd);
+			stmt.setString(14, comp_cd);
+			stmt.setString(15, empCd);
+			stmt.setString(16, comp_cd);
+			stmt.setString(17, empCd);
+			stmt.setString(18, comp_cd);
+			stmt.setString(19, module_cd);
+			stmt.setString(20, form_cd);
+			stmt.setString(21, empCd);
+			stmt.setString(22, comp_cd);
+			rset = stmt.executeQuery();
+			while(rset.next())
+			{
+				//System.out.println(rset.getString(1)+"----"+rset.getString(2)+"---"+rset.getString(5));
+				
+				form_nm=rset.getString(1)==null?"":rset.getString(1);
+				//System.out.println(rset.getString(2)==null?"":rset.getString(2));
+				//System.out.println(rset.getString(3)==null?"":rset.getString(3));
+				
+				read_access=rset.getString(5)==null?"N":rset.getString(5);
+				write_access=rset.getString(6)==null?"N":rset.getString(6);
+				check_access=rset.getString(7)==null?"N":rset.getString(7);
+				print_access=rset.getString(8)==null?"N":rset.getString(8);
+				delete_access=rset.getString(9)==null?"N":rset.getString(9);
+				audit_access=rset.getString(10)==null?"N":rset.getString(10);
+				authorize_access=rset.getString(11)==null?"N":rset.getString(11);
+				approve_access=rset.getString(12)==null?"N":rset.getString(12);
+				execute_access=rset.getString(13)==null?"N":rset.getString(13);
+				
+				//System.out.println(rset.getString(14)==null?"":rset.getString(14));
+				
+				module_nm=rset.getString(15)==null?"":rset.getString(15);
+			}
+			rset.close();
+			stmt.close();
+		}
+		catch(Exception e) 
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	String callFlag = "";
+	public void setCallFlag(String callFlag) {this.callFlag = callFlag;}
+	
+	
+	String username = "";
+	String module_cd = "";
+	String comp_cd = "";
+	String form_cd = "";
+	String empCd = "";
+	
+	public void setUsername(String username) {this.username = username;}
+	public void setModule_cd(String module_cd) {this.module_cd = module_cd;}
+	public void setComp_cd(String comp_cd) {this.comp_cd = comp_cd;}
+	public void setForm_cd(String form_cd) {this.form_cd = form_cd;}
+	public void setEmpCd(String empCd) {this.empCd = empCd;}
+	
+	Vector VMENU_MODULE_CD = new Vector();
+	Vector VMENU_MODULE_NM = new Vector();
+	Vector VFORM_CD = new Vector();
+	Vector VFORM_NM = new Vector();
+	Vector VFORM_PATH = new Vector();
+	Vector VREAD_ACCESS = new Vector();
+	Vector VWRITE_ACCESS = new Vector();
+	Vector VCHECK_ACCESS = new Vector();
+	Vector VPRINT_ACCESS = new Vector();
+	Vector VDELETE_ACCESS = new Vector();
+	Vector VAUDIT_ACCESS = new Vector();
+	Vector VAUTHORIZE_ACCESS = new Vector();
+	Vector VAPPROVE_ACCESS = new Vector();
+	Vector VEXECUTE_ACCESS = new Vector();
+	Vector VGRP_CD = new Vector();
+	Vector VU = new Vector();
+	
+	Vector VSUB_MENU_CD = new Vector();
+	Vector VSUB_MENU_NM = new Vector();
+	
+	
+	public Vector getVMENU_MODULE_CD() {return VMENU_MODULE_CD;}
+	public Vector getVMENU_MODULE_NM() {return VMENU_MODULE_NM;}
+	public Vector getVFORM_CD() {return VFORM_CD;}
+	public Vector getVFORM_NM() {return VFORM_NM;}
+	public Vector getVFORM_PATH() {return VFORM_PATH;}
+	public Vector getVREAD_ACCESS() {return VREAD_ACCESS;}
+	public Vector getVWRITE_ACCESS() {return VWRITE_ACCESS;}
+	public Vector getVCHECK_ACCESS() {return VCHECK_ACCESS;}
+	public Vector getVPRINT_ACCESS() {return VPRINT_ACCESS;}
+	public Vector getVDELETE_ACCESS() {return VDELETE_ACCESS;}
+	public Vector getVAUDIT_ACCESS() {return VAUDIT_ACCESS;}
+	public Vector getVAUTHORIZE_ACCESS() {return VAUTHORIZE_ACCESS;}
+	public Vector getVAPPROVE_ACCESS() {return VAPPROVE_ACCESS;}
+	public Vector getVEXECUTE_ACCESS() {return VEXECUTE_ACCESS;}
+	public Vector getVGRP_CD() {return VGRP_CD;}
+	public Vector getVU() {return VU;}
+	
+	public Vector getVSUB_MENU_CD() {return VSUB_MENU_CD;}
+	public Vector getVSUB_MENU_NM() {return VSUB_MENU_NM;}
+	
+	String form_nm = "";
+	String module_nm = "";
+	String read_access = "";
+	String write_access = "";
+	String check_access = "";
+	String print_access = "";
+	String delete_access = "";
+	String audit_access = "";
+	String authorize_access = "";
+	String approve_access = "";
+	String execute_access = "";
+	
+	public String getForm_nm() {return form_nm;}
+	public String getModule_nm() {return module_nm;}
+	public String getRead_access() {return read_access;}
+	public String getWrite_access() {return write_access;}
+	public String getCheck_access() {return check_access;}
+	public String getPrint_access() {return print_access;}
+	public String getDelete_access() {return delete_access;}
+	public String getAudit_access() {return audit_access;}
+	public String getAuthorize_access() {return authorize_access;}
+	public String getApprove_access() {return approve_access;}
+	public String getExecute_access() {return execute_access;}
+	
+}

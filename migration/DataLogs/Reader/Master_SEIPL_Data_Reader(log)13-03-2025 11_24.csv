@@ -1,0 +1,38 @@
+
+
+<<START>>,<<FMS_BANK_MST>>,,, 	(13-MAR-2025 11:24:37)
+ 
+CD,BANK_NAME,BANK_ABBR,EFF_DT,TIMESTAMP
+1023 , STANDARD CHARTERED BANK , NULL , 01/01/2010 00:00:00, 	(13-MAR-2025 11:24:37)
+1024 , Mizuho Bank, Ltd , MIZUHO , 01/06/2023 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , RBL Bank Ltd , RBL , 26/02/2024 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , ICICI Bank Ltd , ICICI , 24/03/2021 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , HDFC Bank Ltd , HDFC , 24/03/2021 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Axis Bank Ltd , AXIS , 24/03/2021 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Bank of Baroda , BOB , 24/03/2021 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Indian Bank , IB , 24/03/2021 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Standard Chartered Bank  , SCB , 24/03/2021 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , IDBI Bank Ltd , IDBI , 24/03/2021 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , State Bank of India , SBI , 24/03/2021 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Federal Bank Ltd , FBL , 24/03/2021 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , The Hongkong & Shanghai Banking Corporation Ltd , HSBC , 14/06/2022 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Citibank N.A. ? India Branches , CITI INDIA , 19/07/2022 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Kotak Mahindra Bank Limited , KMB , 03/06/2022 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Yes Bank Ltd , YBL , 04/01/2023 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Union Bank of India , UBI , 10/01/2023 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Punjab National Bank , PNB , 13/05/2021 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Credit Agricole Corporate and Investment Bank (India) , CACIB , 18/05/2022 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Sumitomo Mitsui Banking Corporation , SMBC-DELHI , 22/09/2022 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , Deutsche Bank AG  , DB INDIA , 22/09/2022 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+1024 , INDUSIND BANK LIMITED , INDUSIND , 08/12/2022 00:00:00, 	(13-MAR-2025 11:24:37)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,22,,, 	(13-MAR-2025 11:24:37)
+ 
+
+TOTAL DATA INSERTED : ,1,,, 	(13-MAR-2025 11:24:37)
+ 
+
+TOTAL SKIPPED DATA ,21,,, 	(13-MAR-2025 11:24:37)
+ 
+<<END>>,<<FMS_BANK_MST>>,,, 	(13-MAR-2025 11:24:37)
+ 

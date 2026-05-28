@@ -1,0 +1,15 @@
+
+
+<<START>>,<<FMS_METER_MST>>,,,,, 	(24-FEB-2025 11:41:53)
+ 
+COMPANY_CD,CD,ABBR,PLANT_SEQ,METER_TYPE,METER_SEQ,TIMESTAMP
+2 ,29 , PipeInfra , 9 , R , null, 	(24-FEB-2025 11:41:54)
+**********AutomationEMS Error  (24-FEB-2025 11:41:54) **********
+java.sql.SQLException: ORA-01400: cannot insert NULL into ("EMSNG"."FMS_METER_MST"."METER_SEQ")
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_METER_MST(Master_SEIPL_Data_Reader.java:4408)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:192)
+**************************************************
+
+<<FUNCTION FMS_METER_MST() ENDED WITH ERRORS>>

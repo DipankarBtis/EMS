@@ -1,0 +1,23 @@
+
+
+<<ROLLBACK_START>>,<<FMS_DAILY_BUYER_NOM>>,,,,,,,,,,, 	(01-MAY-2025 13:43:53)
+ 
+COMPANY_CD,COUNTERPARTY_CD,AGMT_NO,AGMT_REV,PLANT_SEQ,CONTRACT_TYPE,TIMESTAMP,
+**********AutomationEMS Error  (01-MAY-2025 13:43:53) **********
+java.lang.StringIndexOutOfBoundsException: String index out of range: -1
+
+com.etrm.fms.migration.Sales_SEIPL_Data_RollBack.FMS_DAILY_BUYER_NOM(Sales_SEIPL_Data_RollBack.java:2615)
+com.etrm.fms.migration.Sales_SEIPL_Data_RollBack.init(Sales_SEIPL_Data_RollBack.java:161)
+**************************************************
+
+<<FUNCTION FMS_DAILY_BUYER_NOM() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_DAILY_BUYER_NOM()>>
+**********AutomationEMS Error  (01-MAY-2025 13:43:53) **********
+java.lang.StringIndexOutOfBoundsException: String index out of range: -1
+
+com.etrm.fms.migration.Sales_SEIPL_Data_RollBack.FMS_DAILY_BUYER_NOM(Sales_SEIPL_Data_RollBack.java:2615)
+com.etrm.fms.migration.Sales_SEIPL_Data_RollBack.init(Sales_SEIPL_Data_RollBack.java:161)
+**************************************************
+
+<<FUNCTION FMS_DAILY_BUYER_NOM() ENDED WITH ERRORS>>

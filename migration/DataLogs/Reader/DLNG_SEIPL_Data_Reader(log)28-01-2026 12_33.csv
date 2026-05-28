@@ -1,0 +1,15 @@
+
+
+<<START>>,<<FMS_DLNG_INV_FILE_DTL_LP>>,, 	(28-JAN-2026 12:33:06)
+ 
+COMPANY_CD,BU_STATE_TIN,INVOICE_SEQ,FINANCIAL_YEAR,PDF_TYPE,FILE_NAME,TIMESTAMP,
+2,24,1387,2024-2025,D,LATEPAY_INVOICE-18122024-MINDA-Minda-Detroj-I-5-D.pdf, 	(28-JAN-2026 12:33:06)
+**********AutomationEMS Error  (28-JAN-2026 12:33:06) **********
+java.sql.SQLException: ORA-00904: "EMAIL_SENT_DT": invalid identifier
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_INV_FILE_DTL_LP(DLNG_SEIPL_Data_Reader.java:17449)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:300)
+**************************************************
+
+<<FUNCTION FMS_DLNG_INV_FILE_DTL_LP() ENDED WITH ERRORS>>

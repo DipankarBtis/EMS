@@ -1,0 +1,15 @@
+
+
+<<START>>,<<FMS_DLNG_FFLOW_INV_FILE_DTL_SERV>>,, 	(28-JAN-2026 17:39:28)
+ 
+COMPANY_CD,BU_STATE_TIN,INVOICE_SEQ,FINANCIAL_YEAR,PDF_TYPE,FILE_NAME,TIMESTAMP,
+2,24,1,2022-2023,D,LATEPAY_INVOICE-23022023-SGIPL-Jhagadia_SGIPL-M-1-D.pdf, 	(28-JAN-2026 17:39:28)
+**********AutomationEMS Error  (28-JAN-2026 17:39:28) **********
+java.sql.SQLException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_DLNG_FFLOW_INV_FILE_DTL"."INVOICE_TYPE")
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_FFLOW_INV_FILE_DTL_SERV(DLNG_SEIPL_Data_Reader.java:18375)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:307)
+**************************************************
+
+<<FUNCTION FMS_DLNG_FFLOW_INV_FILE_DTL_SERV() ENDED WITH ERRORS>>

@@ -1,0 +1,13 @@
+
+
+<<START>>,<<FMS_GTA_SG_INV_MST>>,, 	(19-JUL-2025 10:38:57)
+ 
+COMPANY_CD, COUNTERPARTY_CD, AGMT_NO, AGMT_REV, CONT_NO, CONT_REV, CONTRACT_TYPE, TRANS_BU_UNIT, BU_UNIT, FREQ, PERIOD_START_DT, PERIOD_END_DT, INVOICE_TYPE, INVOICE_SEQ, INV_NO ,TIMESTAMP,
+**********AutomationEMS Error  (19-JUL-2025 10:38:57) **********
+java.lang.NumberFormatException: empty String
+
+com.etrm.fms.migration.Transport_SEIPL_Data_Reader.FMS_GTA_SG_INV_MST(Transport_SEIPL_Data_Reader.java:3688)
+com.etrm.fms.migration.Transport_SEIPL_Data_Reader.init(Transport_SEIPL_Data_Reader.java:141)
+**************************************************
+
+<<FUNCTION FMS_GTA_SG_INV_MST() ENDED WITH ERRORS>>

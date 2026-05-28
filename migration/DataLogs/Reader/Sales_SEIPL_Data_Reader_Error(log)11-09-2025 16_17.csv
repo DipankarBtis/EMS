@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_SALES_DR_CR_MST()>>
+**********AutomationEMS Error  (11-SEP-2025 16:17:12) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.FMS_SALES_DR_CR_MST_PK) violated
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_SALES_DR_CR_MST(Sales_SEIPL_Data_Reader.java:19335)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:301)
+**************************************************
+
+<<FUNCTION FMS_SALES_DR_CR_MST() ENDED WITH ERRORS>>

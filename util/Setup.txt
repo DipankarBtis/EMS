@@ -1,0 +1,3 @@
+dbline:jdbc:oracle:thin:@//localhost:1521/xe
+username:EMSNG
+password:EMSNG

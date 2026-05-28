@@ -1,0 +1,12 @@
+
+
+<<START>>,<<FMS_SECURITY_MST>>,,,, 	(23-SEP-2025 16:48:45)
+ 
+**********AutomationEMS Error  (23-SEP-2025 16:48:45) **********
+org.apache.poi.EmptyFileException: The supplied file was empty (zero bytes long)
+
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.FMS_SECURITY_MST(RiskMgmt_SEIPL_Data_Reader.java:2628)
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.init(RiskMgmt_SEIPL_Data_Reader.java:157)
+**************************************************
+
+<<FUNCTION FMS_SECURITY_MST() ENDED WITH ERRORS>>

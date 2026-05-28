@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_SUPPLY_CFORM_DTL(DLNG)()>>
+**********AutomationEMS Error  (08-AUG-2025 14:24:28) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_SUPPLY_CFORM_DTL"."EFF_DT")
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_SUPPLY_CFORM_DTL(DLNG_SEIPL_Data_Reader.java:6104)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:181)
+**************************************************
+
+<<FUNCTION FMS_SUPPLY_CFORM_DTL(DLNG)() ENDED WITH ERRORS>>

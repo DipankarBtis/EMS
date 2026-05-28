@@ -1,0 +1,89 @@
+
+
+<<START>>,<<FMS_AGMT_BILLING_DTL>>,, 	(26-JUN-2025 16:45:02)
+ 
+COMPANY_CD,COUNTERPARTY_CD,AGMT_TYPE,AGMT_NO,AGMT_REV,PLANT_SEQ_NO,TIMESTAMP,
+2,1 , RIL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,1 , RIL,F,0,2, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,1 , RIL,T,0,2, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,1 , RIL,F,1,2, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,12 , MNGL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,269 , TEL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,154 , SEMTPL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,34 , MINDA,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,36 , HIL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,52 , GLIL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,54 , GFCL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,18 , GSFC,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,183 , SUMGLAS,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,144 , HINAGIL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,2 , MGL,F,0,2, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,11 , TPL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,280 , WMSL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,280 , WMSL,F,1,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,15 , HPCL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,15 , HPCL,F,1,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,15 , HPCL,F,2,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,15 , HPCL,F,0,2, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,160 , SIMPL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,41 , OPAL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,46 , TGLPL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,48 , BGEPL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,49 , VVF India,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,65 , PEFORCV,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,14 , BPCL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,19 , ATGL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,49 , VVF India,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,47 , TGBPL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,56 , IRM,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,92 , NEL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,13 , IGL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,21 , SGIPL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,23 , PGPGPL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,24 , HCG,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,61 , EFSPL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,20 , AMNS,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,31 , HSIL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,40 , ATPL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,55 , CPL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,104 , TASTELI,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,104 , TASTELI,F,0,2, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,278 , SEMTEXP,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,3 , GSPCL,F,2,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,3 , GSPCL,F,3,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,3 , GSPCL,F,4,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,3 , GSPCL,F,0,2, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,16 , JSW,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,50 , GNFC,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,59 , INPEROX,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,7 , DFPCL,F,0,2, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,10 , GGCL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+2,25 , GGL,F,0,1, 	(26-JUN-2025 16:45:02)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,56,,,,,, 	(26-JUN-2025 16:45:02)
+ 
+
+TOTAL DATA INSERTED : ,0,,,,,, 	(26-JUN-2025 16:45:02)
+ 
+
+TOTAL SKIPPED DATA ,56,,,,,, 	(26-JUN-2025 16:45:02)
+ 
+<<END>>,<<FMS_AGMT_BILLING_DTL>>,,,,,, 	(26-JUN-2025 16:45:02)
+ 
+
+<<START>>,<<FMS_AGMT_DEACTIVATION_DTL>>,, 	(26-JUN-2025 16:45:02)
+ 
+COMPANY_CD,COUNTERPARTY_CD,AGMT_TYPE,AGMT_NO,AGMT_REV,SEQ_NO,TIMESTAMP,
+2,1 , RIL,F,0,3,0, 	(26-JUN-2025 16:45:02)
+2,49 , VVF India,F,0,1,0, 	(26-JUN-2025 16:45:02)
+
+TOTAL DATA IN EXCEL : ,2,,,,,, 	(26-JUN-2025 16:45:02)
+ 
+
+TOTAL DATA INSERTED : ,2,,,,,, 	(26-JUN-2025 16:45:02)
+ 
+
+TOTAL SKIPPED DATA ,0,,,,,, 	(26-JUN-2025 16:45:02)
+ 
+<<END>>,<<FMS_AGMT_DEACTIVATION_DTL>>,,,,,, 	(26-JUN-2025 16:45:02)
+ 

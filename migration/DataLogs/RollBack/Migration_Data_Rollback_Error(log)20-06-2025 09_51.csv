@@ -1,0 +1,11 @@
+
+<<ERROR IN DLNG()>>
+**********AutomationEMS Error  (20-JUN-2025 09:51:59) **********
+java.sql.SQLSyntaxErrorException: ORA-00904: "COMPANY_CD": invalid identifier
+
+
+com.etrm.fms.migration.Migration_Data_Rollback.DLNG(Migration_Data_Rollback.java:2178)
+com.etrm.fms.migration.Migration_Data_Rollback.init(Migration_Data_Rollback.java:95)
+**************************************************
+
+<<FUNCTION DLNG() ENDED WITH ERRORS>>

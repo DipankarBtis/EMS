@@ -1,0 +1,33 @@
+
+<<ERROR IN FMS_HOLIDAY_DTL()>>
+**********AutomationEMS Error  (18-FEB-2025 17:34:01) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("EMS"."FMS_HOLIDAY_DTL"."STATE_TIN")
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_HOLIDAY_DTL(Master_SEIPL_Data_Reader.java:6486)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:220)
+**************************************************
+
+<<FUNCTION FMS_HOLIDAY_DTL() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_HOLIDAY_DTL()>>
+**********AutomationEMS Error  (18-FEB-2025 17:34:07) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("EMS"."FMS_HOLIDAY_DTL"."STATE_TIN")
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_HOLIDAY_DTL(Master_SEIPL_Data_Reader.java:6486)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:220)
+**************************************************
+
+<<FUNCTION FMS_HOLIDAY_DTL() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_HOLIDAY_DTL()>>
+**********AutomationEMS Error  (18-FEB-2025 17:34:26) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("EMS"."FMS_HOLIDAY_DTL"."STATE_TIN")
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_HOLIDAY_DTL(Master_SEIPL_Data_Reader.java:6486)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:220)
+**************************************************
+
+<<FUNCTION FMS_HOLIDAY_DTL() ENDED WITH ERRORS>>

@@ -1,0 +1,127 @@
+
+
+<<START>>,<<FMS_CUSTOM_TAX_STRUCT_DTL>>,,, 	(13-MAR-2025 11:33:01)
+ 
+COMPANY_CD,TAX_STRUCT_CD,TAX_STRUCT_DTL,EFF_DT,TIMESTAMP
+2, , BCD 5%, ECS 2% , 09/07/2024 00:00:00, 	(13-MAR-2025 11:33:01)
+2, , BCD 5%, ECS 2%, HECS 1% , 01/03/2007 00:00:00, 	(13-MAR-2025 11:33:01)
+2, , BCD 2.5%, SWS 10% on BCD , 28/02/2024 00:00:00, 	(13-MAR-2025 11:33:01)
+
+TOTAL DATA IN EXCEL : ,3,,, 	(13-MAR-2025 11:33:01)
+ 
+
+TOTAL DATA INSERTED : ,3,,, 	(13-MAR-2025 11:33:01)
+ 
+
+TOTAL SKIPPED DATA ,0,,, 	(13-MAR-2025 11:33:01)
+ 
+<<END>>,<<FMS_CUSTOM_TAX_STRUCT_DTL>>,,, 	(13-MAR-2025 11:33:01)
+ 
+
+<<START>>,<<FMS_HOLIDAY_DTL>>, 	(13-MAR-2025 11:33:21)
+ 
+HOLIDAY_DT,HOLIDAY_NM,TIMESTAMP,
+16/02/2025 00:00:00 , SUNDAY, 	(13-MAR-2025 11:33:21)
+14/01/2022 00:00:00 , MAKAR SANKRANTI/ PONGAL, 	(13-MAR-2025 11:33:21)
+26/01/2022 00:00:00 , REPUBLIC DAY, 	(13-MAR-2025 11:33:21)
+01/03/2022 00:00:00 , MAHASHIVRATRI, 	(13-MAR-2025 11:33:21)
+18/03/2022 00:00:00 , HOLI, 	(13-MAR-2025 11:33:21)
+15/04/2022 00:00:00 , GOOD FRIDAY, 	(13-MAR-2025 11:33:21)
+03/05/2022 00:00:00 , ID-UL-FITR*/RAMADAN, 	(13-MAR-2025 11:33:21)
+15/08/2022 00:00:00 , INDEPENDANCE DAY, 	(13-MAR-2025 11:33:21)
+19/08/2022 00:00:00 , KRISHNA JAYANTHI/ JANMASHTAMI, 	(13-MAR-2025 11:33:21)
+31/08/2022 00:00:00 , GANESH CHATURTHI, 	(13-MAR-2025 11:33:21)
+05/10/2022 00:00:00 , DURGA PUJA (VIJAY DASHMI)/ DUSSEHRA, 	(13-MAR-2025 11:33:21)
+24/10/2022 00:00:00 , NARAKA CHATURDASHI/ DIWALI, 	(13-MAR-2025 11:33:21)
+26/10/2022 00:00:00 , DIWALI - BHAI DUJ, 	(13-MAR-2025 11:33:21)
+10/08/2021 00:00:00 , GANESH CHATURTHI, 	(13-MAR-2025 11:33:21)
+15/10/2021 00:00:00 , DURGA PUJA / DASERA, 	(13-MAR-2025 11:33:21)
+10/09/2021 00:00:00 , GANESH CHATURTHI, 	(13-MAR-2025 11:33:21)
+04/11/2021 00:00:00 , DIWALI, 	(13-MAR-2025 11:33:21)
+05/11/2021 00:00:00 , BALIPADYAMI DEEPAVALI, 	(13-MAR-2025 11:33:21)
+
+TOTAL DATA IN EXCEL : ,18, 	(13-MAR-2025 11:33:21)
+ 
+
+TOTAL DATA INSERTED : ,18, 	(13-MAR-2025 11:33:21)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(13-MAR-2025 11:33:21)
+ 
+<<END>>,<<FMS_HOLIDAY_DTL>>, 	(13-MAR-2025 11:33:21)
+ 
+
+<<START>>,<<FMS_PRODUCT_MST>>, 	(13-MAR-2025 11:33:40)
+ 
+PROD_CD,PROD_ABBR,TIMESTAMP,
+1 , LNG, 	(13-MAR-2025 11:33:40)
+2 , RLNG, 	(13-MAR-2025 11:33:40)
+201 , ImpLNG, 	(13-MAR-2025 11:33:40)
+202 , ITankPur, 	(13-MAR-2025 11:33:40)
+203 , TP(RLNG), 	(13-MAR-2025 11:33:40)
+301 , IGX(DOMG) , 	(13-MAR-2025 11:33:40)
+302 , D6(DOMG), 	(13-MAR-2025 11:33:40)
+303 , CBM(DOMG), 	(13-MAR-2025 11:33:40)
+304 , ONGC Gas , 	(13-MAR-2025 11:33:40)
+305 , SEMTIPL(DOMG) , 	(13-MAR-2025 11:33:40)
+306 , RIL(DOMG), 	(13-MAR-2025 11:33:40)
+307 , BP(DOMG), 	(13-MAR-2025 11:33:40)
+308 , HPCL(DOMG) , 	(13-MAR-2025 11:33:40)
+309 , AMNS(DOMG), 	(13-MAR-2025 11:33:40)
+3 , DOMG, 	(13-MAR-2025 11:33:40)
+310 , D6(DOMG-CAP), 	(13-MAR-2025 11:33:40)
+311 , IGX(DOMG-CAP) , 	(13-MAR-2025 11:33:40)
+
+TOTAL DATA IN EXCEL : ,17, 	(13-MAR-2025 11:33:40)
+ 
+
+TOTAL DATA INSERTED : ,17, 	(13-MAR-2025 11:33:40)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(13-MAR-2025 11:33:40)
+ 
+<<END>>,<<FMS_PRODUCT_MST>>, 	(13-MAR-2025 11:33:40)
+ 
+
+<<START>>,<<FMS_SAC_MST>>, 	(13-MAR-2025 11:33:59)
+ 
+SAC_NAME,TIMESTAMP,
+Other Miscellaneous services - Other Services n.e.c. ,  	(13-MAR-2025 11:33:59)
+Other employment & labour supply services n.e.c ,  	(13-MAR-2025 11:33:59)
+Other support services n.e.c. ,  	(13-MAR-2025 11:33:59)
+Road transport services of Goods including letters  parcels  live animals  household & office furnit ,  	(13-MAR-2025 11:33:59)
+Legal advisory and representation services concerning other fields of law. ,  	(13-MAR-2025 11:33:59)
+Sponsorship Services & Brand Promotion Services ,  	(13-MAR-2025 11:33:59)
+Coastal and transoceanic (overseas) water transport services of goods by refrigerator vessels  tanke ,  	(13-MAR-2025 11:33:59)
+Other administrative services of the government n.e.c. ,  	(13-MAR-2025 11:33:59)
+Maintenance and repair services of other machinery and equipments ,  	(13-MAR-2025 11:33:59)
+Courier services ,  	(13-MAR-2025 11:33:59)
+Other on-line contents n.e.c. ,  	(13-MAR-2025 11:33:59)
+On-line text based information such as online books  newpapers  periodicals  directories etc ,  	(13-MAR-2025 11:33:59)
+998349 - Other technical and scientific services n.e.c. ,  	(13-MAR-2025 11:33:59)
+Rental or leasing services involving own or leased non-residential property ,  	(13-MAR-2025 11:33:59)
+Management consulting and management services including financial  strategic  human resources  marke ,  	(13-MAR-2025 11:33:59)
+Information technology (IT) consulting and support services ,  	(13-MAR-2025 11:33:59)
+Commercial training and coaching services ,  	(13-MAR-2025 11:33:59)
+Hosting and information technology (IT) infrastructure provisioning services ,  	(13-MAR-2025 11:33:59)
+Repair services of bicycles ,  	(13-MAR-2025 11:33:59)
+Other professional  technical and business service ,  	(13-MAR-2025 11:33:59)
+INSTALLATION SERVICES OF OTHER GOODS ,  	(13-MAR-2025 11:33:59)
+Other human health services including homeopathy  unani  ayurveda  naturopathy  acupuncture etc. ,  	(13-MAR-2025 11:33:59)
+Goods transport agency services for road transport ,  	(13-MAR-2025 11:33:59)
+998434 - Software downloads ,  	(13-MAR-2025 11:33:59)
+RENTAL SERVICES OF ROAD VEHICLES INVCLUDING BUSES COACHES CARS TRUCKS AND OTHER MOTOR VEHICLES WITH  ,  	(13-MAR-2025 11:33:59)
+Maintenance and repair services of other goods n.e.c. under Heading No. 9987 Maintenance  repair and ,  	(13-MAR-2025 11:33:59)
+Licensing services for the right to use computer software and databases ,  	(13-MAR-2025 11:33:59)
+Engineering advisory services ,  	(13-MAR-2025 11:33:59)
+
+TOTAL DATA IN EXCEL : ,28, 	(13-MAR-2025 11:33:59)
+ 
+
+TOTAL DATA INSERTED : ,28, 	(13-MAR-2025 11:33:59)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(13-MAR-2025 11:33:59)
+ 
+<<END>>,<<FMS_SAC_MST>>, 	(13-MAR-2025 11:33:59)
+ 

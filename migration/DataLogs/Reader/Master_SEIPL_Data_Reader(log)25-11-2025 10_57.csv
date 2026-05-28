@@ -1,0 +1,55 @@
+
+
+<<START>>,<<FMS_PRODUCT_MST>>, 	(25-NOV-2025 10:57:27)
+ 
+PROD_CD,PROD_ABBR,TIMESTAMP,
+1 , DOM GAS (CAPPED), 	(25-NOV-2025 10:57:27)
+2 , RLNG, 	(25-NOV-2025 10:57:27)
+3 , DLNG, 	(25-NOV-2025 10:57:27)
+4 , DOMGAS, 	(25-NOV-2025 10:57:27)
+5 , DOMGAS, 	(25-NOV-2025 10:57:27)
+
+TOTAL DATA IN EXCEL : ,0, 	(25-NOV-2025 10:57:27)
+ 
+
+TOTAL DATA INSERTED : ,5, 	(25-NOV-2025 10:57:27)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(25-NOV-2025 10:57:27)
+ 
+<<END>>,<<FMS_PRODUCT_MST>>, 	(25-NOV-2025 10:57:27)
+ 
+
+<<START>>,<<FMS_PRODUCT_MOLECULE_MST>>, 	(25-NOV-2025 10:57:27)
+ 
+MOLE_CD,MOLE_ABBR,TIMESTAMP,
+MOLE_CD,MOLE_ABBR,TIMESTAMP,
+1 , 2, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+2 , 2, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+3 , 2, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+4 , 2, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+5 , 2, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+6 , 4, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+7 , 4, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+8 , 4, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+9 , 4, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+10 , 4, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+11 , 4, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+12 , 4, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+13 , 4, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+14 , 4, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+15 , 4, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+16 , 1, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+17 , 1, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+18 , 5, 	(25-NOV-2025 10:57:27)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,0, 	(25-NOV-2025 10:57:27)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(25-NOV-2025 10:57:27)
+ 
+
+TOTAL SKIPPED DATA ,18, 	(25-NOV-2025 10:57:27)
+ 
+<<END>>,<<FMS_PRODUCT_MOLECULE_MST>>, 	(25-NOV-2025 10:57:27)
+ 

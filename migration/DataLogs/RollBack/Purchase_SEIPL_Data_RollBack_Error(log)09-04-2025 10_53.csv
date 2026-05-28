@@ -1,0 +1,10 @@
+
+<<ERROR IN LOG_FMS_SECURITY_MST()>>
+**********AutomationEMS Error  (09-APR-2025 10:53:35) **********
+java.lang.ArrayIndexOutOfBoundsException: 44
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.LOG_FMS_SECURITY_MST(Purchase_SEIPL_Data_RollBack.java:1239)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:142)
+**************************************************
+
+<<FUNCTION LOG_FMS_SECURITY_MST() ENDED WITH ERRORS>>

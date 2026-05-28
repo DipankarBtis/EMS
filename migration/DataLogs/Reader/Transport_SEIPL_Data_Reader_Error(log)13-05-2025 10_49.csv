@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_DAILY_TRANSPORTER_NOM()>>
+**********AutomationEMS Error  (13-MAY-2025 10:50:04) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_DAILY_TRANSPORTER_NOM"."MDQ")
+
+
+com.etrm.fms.migration.Transport_SEIPL_Data_Reader.FMS_DAILY_TRANSPORTER_NOM(Transport_SEIPL_Data_Reader.java:1739)
+com.etrm.fms.migration.Transport_SEIPL_Data_Reader.init(Transport_SEIPL_Data_Reader.java:118)
+**************************************************
+
+<<FUNCTION FMS_DAILY_TRANSPORTER_NOM() ENDED WITH ERRORS>>

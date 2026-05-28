@@ -1,0 +1,22 @@
+
+<<ERROR IN FMS_LTCORA_CONT_MST()>>
+**********AutomationEMS Error  (16-MAY-2025 12:52:16) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_LTCORA_CONT_MST) violated
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_LTCORA_CONT_MST(Sales_SEIPL_Data_Reader.java:6786)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:187)
+**************************************************
+
+<<FUNCTION FMS_LTCORA_CONT_MST() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_LTCORA_CONT_MST()>>
+**********AutomationEMS Error  (16-MAY-2025 12:52:22) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_LTCORA_CONT_MST) violated
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_LTCORA_CONT_MST(Sales_SEIPL_Data_Reader.java:6786)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:187)
+**************************************************
+
+<<FUNCTION FMS_LTCORA_CONT_MST() ENDED WITH ERRORS>>

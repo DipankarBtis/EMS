@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_CUSTOM_PD_BOND_DTL()>>
+**********AutomationEMS Error  (16-MAY-2025 16:59:10) **********
+java.sql.SQLDataException: ORA-01438: value larger than specified precision allowed for this column
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_CUSTOM_PD_BOND_DTL(Purchase_SEIPL_Data_Reader.java:9469)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:225)
+**************************************************
+
+<<FUNCTION FMS_CUSTOM_PD_BOND_DTL() ENDED WITH ERRORS>>

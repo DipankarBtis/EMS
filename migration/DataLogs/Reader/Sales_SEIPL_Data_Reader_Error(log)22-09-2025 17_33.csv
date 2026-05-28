@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_INVOICE_MST()>>
+**********AutomationEMS Error  (22-SEP-2025 17:33:08) **********
+java.sql.SQLDataException: ORA-01847: day of month must be between 1 and last day of month
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST(Sales_SEIPL_Data_Reader.java:14863)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:268)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST() ENDED WITH ERRORS>>

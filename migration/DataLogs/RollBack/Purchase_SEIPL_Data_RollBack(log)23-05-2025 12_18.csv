@@ -1,0 +1,30 @@
+
+
+<<ROLLBACK_START>>,<<FMS_TRADER_CONT_PLANT1>>, 	(23-MAY-2025 12:18:03)
+ 
+
+TOTAL DATA DELETED :, 1, 	(23-MAY-2025 12:18:03)
+ 
+<<ROLLBACK_END>>,<<FMS_TRADER_CONT_PLANT1()>>, 	(23-MAY-2025 12:18:03)
+ 
+
+<<ROLLBACK_START>>,<<FMS_TRADER_CONT_BU>>,,,,,,, 	(23-MAY-2025 12:18:03)
+ 
+
+TOTAL DATA DELETED :, 0,,,,,,, 	(23-MAY-2025 12:18:03)
+ 
+<<ROLLBACK_END>>,<<FMS_TRADER_CONT_BU()>>,,,,,,, 	(23-MAY-2025 12:18:03)
+ 
+
+<<ROLLBACK_START>>,<<FMS_TRADER_CN_MST>>,,,,,,, 	(23-MAY-2025 12:18:03)
+ 
+COMPANY_CD,COUNTERPARTY_CD,AGMT_TYPE,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,CONTRACT_TYPE,TIMESTAMP
+**********AutomationEMS Error  (23-MAY-2025 12:18:03) **********
+java.sql.SQLDataException: ORA-01861: literal does not match format string
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.FMS_TRADER_CN_MST(Purchase_SEIPL_Data_RollBack.java:322)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:166)
+**************************************************
+
+<<FUNCTION FMS_TRADER_CN_MST() ENDED WITH ERRORS>>

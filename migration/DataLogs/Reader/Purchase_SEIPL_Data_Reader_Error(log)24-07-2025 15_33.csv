@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_PUR_PG_INV_MST()>>
+**********AutomationEMS Error  (24-JUL-2025 15:33:37) **********
+java.sql.SQLException: Missing IN or OUT parameter at index:: 1
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_PUR_PG_INV_MST(Purchase_SEIPL_Data_Reader.java:13052)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:234)
+**************************************************
+
+<<FUNCTION FMS_PUR_PG_INV_MST() ENDED WITH ERRORS>>

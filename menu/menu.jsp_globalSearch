@@ -1,0 +1,1013 @@
+<%@page import="com.etrm.fms.util.CommonVariable"%>
+<%@page import="java.util.Vector"%>
+<%@ page import="java.util.Set" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+
+<script>
+function changePage(form_path,u)
+{
+	/* -- NEW: save to recent pages before navigating -- */
+	try {
+		var item = (typeof menuSearchData !== 'undefined') 
+			? menuSearchData.find(function(m){ return m.formPath === form_path && m.u === u; })
+			: null;
+		if(item) saveRecentPage(item);
+	} catch(e){}
+	/* -- end NEW -- */
+	
+	document.getElementById("loading").style.visibility = "visible";
+	var url = form_path+"?u="+u;
+	location.replace(url);
+}
+
+function logout()
+{
+	var url = "../home/logout.jsp";
+	location.replace(url);
+}
+
+function homepage()
+{
+	var url = "../home/fms.jsp";
+	location.replace(url);
+}
+
+async function changeProfile(comp_cd, exists_comp_abbr, comp_abbr)
+{
+    const activeTabsCnt = await fetchActiveTabCount(); 
+	if((parseInt(activeTabsCnt))>1)
+	{
+		alert("Multiple Tabs "+(parseInt(activeTabsCnt))+" are open for the Application!\nProfile switching is permitted only when a single tab is open!");
+	}
+	else
+	{
+		var a = confirm("Do you want to Switch Profile "+exists_comp_abbr+" to "+comp_abbr+"?");
+		if(a)
+		{
+			document.getElementById("loading").style.visibility = "visible";
+			var url = "../home/profile_selection.jsp?comp_profile="+comp_cd;
+			location.replace(url);
+		}
+	}
+}
+
+function fetchActiveTabCount() {
+	const servletURL = '<%=request.getContextPath()%>/TabTrackerServlet';
+    return fetch(servletURL, {
+        method: 'POST',
+        body: new URLSearchParams({ action: 'getCount' })
+    })
+    .then(res => res.json())
+    .then(data => {
+        const tabCount = data.tabCount;
+        console.log('Active tabs:', tabCount);
+        return tabCount;
+    });
+}
+</script>
+
+<style type="text/css">
+.navbar .megamenu{ padding: 1rem; }
+@media all and (min-width: 992px) {
+	.navbar .has-megamenu{position:static!important;}
+	.navbar .megamenu{left:15%; right:15%; width:auto; margin-top:0;  }
+}
+@media(max-width: 991px){
+	.navbar.fixed-top .navbar-collapse, .navbar.sticky-top .navbar-collapse{
+		overflow-y: auto;
+	    max-height: 90vh;
+	    margin-top:10px;
+	}
+}
+
+/* +============================================================+
+   |  NEW - GLOBAL SEARCH OVERLAY STYLES                        |
+   +============================================================+ */
+
+.search-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 12vh;
+    animation: searchFadeIn 0.15s ease;
+}
+@keyframes searchFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+.search-backdrop {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(4px);
+}
+.search-dialog {
+    position: relative;
+    width: 620px;
+    max-width: 92vw;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.28);
+    overflow: hidden;
+    max-height: 68vh;
+    display: flex;
+    flex-direction: column;
+}
+.search-input-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid #e5e7eb;
+    gap: 10px;
+}
+.search-input-wrapper .search-icon {
+    color: #9ca3af;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+.search-input-wrapper input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+    color: #111827;
+}
+.search-input-wrapper input::placeholder { color: #9ca3af; }
+.search-input-wrapper kbd {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: #6b7280;
+    flex-shrink: 0;
+}
+.search-results {
+    overflow-y: auto;
+    flex: 1;
+    padding: 6px 0;
+}
+.search-group-header {
+    padding: 10px 20px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.search-group-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+}
+.search-result-item {
+    padding: 9px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.08s;
+    border-left: 3px solid transparent;
+}
+.search-result-item:hover,
+.search-result-item.selected {
+    background: #f0f5ff;
+    border-left-color: var(--header_color, #0d6efd);
+}
+.search-result-item .result-icon {
+    color: #9ca3af;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+    font-size: 14px;
+}
+.search-result-item.selected .result-icon { color: var(--header_color, #0d6efd); }
+.search-result-item .result-info { flex: 1; min-width: 0; }
+.search-result-item .result-name {
+    font-weight: 500;
+    color: #111827;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.search-result-item .result-path {
+    font-size: 11px;
+    color: #9ca3af;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.search-result-item .result-fav {
+    color: #d1d5db;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 14px;
+    padding: 4px;
+    transition: color 0.15s, transform 0.15s;
+}
+.search-result-item .result-fav:hover { transform: scale(1.2); }
+.search-result-item .result-fav.is-fav { color: #f59e0b; }
+.search-result-item mark {
+    background: #fef08a;
+    color: inherit;
+    padding: 0 1px;
+    border-radius: 2px;
+}
+.search-no-results {
+    padding: 40px 20px;
+    text-align: center;
+    color: #9ca3af;
+}
+.search-no-results i { font-size: 32px; display: block; margin-bottom: 10px; }
+.search-footer {
+    padding: 8px 18px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 11px;
+    color: #9ca3af;
+    background: #f9fafb;
+}
+.search-footer span { display: flex; align-items: center; gap: 4px; }
+.search-footer kbd {
+    background: #e5e7eb;
+    border: 1px solid #d1d5db;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 10px;
+    font-family: inherit;
+}
+.search-clear-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 11px;
+    cursor: pointer;
+    margin-left: auto;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.search-clear-btn:hover { background: #fef2f2; }
+
+/* -- Navbar search trigger button -- */
+.nav-search-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 4px 12px;
+    color: var(--header_font_color, #fff);
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 13px;
+    margin-right: 10px;
+    white-space: nowrap;
+}
+.nav-search-btn:hover { background: rgba(255,255,255,0.22); }
+.nav-search-btn kbd {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 10px;
+    color: inherit;
+}
+@media(max-width: 767px){
+    .nav-search-btn kbd { display: none; }
+    .nav-search-btn { padding: 4px 8px; }
+}
+</style>
+
+<jsp:useBean class="com.etrm.fms.util.DataBean_Menu" id="menu" scope="page"></jsp:useBean>
+<%
+String username = "";
+String menu_emp_cd = "";
+String comp_cd="";
+String comp_logo="";
+int activeTabsCnt=0;
+if(session.getAttribute("emp_uid")==null||session.getAttribute("emp_uid")==""||session.getAttribute("emp_uid").toString().equals("null"))
+{
+	username="";
+}  
+else
+{
+	username=""+session.getAttribute("emp_uid");
+}
+
+if(session.getAttribute("emp_cd")==null||session.getAttribute("emp_cd")==""||session.getAttribute("emp_cd").toString().equals("null"))
+{
+	menu_emp_cd="";
+}  
+else
+{
+	menu_emp_cd=""+session.getAttribute("emp_cd");
+}
+
+if(session.getAttribute("comp_cd")==null||session.getAttribute("comp_cd")==""||session.getAttribute("comp_cd").toString().equals("null"))
+{
+	comp_cd="";
+}  
+else
+{
+	comp_cd=""+session.getAttribute("comp_cd");
+}
+
+if(session.getAttribute("comp_logo")==null||session.getAttribute("comp_logo")==""||session.getAttribute("comp_logo").toString().equals("null"))
+{
+	comp_logo="";
+}  
+else
+{
+	comp_logo=""+session.getAttribute("comp_logo");
+}
+
+menu.setCallFlag("MODULE_MST");
+menu.setUsername(username);
+menu.setComp_cd(comp_cd);
+menu.setEmpCd(menu_emp_cd);
+menu.init();
+
+Vector VMENU_MODULE_CD = menu.getVMENU_MODULE_CD();
+Vector VMENU_MODULE_NM = menu.getVMENU_MODULE_NM();
+
+Vector VMENU_COMPANY_CD = menu.getVMENU_COMPANY_CD();
+Vector VMENU_COMPANY_NM = menu.getVMENU_COMPANY_NM();
+Vector VMENU_COMPANY_ABBR = menu.getVMENU_COMPANY_ABBR();
+String menu_default_prof=menu.getDefault_profile();
+
+/* -- NEW: collection to accumulate ALL menu items for search -- */
+List searchItems = new ArrayList();
+%>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--header_color);">
+	<div class="container-fluid">
+    	<a class="navbar-brand" href="#" style="padding-top: 2px;padding-left: 4px;padding-right: 2px;" onclick="homepage();">
+    		<img src="<%if(!comp_logo.equals("")){%>../<%=CommonVariable.company_logo_path %>/<%=comp_logo%><%} %>" height="30px">&nbsp;<font style="color:var(--header_font_color); font-size:24px;"> <%=CommonVariable.app_name%></font>
+    	</a>
+    	<button class="navbar-toggler" style="border-color:var(--header_font_color);" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      		<font><i class="fa fa-bars" style="color:var(--header_font_color);"></i></font>
+    	</button>
+    	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+      		<ul class="navbar-nav me-auto mb-2 mb-lg-0" style="flex-wrap: wrap;">
+      		<%for(int i=0; i < VMENU_MODULE_CD.size(); i++){%>
+        		<li class="nav-item dropdown has-megamenu" >
+          			<a class="nav-link dropdown-toggle" style="padding: 3px;" href="#"
+			           id="navbarDropdown_<%=i%>"
+			           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			            <%=VMENU_MODULE_NM.elementAt(i)%>
+			        </a>
+          			<div class="dropdown-menu megamenu" role="menu">
+						<div class="row g-3">
+							<div class="col-sm-12 col-xs-12 col-md-12">  
+								<div class="form-group row">
+					          	<%
+					    		menu.setCallFlag("MENU_MST");
+					    		menu.setUsername(username);
+					    		menu.setComp_cd(comp_cd);
+					    		menu.setModule_cd(""+VMENU_MODULE_CD.elementAt(i));
+					    		menu.init();
+					    		
+					    		Vector VFORM_CD = menu.getVFORM_CD();
+					    		Vector VFORM_NM = menu.getVFORM_NM();
+					    		Vector VFORM_PATH = menu.getVFORM_PATH();
+					    		Vector VREAD_ACCESS = menu.getVREAD_ACCESS();
+					    		Vector VWRITE_ACCESS = menu.getVWRITE_ACCESS();
+					    		Vector VCHECK_ACCESS = menu.getVCHECK_ACCESS();
+					    		Vector VPRINT_ACCESS = menu.getVPRINT_ACCESS();
+					    		Vector VDELETE_ACCESS = menu.getVDELETE_ACCESS();
+					    		Vector VAUDIT_ACCESS = menu.getVAUDIT_ACCESS();
+					    		Vector VAUTHORIZE_ACCESS = menu.getVAUTHORIZE_ACCESS();
+					    		Vector VAPPROVE_ACCESS = menu.getVAPPROVE_ACCESS();
+					    		Vector VEXECUTE_ACCESS = menu.getVEXECUTE_ACCESS();
+					    		Vector VGRP_CD = menu.getVGRP_CD();
+					    		Vector VU = menu.getVU();
+					    		Vector VSEI_CENTRAL = menu.getVSEI_CENTRAL();
+					    		
+					    		Vector VSUB_MENU_CD = menu.getVSUB_MENU_CD();
+					    		Vector VSUB_MENU_NM = menu.getVSUB_MENU_NM();
+					    		
+					    		/* -- NEW: collect every form into searchItems -- */
+					    		for(int si=0; si<VFORM_CD.size(); si++) {
+					    		    String siSubNm = "";
+					    		    for(int sk=0; sk<VSUB_MENU_CD.size(); sk++) {
+					    		        if(VSUB_MENU_CD.elementAt(sk).equals(VGRP_CD.elementAt(si))) {
+					    		            siSubNm = VSUB_MENU_NM.elementAt(sk).toString();
+					    		            break;
+					    		        }
+					    		    }
+					    		    searchItems.add(new String[]{
+					    		        VFORM_NM.elementAt(si).toString(),
+					    		        VFORM_PATH.elementAt(si).toString(),
+					    		        VU.elementAt(si).toString(),
+					    		        VMENU_MODULE_NM.elementAt(i).toString(),
+					    		        siSubNm,
+					    		        VSEI_CENTRAL.elementAt(si).toString()
+					    		    });
+					    		}
+					    		/* -- end NEW -- */
+					    		
+					    		for(int k=0; k<VSUB_MENU_CD.size(); k++)
+					    		{%>
+					    			<div class="col-auto"> 
+										<div class="col-megamenu">
+					            			<ul>
+					              				<li><a class="dropdown-item"><%=VSUB_MENU_NM.elementAt(k)%></a></li>
+								              	<%for(int j=0; j<VFORM_CD.size(); j++)
+									    		{
+									    			if(VSUB_MENU_CD.elementAt(k).equals(VGRP_CD.elementAt(j)))
+									    			{%>
+											    		<li>
+											            	<a class="dropdown-item" href="#" onclick="changePage('<%=VFORM_PATH.elementAt(j)%>','<%=VU.elementAt(j)%>')">
+																<%=VFORM_NM.elementAt(j)%><%if(VSEI_CENTRAL.elementAt(j).toString().equals("Y")){%>&nbsp;<span style="color:var(--top_header_font_color);"><i class="fa fa-universal-access" aria-hidden="true"></i></span><%}%>
+															</a>
+														</li>
+											         <%} %>
+											     <%} %>
+					            			</ul>
+					            		</div>
+					            	</div>
+			            		<%} 
+			            		VFORM_CD.clear();
+			            		VFORM_NM.clear();
+			            		VFORM_PATH.clear();
+			            		VREAD_ACCESS.clear();
+			            		VWRITE_ACCESS.clear();
+			            		VCHECK_ACCESS.clear();
+			            		VPRINT_ACCESS.clear();
+			            		VDELETE_ACCESS.clear();
+			            		VAUDIT_ACCESS.clear();
+			            		VAUTHORIZE_ACCESS.clear();
+			            		VAPPROVE_ACCESS.clear();
+			            		VEXECUTE_ACCESS.clear();
+			            		VGRP_CD.clear();
+			            		VU.clear();
+			            		VSEI_CENTRAL.clear();
+			            		VSUB_MENU_CD.clear();
+			            		VSUB_MENU_NM.clear();
+			            		%>
+			            		</div>
+			            	</div>
+			            </div>
+        			</div>
+        		</li>
+        		<%} %>
+      		</ul>
+      		<div class="d-flex navbar-brand" style="align-items:center;">
+
+	      		<%-- == NEW: Search trigger button == --%>
+	      		<button class="nav-search-btn" onclick="openGlobalSearch();" title="Search menus (Ctrl+/)">
+	      		    <i class="fa fa-search"></i>
+	      		    <span>Search...</span>
+	      		    <kbd>Ctrl+/</kbd>
+	      		</button>
+
+	      		<label class="btn" onclick="" style="color:var(--header_font_color); padding-left:0px;"><b><span id = "min"></span>:<span id = "sec"></span></b></label>
+	      		<label class="btn" onclick="" style="color:var(--header_font_color); padding-left:0px;">
+	      			<b>
+	      				<i class="fa fa-building-o fa-lg"></i>&nbsp;<%=session.getAttribute("comp_abbr")==null?"":session.getAttribute("comp_abbr")%>
+	      			</b>
+	      		</label>
+	      		<div class="flex-shrink-0 dropdown">
+			   		<a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false" style="color:var(--header_font_color);">
+			            <i class="fa fa-user-circle-o fa-2x" aria-hidden="true" > </i>
+			   		</a>
+			   		<ul class="dropdown-menu profile_dp_menu dropdown-menu-end text-small shadow" aria-labelledby="dropdownUser2" data-popper-placement="bottom-end"> 
+	            		<li><a class="dropdown-item" href="#"><i class="fa fa-user-circle fa-lg"></i>&nbsp;<%=session.getAttribute("emp_nm")==null?"":session.getAttribute("emp_nm")%></a></li>
+	            		<li><hr class="dropdown-divider"></li>
+	            		<li><a class="dropdown-item" href="#" style="font-weight: bold;font-size: var(--header_font_size);text-transform: uppercase;color: #dc3545; pointer-events: none;">Switch Profile</a></li>
+			            <%for(int i=0; i<VMENU_COMPANY_CD.size(); i++){ %>
+			            <li>
+			            	<a class="dropdown-item" href="#" onclick="changeProfile('<%=VMENU_COMPANY_CD.elementAt(i)%>','<%=session.getAttribute("comp_abbr")==null?"":session.getAttribute("comp_abbr")%>','<%=VMENU_COMPANY_ABBR.elementAt(i)%>');"
+			            	<%if(comp_cd.equals(VMENU_COMPANY_CD.elementAt(i).toString())) { %>
+			            		style="background-color: #95c674;color:white;font-weight:bold;pointer-events: none;"
+			            	<%} %>>
+			            	<%=VMENU_COMPANY_ABBR.elementAt(i)%>&nbsp;<%if(menu_default_prof.equals(VMENU_COMPANY_CD.elementAt(i).toString())){ %><i class="fa fa-dot-circle-o"></i><%} %>
+			            	</a>
+			           	</li>
+			            <%}%>
+			            <li><hr class="dropdown-divider"></li>
+			            <li><a class="dropdown-item" href="#" onclick="logout();"><b><i title="Logout" class="fa fa-sign-out fa-lg"></i>&nbsp;Sign Out</b></a></li>
+					</ul>
+				</div>
+			</div>
+    	</div>
+  	</div>
+</nav>
+
+
+<%-- +============================================================+
+     |  NEW - SEARCH DATA (JSON array built from collected items)  |
+     +============================================================+ --%>
+<script>
+var menuSearchData = [
+<%
+for(int si=0; si<searchItems.size(); si++){
+    String[] sItem = (String[]) searchItems.get(si);
+    String sFormNm    = sItem[0].replace("\\","\\\\").replace("\"","\\\"").replace("\r","").replace("\n","");
+    String sFormPath  = sItem[1].replace("\\","\\\\").replace("\"","\\\"");
+    String sU         = sItem[2].replace("\\","\\\\").replace("\"","\\\"");
+    String sModuleNm  = sItem[3].replace("\\","\\\\").replace("\"","\\\"").replace("\r","").replace("\n","");
+    String sSubMenuNm = sItem[4].replace("\\","\\\\").replace("\"","\\\"").replace("\r","").replace("\n","");
+    String sCentral   = sItem[5];
+    if(si > 0) out.print(",");
+%>
+{"formNm":"<%=sFormNm%>","formPath":"<%=sFormPath%>","u":"<%=sU%>","moduleNm":"<%=sModuleNm%>","subMenuNm":"<%=sSubMenuNm%>","central":"<%=sCentral%>"}
+<%}%>
+];
+</script>
+
+
+<%-- +============================================================+
+     |  NEW - GLOBAL SEARCH OVERLAY HTML                           |
+     +============================================================+ --%>
+<div id="globalSearchOverlay" class="search-overlay" style="display:none;">
+    <div class="search-backdrop" onclick="closeGlobalSearch();"></div>
+    <div class="search-dialog">
+        <div class="search-input-wrapper">
+            <i class="fa fa-search search-icon"></i>
+            <input type="text" id="globalSearchInput" placeholder="Search menus, pages, actions..."
+                   autocomplete="off" spellcheck="false"
+                   oninput="onGlobalSearchInput();"
+                   onkeydown="onSearchKeydown(event);">
+            <kbd>ESC</kbd>
+        </div>
+        <div class="search-results" id="globalSearchResults">
+        </div>
+        <div class="search-footer">
+            <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> Navigate</span>
+            <span><kbd>Enter</kbd> Open</span>
+            <span><kbd>&#9733;</kbd> Favorite</span>
+            <span><kbd>ESC</kbd> Close</span>
+        </div>
+    </div>
+</div>
+
+
+<!-- Alert Model -->
+<div class="modal fade" id="myAlertModal" style="z-index: 3055;" data-bs-backdrop="static" data-bs-keyboard="false"> 
+	<div class="modal-dialog modal-dialog-scrollable">
+    	<div class="modal-content">
+    		<div class="modal-header">
+        		<div class="topheader">Alert</div>
+      		</div>
+      		<div class="modal-body">
+      			<p id="alertMsg"></p>
+      		</div>
+      		<div class="modal-footer" align="right">
+        		<input type="button" class="btn btn-primary" id="alertok" value="Ok" onclick="alertHide();">
+      		</div>
+      	</div>
+	</div>
+</div>  
+
+<script>
+function alertShow(msg)
+{
+	$("#myAlertModal").modal("show");
+	document.getElementById("alertMsg").innerHTML=msg;
+}
+function alertHide()
+{
+	$("#myAlertModal").modal("hide");
+}
+</script>
+
+
+<%-- +============================================================+
+     |  EXISTING - Ctrl+Number module navigation                   |
+     +============================================================+ --%>
+<script>
+var totalModules = <%=VMENU_MODULE_CD.size()%>;
+var moduleBuffer = '';
+var moduleBufferTimeout = null;
+var BUFFER_DELAY = 500;
+
+document.addEventListener('keydown', function(e) {
+    if (document.getElementById('globalSearchOverlay').style.display !== 'none') return;
+
+    if (!e.ctrlKey || e.altKey || e.shiftKey) return;
+
+    var digitMatch = e.code && e.code.match(/^(Digit|Numpad)(\d)$/);
+    if (!digitMatch) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    moduleBuffer += digitMatch[2];
+    clearTimeout(moduleBufferTimeout);
+
+    var currentNum = parseInt(moduleBuffer);
+
+    if (currentNum > totalModules || currentNum * 10 > totalModules) {
+        openModuleDropdown(currentNum);
+    } else {
+        moduleBufferTimeout = setTimeout(function() {
+            openModuleDropdown(parseInt(moduleBuffer));
+        }, BUFFER_DELAY);
+    }
+});
+
+function openModuleDropdown(moduleNum) {
+    moduleBuffer = '';
+    clearTimeout(moduleBufferTimeout);
+
+    var moduleIndex = moduleNum - 1;
+    if (moduleIndex < 0 || moduleIndex >= totalModules) return;
+
+    document.querySelectorAll('.has-megamenu .dropdown-toggle[aria-expanded="true"]')
+        .forEach(function(openDd) {
+            bootstrap.Dropdown.getOrCreateInstance(openDd).hide();
+        });
+
+    var target = document.getElementById('navbarDropdown_' + moduleIndex);
+    if (target) {
+        bootstrap.Dropdown.getOrCreateInstance(target).toggle();
+        target.focus();
+    }
+}
+
+document.addEventListener('keyup', function(e) {
+    if (e.key === 'Control' && moduleBuffer !== '') {
+        clearTimeout(moduleBufferTimeout);
+        var num = parseInt(moduleBuffer);
+        moduleBuffer = '';
+        if (!isNaN(num)) {
+            openModuleDropdown(num);
+        }
+    }
+});
+</script>
+
+
+<%-- +============================================================+
+     |  NEW - GLOBAL SEARCH JAVASCRIPT                             |
+     +============================================================+ --%>
+<script>
+(function(){
+    'use strict';
+
+    /* ------------ CONSTANTS ------------ */
+    var RECENT_KEY   = 'fms_recent_pages_<%=comp_cd%>';
+    var FAV_KEY      = 'fms_favorites_<%=comp_cd%>';
+    var MAX_RECENT   = 12;
+    var MAX_RESULTS  = 40;
+
+    /* ------------ STATE ------------ */
+    var selectedIdx   = -1;
+    var currentItems  = [];
+    var isOpen        = false;
+
+    /* ------------ Quick Actions ------------ */
+    var quickActions = [
+        {formNm:"Home / Dashboard",    formPath:"__action__", u:"home",   moduleNm:"Quick Actions", subMenuNm:"Navigation", central:"N", isAction:true, actionIcon:"fa-home"},
+        {formNm:"Sign Out / Logout",   formPath:"__action__", u:"logout", moduleNm:"Quick Actions", subMenuNm:"Session",    central:"N", isAction:true, actionIcon:"fa-sign-out"}
+    ];
+
+    /* ------------ OPEN / CLOSE ------------ */
+    window.openGlobalSearch = function() {
+        var overlay = document.getElementById('globalSearchOverlay');
+        overlay.style.display = 'flex';
+        isOpen = true;
+        var input = document.getElementById('globalSearchInput');
+        input.value = '';
+        input.focus();
+        selectedIdx = -1;
+        renderDefault();
+    };
+
+    window.closeGlobalSearch = function() {
+        document.getElementById('globalSearchOverlay').style.display = 'none';
+        isOpen = false;
+        selectedIdx = -1;
+    };
+
+    /* -- Ctrl+/ to open -- */
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === '/') {
+            e.preventDefault();
+            e.stopPropagation();
+            if (isOpen) closeGlobalSearch(); else openGlobalSearch();
+        }
+        if (e.key === 'Escape' && isOpen) {
+            e.preventDefault();
+            closeGlobalSearch();
+        }
+    });
+
+    /* ------------ SEARCH INPUT HANDLER ------------ */
+    window.onGlobalSearchInput = function() {
+        var query = document.getElementById('globalSearchInput').value;
+        selectedIdx = -1;
+        if (!query.trim()) {
+            renderDefault();
+        } else {
+            var results = doSearch(query);
+            renderResults(results, query);
+        }
+    };
+
+    /* ------------ KEYBOARD NAV ------------ */
+    window.onSearchKeydown = function(e) {
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (selectedIdx < currentItems.length - 1) selectedIdx++;
+            highlightSelected();
+            scrollToSelected();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (selectedIdx > 0) selectedIdx--;
+            else selectedIdx = 0;
+            highlightSelected();
+            scrollToSelected();
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (selectedIdx >= 0 && selectedIdx < currentItems.length) {
+                navigateToItem(currentItems[selectedIdx]);
+            }
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            closeGlobalSearch();
+        }
+    };
+
+    function highlightSelected() {
+        var container = document.getElementById('globalSearchResults');
+        var items = container.querySelectorAll('.search-result-item');
+        items.forEach(function(el, idx) {
+            el.classList.toggle('selected', idx === selectedIdx);
+        });
+    }
+
+    function scrollToSelected() {
+        var container = document.getElementById('globalSearchResults');
+        var items = container.querySelectorAll('.search-result-item');
+        if (items[selectedIdx]) {
+            items[selectedIdx].scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    /* ------------ SEARCH ALGORITHM ------------ */
+    function doSearch(query) {
+        var words = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+        if (!words.length) return [];
+
+        var allData = menuSearchData.concat(quickActions);
+        var scored = [];
+
+        allData.forEach(function(item) {
+            var haystack = (item.formNm + ' ' + item.moduleNm + ' ' + item.subMenuNm).toLowerCase();
+            var formLower = item.formNm.toLowerCase();
+
+            var allMatch = words.every(function(w) { return haystack.indexOf(w) !== -1; });
+            if (!allMatch) return;
+
+            var score = 0;
+            var isFav = isFavorite(item);
+            if (isFav) score += 500;
+
+            words.forEach(function(w) {
+                var pos = formLower.indexOf(w);
+                if (pos === 0)      score += 200;
+                else if (pos > 0)   score += 100;
+                else                score += 20;
+            });
+
+            if (formLower === query.toLowerCase().trim()) score += 300;
+
+            scored.push({ item: item, score: score });
+        });
+
+        scored.sort(function(a, b) { return b.score - a.score; });
+        return scored.slice(0, MAX_RESULTS).map(function(s) { return s.item; });
+    }
+
+    /* ------------ RENDERING ------------ */
+    function renderDefault() {
+        var html = '';
+        var favs = getFavorites();
+        var recent = getRecentPages();
+
+        currentItems = [];
+
+        if (favs.length) {
+            html += '<div class="search-group-header"><i class="fa fa-star" style="color:#f59e0b"></i> Favorites</div>';
+            favs.forEach(function(item) {
+                html += buildResultItem(item, '', currentItems.length);
+                currentItems.push(item);
+            });
+        }
+
+        if (recent.length) {
+            html += '<div class="search-group-header" style="display:flex;justify-content:space-between;align-items:center;">';
+            html += '<span style="display:flex;align-items:center;gap:6px;"><i class="fa fa-clock-o"></i> Recent Pages</span>';
+            html += '</div>';
+            recent.forEach(function(item) {
+                html += buildResultItem(item, '', currentItems.length);
+                currentItems.push(item);
+            });
+            html += '<div style="padding:4px 20px;text-align:right;">';
+            html += '<button class="search-clear-btn" onclick="clearRecentPages();onGlobalSearchInput();">Clear Recent</button>';
+            html += '</div>';
+        }
+
+        html += '<div class="search-group-header"><i class="fa fa-bolt"></i> Quick Actions</div>';
+        quickActions.forEach(function(item) {
+            html += buildResultItem(item, '', currentItems.length);
+            currentItems.push(item);
+        });
+
+        if (!favs.length && !recent.length) {
+            html = '<div class="search-no-results"><i class="fa fa-search"></i>Start typing to search across all menus</div>' + html.substring(html.indexOf('<div class="search-group-header"><i class="fa fa-bolt">'));
+        }
+
+        document.getElementById('globalSearchResults').innerHTML = html;
+    }
+
+    function renderResults(items, query) {
+        currentItems = items;
+        if (!items.length) {
+            document.getElementById('globalSearchResults').innerHTML =
+                '<div class="search-no-results">' +
+                '<i class="fa fa-search"></i>' +
+                'No results for "<b>' + escapeHtml(query) + '</b>"' +
+                '<br><small style="color:#9ca3af">Try different keywords</small>' +
+                '</div>';
+            return;
+        }
+
+        var html = '';
+        var lastModule = '';
+        items.forEach(function(item, idx) {
+            if (item.moduleNm !== lastModule) {
+                html += '<div class="search-group-header">' + escapeHtml(item.moduleNm) + '</div>';
+                lastModule = item.moduleNm;
+            }
+            html += buildResultItem(item, query, idx);
+        });
+
+        document.getElementById('globalSearchResults').innerHTML = html;
+    }
+
+    function buildResultItem(item, query, index) {
+        var icon = item.isAction ? (item.actionIcon || 'fa-bolt') : 'fa-file-text-o';
+        var fav  = isFavorite(item);
+        var nameHtml = query ? highlight(item.formNm, query) : escapeHtml(item.formNm);
+        var pathText = item.moduleNm + (item.subMenuNm ? ' > ' + item.subMenuNm : '');
+        var pathHtml = query ? highlight(pathText, query) : escapeHtml(pathText);
+
+        if (item.central === 'Y') {
+            nameHtml += '&nbsp;<i class="fa fa-universal-access" style="color:var(--top_header_font_color,#6b7280);font-size:12px;"></i>';
+        }
+
+        var html = '<div class="search-result-item' + (index === selectedIdx ? ' selected' : '') + '" ';
+        html += 'data-idx="' + index + '" ';
+        html += 'onclick="searchNavigate(' + index + ');" ';
+        html += 'onmouseenter="searchHover(' + index + ');">';
+        html += '<i class="fa ' + icon + ' result-icon"></i>';
+        html += '<div class="result-info">';
+        html += '<div class="result-name">' + nameHtml + '</div>';
+        html += '<div class="result-path">' + pathHtml + '</div>';
+        html += '</div>';
+        if (!item.isAction) {
+            html += '<i class="fa ' + (fav ? 'fa-star is-fav' : 'fa-star-o') + ' result-fav" ';
+            html += 'onclick="event.stopPropagation();toggleFav(' + index + ');" ';
+            html += 'title="' + (fav ? 'Remove from favorites' : 'Add to favorites') + '"></i>';
+        }
+        html += '</div>';
+        return html;
+    }
+
+    /* -- Exposed to onclick handlers -- */
+    window.searchNavigate = function(idx) {
+        if (idx >= 0 && idx < currentItems.length) {
+            navigateToItem(currentItems[idx]);
+        }
+    };
+
+    window.searchHover = function(idx) {
+        selectedIdx = idx;
+        highlightSelected();
+    };
+
+    function navigateToItem(item) {
+        closeGlobalSearch();
+        if (item.isAction) {
+            if (item.u === 'logout')  logout();
+            else if (item.u === 'home') homepage();
+        } else {
+            changePage(item.formPath, item.u);
+        }
+    }
+
+    /* ------------ RECENT PAGES (localStorage) ------------ */
+    window.saveRecentPage = function(item) {
+        if (item.isAction) return;
+        var recent = getRecentPages();
+        recent = recent.filter(function(r) {
+            return !(r.formPath === item.formPath && r.u === item.u);
+        });
+        recent.unshift({
+            formNm:     item.formNm,
+            formPath:   item.formPath,
+            u:          item.u,
+            moduleNm:   item.moduleNm,
+            subMenuNm:  item.subMenuNm,
+            central:    item.central || 'N',
+            ts:         Date.now()
+        });
+        if (recent.length > MAX_RECENT) recent = recent.slice(0, MAX_RECENT);
+        try { localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); } catch(e){}
+    };
+
+    function getRecentPages() {
+        try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch(e) { return []; }
+    }
+
+    window.clearRecentPages = function() {
+        try { localStorage.removeItem(RECENT_KEY); } catch(e){}
+    };
+
+    /* ------------ FAVORITES (localStorage) ------------ */
+    function getFavorites() {
+        try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch(e) { return []; }
+    }
+
+    function saveFavorites(favs) {
+        try { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); } catch(e){}
+    }
+
+    function isFavorite(item) {
+        if (item.isAction) return false;
+        var favs = getFavorites();
+        return favs.some(function(f) { return f.formPath === item.formPath && f.u === item.u; });
+    }
+
+    window.toggleFav = function(idx) {
+        if (idx < 0 || idx >= currentItems.length) return;
+        var item = currentItems[idx];
+        if (item.isAction) return;
+
+        var favs = getFavorites();
+        var existing = favs.findIndex(function(f) { return f.formPath === item.formPath && f.u === item.u; });
+
+        if (existing >= 0) {
+            favs.splice(existing, 1);
+        } else {
+            favs.push({
+                formNm:     item.formNm,
+                formPath:   item.formPath,
+                u:          item.u,
+                moduleNm:   item.moduleNm,
+                subMenuNm:  item.subMenuNm,
+                central:    item.central || 'N'
+            });
+        }
+        saveFavorites(favs);
+
+        var query = document.getElementById('globalSearchInput').value;
+        if (!query.trim()) renderDefault(); else renderResults(doSearch(query), query);
+    };
+
+    /* ------------ TEXT UTILITIES ------------ */
+    function escapeHtml(str) {
+        var d = document.createElement('div');
+        d.appendChild(document.createTextNode(str));
+        return d.innerHTML;
+    }
+
+    /*
+     * escapeRegex - escape special regex chars.
+     * NOTE: We use \x24 for the dollar sign to avoid
+     * JSP EL parser seeing dollar-brace as an expression.
+     */
+    function escapeRegex(str) {
+        return str.replace(/[.*+?^\x24{}()|[\]\\]/g, '\\x24&');
+    }
+
+    function highlight(text, query) {
+        var safe = escapeHtml(text);
+        if (!query || !query.trim()) return safe;
+        var words = query.trim().split(/\s+/);
+        words.forEach(function(w) {
+            if (w) {
+                var re = new RegExp('(' + escapeRegex(w) + ')', 'gi');
+                safe = safe.replace(re, '<mark>$1</mark>');
+            }
+        });
+        return safe;
+    }
+
+})();
+</script>

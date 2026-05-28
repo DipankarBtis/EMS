@@ -1,0 +1,109 @@
+
+
+<<START>>,<<FMS_HOLIDAY_DTL>>, 	(07-MAR-2025 16:39:06)
+ 
+HOLIDAY_DT,HOLIDAY_NM,TIMESTAMP,
+16/02/2025 00:00:00 , SUNDAY, 	(07-MAR-2025 16:39:06)
+14/01/2022 00:00:00 , MAKAR SANKRANTI/ PONGAL, 	(07-MAR-2025 16:39:06)
+26/01/2022 00:00:00 , REPUBLIC DAY, 	(07-MAR-2025 16:39:06)
+01/03/2022 00:00:00 , MAHASHIVRATRI, 	(07-MAR-2025 16:39:06)
+18/03/2022 00:00:00 , HOLI, 	(07-MAR-2025 16:39:06)
+15/04/2022 00:00:00 , GOOD FRIDAY, 	(07-MAR-2025 16:39:06)
+03/05/2022 00:00:00 , ID-UL-FITR*/RAMADAN, 	(07-MAR-2025 16:39:06)
+15/08/2022 00:00:00 , INDEPENDANCE DAY, 	(07-MAR-2025 16:39:06)
+19/08/2022 00:00:00 , KRISHNA JAYANTHI/ JANMASHTAMI, 	(07-MAR-2025 16:39:06)
+31/08/2022 00:00:00 , GANESH CHATURTHI, 	(07-MAR-2025 16:39:06)
+05/10/2022 00:00:00 , DURGA PUJA (VIJAY DASHMI)/ DUSSEHRA, 	(07-MAR-2025 16:39:06)
+24/10/2022 00:00:00 , NARAKA CHATURDASHI/ DIWALI, 	(07-MAR-2025 16:39:06)
+26/10/2022 00:00:00 , DIWALI - BHAI DUJ, 	(07-MAR-2025 16:39:06)
+10/08/2021 00:00:00 , GANESH CHATURTHI, 	(07-MAR-2025 16:39:06)
+15/10/2021 00:00:00 , DURGA PUJA / DASERA, 	(07-MAR-2025 16:39:06)
+10/09/2021 00:00:00 , GANESH CHATURTHI, 	(07-MAR-2025 16:39:06)
+04/11/2021 00:00:00 , DIWALI, 	(07-MAR-2025 16:39:06)
+05/11/2021 00:00:00 , BALIPADYAMI DEEPAVALI, 	(07-MAR-2025 16:39:06)
+
+TOTAL DATA IN EXCEL : ,18, 	(07-MAR-2025 16:39:06)
+ 
+
+TOTAL DATA INSERTED : ,18, 	(07-MAR-2025 16:39:06)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(07-MAR-2025 16:39:06)
+ 
+<<END>>,<<FMS_HOLIDAY_DTL>>, 	(07-MAR-2025 16:39:06)
+ 
+
+<<START>>,<<FMS_PRODUCT_MST>>, 	(07-MAR-2025 16:39:20)
+ 
+PROD_CD,PROD_ABBR,TIMESTAMP,
+1 , LNG, 	(07-MAR-2025 16:39:20)
+2 , RLNG, 	(07-MAR-2025 16:39:20)
+201 , ImpLNG, 	(07-MAR-2025 16:39:20)
+202 , ITankPur, 	(07-MAR-2025 16:39:20)
+203 , TP(RLNG), 	(07-MAR-2025 16:39:20)
+301 , IGX(DOMG) , 	(07-MAR-2025 16:39:20)
+302 , D6(DOMG), 	(07-MAR-2025 16:39:20)
+303 , CBM(DOMG), 	(07-MAR-2025 16:39:20)
+304 , ONGC Gas , 	(07-MAR-2025 16:39:20)
+305 , SEMTIPL(DOMG) , 	(07-MAR-2025 16:39:20)
+306 , RIL(DOMG), 	(07-MAR-2025 16:39:20)
+307 , BP(DOMG), 	(07-MAR-2025 16:39:20)
+308 , HPCL(DOMG) , 	(07-MAR-2025 16:39:20)
+309 , AMNS(DOMG), 	(07-MAR-2025 16:39:20)
+3 , DOMG, 	(07-MAR-2025 16:39:20)
+310 , D6(DOMG-CAP), 	(07-MAR-2025 16:39:20)
+311 , IGX(DOMG-CAP) , 	(07-MAR-2025 16:39:20)
+
+TOTAL DATA IN EXCEL : ,17, 	(07-MAR-2025 16:39:20)
+ 
+
+TOTAL DATA INSERTED : ,17, 	(07-MAR-2025 16:39:20)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(07-MAR-2025 16:39:20)
+ 
+<<END>>,<<FMS_PRODUCT_MST>>, 	(07-MAR-2025 16:39:20)
+ 
+
+<<START>>,<<FMS_SAC_MST>>, 	(07-MAR-2025 16:39:35)
+ 
+SAC_NAME,TIMESTAMP,
+Other Miscellaneous services - Other Services n.e.c. ,  	(07-MAR-2025 16:39:35)
+Other employment & labour supply services n.e.c ,  	(07-MAR-2025 16:39:35)
+Other support services n.e.c. ,  	(07-MAR-2025 16:39:35)
+Road transport services of Goods including letters  parcels  live animals  household & office furnit ,  	(07-MAR-2025 16:39:35)
+Legal advisory and representation services concerning other fields of law. ,  	(07-MAR-2025 16:39:35)
+Sponsorship Services & Brand Promotion Services ,  	(07-MAR-2025 16:39:35)
+Coastal and transoceanic (overseas) water transport services of goods by refrigerator vessels  tanke ,  	(07-MAR-2025 16:39:35)
+Other administrative services of the government n.e.c. ,  	(07-MAR-2025 16:39:35)
+Maintenance and repair services of other machinery and equipments ,  	(07-MAR-2025 16:39:35)
+Courier services ,  	(07-MAR-2025 16:39:35)
+Other on-line contents n.e.c. ,  	(07-MAR-2025 16:39:35)
+On-line text based information such as online books  newpapers  periodicals  directories etc ,  	(07-MAR-2025 16:39:35)
+998349 - Other technical and scientific services n.e.c. ,  	(07-MAR-2025 16:39:35)
+Rental or leasing services involving own or leased non-residential property ,  	(07-MAR-2025 16:39:35)
+Management consulting and management services including financial  strategic  human resources  marke ,  	(07-MAR-2025 16:39:35)
+Information technology (IT) consulting and support services ,  	(07-MAR-2025 16:39:35)
+Commercial training and coaching services ,  	(07-MAR-2025 16:39:35)
+Hosting and information technology (IT) infrastructure provisioning services ,  	(07-MAR-2025 16:39:35)
+Repair services of bicycles ,  	(07-MAR-2025 16:39:35)
+Other professional  technical and business service ,  	(07-MAR-2025 16:39:35)
+INSTALLATION SERVICES OF OTHER GOODS ,  	(07-MAR-2025 16:39:35)
+Other human health services including homeopathy  unani  ayurveda  naturopathy  acupuncture etc. ,  	(07-MAR-2025 16:39:35)
+Goods transport agency services for road transport ,  	(07-MAR-2025 16:39:35)
+998434 - Software downloads ,  	(07-MAR-2025 16:39:35)
+RENTAL SERVICES OF ROAD VEHICLES INVCLUDING BUSES COACHES CARS TRUCKS AND OTHER MOTOR VEHICLES WITH  ,  	(07-MAR-2025 16:39:35)
+Maintenance and repair services of other goods n.e.c. under Heading No. 9987 Maintenance  repair and ,  	(07-MAR-2025 16:39:35)
+Licensing services for the right to use computer software and databases ,  	(07-MAR-2025 16:39:35)
+Engineering advisory services ,  	(07-MAR-2025 16:39:35)
+
+TOTAL DATA IN EXCEL : ,28, 	(07-MAR-2025 16:39:35)
+ 
+
+TOTAL DATA INSERTED : ,28, 	(07-MAR-2025 16:39:35)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(07-MAR-2025 16:39:35)
+ 
+<<END>>,<<FMS_SAC_MST>>, 	(07-MAR-2025 16:39:35)
+ 

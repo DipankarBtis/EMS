@@ -1,0 +1,303 @@
+
+
+<<START>>,<<FMS_LTCORA_AGMT_PLANT>>,, 	(12-SEP-2025 15:30:09)
+ 
+COMPANY_CD,COUNTERPARTY_CD,BUY_SALE,AGMT_TYPE,AGMT_NO,AGMT_REV,PLANT_SEQ_NO,TIMESTAMP,
+2,1,C,A,1,0,3, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,5, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,3, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,5, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,7, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,1, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,7, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,7, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,8, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,10, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,10, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,4, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,5, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,8, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,4, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,9, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,8, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,2, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,9, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,4, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,10, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,7, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,5, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,9, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,5, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,7, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,4, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,5, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,9, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,10, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,3, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,10, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,3, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,8, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,8, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,3, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,3, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,9, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,9, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,5, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,3, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,6, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,4, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,8, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,9, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,10, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,8, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,3, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,9, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,4, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,4, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,7, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,7, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,7, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,8, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,4, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,5, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,1,0,12, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,11, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,13, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,14, 	(12-SEP-2025 15:30:09)
+2,1,C,A,1,0,6, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,3,0,4, 	(12-SEP-2025 15:30:09)
+2,1,C,A,3,0,10, 	(12-SEP-2025 15:30:09)
+2,1,C,A,3,0,8, 	(12-SEP-2025 15:30:09)
+2,1,C,A,3,0,2, 	(12-SEP-2025 15:30:09)
+2,1,C,A,3,0,3, 	(12-SEP-2025 15:30:09)
+2,1,C,A,3,0,5, 	(12-SEP-2025 15:30:09)
+2,1,C,A,3,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,3,0,3, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,3,0,4, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,3,0,5, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,3,0,7, 	(12-SEP-2025 15:30:09)
+2,1,C,A,3,0,6, 	(12-SEP-2025 15:30:09)
+2,1,C,A,3,0,8, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,3,0,1, 	(12-SEP-2025 15:30:09)
+2,1,C,A,3,0,7, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,3,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,1,C,A,3,0,9, 	(12-SEP-2025 15:30:09)
+2,3,C,A,5,0,1, 	(12-SEP-2025 15:30:09)
+2,3,C,A,5,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,3,C,A,5,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,3,C,A,5,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,3,C,A,2,0,1, 	(12-SEP-2025 15:30:09)
+2,3,C,A,3,0,1, 	(12-SEP-2025 15:30:09)
+2,3,C,A,4,0,1, 	(12-SEP-2025 15:30:09)
+2,3,C,A,1,0,1, 	(12-SEP-2025 15:30:09)
+2,3,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,3,C,A,5,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,3,C,A,5,1,1, 	(12-SEP-2025 15:30:09)
+2,3,C,A,5,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,3,C,A,5,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,3,C,A,5,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,3,C,A,5,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,3,C,A,6,0,1, 	(12-SEP-2025 15:30:09)
+2,3,C,A,6,1,1, 	(12-SEP-2025 15:30:09)
+2,3,C,A,6,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,4,C,A,6,0,1, 	(12-SEP-2025 15:30:09)
+2,4,C,A,7,0,5, 	(12-SEP-2025 15:30:09)
+2,4,C,A,1,0,1, 	(12-SEP-2025 15:30:09)
+2,4,C,A,3,0,1, 	(12-SEP-2025 15:30:09)
+2,4,C,A,5,0,1, 	(12-SEP-2025 15:30:09)
+2,4,C,A,7,0,6, 	(12-SEP-2025 15:30:09)
+2,4,C,A,7,0,1, 	(12-SEP-2025 15:30:09)
+2,4,C,A,4,0,1, 	(12-SEP-2025 15:30:09)
+2,4,C,A,2,0,1, 	(12-SEP-2025 15:30:09)
+2,4,C,A,4,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,4,C,A,8,0,1, 	(12-SEP-2025 15:30:09)
+2,11,C,A,1,0,1, 	(12-SEP-2025 15:30:09)
+2,11,C,A,1,0,2, 	(12-SEP-2025 15:30:09)
+2,11,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,11,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,11,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,11,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,11,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,11,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,11,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,11,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,11,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,11,C,A,1,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,11,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,11,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,15,C,A,1,0,1, 	(12-SEP-2025 15:30:09)
+2,15,C,A,1,0,2, 	(12-SEP-2025 15:30:09)
+2,20,C,A,1,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,7,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,18,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,3,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,8,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,12,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,9,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,10,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,6,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,4,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,15,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,18,0,1, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,20,C,A,5,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,11,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,17,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,14,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,2,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,16,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,19,0,1, 	(12-SEP-2025 15:30:09)
+2,20,C,A,17,0,2, 	(12-SEP-2025 15:30:09)
+2,,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+2,,C,A,1,0,2, 	(12-SEP-2025 15:30:09)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,160,,,,,, 	(12-SEP-2025 15:30:09)
+ 
+
+TOTAL DATA INSERTED : ,65,,,,,, 	(12-SEP-2025 15:30:09)
+ 
+
+TOTAL SKIPPED DATA ,95,,,,,, 	(12-SEP-2025 15:30:09)
+ 
+<<END>>,<<FMS_LTCORA_AGMT_PLANT>>,,,,,, 	(12-SEP-2025 15:30:09)
+ 
+
+<<START>>,<<FMS_LTCORA_AGMT_BILLING_DTL>>,, 	(12-SEP-2025 15:30:33)
+ 
+COMPANY_CD,COUNTERPARTY_CD,BUY_SALE,AGMT_TYPE,AGMT_NO,AGMT_REV,PLANT_SEQ_NO,TIMESTAMP,
+2,1 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,1 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,1 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,1 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,1 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,1 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,1 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,1 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,1 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,3 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,3 , C,A,2,0, 	(12-SEP-2025 15:30:33)
+2,3 , C,A,3,0, 	(12-SEP-2025 15:30:33)
+2,3 , C,A,4,0, 	(12-SEP-2025 15:30:33)
+2,3 , C,A,5,0, 	(12-SEP-2025 15:30:33)
+2,4 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,4 , C,A,2,0, 	(12-SEP-2025 15:30:33)
+2,4 , C,A,3,0, 	(12-SEP-2025 15:30:33)
+2,4 , C,A,4,0, 	(12-SEP-2025 15:30:33)
+2,4 , C,A,5,0, 	(12-SEP-2025 15:30:33)
+2,4 , C,A,6,0, 	(12-SEP-2025 15:30:33)
+2,4 , C,A,7,0, 	(12-SEP-2025 15:30:33)
+2,4 , C,A,7,0, 	(12-SEP-2025 15:30:33)
+2,4 , C,A,7,0, 	(12-SEP-2025 15:30:33)
+2,11 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,11 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,15 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,15 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,1,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,2,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,3,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,5,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,6,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,7,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,8,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,9,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,11,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,12,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,14,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,15,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,16,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,17,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,18,0, 	(12-SEP-2025 15:30:33)
+2,20 , C,A,19,0, 	(12-SEP-2025 15:30:33)
+2, , C,A,1,0, 	(12-SEP-2025 15:30:33)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,44,,,,,, 	(12-SEP-2025 15:30:33)
+ 
+
+TOTAL DATA INSERTED : ,43,,,,,, 	(12-SEP-2025 15:30:33)
+ 
+
+TOTAL SKIPPED DATA ,1,,,,,, 	(12-SEP-2025 15:30:33)
+ 
+<<END>>,<<FMS_LTCORA_AGMT_BILLING_DTL>>,,,,,, 	(12-SEP-2025 15:30:33)
+ 
+
+<<START>>,<<FMS_LTCORA_CONT_MST>>,, 	(12-SEP-2025 15:30:33)
+ 
+COMPANY_CD,COUNTERPARTY_CD,BUY_SALE,AGMT_TYPE,AGMT_NO,AGMT_REV,CONTRACT_TYPE,CONT_NO,CONT_REV,TIMESTAMP,
+2,1,C,A,1,0,O,15001,0, 	(12-SEP-2025 15:30:33)
+2,1,C,A,1,0,O,16001,0, 	(12-SEP-2025 15:30:33)
+2,1,C,A,1,0,O,15002,0, 	(12-SEP-2025 15:30:33)
+2,1,C,A,1,0,O,25001,0, 	(12-SEP-2025 15:30:33)
+**********AutomationEMS Error  (12-SEP-2025 15:30:33) **********
+java.sql.SQLException: ORA-12899: value too large for column "MIGRATE2EMS"."FMS_LTCORA_CONT_MST"."TLU_FLAG" (actual: 5, maximum: 1)
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_LTCORA_CONT_MST(Sales_SEIPL_Data_Reader.java:6962)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:197)
+**************************************************
+
+<<FUNCTION FMS_LTCORA_CONT_MST() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_LTCORA_CONT_BU>>, 	(12-SEP-2025 15:30:33)
+ 
+COMPANY_CD,COUNTERPARTY_CD,BUY_SALE,AGMT_TYPE,AGMT_NO,AGMT_REV,PLANT_SEQ_NO 	(12-SEP-2025 15:30:33)
+ 
+
+TOTAL DATA IN EXCEL : ,0, 	(12-SEP-2025 15:30:33)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(12-SEP-2025 15:30:33)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(12-SEP-2025 15:30:33)
+ 
+<<END>>,<<FMS_LTCORA_CONT_BU>>, 	(12-SEP-2025 15:30:33)
+ 
+
+<<START>>,<<FMS_LTCORA_CONT_MST>>,, 	(12-SEP-2025 15:30:40)
+ 
+COMPANY_CD,COUNTERPARTY_CD,BUY_SALE,AGMT_TYPE,AGMT_NO,AGMT_REV,CONTRACT_TYPE,CONT_NO,CONT_REV,TIMESTAMP,
+2,1,C,A,1,0,O,15001,0, 	(12-SEP-2025 15:30:40)
+2,1,C,A,1,0,O,16001,0, 	(12-SEP-2025 15:30:40)
+2,1,C,A,1,0,O,15002,0, 	(12-SEP-2025 15:30:40)
+2,1,C,A,1,0,O,25001,0, 	(12-SEP-2025 15:30:40)
+**********AutomationEMS Error  (12-SEP-2025 15:30:40) **********
+java.sql.SQLException: ORA-12899: value too large for column "MIGRATE2EMS"."FMS_LTCORA_CONT_MST"."TLU_FLAG" (actual: 5, maximum: 1)
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_LTCORA_CONT_MST(Sales_SEIPL_Data_Reader.java:6962)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:197)
+**************************************************
+
+<<FUNCTION FMS_LTCORA_CONT_MST() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_LTCORA_CONT_BU>>, 	(12-SEP-2025 15:30:40)
+ 
+COMPANY_CD,COUNTERPARTY_CD,BUY_SALE,AGMT_TYPE,AGMT_NO,AGMT_REV,PLANT_SEQ_NO 	(12-SEP-2025 15:30:40)
+ 
+
+TOTAL DATA IN EXCEL : ,0, 	(12-SEP-2025 15:30:40)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(12-SEP-2025 15:30:40)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(12-SEP-2025 15:30:40)
+ 
+<<END>>,<<FMS_LTCORA_CONT_BU>>, 	(12-SEP-2025 15:30:40)
+ 

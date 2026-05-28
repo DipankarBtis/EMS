@@ -1,0 +1,22 @@
+
+<<ERROR IN FMS_SUPPLY_PURCHASE_MAP_DTL()>>
+**********AutomationEMS Error  (04-JUN-2025 17:04:31) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_SUPPLY_PURCHASE_MAP_DTL) violated
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_SUPPLY_PURCHASE_MAP_DTL(Sales_SEIPL_Data_Reader.java:5010)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:169)
+**************************************************
+
+<<FUNCTION FMS_SUPPLY_PURCHASE_MAP_DTL() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_SUPPLY_PURCHASE_MAP_DTL()>>
+**********AutomationEMS Error  (04-JUN-2025 17:04:54) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_SUPPLY_PURCHASE_MAP_DTL) violated
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_SUPPLY_PURCHASE_MAP_DTL(Sales_SEIPL_Data_Reader.java:5010)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:169)
+**************************************************
+
+<<FUNCTION FMS_SUPPLY_PURCHASE_MAP_DTL() ENDED WITH ERRORS>>

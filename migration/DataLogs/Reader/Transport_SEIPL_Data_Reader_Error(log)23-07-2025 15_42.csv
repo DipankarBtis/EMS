@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_GTA_SG_INV_MST()>>
+**********AutomationEMS Error  (23-JUL-2025 15:42:34) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_GTA_SG_INV_MST"."INVOICE_TYPE")
+
+
+com.etrm.fms.migration.Transport_SEIPL_Data_Reader.FMS_GTA_SG_INV_MST(Transport_SEIPL_Data_Reader.java:3903)
+com.etrm.fms.migration.Transport_SEIPL_Data_Reader.init(Transport_SEIPL_Data_Reader.java:141)
+**************************************************
+
+<<FUNCTION FMS_GTA_SG_INV_MST() ENDED WITH ERRORS>>

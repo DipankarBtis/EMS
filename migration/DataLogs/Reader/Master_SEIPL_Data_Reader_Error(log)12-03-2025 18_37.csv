@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_CUSTOM_TAX_STRUCT_DTL()>>
+**********AutomationEMS Error  (12-MAR-2025 18:37:18) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_CUSTOM_TAX_STRUCT_DTL) violated
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_CUSTOM_TAX_STRUCT_DTL(Master_SEIPL_Data_Reader.java:6799)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:229)
+**************************************************
+
+<<FUNCTION FMS_CUSTOM_TAX_STRUCT_DTL() ENDED WITH ERRORS>>

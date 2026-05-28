@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_DAILY_TRANSPORTER_NOM()>>
+**********AutomationEMS Error  (13-MAY-2025 10:47:27) **********
+java.sql.SQLException: ORA-00904: "A"."CONT_AGR_TYPE": invalid identifier
+
+
+com.etrm.fms.migration.Transport_SEIPL_Data_Extractor.FMS_DAILY_TRANSPORTER_NOM(Transport_SEIPL_Data_Extractor.java:1410)
+com.etrm.fms.migration.Transport_SEIPL_Data_Extractor.init(Transport_SEIPL_Data_Extractor.java:122)
+**************************************************
+
+<<FUNCTION FMS_DAILY_TRANSPORTER_NOM() ENDED WITH ERRORS>>

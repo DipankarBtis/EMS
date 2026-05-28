@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_DLNG_FFLOW_INV_FILE_DTL_SERV()>>
+**********AutomationEMS Error  (28-JAN-2026 09:59:04) **********
+java.sql.SQLSyntaxErrorException: ORA-00913: too many values
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_FFLOW_INV_FILE_DTL_SERV(DLNG_SEIPL_Data_Reader.java:18375)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:307)
+**************************************************
+
+<<FUNCTION FMS_DLNG_FFLOW_INV_FILE_DTL_SERV() ENDED WITH ERRORS>>

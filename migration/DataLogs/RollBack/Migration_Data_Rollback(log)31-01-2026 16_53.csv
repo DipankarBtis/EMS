@@ -1,0 +1,13 @@
+
+
+<<ROLLBACK_START>>,<<SALES>>, 	(31-JAN-2026 16:53:38)
+ 
+**********AutomationEMS Error  (31-JAN-2026 16:53:38) **********
+java.sql.SQLException: ORA-00904: "INV_TYPE": invalid identifier
+
+
+com.etrm.fms.migration.Migration_Data_Rollback.SALES(Migration_Data_Rollback.java:1817)
+com.etrm.fms.migration.Migration_Data_Rollback.init(Migration_Data_Rollback.java:81)
+**************************************************
+
+<<FUNCTION SALES() ENDED WITH ERRORS>>

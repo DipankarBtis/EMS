@@ -1,0 +1,11 @@
+
+<<ERROR IN DLNG()>>
+**********AutomationEMS Error  (28-JAN-2026 10:41:33) **********
+java.sql.SQLException: ORA-00942: table or view does not exist
+
+
+com.etrm.fms.migration.Migration_Data_Rollback.DLNG(Migration_Data_Rollback.java:3508)
+com.etrm.fms.migration.Migration_Data_Rollback.init(Migration_Data_Rollback.java:93)
+**************************************************
+
+<<FUNCTION DLNG() ENDED WITH ERRORS>>

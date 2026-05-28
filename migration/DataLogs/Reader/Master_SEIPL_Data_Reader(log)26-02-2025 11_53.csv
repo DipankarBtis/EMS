@@ -1,0 +1,42 @@
+
+
+<<START>>,<<FMS_ENTITY_CONTACT_MST>>,,,,,, 	(26-FEB-2025 11:53:27)
+ 
+COMPANY_CD,CD,ABBR,ENTITY,SEQ_NO,EFF_DT,ADDR_FLAG,TIMESTAMP
+2 ,1 , RIL , C , 52 , 31/01/2018 00:00:00 , P8, 	(26-FEB-2025 11:53:27)
+**********AutomationEMS Error  (26-FEB-2025 11:53:27) **********
+java.sql.SQLSyntaxErrorException: ORA-00917: missing comma
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_ENTITY_CONTACT_MST(Master_SEIPL_Data_Reader.java:4158)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:188)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_CONTACT_MST() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_ENTITY_SERVICE_TAX_DTL>>,,,,,,, 	(26-FEB-2025 11:53:41)
+ 
+COMPANY_CD,CD,ABBR,ENTITY,PLANT_SEQ_NO,INVOICE_TYPE,EFF_DT,BU_UNIT,TIMESTAMP
+2 ,1 , RIL , C , 1 , 0 , 14/09/2008 00:00:00 , 1, 	(26-FEB-2025 11:53:41)
+2 ,1 , RIL , C , 2 , 0 , 14/09/2008 00:00:00 , 1, 	(26-FEB-2025 11:53:41)
+2 ,1 , RIL , C , 3 , 0 , 14/09/2008 00:00:00 , 1, 	(26-FEB-2025 11:53:41)
+2 ,1 , RIL , C , 4 , 0 , 14/09/2008 00:00:00 , 1, 	(26-FEB-2025 11:53:41)
+2 ,1 , RIL , C , 5 , 0 , 14/09/2008 00:00:00 , 1, 	(26-FEB-2025 11:53:41)
+2 ,1 , RIL , C , 7 , 0 , 14/09/2008 00:00:00 , 1, 	(26-FEB-2025 11:53:41)
+2 ,1 , RIL , C , 10 , 0 , 14/09/2008 00:00:00 , 1, 	(26-FEB-2025 11:53:41)
+2 ,1 , RIL , C , 8 , 0 , 14/09/2008 00:00:00 , 1, 	(26-FEB-2025 11:53:41)
+2 ,1 , RIL , C , 9 , 0 , 14/09/2008 00:00:00 , 1, 	(26-FEB-2025 11:53:41)
+2 ,3 , GSPCL , C , 1 , 0 , 24/03/2005 00:00:00 , 1, 	(26-FEB-2025 11:53:41)
+2 ,4 , Gail , C , 1 , 0 , 08/03/2007 00:00:00 , 1, 	(26-FEB-2025 11:53:41)
+
+TOTAL DATA IN EXCEL : ,11,,,,,,, 	(26-FEB-2025 11:53:41)
+ 
+
+TOTAL DATA INSERTED : ,11,,,,,,, 	(26-FEB-2025 11:53:41)
+ 
+
+TOTAL SKIPPED DATA ,0,,,,,,, 	(26-FEB-2025 11:53:41)
+ 
+<<END>>,<<FMS_ENTITY_SERVICE_TAX_DTL>>,,,,,,, 	(26-FEB-2025 11:53:41)
+ 

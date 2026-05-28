@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_CONT_PRICE_DTL()>>
+**********AutomationEMS Error  (02-APR-2025 13:21:31) **********
+java.sql.SQLException: org.apache.tomcat.dbcp.dbcp2.DelegatingPreparedStatement with address: "NULL" is closed.
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.FMS_CONT_PRICE_DTL(Purchase_SEIPL_Data_RollBack.java:1421)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:109)
+**************************************************
+
+<<FUNCTION FMS_CONT_PRICE_DTL() ENDED WITH ERRORS>>

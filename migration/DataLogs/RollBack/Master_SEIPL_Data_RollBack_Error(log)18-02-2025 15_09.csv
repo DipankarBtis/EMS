@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_EXCHG_RATE_ENTRY()>>
+**********AutomationEMS Error  (18-FEB-2025 15:11:12) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Master_SEIPL_Data_RollBack.FMS_EXCHG_RATE_ENTRY(Master_SEIPL_Data_RollBack.java:2228)
+com.etrm.fms.migration.Master_SEIPL_Data_RollBack.init(Master_SEIPL_Data_RollBack.java:138)
+**************************************************
+
+<<FUNCTION FMS_EXCHG_RATE_ENTRY() ENDED WITH ERRORS>>

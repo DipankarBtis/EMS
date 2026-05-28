@@ -1,0 +1,30 @@
+
+
+<<START>>,<<FMS_ENTITY_CONTACT_MST>>,,,,,, 	(26-FEB-2025 12:52:08)
+ 
+COMPANY_CD,CD,ABBR,ENTITY,SEQ_NO,EFF_DT,ADDR_FLAG,TIMESTAMP
+2 ,1 , RIL , C , 52 , 31/01/2018 00:00:00 , P8, 	(26-FEB-2025 12:52:08)
+**********AutomationEMS Error  (26-FEB-2025 12:52:08) **********
+java.sql.SQLSyntaxErrorException: ORA-00917: missing comma
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_ENTITY_CONTACT_MST(Master_SEIPL_Data_Reader.java:4158)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:188)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_CONTACT_MST() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_ENTITY_CONTACT_MST>>,,,,,, 	(26-FEB-2025 12:52:24)
+ 
+COMPANY_CD,CD,ABBR,ENTITY,SEQ_NO,EFF_DT,ADDR_FLAG,TIMESTAMP
+2 ,1 , RIL , C , 52 , 31/01/2018 00:00:00 , P8, 	(26-FEB-2025 12:52:24)
+**********AutomationEMS Error  (26-FEB-2025 12:52:24) **********
+java.sql.SQLSyntaxErrorException: ORA-00917: missing comma
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_ENTITY_CONTACT_MST(Master_SEIPL_Data_Reader.java:4158)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:188)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_CONTACT_MST() ENDED WITH ERRORS>>

@@ -1,0 +1,39 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<EMS>
+   <CONTRACT>
+      <CONT_MST>
+         <CONT_DTL>
+            <CUSTOMER_CODE>18</CUSTOMER_CODE>
+            <CUSTOMER_NAME>VIDUSHI WIRES PVT. LTD.</CUSTOMER_NAME>
+            <CONT_TYPE>LTCORA(Sell) CN</CONT_TYPE>
+            <AGMT_CONT_NO>1-C-18-O-1-25003-1</AGMT_CONT_NO>
+            <AGMT_CONT_NAME>VIDUWIL-SEMTIPL-LTCORA1-REV0 O25003-REV0</AGMT_CONT_NAME>
+            <CONT_REF>Test for Reports</CONT_REF>
+            <CONT_ST_DT>04/04/2025</CONT_ST_DT>
+            <CONT_END_DT>07/04/0025</CONT_END_DT>
+            <MDQ_PERC>100</MDQ_PERC>
+            <DCQ>3000.00</DCQ>
+            <UNIT>MMBTU</UNIT>
+         </CONT_DTL>
+         <CONT_PLANT_DTL>
+            <PLANT_DTL>
+               <AGMT_CONT_NO>1O25003-1</AGMT_CONT_NO>
+               <PLANT_CODE>3{-}1</PLANT_CODE>
+               <PLANT_NAME>SEMTIPL-HZ{-}VIDUWIL-MBI</PLANT_NAME>
+               <PLANT_ADDR>Malabar Hills , South Bombay</PLANT_ADDR>
+               <TAX_STRUCTURE/>
+            </PLANT_DTL>
+         </CONT_PLANT_DTL>
+         <CONT_DELIVERY_POINT>
+            <DELIVERY_POINT>
+               <AGMT_CONT_NO>1O25003-1</AGMT_CONT_NO>
+               <TRANSPORTER_ASSIGNED_CUSTOMER_CODE>111122223333</TRANSPORTER_ASSIGNED_CUSTOMER_CODE>
+               <CT_CONTRACT_ID>909090,30/03/2025,06/04/2025</CT_CONTRACT_ID>
+               <DELIVERY_CODE>1{-}2</DELIVERY_CODE>
+               <DELIVERY_NAME>GAIL{-}GAIL Maskal</DELIVERY_NAME>
+               <PLANT_CODE>3{-}1</PLANT_CODE>
+            </DELIVERY_POINT>
+         </CONT_DELIVERY_POINT>
+      </CONT_MST>
+   </CONTRACT>
+</EMS>

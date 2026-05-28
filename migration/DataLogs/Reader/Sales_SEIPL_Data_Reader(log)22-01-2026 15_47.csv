@@ -1,0 +1,13 @@
+
+
+<<START>>,<<FMS_INVOICE_MST_TAXCD_UPDATE>>,, 	(22-JAN-2026 15:47:05)
+ 
+COMPANY_CD,COUNTERPARTY_CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,CONTRACT_TYPE,BU_UNIT,BU_STATE_TIN,BU_CONTACT_PERSON_CD,PLANT_SEQ_NO,CONTACT_PERSON_CD,TIMESTAMP,
+**********AutomationEMS Error  (22-JAN-2026 15:47:05) **********
+java.sql.SQLException: Invalid column index
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST_TAXCD_UPDATE(Sales_SEIPL_Data_Reader.java:16140)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:279)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST_TAXCD_UPDATE() ENDED WITH ERRORS>>

@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_ENTITY_REQ_DTL()>>
+**********AutomationEMS Error  (20-FEB-2025 11:52:47) **********
+java.io.FileNotFoundException: D:\Projects\EMSNG_Workspace\EMSNG\migration\EXPORT\FMS_ENTITY_REQ_DTL_01012007_20022025.xlsx (The process cannot access the file because it is being used by another process)
+
+com.etrm.fms.migration.Master_SEIPL_Data_Extractor.FMS_ENTITY_REQ_DTL(Master_SEIPL_Data_Extractor.java:1510)
+com.etrm.fms.migration.Master_SEIPL_Data_Extractor.init(Master_SEIPL_Data_Extractor.java:116)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_REQ_DTL() ENDED WITH ERRORS>>

@@ -1,0 +1,68 @@
+
+
+<<START>>,<<FMS_LTCORA_AGMT_MST>>,, 	(17-MAY-2025 17:58:25)
+ 
+COMPANY_CD,COUNTERPARTY_CD,BUY_SALE,AGMT_TYPE,AGMT_NO,AGMT_REV,TIMESTAMP,
+2,1 , C,A,1,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,3 , C,A,1,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,3 , C,A,2,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,3 , C,A,3,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,3 , C,A,4,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,3 , C,A,5,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,3 , C,A,5,1, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,4 , C,A,1,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,4 , C,A,2,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,4 , C,A,3,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,4 , C,A,4,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,4 , C,A,5,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,4 , C,A,6,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,4 , C,A,7,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,11 , C,A,1,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,15 , C,A,1,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,1,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,2,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,3,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,4,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,5,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,6,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,7,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,8,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,9,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,10,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,11,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,12,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,13,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,14,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,15,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,16,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,17,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,18,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,20 , C,A,19,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+2,154 , C,A,1,0, 	(17-MAY-2025 17:58:25)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,36,,,,,, 	(17-MAY-2025 17:58:25)
+ 
+
+TOTAL DATA INSERTED : ,0,,,,,, 	(17-MAY-2025 17:58:25)
+ 
+
+TOTAL SKIPPED DATA ,36,,,,,, 	(17-MAY-2025 17:58:25)
+ 
+<<END>>,<<FMS_LTCORA_AGMT_MST>>,,,,,, 	(17-MAY-2025 17:58:25)
+ 
+
+<<START>>,<<FMS_LTCORA_AGMT_BU>>, 	(17-MAY-2025 17:58:25)
+ 
+COMPANY_CD,COUNTERPARTY_CD,BUY_SALE,AGMT_TYPE,AGMT_NO,AGMT_REV,PLANT_SEQ_NO 	(17-MAY-2025 17:58:25)
+ 
+
+TOTAL DATA IN EXCEL : ,0, 	(17-MAY-2025 17:58:25)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(17-MAY-2025 17:58:25)
+ 
+
+TOTAL SKIPPED DATA ,36, 	(17-MAY-2025 17:58:25)
+ 
+<<END>>,<<FMS_LTCORA_AGMT_BU>>, 	(17-MAY-2025 17:58:25)
+ 

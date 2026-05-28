@@ -1,0 +1,18 @@
+
+
+<<START>>,<<FMS_ENTITY_CONTACT_MST>>,,,,,, 	(11-MAR-2025 15:17:57)
+ 
+COMPANY_CD,CD,ABBR,ENTITY,SEQ_NO,EFF_DT,ADDR_FLAG,TIMESTAMP
+2,1 , RIL , C , 1 , 14/09/2008 00:00:00 , R, 	(11-MAR-2025 15:17:59)
+2,1 , RIL , C , 2 , 01/07/2021 00:00:00 , P5, 	(11-MAR-2025 15:17:59)
+2,1 , RIL , C , 3 , 31/01/2018 00:00:00 , B, 	(11-MAR-2025 15:17:59)
+2,1 , RIL , C , 4 , 01/07/2021 00:00:00 , P5, 	(11-MAR-2025 15:17:59)
+2,1 , RIL , C , 5 , 01/01/2020 00:00:00 , P4, 	(11-MAR-2025 15:17:59)
+**********AutomationEMS Error  (11-MAR-2025 15:17:59) **********
+java.sql.SQLException: Statement closed.
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_ENTITY_CONTACT_MST(Master_SEIPL_Data_Reader.java:4168)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:189)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_CONTACT_MST() ENDED WITH ERRORS>>

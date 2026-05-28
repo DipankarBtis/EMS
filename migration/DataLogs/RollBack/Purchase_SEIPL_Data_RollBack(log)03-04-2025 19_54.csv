@@ -1,0 +1,35 @@
+
+
+<<ROLLBACK_START>>,<<FMS_SECURITY_DEAL_MAP>>,, 	(03-APR-2025 19:54:48)
+ 
+COMPANY_CD, COUNTERPARTY_CD, SEQ_NO, MAP_SEQ_NO, SEQ_REV_NO, GX,TIMESTAMP
+2,20,1,1,0,K, 	(03-APR-2025 19:54:48)
+2,154,1,1,0,K, 	(03-APR-2025 19:54:48)
+2,154,2,2,0,K, 	(03-APR-2025 19:54:48)
+2,15,1,1,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,20,2,2,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,1,1,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,2,2,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,3,3,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,4,4,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,5,5,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,6,6,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,7,7,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,8,8,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,9,9,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,10,10,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,11,11,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,12,12,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,13,13,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,14,14,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,15,15,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,110,16,16,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,116,1,1,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,116,2,2,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,116,3,3,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+2,256,1,1,0,K, 	(03-APR-2025 19:54:48)	 (Not Deleted)
+
+TOTAL DATA DELETED :, 3,,,,,,, 	(03-APR-2025 19:54:48)
+ 
+<<ROLLBACK_END>>,<<FMS_SECURITY_DEAL_MAP()>>,,,,,,, 	(03-APR-2025 19:54:48)
+ 

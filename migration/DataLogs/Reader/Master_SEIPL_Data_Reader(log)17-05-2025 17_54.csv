@@ -1,0 +1,13 @@
+
+
+<<START>>,<<FMS_COUNTERPARTY_BU_DTL>>,,,,, 	(17-MAY-2025 17:54:35)
+ 
+**********AutomationEMS Error  (17-MAY-2025 17:54:35) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_COUNTERPARTY_BU_DTL) violated
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_COUNTERPARTY_BU_DTL(Master_SEIPL_Data_Reader.java:2419)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:162)
+**************************************************
+
+<<FUNCTION FMS_COUNTERPARTY_BU_DTL() ENDED WITH ERRORS>>

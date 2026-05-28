@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_SECURITY_MST()>>
+**********AutomationEMS Error  (23-SEP-2025 16:16:50) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.FMS_SECURITY_MST(RiskMgmt_SEIPL_Data_Reader.java:2733)
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.init(RiskMgmt_SEIPL_Data_Reader.java:157)
+**************************************************
+
+<<FUNCTION FMS_SECURITY_MST() ENDED WITH ERRORS>>

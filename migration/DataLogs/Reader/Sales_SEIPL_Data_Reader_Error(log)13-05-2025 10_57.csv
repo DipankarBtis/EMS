@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_DAILY_SELLER_NOM()>>
+**********AutomationEMS Error  (13-MAY-2025 10:57:09) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_DAILY_SELLER_NOM"."BU_SEQ")
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_DAILY_SELLER_NOM(Sales_SEIPL_Data_Reader.java:11531)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:239)
+**************************************************
+
+<<FUNCTION FMS_DAILY_SELLER_NOM() ENDED WITH ERRORS>>

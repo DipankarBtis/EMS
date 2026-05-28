@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_AGMT_TRANSPTR()>>
+**********AutomationEMS Error  (03-MAR-2025 12:40:23) **********
+java.sql.SQLException: Statement closed.
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_AGMT_TRANSPTR(Sales_SEIPL_Data_Reader.java:524)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:112)
+**************************************************
+
+<<FUNCTION FMS_AGMT_TRANSPTR() ENDED WITH ERRORS>>

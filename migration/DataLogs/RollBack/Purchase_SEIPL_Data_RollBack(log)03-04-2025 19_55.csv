@@ -1,0 +1,47 @@
+
+
+<<ROLLBACK_START>>,<<FMS_SECURITY_MST>>,, 	(03-APR-2025 19:55:08)
+ 
+COMPANY_CD, COUNTERPARTY_CD, SEQ_NO, SEQ_REV_NO ,GX, TIMESTAMP
+2,20,1,0,K, 	(03-APR-2025 19:55:08)
+2,154,1,0,K, 	(03-APR-2025 19:55:08)
+2,154,2,0,K, 	(03-APR-2025 19:55:08)
+2,15,1,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,20,2,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,1,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,2,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,3,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,4,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,5,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,6,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,7,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,8,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,9,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,10,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,11,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,12,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,13,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,14,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,15,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,110,16,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,116,1,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,116,2,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,116,3,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+2,256,1,0,K, 	(03-APR-2025 19:55:08)	 (Not Deleted)
+
+TOTAL DATA DELETED :, 3,,,,,,, 	(03-APR-2025 19:55:08)
+ 
+<<ROLLBACK_END>>,<<FMS_SECURITY_MST()>>,,,,,,, 	(03-APR-2025 19:55:08)
+ 
+
+<<ROLLBACK_START>>,<<FMS_CONT_PRICE_DTL>>,,,,,,, 	(03-APR-2025 19:55:25)
+ 
+,TIMESTAMP
+**********AutomationEMS Error  (03-APR-2025 19:55:25) **********
+java.lang.ArrayIndexOutOfBoundsException: 23
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.FMS_CONT_PRICE_DTL(Purchase_SEIPL_Data_RollBack.java:1349)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:109)
+**************************************************
+
+<<FUNCTION FMS_CONT_PRICE_DTL() ENDED WITH ERRORS>>

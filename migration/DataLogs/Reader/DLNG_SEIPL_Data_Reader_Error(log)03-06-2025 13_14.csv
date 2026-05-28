@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_SUPPLY_PURCHASE_MAP_DTL(DLNG)()>>
+**********AutomationEMS Error  (03-JUN-2025 13:14:38) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_SUPPLY_PURCHASE_MAP_DTL) violated
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_SUPPLY_PURCHASE_MAP_DTL(DLNG_SEIPL_Data_Reader.java:6790)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:182)
+**************************************************
+
+<<FUNCTION FMS_SUPPLY_PURCHASE_MAP_DTL(DLNG)() ENDED WITH ERRORS>>

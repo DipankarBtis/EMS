@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_DLNG_FFLOW_INV_DTL_SERV()>>
+**********AutomationEMS Error  (04-FEB-2026 13:16:25) **********
+java.sql.SQLException: Invalid column index
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_FFLOW_INV_DTL_SERV(DLNG_SEIPL_Data_Reader.java:18292)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:304)
+**************************************************
+
+<<FUNCTION FMS_DLNG_FFLOW_INV_DTL_SERV() ENDED WITH ERRORS>>

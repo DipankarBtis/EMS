@@ -1,0 +1,3780 @@
+package com.etrm.fms.util;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Vector;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
+//Coded By          : Harsh Patel
+//Code Reviewed by	:  
+//CR Date			: 22/09/2022 
+//Status	  		: Developing
+public class UtilBean 
+{
+	String db_src_file_name="UtilBean.java";
+	
+	Connection conn;
+	PreparedStatement stmtement,stmtement1,stmtement2,stmtement3;
+	ResultSet resultset,resultset1,resultset2,resultset3;
+	String query = "";
+	String query1="";
+	
+	NumberFormat nf = new DecimalFormat("###########0.00");
+	NumberFormat nf2 = new DecimalFormat("###########0.0000");
+	
+	DateUtil dateUtil = new DateUtil();
+	
+	private boolean init() 
+	{
+		String function_nm="init()";
+		
+		boolean returnty = false;
+		try
+		{
+			Context initContext = new InitialContext();
+			if(initContext == null ) 
+			{
+			  throw new Exception("Boom - No Context");
+			}
+			Context envContext  = (Context)initContext.lookup("java:/comp/env");
+			DataSource ds = (DataSource)envContext.lookup(RuntimeConf.security_database);
+			if (ds != null) 
+			{
+				conn = ds.getConnection();  	
+				if(conn != null) 
+				{
+					returnty = true;
+				}
+				else
+				{
+					returnty = false;
+				}
+			}
+			else
+			{
+				returnty = false;
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return returnty;	
+	}
+	
+	public void getCountryMaster()
+	{
+		String function_nm="getCountryMaster()";
+		try
+		{
+			if(init())
+			{
+				COUNTRY_CODE.clear();
+				COUNTRY_NM.clear();
+				ISO_CODE.clear();
+				
+				query = "SELECT COUNTRY_CODE,COUNTRY_NM,ISO_CODE "
+						+ "FROM FMS_COUNTRY_MST "
+						+ "ORDER BY COUNTRY_NM ";
+				stmtement = conn.prepareStatement(query);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTRY_CODE.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTRY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					ISO_CODE.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getStateMaster()
+	{
+		String function_nm="getStateMaster()";
+		try
+		{
+			if(init())
+			{
+				TIN.clear();
+				STATE_CODE.clear();
+				STATE_NM.clear();
+				
+				query = "SELECT TIN,STATE_CODE,STATE_NM "
+						+ "FROM FMS_STATE_MST "
+						+ "ORDER BY STATE_NM";
+				stmtement = conn.prepareStatement(query);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					TIN.add(resultset.getString(1)==null?"":resultset.getString(1));
+					STATE_CODE.add(resultset.getString(2)==null?"":resultset.getString(2));
+					STATE_NM.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public String getStateName(String cd)
+	{
+		String function_nm="getStateName()";
+		String nm="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT STATE_NM "
+						+ "FROM FMS_STATE_MST "
+						+ "WHERE TIN=? "
+						+ "ORDER BY STATE_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					nm= resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return nm;
+	}
+	
+	public String getSectorName(String cd,String comp_cd)
+	{
+		String function_nm="getSectorName()";
+		String nm="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT SECTOR_NAME "
+						+ "FROM FMS_SECTOR_MST "
+						+ "WHERE SECTOR_CD=? ";
+				stmtement=conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					nm= resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return nm;
+	}
+	
+	public void getCounterpartyMaster()
+	{
+		String function_nm="getCounterpartyMaster()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,COUNTERPARTY_NM,COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COUNTERPARTY_MST B "
+						+ "WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD) "
+						+ "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getActiveCounterpartyMaster()
+	{
+		String function_nm="getActiveCounterpartyMaster()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,COUNTERPARTY_NM,COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE STATUS='Y' "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COUNTERPARTY_MST B "
+						+ "WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD) "
+						+ "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public String getCounterpartyName(String cd)
+	{
+		String function_nm="getCounterpartyName()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT COUNTERPARTY_NM "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE COUNTERPARTY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getCounterpartySAPcode(String cd)
+	{
+		String function_nm="getCounterpartySAPcode()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT SAP_CODE "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE COUNTERPARTY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getGasExchangeSAPcode(String cd)
+	{
+		String function_nm="getGasExchangeSAPcode()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT SAP_CODE "
+						+ "FROM FMS_COMPANY_EXCHG_MST A "
+						+ "WHERE COUNTERPARTY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COMPANY_EXCHG_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getCompanyName(String comp_cd)
+	{
+		String function_nm="getCompanyName()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT COMPANY_NM "
+						+ "FROM FMS_COMPANY_OWNER_MST A "
+						+ "WHERE COMPANY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COMPANY_OWNER_MST B WHERE A.COMPANY_CD=B.COMPANY_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getCompanyAbbr(String comp_cd)
+	{
+		String function_nm="getCompanyAbbr()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT COMPANY_ABBR "
+						+ "FROM FMS_COMPANY_OWNER_MST A "
+						+ "WHERE COMPANY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COMPANY_OWNER_MST B WHERE A.COMPANY_CD=B.COMPANY_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getCompanySAPcode(String comp_cd)
+	{
+		String function_nm="getCompanySAPcode()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT SAP_CODE "
+						+ "FROM FMS_COMPANY_OWNER_MST A "
+						+ "WHERE COMPANY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COMPANY_OWNER_MST B WHERE A.COMPANY_CD=B.COMPANY_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getGasExchangeName(String cd)
+	{
+		String function_nm="getGasExchangeName()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT COUNTERPARTY_NM "
+						+ "FROM FMS_COMPANY_EXCHG_MST A "
+						+ "WHERE COUNTERPARTY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COMPANY_EXCHG_MST B "
+						+ "WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getGasExchangeCd(String abbr)
+	{
+		String function_nm="getGasExchangeCd()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT COUNTERPARTY_CD "
+						+ "FROM FMS_COMPANY_EXCHG_MST A "
+						+ "WHERE COUNTERPARTY_ABBR=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COMPANY_EXCHG_MST B "
+						+ "WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, abbr);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getGasExchangeAbbr(String cd)
+	{
+		String function_nm="getGasExchangeAbbr()";
+		String abbr="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT COUNTERPARTY_ABBR "
+						+ "FROM FMS_COMPANY_EXCHG_MST A "
+						+ "WHERE COUNTERPARTY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COMPANY_EXCHG_MST B "
+						+ "WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					abbr = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return abbr;
+	}
+	
+	public String getCounterpartyABBR(String cd)
+	{
+		String function_nm="getCounterpartyABBR()";
+		String abbr="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE COUNTERPARTY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					abbr = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return abbr;
+	}
+	
+	public String getEmpName(String cd)
+	{
+		String function_nm="getEmpName()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT EMP_NM "
+						+ "FROM FMS_EMP_MST "
+						+ "WHERE EMP_CD=? ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getUserName(String cd)
+	{
+		String function_nm="getUserName()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT EMP_UID "
+						+ "FROM FMS_EMP_MST "
+						+ "WHERE EMP_CD=? ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getEnergyUnitNm(String cd)
+	{
+		String function_nm="getEnergyUnitNm()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT ENERGY_UNIT_ABR "
+						+ "FROM FMS_ENERGY_UNIT "
+						+ "WHERE ENERGY_UNIT_CD=? ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getSAPEnergyUnitNm(String cd)
+	{
+		String function_nm="getSAPEnergyUnitNm()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT SAP_ABBR "
+						+ "FROM FMS_ENERGY_UNIT "
+						+ "WHERE ENERGY_UNIT_CD=? ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	//effective - counterparty effective date validity 
+	//clearance - KYC | IGX
+	//Active | Deactive check
+	public void getEffectiveEntityCounterpartyList(String clearance, String comp_cd, String entity)
+	{
+		String function_nm="getEffectiveEntityCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				query = "SELECT A.COUNTERPARTY_CD,A.COUNTERPARTY_NM,A.COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A, FMS_ENTITY_REQ_DTL B "
+						+ "WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND B.COMPANY_CD=? AND B.ENTITY=? AND B.STATUS='A' "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY')) "
+						+ "AND A.STATUS='Y' AND "+clearance+"='Y' "
+						+ "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				stmtement.setString(2, entity);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getEffectiveMultiEntityCounterpartyList(String comp_cd, String entity)
+	{
+		String function_nm="getEffectiveEntityCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				String[] split_type = entity.split(",");
+
+				StringBuilder placeholders = new StringBuilder();
+				for (int i = 0; i < split_type.length; i++)
+				{
+				    if (i > 0)
+				    {
+				        placeholders.append(",");
+				    }
+				    placeholders.append("?");
+				}
+				
+				query = "SELECT DISTINCT A.COUNTERPARTY_CD,A.COUNTERPARTY_NM,A.COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A, FMS_ENTITY_REQ_DTL B "
+						+ "WHERE A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND B.COMPANY_CD = ? AND B.ENTITY IN (" 
+				        + placeholders.toString() + ") AND B.STATUS = 'A' "
+				        + "AND EFF_DT = (SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD = B.COUNTERPARTY_CD "
+				        + "AND B.EFF_DT <= TO_DATE(TO_CHAR(SYSDATE, 'DD/MM/YYYY'), 'DD/MM/YYYY')) "
+				        + "AND A.STATUS = 'Y' "
+				        + "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				for (int i = 0; i < split_type.length; i++)
+				{
+				    stmtement.setString(i + 2, split_type[i]);
+				}
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getEffectiveEntityCounterpartyList(String comp_cd, String entity)
+	{
+		String function_nm="getEffectiveEntityCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				query = "SELECT A.COUNTERPARTY_CD,A.COUNTERPARTY_NM,A.COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A, FMS_ENTITY_REQ_DTL B "
+						+ "WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND B.COMPANY_CD=? AND B.ENTITY=? AND B.STATUS='A' "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY')) "
+						+ "AND A.STATUS='Y' "
+						+ "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				stmtement.setString(2, entity);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	//effective - counterparty effective date validity 
+	//clearance - KYC | IGX
+	//Active | Deactive check
+	/*craeted entity
+	 * public void getEffectiveTraderCounterpartyList(String clearance, String comp_cd)
+	{
+		String function_nm="getEffectiveTraderCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				query = "SELECT A.COUNTERPARTY_CD,A.COUNTERPARTY_NM,A.COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A, FMS_ENTITY_REQ_DTL B "
+						+ "WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND B.COMPANY_CD=? AND B.ENTITY='T' AND B.STATUS='A' "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY')) "
+						+ "AND A.STATUS='Y' ";
+				if(clearance.equals("KYC")) {
+					query+="AND KYC='Y' ";
+				}
+				else if(clearance.equals("IGX")) {
+					query+="AND IGX='Y' ";
+				}
+					query+= "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}*/
+	
+	//effective - counterparty effective date validity 
+	//clearance - KYC | IGX
+	//Active | Deactive check
+	/*public void getEffectiveCustomerCounterpartyList(String clearance, String comp_cd)
+	{
+		String function_nm="getEffectiveCustomerCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,COUNTERPARTY_NM,COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE COMPANY_CD=? AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.COMPANY_CD=B.COMPANY_CD) "
+						+ "AND CUSTOMER='Y' AND STATUS='Y' ";
+				if(clearance.equals("KYC")) {
+					query+="AND KYC='Y' ";
+				}
+				else if(clearance.equals("IGX")) {
+					query+="AND IGX='Y' ";
+				}
+					query+= "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}*/
+	
+	/*public void getEffectiveCustomerCounterpartyList(String comp_cd)
+	{
+		String function_nm="getEffectiveCustomerCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,COUNTERPARTY_NM,COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE COMPANY_CD=? AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.COMPANY_CD=B.COMPANY_CD) "
+						+ "AND CUSTOMER='Y' AND STATUS='Y' ";
+				query+= "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}*/
+
+	/*public void getEffectiveTraderCounterpartyList(String comp_cd)
+	{
+		String function_nm="getEffectiveTraderCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,COUNTERPARTY_NM,COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE COMPANY_CD=? AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.COMPANY_CD=B.COMPANY_CD) "
+						+ "AND TRADER='Y' AND STATUS='Y' ";
+				query+= "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}*/
+	
+	/*public void getEffectiveVesselAgentCounterpartyList(String comp_cd)
+	{
+		String function_nm="getEffectiveVesselAgentCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,COUNTERPARTY_NM,COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE COMPANY_CD=? AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.COMPANY_CD=B.COMPANY_CD) "
+						+ "AND VESSEL_AGENT='Y' AND STATUS='Y' ";
+				query+= "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}*/
+
+	/*public void getEffectiveSurveyorCounterpartyList(String comp_cd)
+	{
+		String function_nm="getEffectiveSurveyorCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,COUNTERPARTY_NM,COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE COMPANY_CD=? AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.COMPANY_CD=B.COMPANY_CD) "
+						+ "AND SURVEYOR='Y' AND STATUS='Y' ";
+				query+= "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}*/
+
+	/*public void getEffectiveCustomHouseAgentCounterpartyList(String comp_cd)
+	{
+		String function_nm="getEffectiveCustomHouseAgentCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,COUNTERPARTY_NM,COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE COMPANY_CD=? AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.COMPANY_CD=B.COMPANY_CD) "
+						+ "AND CUSTOM_HOUSE_AGENT='Y' AND STATUS='Y' ";
+				query+= "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}*/
+
+	//effective - counterparty effective date validity 
+	//clearance - KYC | IGX
+	//Active | Deactive check
+	/*public void getEffectiveTransporterCounterpartyList(String clearance, String comp_cd)
+	{
+		String function_nm="getEffectiveTransporterCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,COUNTERPARTY_NM,COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE COMPANY_CD=? AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.COMPANY_CD=B.COMPANY_CD) "
+						+ "AND TRANSPORTER='Y' AND STATUS='Y' ";
+				if(clearance.equals("KYC")) {
+					query+="AND KYC='Y' ";
+				}
+				else if(clearance.equals("IGX")) {
+					query+="AND IGX='Y' ";
+				}
+					query+= "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}*/
+
+	//effective - counterparty effective date validity 
+	//Active | Deactive check
+	public void getEffectiveCompanyOwnerList()
+	{
+		String function_nm="getEffectiveCompanyOwnerList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				query = "SELECT COMPANY_CD,COMPANY_NM,COMPANY_ABBR "
+						+ "FROM FMS_COMPANY_OWNER_MST A "
+						+ "WHERE EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COMPANY_OWNER_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY')) "
+						+ "AND STATUS='Y' ";
+				query+= "ORDER BY COMPANY_CD";
+				stmtement = conn.prepareStatement(query);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	//effective - counterparty plant effective date validity
+	public void getEffectiveCounterpartyPlantList(String counterparty_cd, String entity, String comp_cd)
+	{
+		String function_nm="getEffectiveCounterpartyPlantList()";
+		try
+		{
+			if(init())
+			{
+				CD.clear();
+				PLANT_NM.clear();
+				PLANT_ABBR.clear();
+				PLANT_SEQ_NO.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,PLANT_NAME,PLANT_ABBR,SEQ_NO "
+						+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+						+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) "
+						+ "AND STATUS='Y' ";
+				query+= "ORDER BY PLANT_NAME";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, entity);
+				stmtement.setString(3, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					PLANT_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					PLANT_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+					PLANT_SEQ_NO.add(resultset.getString(4)==null?"0":resultset.getString(4));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+		
+	//effective - counterparty plant effective date validity
+	/*public void getEffectiveTraderPlantList(String counterparty_cd, String comp_cd)
+	{
+		String function_nm="getEffectiveTraderPlantList()";
+		try
+		{
+			if(init())
+			{
+				TRD_CD.clear();
+				TRD_PLANT_NM.clear();
+				TRD_PLANT_ABBR.clear();
+				TRD_PLANT_SEQ_NO.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,PLANT_NAME,PLANT_ABBR,SEQ_NO "
+						+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+						+ "WHERE COUNTERPARTY_CD=? AND ENTITY='T' AND COMPANY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) "
+						+ "AND STATUS='Y' ";
+				query+= "ORDER BY PLANT_NAME";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					TRD_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					TRD_PLANT_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					TRD_PLANT_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+					TRD_PLANT_SEQ_NO.add(resultset.getString(4)==null?"0":resultset.getString(4));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}*/
+	
+	//effective - counterparty plant effective date validity
+	/*public void getEffectiveCustomerPlantList(String counterparty_cd, String comp_cd)
+	{
+		String function_nm="getEffectiveCustomerPlantList()";
+		try
+		{
+			if(init())
+			{
+				TRD_CD.clear();
+				TRD_PLANT_NM.clear();
+				TRD_PLANT_ABBR.clear();
+				TRD_PLANT_SEQ_NO.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,PLANT_NAME,PLANT_ABBR,SEQ_NO "
+						+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+						+ "WHERE COUNTERPARTY_CD=? AND ENTITY='C' AND COMPANY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) "
+						+ "AND STATUS='Y' ";
+				query+= "ORDER BY PLANT_NAME";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					TRD_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					TRD_PLANT_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					TRD_PLANT_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+					TRD_PLANT_SEQ_NO.add(resultset.getString(4)==null?"0":resultset.getString(4));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}*/
+	
+	//TBD
+	public void getEffectiveCustomerPlantList(String comp_cd)
+	{
+		String function_nm="getEffectiveCustomerPlantList()";
+		try
+		{
+			if(init())
+			{
+				TRD_CD.clear();
+				TRD_PLANT_NM.clear();
+				TRD_PLANT_ABBR.clear();
+				TRD_PLANT_SEQ_NO.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,PLANT_NAME,PLANT_ABBR,SEQ_NO "
+						+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+						+ "WHERE ENTITY='C' AND COMPANY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) "
+						+ "AND STATUS='Y' ";
+				query+= "ORDER BY PLANT_NAME";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					TRD_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					TRD_PLANT_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					TRD_PLANT_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+					TRD_PLANT_SEQ_NO.add(resultset.getString(4)==null?"0":resultset.getString(4));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+
+	//effective - counterparty plant effective date validity
+	//TBD
+	public void getEffectiveTransporterPlantList(String comp_cd)
+	{
+		String function_nm="getEffectiveTransporterPlantList()";
+		try
+		{
+			if(init())
+			{
+				TRANS_CD.clear();
+				TRANS_PLANT_NM.clear();
+				TRANS_PLANT_ABBR.clear();
+				TRANS_PLANT_SEQ_NO.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,PLANT_NAME,PLANT_ABBR,SEQ_NO "
+						+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+						+ "WHERE ENTITY='R' AND COMPANY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(b.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) "
+						+ "AND STATUS='Y' ";
+				query+= "ORDER BY COUNTERPARTY_CD,PLANT_NAME";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					TRANS_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					TRANS_PLANT_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					TRANS_PLANT_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+					TRANS_PLANT_SEQ_NO.add(resultset.getString(4)==null?"0":resultset.getString(4));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	//effective - counterparty business plant effective date validity
+	public void getEffectiveCounterpartyBusinessPlantList(String counterparty_cd, String entity, String comp_cd)
+	{
+		String function_nm="getEffectiveCounterpartyBusinessPlantList()";
+		try
+		{
+			if(init())
+			{
+				CD.clear();
+				PLANT_NM.clear();
+				PLANT_ABBR.clear();
+				PLANT_SEQ_NO.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,PLANT_NAME,PLANT_ABBR,SEQ_NO "
+						+ "FROM FMS_COUNTERPARTY_BU_DTL A "
+						+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_BU_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) "
+						+ "AND STATUS='Y' ";
+				query+= "ORDER BY PLANT_NAME";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, entity);
+				stmtement.setString(3, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					PLANT_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					PLANT_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+					PLANT_SEQ_NO.add(resultset.getString(4)==null?"0":resultset.getString(4));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+
+	//effective - counterparty business plant effective date validity
+	//TBD
+	public void getEffectiveBusinessPlantList(String comp_cd)
+	{
+		String function_nm="getEffectiveBusinessPlantList()";
+		try
+		{
+			if(init())
+			{
+				BU_CD.clear();
+				BU_PLANT_NM.clear();
+				BU_PLANT_ABBR.clear();
+				BU_PLANT_SEQ_NO.clear();
+				
+				query = "SELECT COUNTERPARTY_CD,PLANT_NAME,PLANT_ABBR,SEQ_NO "
+						+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+						+ "WHERE ENTITY='B' AND COMPANY_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(b.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) "
+						+ "AND STATUS='Y' ";
+				query+= "ORDER BY PLANT_NAME";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					BU_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					BU_PLANT_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					BU_PLANT_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+					BU_PLANT_SEQ_NO.add(resultset.getString(4)==null?"0":resultset.getString(4));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public String getMinEffectiveDateOfCounterparty(String counterparty_cd)
+	{
+		String function_nm="getMinEffectiveDateOfCounterparty()";
+		String date="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT TO_CHAR(EFF_DT,'DD/MM/YYYY') "
+						+ "FROM FMS_COUNTERPARTY_MST A "
+						+ "WHERE COUNTERPARTY_CD=? "
+						+ "AND EFF_DT=(SELECT MIN(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY')) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					date = resultset.getString(1)==null?"0":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return date;
+	}
+	
+	public String getCounterpartyPlantABBR(String counterparty_cd, String comp_cd, String plant_seq, String entity)
+	{
+		String function_nm="getCounterpartyPlantABBR()";
+		String abbr="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT PLANT_ABBR "
+						+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+						+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? AND SEQ_NO=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, entity);
+				stmtement.setString(3, comp_cd);
+				stmtement.setString(4, plant_seq);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					abbr=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return abbr;
+	}
+
+	public String getCounterpartyBuPlantABBR(String counterparty_cd, String comp_cd, String plant_seq, String entity)
+	{
+		String function_nm="getCounterpartyBuPlantABBR()";
+		String abbr="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT PLANT_ABBR "
+						+ "FROM FMS_COUNTERPARTY_BU_DTL A "
+						+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? AND SEQ_NO=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_BU_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, entity);
+				stmtement.setString(3, comp_cd);
+				stmtement.setString(4, plant_seq);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					abbr=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return abbr;
+	}
+
+	public String getCounterpartyPlantName(String counterparty_cd, String comp_cd, String plant_seq, String entity)
+	{
+		String function_nm="getCounterpartyPlantName()";
+		String abbr="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT PLANT_NAME "
+						+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+						+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? AND SEQ_NO=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, entity);
+				stmtement.setString(3, comp_cd);
+				stmtement.setString(4, plant_seq);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					abbr=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return abbr;
+	}
+	
+	public String getFreqNm(String freq)
+	{
+		String function_nm="getFreqNm()";
+		String freq_nm="";
+		try
+		{
+			if(freq.equals("1"))
+			{
+				freq_nm="1st-Fortnight";
+			}
+			else if(freq.equals("2"))
+			{
+				freq_nm="2nd-Fortnight";
+			}
+			else if(freq.equals("3"))
+			{
+				freq_nm="1st-Weekly";
+			}
+			else if(freq.equals("4"))
+			{
+				freq_nm="2nd-Weekly";
+			}
+			else if(freq.equals("5"))
+			{
+				freq_nm="3rd-Weekly";
+			}
+			else if(freq.equals("6"))
+			{
+				freq_nm="4th-Weekly";
+			}
+			else if(freq.equals("7"))
+			{
+				freq_nm="Monthly";
+			}
+			else if(freq.equals("8"))
+			{
+				freq_nm="Other";
+			}
+			else if(freq.equals("9"))
+			{
+				freq_nm="5th-Weekly";
+			}
+			else if(freq.equals("10"))
+			{
+				freq_nm="Delivery Period";
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return freq_nm;
+	}
+	
+	public String getRateUnitNm(String cd)
+	{
+		String function_nm="getRateUnitNm()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT RATE_UNIT_ABR "
+						+ "FROM FMS_RATE_UNIT "
+						+ "WHERE RATE_UNIT_CD=? ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String RateNumberFormat(double rate, String rate_unit)
+	{
+		String function_nm="RateNumberFormat()";
+		String number="";
+		try
+		{
+			if(rate_unit.equals("1"))
+			{
+				number = nf.format(rate);
+			}
+			else if(rate_unit.equals("2"))
+			{
+				number = nf2.format(rate);
+			}
+			else
+			{
+				number = nf.format(rate);
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return number;
+	}
+	
+	//effective - counterparty effective date validity 
+	//Active | Deactive check
+	/*public void getEffectiveTransporterCounterpartyList(String comp_cd)
+	{
+		String function_nm="getEffectiveTransporterCounterpartyList()";
+		try
+		{
+			if(init())
+			{
+				COUNTERPARTY_CD.clear();
+				COUNTERPARTY_NM.clear();
+				COUNTERPARTY_ABBR.clear();
+				
+				query = "SELECT A.COUNTERPARTY_CD,A.COUNTERPARTY_NM,A.COUNTERPARTY_ABBR "
+						+ "FROM FMS_COUNTERPARTY_MST A, FMS_ENTITY_REQ_DTL B "
+						+ "WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND B.COMPANY_CD=? AND B.ENTITY='R' AND B.STATUS='A' "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_MST B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY')) "
+						+ "AND A.STATUS='Y' ";
+				query+= "ORDER BY COUNTERPARTY_NM";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					COUNTERPARTY_CD.add(resultset.getString(1)==null?"":resultset.getString(1));
+					COUNTERPARTY_NM.add(resultset.getString(2)==null?"":resultset.getString(2));
+					COUNTERPARTY_ABBR.add(resultset.getString(3)==null?"":resultset.getString(3));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}*/
+	
+	public String DueDateCalculation(String inv_date,String days,String type,String exclude_sat,String comp_cd,String state_tin)
+	{
+		String function_nm="DueDateCalculation()";
+		String date="";
+		String day_nms="";
+		
+		if(state_tin.length()==1)
+		{
+			state_tin="0"+state_tin;
+		}
+		if(exclude_sat.equals("Y"))
+		{
+			day_nms="'SAT','SUN'";
+		}
+		else
+		{
+			day_nms="'SUN'";
+		}
+		try
+		{
+			if(init())
+			{
+				if(type.equals("C")) //CALENDAR DAYS
+				{
+					if(!days.equals(""))
+					{
+						int day=Integer.parseInt(days);
+						for(int i=1; i <=day; i++)
+		    			{
+							query="SELECT TO_CHAR(TO_DATE(?,'DD/MM/YYYY')+?,'DD/MM/YYYY') "
+									+ "FROM DUAL";
+							stmtement = conn.prepareStatement(query);
+							stmtement.setString(1, inv_date);
+							stmtement.setInt(2, i);
+							resultset = stmtement.executeQuery();
+							if(resultset.next())
+							{
+								date = resultset.getString(1)==null?"":resultset.getString(1);
+								
+								int count=0;
+								query1 = "SELECT COUNT(*) "
+										+ "FROM DUAL "
+										+ "WHERE TO_CHAR(TO_DATE(?,'DD/MM/YYYY'),'DY') IN ("+day_nms+") ";
+								stmtement1 = conn.prepareStatement(query1);
+								stmtement1.setString(1, date);
+								resultset1=stmtement1.executeQuery();
+								if(resultset1.next())
+								{
+									count = resultset1.getInt(1);
+									if(count == 1)
+									{
+										day = day + 1; 
+									}
+								}
+								stmtement1.close();
+								resultset1.close();
+							}
+							stmtement.close();
+							resultset.close();
+		    			}
+					}
+				}
+				else if(type.equals("B")) //BUSINESS DAY
+				{
+					if(!days.equals(""))
+					{
+						int day=Integer.parseInt(days);
+						for(int i=1; i <=day; i++)
+		    			{
+							query="SELECT TO_CHAR(TO_DATE(?,'DD/MM/YYYY')+?,'DD/MM/YYYY') "
+									+ "FROM DUAL";
+							stmtement = conn.prepareStatement(query);
+							stmtement.setString(1, inv_date);
+							stmtement.setInt(2, i);
+							resultset = stmtement.executeQuery();
+							if(resultset.next())
+							{
+								date = resultset.getString(1)==null?"":resultset.getString(1);
+								
+								int count=0;
+								
+								query1="SELECT COUNT(*) "
+										+ "FROM FMS_HOLIDAY_DTL "
+										+ "WHERE COMPANY_CD=? AND HOLIDAY_DT=TO_DATE(?,'DD/MM/YYYY') "
+										+ "AND FLAG='Y' AND STATE_TIN=?";
+								stmtement1 = conn.prepareStatement(query1);
+								stmtement1.setString(1, comp_cd);
+								stmtement1.setString(2, date);
+								stmtement1.setString(3, state_tin);
+								resultset1=stmtement1.executeQuery();
+								if(resultset1.next())
+								{
+									count = resultset1.getInt(1);
+									if(count == 1)
+									{
+										day = day + 1; 
+									}
+								}
+								stmtement1.close();
+								resultset1.close();
+								if(count==0)
+								{
+									query1 = "SELECT COUNT(*) "
+											+ "FROM DUAL "
+											+ "WHERE TO_CHAR(TO_DATE(?,'DD/MM/YYYY'),'DY') IN ("+day_nms+") ";
+									stmtement1 = conn.prepareStatement(query1);
+									stmtement1.setString(1, date);
+									resultset1=stmtement1.executeQuery();
+									if(resultset1.next())
+									{
+										count = resultset1.getInt(1);
+										if(count == 1)
+										{
+											day = day + 1; 
+										}
+									}
+									stmtement1.close();
+									resultset1.close();
+								}
+							}
+							stmtement.close();
+							resultset.close();
+		    			}
+					}
+				}
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return date;
+	}
+		
+	public String getContVariableDCQ(String comp_cd,String counterparty_cd, String agmt_no, String cont_no, String cont_type, String date)
+	{
+		String function_nm="getContVariableDCQ()";
+		String dcq="";
+		try
+		{
+			if(init())
+			{
+				query="SELECT DCQ "
+						+ "FROM FMS_SUPPLY_CONT_DCQ_DTL "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND AGMT_NO=? AND CONT_NO=? "
+						+ "AND CONTRACT_TYPE=? AND STATUS='Y' "
+						+ "AND FROM_DT<=TO_DATE(?,'DD/MM/YYYY') AND TO_DT>=TO_DATE(?,'DD/MM/YYYY') ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				stmtement.setString(2, counterparty_cd);
+				stmtement.setString(3, agmt_no);
+				stmtement.setString(4, cont_no);
+				stmtement.setString(5, cont_type);
+				stmtement.setString(6, date);
+				stmtement.setString(7, date);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					dcq=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return dcq;
+	}
+	
+	public String getTraderContVariableDCQ(String comp_cd,String counterparty_cd, String agmt_no, String cont_no, String cont_type, String date)
+	{
+		String function_nm="getContVariableDCQ()";
+		String dcq="";
+		try
+		{
+			if(init())
+			{
+				query="SELECT DCQ "
+						+ "FROM FMS_TRADER_CONT_DCQ_DTL "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND AGMT_NO=? AND CONT_NO=? "
+						+ "AND CONTRACT_TYPE=? AND STATUS='Y' "
+						+ "AND FROM_DT<=TO_DATE(?,'DD/MM/YYYY') AND TO_DT>=TO_DATE(?,'DD/MM/YYYY') ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				stmtement.setString(2, counterparty_cd);
+				stmtement.setString(3, agmt_no);
+				stmtement.setString(4, cont_no);
+				stmtement.setString(5, cont_type);
+				stmtement.setString(6, date);
+				stmtement.setString(7, date);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					dcq=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return dcq;
+	}
+	
+	public String getContVariableTAQ(String comp_cd,String counterparty_cd, String agmt_no, String cont_no, String cont_type, String date)
+	{
+		String function_nm="getContVariableTAQ()";
+		String taq="";
+		try
+		{
+			if(init())
+			{
+				query="SELECT ASED_DCQ "
+						+ "FROM FMS_MR_CONT_TAQ_DTL "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND AGMT_NO=? AND CONT_NO=? "
+						+ "AND CONTRACT_TYPE=? "
+						+ "AND FROM_DT<=TO_DATE(?,'DD/MM/YYYY') AND TO_DT>=TO_DATE(?,'DD/MM/YYYY') ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				stmtement.setString(2, counterparty_cd);
+				stmtement.setString(3, agmt_no);
+				stmtement.setString(4, cont_no);
+				stmtement.setString(5, cont_type);
+				stmtement.setString(6, date);
+				stmtement.setString(7, date);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					taq=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return taq;
+	}
+
+	public String getCargoVariableCSOC(String comp_cd,String counterparty_cd, String buy_sale, String agmt_no, String cont_no, String cont_type,String cargo_no, String date)
+	{
+		String function_nm="getCargoVariableCSOC()";
+		String csoc="";
+		try
+		{
+			if(init())
+			{
+				query="SELECT CSOC "
+						+ "FROM FMS_LTCORA_CONT_CARGO_CSOC "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND AGMT_NO=? AND CONT_NO=? "
+						+ "AND CONTRACT_TYPE=? AND BUY_SALE=? "
+						+ "AND FROM_DT<=TO_DATE(?,'DD/MM/YYYY') AND TO_DT>=TO_DATE(?,'DD/MM/YYYY') "
+						+ "AND CARGO_NO=? ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				stmtement.setString(2, counterparty_cd);
+				stmtement.setString(3, agmt_no);
+				stmtement.setString(4, cont_no);
+				stmtement.setString(5, cont_type);
+				stmtement.setString(6, buy_sale);
+				stmtement.setString(7, date);
+				stmtement.setString(8, date);
+				stmtement.setString(9, cargo_no);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					csoc=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return csoc;
+	}
+	
+	public String getDisplayDealMapping(String agmt, String agmt_rev, String cont, String cont_rev, String cont_type)
+	{
+		String function_nm="getDisplayDealMapping()";
+		String dealMapping="";
+		try
+		{
+			if(cont_type.equals("S"))
+			{
+				dealMapping=cont_type+""+agmt+"-"+cont;
+			}
+			else
+			{
+				dealMapping=cont_type+""+cont;
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return dealMapping;
+	}
+	
+	public String getToMailReceipentList(String comp_cd, String menu_nm, String module_nm, String rpt_freq, String gen_type)
+    {
+		String function_nm="getToMailReceipentList()";
+    	String recipient_list="";
+    	try
+    	{
+    		if(init())
+			{  		
+	    		query="SELECT D.EMAIL_ID "
+	    				+ "FROM FMS_EMAIL_SUPPORT_MST A, FMS_EMAIL_RECIPIENT_MST B, FMS_EMAIL_RECIPIENT_DTL C, FMS_EMP_MST D "
+	    				+ "WHERE UPPER(A.MODULE_NAME)=? AND UPPER(A.MENU_NAME) LIKE ? AND UPPER(A.REPORT_FREQ)=? AND UPPER(A.GENERATION_TYPE)=? AND A.SUPPORT_FLAG=? "
+	    				+ "AND B.COMPANY_CD=? AND B.STOP_FLAG=? AND UPPER(C.ENABLE_DISABLE)=? AND D.EMP_STATUS=? AND D.EMAIL_ID IS NOT NULL "
+	    				+ "AND C.TO_EMP_CD IS NOT NULL AND C.TO_EMP_CD != ? "
+	    				+ "AND A.MODULE_NAME=B.MODULE_NAME AND A.MENU_NAME=B.MENU_NAME AND A.REPORT_FREQ=B.REPORT_FREQ AND A.GENERATION_TYPE=B.GENERATION_TYPE "
+	    				+ "AND B.RECIPIENTS_CD=C.RECIPIENTS_CD AND C.TO_EMP_CD=D.EMP_CD ";
+	    		query+= "UNION ALL ";
+	    		query+="SELECT C.TO_EMAIL "
+	    				+ "FROM FMS_EMAIL_SUPPORT_MST A, FMS_EMAIL_RECIPIENT_MST B, FMS_EMAIL_RECIPIENT_DTL C "
+	    				+ "WHERE UPPER(A.MODULE_NAME)=? AND UPPER(A.MENU_NAME) LIKE ? AND UPPER(A.REPORT_FREQ)=? AND UPPER(A.GENERATION_TYPE)=? AND A.SUPPORT_FLAG=? "
+	    				+ "AND B.COMPANY_CD=? AND B.STOP_FLAG=? AND UPPER(C.ENABLE_DISABLE)=? AND C.TO_EMP_CD = ? AND C.TO_EMAIL IS NOT NULL "
+	    				+ "AND A.MODULE_NAME=B.MODULE_NAME AND A.MENU_NAME=B.MENU_NAME AND A.REPORT_FREQ=B.REPORT_FREQ AND A.GENERATION_TYPE=B.GENERATION_TYPE "
+	    				+ "AND B.RECIPIENTS_CD=C.RECIPIENTS_CD ";
+	    		int st_count=0;
+	    		stmtement = conn.prepareStatement(query);
+	    		stmtement.setString(++st_count, module_nm.toUpperCase());
+	    		stmtement.setString(++st_count, menu_nm.toUpperCase());
+	    		stmtement.setString(++st_count, rpt_freq.toUpperCase());
+	    		stmtement.setString(++st_count, gen_type.toUpperCase());
+	    		stmtement.setString(++st_count, "Y");
+	    		stmtement.setString(++st_count, comp_cd);
+	    		stmtement.setString(++st_count, "N");
+	    		stmtement.setString(++st_count, "Y");
+	    		stmtement.setString(++st_count, "Y");
+	    		stmtement.setString(++st_count, "0");
+	    		stmtement.setString(++st_count, module_nm.toUpperCase());
+	    		stmtement.setString(++st_count, menu_nm.toUpperCase());
+	    		stmtement.setString(++st_count, rpt_freq.toUpperCase());
+	    		stmtement.setString(++st_count, gen_type.toUpperCase());
+	    		stmtement.setString(++st_count, "Y");
+	    		stmtement.setString(++st_count, comp_cd);
+	    		stmtement.setString(++st_count, "N");
+	    		stmtement.setString(++st_count, "Y");
+	    		stmtement.setString(++st_count, "0");
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					String email=resultset.getString(1)==null?"":resultset.getString(1);
+					recipient_list += !recipient_list.equals("")?","+email:email;
+				}
+				stmtement.close();
+				resultset.close();
+	    		conn.close();
+			}
+    	}
+    	catch(Exception e)
+    	{
+    		new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+    	}
+    	return recipient_list;
+    }
+	
+	public String getCcMailReceipentList(String comp_cd,String menu_nm, String module_nm, String rpt_freq, String gen_type)
+    {
+		String function_nm="getCcMailReceipentList()";
+    	String recipient_list="";
+    	try
+    	{
+    		if(init())
+			{  		
+	    		query="SELECT D.EMAIL_ID "
+	    				+ "FROM FMS_EMAIL_SUPPORT_MST A, FMS_EMAIL_RECIPIENT_MST B, FMS_EMAIL_RECIPIENT_DTL C, FMS_EMP_MST D "
+	    				+ "WHERE UPPER(A.MODULE_NAME)=? AND UPPER(A.MENU_NAME) LIKE ? AND UPPER(A.REPORT_FREQ)=? AND UPPER(A.GENERATION_TYPE)=? AND A.SUPPORT_FLAG=? "
+	    				+ "AND B.COMPANY_CD=? AND B.STOP_FLAG=? AND UPPER(C.ENABLE_DISABLE)=? AND D.EMP_STATUS=? AND D.EMAIL_ID IS NOT NULL "
+	    				+ "AND C.CC_EMP_CD IS NOT NULL AND C.CC_EMP_CD != ? "
+	    				+ "AND A.MODULE_NAME=B.MODULE_NAME AND A.MENU_NAME=B.MENU_NAME AND A.REPORT_FREQ=B.REPORT_FREQ AND A.GENERATION_TYPE=B.GENERATION_TYPE "
+	    				+ "AND B.RECIPIENTS_CD=C.RECIPIENTS_CD AND C.CC_EMP_CD=D.EMP_CD ";
+	    		query+= "UNION ALL ";
+	    		query+="SELECT C.CC_EMAIL "
+	    				+ "FROM FMS_EMAIL_SUPPORT_MST A, FMS_EMAIL_RECIPIENT_MST B, FMS_EMAIL_RECIPIENT_DTL C "
+	    				+ "WHERE UPPER(A.MODULE_NAME)=? AND UPPER(A.MENU_NAME) LIKE ? AND UPPER(A.REPORT_FREQ)=? AND UPPER(A.GENERATION_TYPE)=? AND A.SUPPORT_FLAG=? "
+	    				+ "AND B.COMPANY_CD=? AND B.STOP_FLAG=? AND UPPER(C.ENABLE_DISABLE)=? AND C.CC_EMP_CD = ? AND C.CC_EMAIL IS NOT NULL "
+	    				+ "AND A.MODULE_NAME=B.MODULE_NAME AND A.MENU_NAME=B.MENU_NAME AND A.REPORT_FREQ=B.REPORT_FREQ AND A.GENERATION_TYPE=B.GENERATION_TYPE "
+	    				+ "AND B.RECIPIENTS_CD=C.RECIPIENTS_CD ";
+	    		int st_count=0;
+	    		stmtement = conn.prepareStatement(query);
+	    		stmtement.setString(++st_count, module_nm.toUpperCase());
+	    		stmtement.setString(++st_count, menu_nm.toUpperCase());
+	    		stmtement.setString(++st_count, rpt_freq.toUpperCase());
+	    		stmtement.setString(++st_count, gen_type.toUpperCase());
+	    		stmtement.setString(++st_count, "Y");
+	    		stmtement.setString(++st_count, comp_cd);
+	    		stmtement.setString(++st_count, "N");
+	    		stmtement.setString(++st_count, "Y");
+	    		stmtement.setString(++st_count, "Y");
+	    		stmtement.setString(++st_count, "0");
+	    		stmtement.setString(++st_count, module_nm.toUpperCase());
+	    		stmtement.setString(++st_count, menu_nm.toUpperCase());
+	    		stmtement.setString(++st_count, rpt_freq.toUpperCase());
+	    		stmtement.setString(++st_count, gen_type.toUpperCase());
+	    		stmtement.setString(++st_count, "Y");
+	    		stmtement.setString(++st_count, comp_cd);
+	    		stmtement.setString(++st_count, "N");
+	    		stmtement.setString(++st_count, "Y");
+	    		stmtement.setString(++st_count, "0");
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					String email=resultset.getString(1)==null?"":resultset.getString(1);
+					recipient_list += !recipient_list.equals("")?","+email:email;
+				}
+				stmtement.close();
+				resultset.close();
+	    		conn.close();
+			}
+    	}
+    	catch(Exception e)
+    	{
+    		new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+    	}
+    	return recipient_list;
+    }
+	
+	public String getEntityTaxStructureDtl(String comp_cd, String counterparty_cd, String entity, String seq, String bu, String date)
+    {
+		String function_nm="getEntityTaxStructureDtl()";
+    	String structure_dtl="";
+    	try
+    	{
+    		if(init())
+			{
+    			query="SELECT TAX_STRUCT_DTL "
+						+ "FROM FMS_ENTITY_TAX_STRUCT_DTL A "
+						+ "WHERE ENTITY=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND PLANT_SEQ_NO=? AND BU_UNIT=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_TAX_STRUCT_DTL B "
+						+ "WHERE A.ENTITY=B.ENTITY AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.PLANT_SEQ_NO=B.PLANT_SEQ_NO AND A.BU_UNIT=B.BU_UNIT AND B.EFF_DT<=TO_DATE(?,'DD/MM/YYYY'))";
+    			stmtement = conn.prepareStatement(query);
+    			stmtement.setString(1, entity);
+    			stmtement.setString(2, comp_cd);
+    			stmtement.setString(3, counterparty_cd);
+    			stmtement.setString(4, seq);
+    			stmtement.setString(5, bu);
+    			stmtement.setString(6, date);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					structure_dtl=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+    	}
+    	catch(Exception e)
+    	{
+    		new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+    	}
+    	return structure_dtl;
+    }
+
+	public String getEntityServiceStructureDtl(String comp_cd, String counterparty_cd, String entity, String seq, String bu, String date, String invoice_type)
+    {
+		String function_nm="getEntityTaxStructureDtl()";
+    	String structure_dtl="";
+    	try
+    	{
+    		if(init())
+			{
+    			query="SELECT TAX_STRUCT_DTL "
+						+ "FROM FMS_ENTITY_SERVICE_TAX_DTL A "
+						+ "WHERE ENTITY=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND PLANT_SEQ_NO=? AND BU_UNIT=? AND INVOICE_TYPE=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_SERVICE_TAX_DTL B "
+						+ "WHERE A.ENTITY=B.ENTITY AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.PLANT_SEQ_NO=B.PLANT_SEQ_NO AND A.BU_UNIT=B.BU_UNIT AND A.INVOICE_TYPE=B.INVOICE_TYPE AND B.EFF_DT<=TO_DATE(?,'DD/MM/YYYY'))";
+    			stmtement = conn.prepareStatement(query);
+    			stmtement.setString(1, entity);
+    			stmtement.setString(2, comp_cd);
+    			stmtement.setString(3, counterparty_cd);
+    			stmtement.setString(4, seq);
+    			stmtement.setString(5, bu);
+    			stmtement.setString(6, invoice_type);
+    			stmtement.setString(7, date);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					structure_dtl=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+    	}
+    	catch(Exception e)
+    	{
+    		new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+    	}
+    	return structure_dtl;
+    }
+	
+	public String getEntityBuTaxStructureDtl(String comp_cd, String counterparty_cd, String entity, String seq, String bu, String date, String inv_type)
+    {
+		String function_nm="getEntityBuTaxStructureDtl()";
+    	String structure_dtl="";
+    	try
+    	{
+    		if(init())
+			{
+    			query="SELECT TAX_STRUCT_DTL "
+						+ "FROM FMS_ENTITY_BU_SVC_TAX_DTL A "
+						+ "WHERE ENTITY=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND PLANT_SEQ_NO=? AND BU_UNIT=? AND INVOICE_TYPE=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_BU_SVC_TAX_DTL B "
+						+ "WHERE A.ENTITY=B.ENTITY AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.PLANT_SEQ_NO=B.PLANT_SEQ_NO AND A.BU_UNIT=B.BU_UNIT AND A.INVOICE_TYPE=B.INVOICE_TYPE "
+						+ "AND B.EFF_DT<=TO_DATE(?,'DD/MM/YYYY'))";
+    			stmtement = conn.prepareStatement(query);
+    			stmtement.setString(1, entity);
+    			stmtement.setString(2, comp_cd);
+    			stmtement.setString(3, counterparty_cd);
+    			stmtement.setString(4, seq);
+    			stmtement.setString(5, bu);
+    			stmtement.setString(6, inv_type);
+    			stmtement.setString(7, date);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					structure_dtl=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+    	}
+    	catch(Exception e)
+    	{
+    		new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+    	}
+    	return structure_dtl;
+    }
+	
+	public String getCustomTaxStructureDtl(String date)
+    {
+		String function_nm="getCustomTaxStructureDtl()";
+    	String structure_dtl="";
+    	try
+    	{
+    		if(init())
+			{
+    			query="SELECT TAX_STRUCT_DTL "
+						+ "FROM FMS_CUSTOM_TAX_STRUCT_DTL A "
+						+ "WHERE EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_CUSTOM_TAX_STRUCT_DTL B "
+						+ "WHERE B.EFF_DT<=TO_DATE(?,'DD/MM/YYYY'))";
+    			stmtement = conn.prepareStatement(query);
+    			stmtement.setString(1, date);
+    			resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					structure_dtl=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+    	}
+    	catch(Exception e)
+    	{
+    		new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+    	}
+    	return structure_dtl;
+    }
+	
+	public String getFirstDtOfBillingCycle(String billing_frq,String days,String date)
+	{
+		String function_nm="getFirstDtOfBillingCycle()";
+		String period_start_dt="";
+		String period_end_dt="";
+		try
+		{
+			String[] split=date.split("/");
+			String month=split[1];
+			String year=split[2];
+			
+			if(billing_frq.equals("F"))
+			{	
+				int count=dateUtil.getDays(date, "15/"+month+"/"+year);
+				int count1=dateUtil.getDays(date, ""+dateUtil.getLastDateOfMonth(month, year));
+				
+				if(count <= 1)
+				{
+					period_start_dt= "01/"+month+"/"+year;
+				}
+				else if(count1 <= 1)
+				{
+					period_start_dt= "16/"+month+"/"+year;
+				}
+			}
+			else if(billing_frq.equals("W"))
+			{
+				int count=dateUtil.getDays(date, "07/"+month+"/"+year);
+				int count1=dateUtil.getDays(date, "14/"+month+"/"+year);
+				int count2=dateUtil.getDays(date, "21/"+month+"/"+year);
+				int count3=dateUtil.getDays(date, "28/"+month+"/"+year);
+				int count4=dateUtil.getDays(date, ""+dateUtil.getLastDateOfMonth(month, year));
+				
+				if(count <= 1)
+				{
+					period_start_dt= "01/"+month+"/"+year;
+				}
+				else if(count1 <= 1)
+				{
+					period_start_dt= "08/"+month+"/"+year;
+				}
+				else if(count2 <= 1)
+				{
+					period_start_dt= "15/"+month+"/"+year;
+				}
+				else if(count3 <= 1)
+				{
+					period_start_dt= "22/"+month+"/"+year;
+				}
+				else if(count4 <= 1)
+				{
+					if(month.equals("02"))
+					{
+						int noofdays=dateUtil.getDays(""+dateUtil.getLastDateOfMonth(month, year), ""+dateUtil.getFirstDateOfMonth(month, year));
+						if(noofdays==29)
+						{
+							period_start_dt="29/"+month+"/"+year;
+						}
+						/*else
+						{
+							period_start_dt=""+dateUtil.getLastDateOfMonth(month, year);
+						}*/
+					}
+					else
+					{
+						period_start_dt="29/"+month+"/"+year;
+					}
+				}
+			}
+			else if(billing_frq.equals("M"))
+			{
+				int count=dateUtil.getDays(date, ""+dateUtil.getLastDateOfMonth(month, year));
+				
+				if(count <= 1)
+				{
+					period_start_dt= "01/"+month+"/"+year;
+				}
+			}
+			
+			if(period_start_dt.equals(""))
+			{
+				period_start_dt=date;
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return period_start_dt;
+	}
+	
+	public String getSalesContractName(String contract_type)
+	{
+		String function_nm="getSalesContractName()";
+		String contract_nm="";
+		try
+		{
+			if(contract_type.equals("S"))
+			{
+				contract_nm="SN";
+			}
+			else if(contract_type.equals("L"))
+			{
+				contract_nm="LOA";
+			}
+			else if(contract_type.equals("X"))
+			{
+				contract_nm="IGX";
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return contract_nm;
+	}
+	
+	public String getTranspoterCustomerCode(String comp_cd, String transporter_cd,String customer_cd,String customer_plant_seq,String date)
+	{
+		String function_nm="getTranspoterCustomerCode()";
+		String customer_code="";
+    	try
+    	{
+    		if(init())
+			{
+    			query="SELECT CUSTOMER_CODE "
+					+ "FROM FMS_TRANSPORTER_CUST_CD A "
+					+ "WHERE COMPANY_CD=? AND TRANSPORTER_CD=? "
+					+ "AND COUNTERPARTY_CD=? AND PLANT_SEQ=? AND STATUS='Y' "
+					+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_TRANSPORTER_CUST_CD B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.TRANSPORTER_CD=B.TRANSPORTER_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.PLANT_SEQ=B.PLANT_SEQ "
+					+ "AND EFF_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.STATUS=B.STATUS)";
+    			stmtement = conn.prepareStatement(query);
+    			stmtement.setString(1, comp_cd);
+    			stmtement.setString(2, transporter_cd);
+    			stmtement.setString(3, customer_cd);
+    			stmtement.setString(4, customer_plant_seq);
+    			stmtement.setString(5, date);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					customer_code=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+    	}
+    	catch(Exception e)
+    	{
+    		new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+    	}
+    	return customer_code;
+	}
+
+	//TBD
+	public String getCounterpartyBuABBR(String counterparty_cd, String comp_cd, String plant_seq, String entity)
+	{
+		String function_nm="getCounterpartyBuABBR()";
+		String abbr="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT PLANT_ABBR "
+						+ "FROM FMS_COUNTERPARTY_BU_DTL A "
+						+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? AND SEQ_NO=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_BU_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, entity);
+				stmtement.setString(3, comp_cd);
+				stmtement.setString(4, plant_seq);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					abbr=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return abbr;
+	}
+	
+	public String getTaxSAPcode(String tax_struct_cd,String comp_cd)
+	{
+		String function_nm="getTaxSAPcode()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT SAP_TAX_CODE "
+						+ "FROM FMS_TAX_STRUCTURE "
+						+ "WHERE COMPANY_CD=? AND TAX_STR_CD=?";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				stmtement.setString(2, tax_struct_cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getTaxSAPcode(String tax_struct_cd, String tax_code, String comp_cd)
+	{
+		String function_nm="getTaxSAPcode()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT SAP_TAX_CODE "
+						+ "FROM FMS_TAX_STRUCTURE_DTL "
+						+ "WHERE COMPANY_CD=? AND TAX_CODE=? "
+						+ "AND TAX_STR_CD=?";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				stmtement.setString(2, tax_code);
+				stmtement.setString(3, tax_struct_cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getTaxGLcode(String tax_struct_cd,String comp_cd)
+	{
+		String function_nm="getTaxGLcode()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT SAP_GL "
+						+ "FROM FMS_TAX_STRUCTURE "
+						+ "WHERE COMPANY_CD=? AND TAX_STR_CD=?";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				stmtement.setString(2, tax_struct_cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getTaxGLcode(String tax_struct_cd, String tax_code, String comp_cd)
+	{
+		String function_nm="getTaxGLcode()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT SAP_GL "
+						+ "FROM FMS_TAX_STRUCTURE_DTL "
+						+ "WHERE COMPANY_CD=? AND TAX_CODE=? "
+						+ "AND TAX_STR_CD=?";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				stmtement.setString(2, tax_code);
+				stmtement.setString(3, tax_struct_cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getBankName(String cd)
+	{
+		String function_nm="getBankName()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query="SELECT BANK_NAME "
+						+ "FROM FMS_BANK_MST A "
+						+ "WHERE BANK_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_BANK_MST B "
+						+ "WHERE A.BANK_CD=B.BANK_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String PrePaddingZero(String code, int numLen)
+	{
+		String function_nm="PrePaddingZero()";
+		String final_code="";
+		try
+		{
+			final_code=code;
+			int number = numLen-code.length();
+			for(int i=0;i<number;i++)
+			{
+				final_code="0"+final_code;
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return final_code;
+	}
+	
+	public String getFromMailId()
+	{
+		String function_nm="getFromMailId()";
+		String key_value="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT KEY_VALUE "
+						+ "FROM FMS_SRV_SETTING "
+						+ "WHERE KEY_NM='EMAIL_FROM' ";
+				stmtement = conn.prepareStatement(query);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					key_value=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return key_value;
+	}
+	
+	public String getKeyValueFromSrvSettingUsingKeyNm(String key_name)
+	{
+		String function_nm="getKeyValueFromSrvSettingUsingKeyNm()";
+		String key_value="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT KEY_VALUE "
+						+ "FROM FMS_SRV_SETTING "
+						+ "WHERE KEY_NM=? ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, key_name);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					key_value=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return key_value;
+	}
+	
+	public String getGLdesc(String comp_cd,String gl_code)
+	{
+		String function_nm="getGLdesc()";
+		String gl_desc="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT GL_DECR "
+						+ "FROM FMS_SAP_ACCOUNT_GL_MST "
+						+ "WHERE COMPANY_CD=? AND GL_CODE=? ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				stmtement.setString(2, gl_code);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					gl_desc=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return gl_desc;
+	}
+	
+	public String RemovePrePaddingZero(String code)
+	{
+		String function_nm="RemovePrePaddingZero()";
+		String final_code="";
+		try
+		{
+			int number = code.length();
+			int count=0;
+			for(int i=0;i<number;i++)
+			{
+				String temp = ""+code.charAt(i);
+				if(temp.equals("0"))
+				{
+					count++;
+				}
+				else
+				{
+					break;
+				}
+			}
+			
+			final_code=code.substring(count, number);
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return final_code;
+	}
+	
+	public String getBankABBR(String cd)
+	{
+		String function_nm="getBankABBR()";
+		String abbr="";
+		try
+		{
+			if(init())
+			{
+				query="SELECT BANK_ABBR "
+						+ "FROM FMS_BANK_MST A "
+						+ "WHERE BANK_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_BANK_MST B "
+						+ "WHERE A.COMPANY_CD=B.COMPANY_CD AND A.BANK_CD=B.BANK_CD) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					abbr = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return abbr;
+	}
+	
+	public String  getBillingFreqNm(String freq)
+	{
+		String function_nm="getBillingFreqNm()";
+		String nm="";
+		try
+		{
+			if(freq.equals("1") || freq.equals("2"))
+			{
+				if(freq.equals("1"))
+				{
+					nm="1st-Fortnight";
+				}
+				else if(freq.equals("2"))
+				{
+					nm="2nd-Fortnight";
+				}
+			}
+			else if(freq.equals("3") || freq.equals("4") || freq.equals("5") || freq.equals("6") || freq.equals("9"))
+			{
+				if(freq.equals("3"))
+				{
+					nm="1st-Weekly";
+				}
+				else if(freq.equals("4")) 
+				{
+					nm="2nd-Weekly";
+				}
+				else if(freq.equals("5")) 
+				{
+					nm="3rd-Weekly";
+				} 
+				else if(freq.equals("6")) 
+				{
+					nm="4th-Weekly";
+				} 
+				else if(freq.equals("9"))
+				{
+					nm="5th-Weekly";
+				}
+			}
+			else if(freq.equals("7"))
+			{
+				nm="Monthly";
+			}
+			else if(freq.equals("8"))
+			{
+				nm="Other";
+			}
+			else if(freq.equals("10"))
+			{
+				nm="Delivery Period";
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return nm;
+	}
+	
+	public String getInvoicePrefix(String comp_cd)
+	{
+		String function_nm="getInvoicePrefix()";
+		String inv_prefix="";
+		try
+		{
+			if(init())
+			{
+				query="SELECT INVOICE_PREFIX "
+						+ "FROM FMS_COMPANY_OWNER_MST A "
+						+ "WHERE COMPANY_CD=? AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_COMPANY_OWNER_MST B "
+						+ "WHERE A.COMPANY_CD=B.COMPANY_CD)";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, comp_cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					inv_prefix = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return inv_prefix;
+	}
+	
+	//TBD
+	public HashMap getCounterpartyPlantDetail(String comp_cd, String entity, String counterparty_cd, String plant_seq)
+	{
+		String function_nm="getCounterpartyPlantDetail()";
+		HashMap<String, String> plant_detail = new HashMap<String, String>();
+		try
+		{
+			String plantAddress  = "";
+			String plantCity  = "";
+			String plantState  = "";
+			String plantPin  = "";
+			String plantNm = "";
+			
+			if(init())
+			{
+				query="SELECT PLANT_ADDR,PLANT_CITY,PLANT_STATE,PLANT_PIN,PLANT_NAME "
+						+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+						+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? AND SEQ_NO=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, entity);
+				stmtement.setString(3, comp_cd);
+				stmtement.setString(4, plant_seq);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					plantAddress  = resultset.getString(1)==null?"":resultset.getString(1);
+					plantCity  = resultset.getString(2)==null?"":resultset.getString(2);
+					plantState  = resultset.getString(3)==null?"":resultset.getString(3);
+					plantPin  = resultset.getString(4)==null?"":resultset.getString(4);
+					plantNm  = resultset.getString(5)==null?"":resultset.getString(5);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+			
+			plant_detail.put("plant_address", plantAddress);
+			plant_detail.put("plant_city", plantCity);
+			plant_detail.put("plant_state", plantState);
+			plant_detail.put("plant_pin", plantPin);
+			plant_detail.put("plant_name", plantNm);
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return plant_detail;
+	}
+	
+	//TBD
+	public HashMap getCounterpartyBuPlantDetail(String comp_cd, String entity, String counterparty_cd, String plant_seq)
+	{
+		String function_nm="getCounterpartyBuPlantDetail()";
+		HashMap<String, String> plant_detail = new HashMap<String, String>();
+		try
+		{
+			String plantAddress  = "";
+			String plantCity  = "";
+			String plantState  = "";
+			String plantPin  = "";
+			String plantNm = "";
+			
+			if(init())
+			{
+				query="SELECT PLANT_ADDR,PLANT_CITY,PLANT_STATE,PLANT_PIN,PLANT_NAME "
+						+ "FROM FMS_COUNTERPARTY_BU_DTL A "
+						+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? AND SEQ_NO=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_BU_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) ";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, entity);
+				stmtement.setString(3, comp_cd);
+				stmtement.setString(4, plant_seq);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					plantAddress  = resultset.getString(1)==null?"":resultset.getString(1);
+					plantCity  = resultset.getString(2)==null?"":resultset.getString(2);
+					plantState  = resultset.getString(3)==null?"":resultset.getString(3);
+					plantPin  = resultset.getString(4)==null?"":resultset.getString(4);
+					plantNm  = resultset.getString(5)==null?"":resultset.getString(5);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+			
+			plant_detail.put("plant_address", plantAddress);
+			plant_detail.put("plant_city", plantCity);
+			plant_detail.put("plant_state", plantState);
+			plant_detail.put("plant_pin", plantPin);
+			plant_detail.put("plant_name", plantNm);
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return plant_detail;
+	}
+	
+	//TBD
+	public String getCounterpartyPlantTaxInfo(String comp_cd, String entity, String counterparty_cd, String plant_seq)
+	{
+		String function_nm="getCounterpartyPlantTaxInfo()";
+		String tax_info="";
+		try
+		{
+			if(init())
+			{
+			
+				query = "SELECT A.STAT_NO, TO_CHAR(A.EFF_DT,'DD/MM/YYYY'), B.STAT_NM "
+						+ "FROM FMS_COUNTERPARTY_PLANT_TAX A, FMS_GOVT_STAT_TAX B "
+						+ "WHERE A.COUNTERPARTY_CD=? AND A.ENTITY=? "
+						+ "AND A.PLANT_SEQ_NO=? AND A.COMPANY_CD=? "
+						+ "AND A.STAT_CD=B.STAT_CD AND A.COMPANY_CD=B.COMPANY_CD AND A.STAT_NO IS NOT NULL";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, entity);
+				stmtement.setString(3, plant_seq);
+				stmtement.setString(4, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					String no = resultset.getString(1)==null?"":resultset.getString(1);
+					String nm = resultset.getString(3)==null?"":resultset.getString(3);
+	
+					if(tax_info.equals(""))
+					{
+						tax_info+="\n"+nm+" : "+no;
+					}
+					else
+					{
+						tax_info+="\n"+nm+" : "+no;
+					}
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return tax_info;
+	}
+	
+	//TBD
+	public String getCounterpartyBuPlantTaxInfo(String comp_cd, String entity, String counterparty_cd, String plant_seq)
+	{
+		String function_nm="getCounterpartyBuPlantTaxInfo()";
+		String tax_info="";
+		try
+		{
+			if(init())
+			{	
+				query = "SELECT A.STAT_NO, TO_CHAR(A.EFF_DT,'DD/MM/YYYY'), B.STAT_NM "
+						+ "FROM FMS_COUNTERPARTY_BU_TAX A, FMS_GOVT_STAT_TAX B "
+						+ "WHERE A.COUNTERPARTY_CD=? AND A.ENTITY=? "
+						+ "AND A.PLANT_SEQ_NO=? AND A.COMPANY_CD=? "
+						+ "AND A.STAT_CD=B.STAT_CD AND A.COMPANY_CD=B.COMPANY_CD AND A.STAT_NO IS NOT NULL";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, counterparty_cd);
+				stmtement.setString(2, entity);
+				stmtement.setString(3, plant_seq);
+				stmtement.setString(4, comp_cd);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					String no = resultset.getString(1)==null?"":resultset.getString(1);
+					String nm = resultset.getString(3)==null?"":resultset.getString(3);
+	
+					if(tax_info.equals(""))
+					{
+						tax_info+="\n"+nm+" : "+no;
+					}
+					else
+					{
+						tax_info+="\n"+nm+" : "+no;
+					}
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return tax_info;
+	}
+	
+	public double getContractMigrationOffSetQty(String comp_cd,String counterparty_cd,String agmt_no,String cont_no,String contract_type,String buy_sell)
+	{
+		String function_nm="getContractMigrationOffSetQty()";
+		double qty=0;
+		try
+		{
+			if(init())
+			{
+				query="SELECT SUM(QTY_MMBTU) "
+		  				+ "FROM FMS_OFFSET_ALLOCATION_DTL "
+		  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+						+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND CONTRACT_TYPE=? "
+						+ "AND BUY_SELL = ? ";
+				stmtement=conn.prepareStatement(query);
+				stmtement.setString(1, cont_no);
+				stmtement.setString(2, agmt_no);
+				stmtement.setString(3, comp_cd);
+				stmtement.setString(4, counterparty_cd);
+				stmtement.setString(5, contract_type);
+				stmtement.setString(6, buy_sell);
+				resultset=stmtement.executeQuery();
+				if(resultset.next())
+				{
+					qty=resultset.getDouble(1);
+				}
+				resultset.close();
+				stmtement.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return qty;
+	}
+	
+	public String getAutomationKeyDetail(String key_nm)
+	{
+		String function_nm="getAutomationKeyDetail()";
+		String key_value="";
+		try
+		{
+			if(init())
+			{
+				query = "SELECT KEY_VALUE "
+						+ "FROM FMS_AUTOMATION_KEY "
+						+ "WHERE KEY_NM = ?";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, key_nm);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					key_value=resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return key_value;
+	}
+	
+	public String NewDealMappingId_bkp(String comp_cd, String counterparty_cd,String agmt, String agmt_rev, String cont, String cont_rev, String cont_type, String cargo_no)
+	{
+		String function_nm="NewDealMappingId()";
+		String map="";
+		try
+		{
+			if(cont_type.equals("S") || (cont_type.equals("N") && (cargo_no.equals("") || cargo_no.equals("0"))) || cont_type.equals("C") || cont_type.equals("R"))
+			{
+				map=comp_cd+cont_type+counterparty_cd+"-"+agmt+"-"+cont;
+			}
+			else if(cont_type.equals("N") || cont_type.equals("G") || cont_type.equals("P")) 
+			{
+				map=comp_cd+cont_type+counterparty_cd+"-"+agmt+"-"+cont+"-"+cargo_no;
+			}
+			else if(cont_type.equals("D") || cont_type.equals("I") || cont_type.equals("L") || cont_type.equals("X"))
+			{
+				map=comp_cd+cont_type+counterparty_cd+"-"+cont;
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return map;
+	}
+	
+	// This is for Display only
+	public String NewDealMappingId(String comp_cd, String counterparty_cd,String agmt, String agmt_rev, String cont, String cont_rev, String cont_type, String cargo_no)
+	{
+		String function_nm="NewDealMappingId()";
+		String map="";
+		String entity_type = "";
+		
+		try
+		{		
+			// Set Entity Type
+			if(cont_type.equals("S") || cont_type.equals("L") || cont_type.equals("X"))
+			{
+				entity_type = "C";
+			}
+			else if(cont_type.equals("D") || cont_type.equals("T") || cont_type.equals("N") || cont_type.equals("I") || cont_type.equals("G") || cont_type.equals("P"))
+			{
+				entity_type = "T";
+			}
+			else if(cont_type.equals("C") || cont_type.equals("R"))
+			{
+				entity_type = "R";
+			}	
+			else if(cont_type.equals("H"))
+			{
+				entity_type = "H";
+			}	
+			else if(cont_type.equals("Y"))
+			{
+				entity_type = "S";
+			}	
+			else if(cont_type.equals("A"))
+			{
+				entity_type = "V";
+			}
+			else if(cont_type.equals("Z"))
+			{
+				entity_type = "Z";
+			}
+			
+			// Set Mapping		
+			if(cont_type.equals("S") || (cont_type.equals("N") && (cargo_no.equals("") || cargo_no.equals("0"))) 
+					|| (cont_type.equals("P") && (cargo_no.equals("") || cargo_no.equals("0")))
+					|| (cont_type.equals("G") && (cargo_no.equals("") || cargo_no.equals("0")))
+					|| cont_type.equals("C") || cont_type.equals("R"))
+			{
+				//map=comp_cd+entity_type+counterparty_cd+"-"+cont_type+""+agmt+"-"+cont;
+				map=comp_cd+entity_type+counterparty_cd+""+cont_type+""+agmt+"-"+cont; // Adjusted for SAP 12 digit Limitation
+			}
+			else if(cont_type.equals("N"))
+			{
+				//map=comp_cd+entity_type+counterparty_cd+"-"+cont_type+""+agmt+"-"+cont+"-"+cargo_no;
+				map=cont_type+""+agmt+"-"+cont+"-"+cargo_no;// Adjusted for SAP 12 digit Limitation
+			}					
+			else if(cont_type.equals("G") || cont_type.equals("P")) 
+			{
+				//map=comp_cd+entity_type+counterparty_cd+"-"+cont_type+""+agmt+"-"+cont+"-"+cargo_no;
+				map=cont_type+""+agmt+"-"+cont+"-"+cargo_no;// Adjusted for SAP 12 digit Limitation
+			}
+			else if(cont_type.equals("D") || cont_type.equals("T") || cont_type.equals("I") || cont_type.equals("L") || cont_type.equals("X")
+					|| cont_type.equals("H") || cont_type.equals("Y")|| cont_type.equals("A"))
+			{
+				//map=comp_cd+entity_type+counterparty_cd+"-"+cont_type+""+cont;
+				map=comp_cd+entity_type+counterparty_cd+""+cont_type+""+cont; // Adjusted for SAP 12 digit Limitation
+			}
+			else if(cont_type.equals("Z")) // This is for Storage
+			{
+				//map=comp_cd+entity_type+counterparty_cd+"-"+cont_type+""+cont;
+				map=comp_cd+entity_type+counterparty_cd+""+cont_type+""+cont;// Adjusted for SAP 12 digit Limitation
+			}		
+			
+				
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return map;
+	}
+	
+	public String NewAgmtMappingId(String comp_cd, String counterparty_cd,String agmt, String agmt_rev, String agmt_type)
+	{
+		String function_nm="NewAgmtMappingId()";
+		String map="";
+		String entity_type = "";
+		
+		try
+		{		
+			// Set Entity Type
+			if(agmt_type.equals("F"))
+			{
+				entity_type = "C";
+			}
+			else if(agmt_type.equals("M") || agmt_type.equals("L"))
+			{
+				entity_type = "T";
+			}
+			/*else if(agmt_type.equals("C") || agmt_type.equals("R")) Agreement Type need to covere for GTA
+			{
+				entity_type = "R";
+			}	*/
+			
+			
+			// Set Mapping		
+			
+			map=comp_cd+entity_type+counterparty_cd+"-"+agmt_type+""+agmt;
+			
+				
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return map;
+	}
+	
+	public String  getContractTypeName(String cont_type)
+	{
+		String function_nm="getContractTypeName()";
+		String nm="";
+		try
+		{			
+			if(cont_type.equals("S"))
+			{
+				nm="Supply Notice";
+			}
+			else if(cont_type.equals("L")) 
+			{
+				nm="LoA";
+			}
+			else if(cont_type.equals("X")) 
+			{
+				nm="IGX(Sell)";
+			} 
+			else if(cont_type.equals("I")) 
+			{
+				nm="IGX(Buy)";
+			} 
+			else if(cont_type.equals("D")) 
+			{
+				nm="Domestic NG";
+			}
+			else if(cont_type.equals("T")) 
+			{
+				nm="In Tank LNG/RLNG";
+			}
+			else if(cont_type.equals("N"))
+			{
+				nm="LNG Cargo";
+			}	
+			else if(cont_type.equals("G")) 
+			{
+				nm="LTCORA(Buy) CN";
+			} 
+			else if(cont_type.equals("P"))
+			{
+				nm="LTCORA(Buy) Period";
+			}
+			else if(cont_type.equals("Y"))
+			{
+				nm="Surveyor Agent Contract";
+			}
+			else if(cont_type.equals("A"))
+			{
+				nm="Vessel Agent Contract";
+			}
+			else if(cont_type.equals("H"))
+			{
+				nm="Custom House Agent Contract";
+			}
+			else if(cont_type.equals("Z"))
+			{
+				nm="Storage";
+			}
+			else // if(nm.equals("")) // MISSING DICTIONARY UPDATE
+			{
+				nm =cont_type;
+			}
+		}
+		
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return nm;
+	}
+	
+	public String getShipName(String cd)
+	{
+		String function_nm="getShipName()";
+		String name="";
+		try
+		{
+			if(init())
+			{
+				query="SELECT SHIP_NAME "
+						+ "FROM FMS_SHIP_MST A "
+						+ "WHERE SHIP_CD=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_SHIP_MST B WHERE A.SHIP_CD=B.SHIP_CD) "
+						+ "ORDER BY SHIP_CD DESC";
+				stmtement = conn.prepareStatement(query);
+				stmtement.setString(1, cd);
+				resultset = stmtement.executeQuery();
+				if(resultset.next())
+				{
+					name = resultset.getString(1)==null?"":resultset.getString(1);
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return name;
+	}
+	
+	public String getInvoiceNameByType(String entity_role,String inv_category,String inv_type)
+	{
+		String function_nm="getInvoiceNameByType()";
+
+		String nm="";
+		
+		try
+		{
+			if(inv_category.equals("P")) 
+			{
+				if(entity_role.equals("C") || entity_role.equals("T"))
+				{	
+					if(inv_type.equals("S")){nm="Sales Invoice";}
+				} 				 
+			}
+			else if(inv_category.equals("S"))
+			{
+				if(entity_role.equals("C") || entity_role.equals("T"))
+				{
+					if(inv_type.equals("LP")){nm="Late Payment";}
+					else if(inv_type.equals("RV")){nm="Receipt Voucher";}
+					else if(inv_type.equals("SI")){nm="ReGas Invoice";}
+					else if(inv_type.equals("UG")){nm="SUG Invoice";}
+					else if(inv_type.equals("ST")){nm="Storage Invoice";}
+					else if(inv_type.equals("DI")){nm="Deficiency Invoice";}					
+				} 
+				else if(entity_role.equals("R"))
+				{
+					if(inv_type.equals("TC")) {nm="Transmission Charges";}
+					else if(inv_type.equals("IC")) {nm="Imbalance Charges";}
+					else if(inv_type.equals("PC")) {nm="Parking Charges";}					
+				}
+				else if(entity_role.equals("H"))
+				{
+					if(inv_type.equals("CH")) {nm="CH Agent Fee";}
+				}
+				else if(entity_role.equals("S"))
+				{				
+					if(inv_type.equals("SF")) {nm="Surveyor Fee";}
+				}
+				else if(entity_role.equals("V"))
+				{				
+					if(inv_type.equals("VA")) {nm="Vessel Agent Fee";}
+				} 
+				else if(entity_role.equals("G"))
+				{				
+					if(inv_type.equals("TX")) {nm="Transaction Charges";}
+				}
+			}
+			// MISSING DICTIONARY UPDATE
+			if(nm.equals("")) 
+			{
+				nm =inv_type;
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return nm;
+	}
+	
+	public String getTcsTdsExposedInvoiceNameByType(String entity_role,String inv_category,String inv_type)
+	{
+		String function_nm="getInvoiceNameByType()";
+
+		String nm="";
+		
+		try
+		{
+			if(inv_category.equals("P")) 
+			{
+				if(entity_role.equals("C"))
+				{
+					if(inv_type.equals("S")){nm="Invoice Seq. S";}
+					else if(inv_type.equals("CR")) {nm="Invoice Seq. CR";}
+					else if(inv_type.equals("DR")) {nm="Invoice Seq. DR";}
+					else if(inv_type.equals("CCR")) {nm="Invoice Seq. CCR";}
+					else if(inv_type.equals("CDR")) {nm="Invoice Seq. CDR";}
+					else if(inv_type.equals("LP")) {nm="Invoice Seq. LP";}
+				} 
+				else if(entity_role.equals("T"))
+				{
+					if(inv_type.equals("S")) {nm="Commodity";}
+					else if(inv_type.equals("CR")) {nm="Credit Note";}
+					else if(inv_type.equals("DR")) {nm="Debit Note";}
+					else if(inv_type.equals("LP")) {nm="Late Payment";}
+				} 
+			}
+			else if(inv_category.equals("S"))
+			{
+				if(entity_role.equals("C"))
+				{
+					if(inv_type.equals("S")){nm="Invoice Seq. S";}
+					else if(inv_type.equals("SI")) {nm="ReGas Invoice";}
+					else if(inv_type.equals("UG")) {nm="SUG Invoice";}
+					else if(inv_type.equals("CR")) {nm="Invoice Seq. CR";}
+					else if(inv_type.equals("DR")) {nm="Invoice Seq. DR";}
+					else if(inv_type.equals("CCR")) {nm="Invoice Seq. CCR";}
+					else if(inv_type.equals("CDR")) {nm="Invoice Seq. CDR";}
+					else if(inv_type.equals("LP")) {nm="Invoice Seq. LP";}
+				} 
+				else if(entity_role.equals("T"))
+				{
+					if(inv_type.equals("S")) {nm="Commodity";}
+					else if(inv_type.equals("SI")) {nm="ReGas Invoice";}
+					else if(inv_type.equals("UG")) {nm="SUG Invoice";}
+					else if(inv_type.equals("CR")) {nm="Credit Note";}
+					else if(inv_type.equals("DR")) {nm="Debit Note";}
+					else if(inv_type.equals("LP")) {nm="Late Payment";}
+				} 
+				else if(entity_role.equals("R"))
+				{
+					if(inv_type.equals("TC")) {nm="Transmission Charges";}
+					else if(inv_type.equals("IC")) {nm="Imbalance Charges";}
+					else if(inv_type.equals("DR")) {nm="Debit Note";}
+					else if(inv_type.equals("LP")) {nm="Late Payment";}
+				}
+				else if(entity_role.equals("H"))
+				{				
+					if(inv_type.equals("CH")) {nm="CH Agent Fee";}
+				}
+				else if(entity_role.equals("S"))
+				{				
+					if(inv_type.equals("SF")) {nm="Surveyor Fee";}
+				}
+				else if(entity_role.equals("V"))
+				{				
+					if(inv_type.equals("VA")) {nm="Vessel Agent Fee";}
+				} 
+				else if(entity_role.equals("G"))
+				{				
+					if(inv_type.equals("TX")) {nm="Transaction Charges";}
+					else if(inv_type.equals("DR")) {nm="Debit Note";}
+				}
+			}
+			// MISSING DICTIONARY UPDATE
+			if(nm.equals("")) 
+			{
+				nm =inv_type;
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return nm;
+	}
+	
+	
+	public String getSubInvoiceHeaderNameByType(String entity_role, String sub_inv_header)
+	{
+		String function_nm="getSubInvoiceHeaderNameByType()";
+
+		String nm="";
+		
+		try
+		{
+			if(entity_role.equals("T"))
+			{					
+				if(sub_inv_header.equals("NG")){nm="Gas Purchase";}
+				else if(sub_inv_header.equals("N")) {nm="Cargo Purchase";}
+				else if(sub_inv_header.equals("CD")) {nm="Custom Duty";}
+				else if(sub_inv_header.equals("LP")) {nm="Late payment";}
+				else if(sub_inv_header.equals("IMB")) {nm="Imbalance Charge";}
+				else if(sub_inv_header.equals("DMR")) {nm="Demurrage Charge";}
+				else if(sub_inv_header.equals("L")) {nm="ReGas Invoice";}
+				else if(sub_inv_header.equals("LUG")) {nm="SUG Charge";}
+				else if(sub_inv_header.equals("ST")) {nm="Storage Charge";}
+				else if(sub_inv_header.equals("CHA")) {nm="CHA Fee";}
+				else if(sub_inv_header.equals("VA")) {nm="Vessel Agent Fee";}
+				else if(sub_inv_header.equals("SVR")) {nm="Surveyor Fee";}				 				
+			}
+			
+			// MISSING DICTIONARY UPDATE
+			if(nm.equals("")) 
+			{
+				nm =sub_inv_header;
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return nm;
+	}
+	
+	public void getChargeMaster()
+	{
+		String function_nm="getChargeMaster()";
+		try
+		{
+			if(init())
+			{
+				query="SELECT CHARGE_NAME,CHARGE_ABBR "
+						+ "FROM FMS_CHARGE_MST ";
+				stmtement = conn.prepareStatement(query);
+				resultset = stmtement.executeQuery();
+				while(resultset.next())
+				{
+					CHARGE_NAME.add(resultset.getString(1)==null?"":resultset.getString(1));
+					CHARGE_ABBR.add(resultset.getString(2)==null?"":resultset.getString(2));
+				}
+				stmtement.close();
+				resultset.close();
+				conn.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	Vector COUNTRY_CODE = new Vector();
+	Vector COUNTRY_NM = new Vector();
+	Vector ISO_CODE = new Vector();
+	
+	Vector TIN = new Vector();
+	Vector STATE_CODE = new Vector();
+	Vector STATE_NM = new Vector();
+	
+	Vector COUNTERPARTY_CD = new Vector();
+	Vector COUNTERPARTY_NM = new Vector();
+	Vector COUNTERPARTY_ABBR = new Vector();
+	Vector TRD_CD = new Vector();
+	Vector TRD_PLANT_NM = new Vector();
+	Vector TRD_PLANT_ABBR = new Vector();
+	Vector TRD_PLANT_SEQ_NO = new Vector();
+	Vector TRANS_CD = new Vector();
+	Vector TRANS_PLANT_NM = new Vector();
+	Vector TRANS_PLANT_ABBR = new Vector();
+	Vector TRANS_PLANT_SEQ_NO = new Vector();
+	Vector BU_CD = new Vector();
+	Vector BU_PLANT_NM = new Vector();
+	Vector BU_PLANT_ABBR = new Vector();
+	Vector BU_PLANT_SEQ_NO = new Vector();
+	Vector CD = new Vector();
+	Vector PLANT_NM = new Vector();
+	Vector PLANT_ABBR = new Vector();
+	Vector PLANT_SEQ_NO = new Vector();
+	
+	Vector CHARGE_NAME = new Vector();
+	Vector CHARGE_ABBR = new Vector();
+	
+	public Vector getCOUNTRY_CODE() {return COUNTRY_CODE;}
+	public Vector getCOUNTRY_NM() {return COUNTRY_NM;}
+	public Vector getISO_CODE() {return ISO_CODE;}
+	
+	public Vector getTIN() {return TIN;}
+	public Vector getSTATE_CODE() {return STATE_CODE;}
+	public Vector getSTATE_NM() {return STATE_NM;}
+	
+	public Vector getCOUNTERPARTY_CD() {return COUNTERPARTY_CD;}
+	public Vector getCOUNTERPARTY_NM() {return COUNTERPARTY_NM;}
+	public Vector getCOUNTERPARTY_ABBR() {return COUNTERPARTY_ABBR;}
+	public Vector getTRD_CD() {return TRD_CD;}
+	public Vector getTRD_PLANT_NM() {return TRD_PLANT_NM;}
+	public Vector getTRD_PLANT_ABBR() {return TRD_PLANT_ABBR;}
+	public Vector getTRD_PLANT_SEQ_NO() {return TRD_PLANT_SEQ_NO;}
+	public Vector getTRANS_CD() {return TRANS_CD;}
+	public Vector getTRANS_PLANT_NM() {return TRANS_PLANT_NM;}
+	public Vector getTRANS_PLANT_ABBR() {return TRANS_PLANT_ABBR;}
+	public Vector getTRANS_PLANT_SEQ_NO() {return TRANS_PLANT_SEQ_NO;}
+	public Vector getBU_CD() {return BU_CD;}
+	public Vector getBU_PLANT_NM() {return BU_PLANT_NM;}
+	public Vector getBU_PLANT_ABBR() {return BU_PLANT_ABBR;}
+	public Vector getBU_PLANT_SEQ_NO() {return BU_PLANT_SEQ_NO;}
+	public Vector getCD() {return CD;}
+	public Vector getPLANT_NM() {return PLANT_NM;}
+	public Vector getPLANT_ABBR() {return PLANT_ABBR;}
+	public Vector getPLANT_SEQ_NO() {return PLANT_SEQ_NO;}
+	
+	public Vector getCHARGE_ABBR() {return CHARGE_ABBR;}
+	public Vector getCHARGE_NAME() {return CHARGE_NAME;}
+}

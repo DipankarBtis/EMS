@@ -1,0 +1,2799 @@
+package com.etrm.fms.master;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
+import java.util.Vector;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+import javax.sql.DataSource;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import com.etrm.fms.util.CommonVariable;
+import com.etrm.fms.util.DateUtil;
+import com.etrm.fms.util.ExcelVersionDtl;
+import com.etrm.fms.util.RuntimeConf;
+import com.etrm.fms.util.SystemErrorLogger;
+import com.etrm.fms.util.UtilBean;
+import com.etrm.fms.util.escapeSingleQuotes;
+
+//Coded By          : Harsh Patel
+//Code Reviewed by	:  
+//CR Date			: 22/09/2022 
+//Status	  		: Developing
+
+@WebServlet("/servlet/Frm_master")
+@MultipartConfig(fileSizeThreshold=1024*1024*10, 	// 10 MB 
+maxFileSize=1024*1024*50,      	// 50 MB
+maxRequestSize=1024*1024*100)   	// 100 MB
+
+public class Frm_master extends HttpServlet
+{
+	static String db_src_file_name="Frm_master.java";
+	public static  Connection dbcon;
+	
+	public static String servletName = "Frm_master";
+	public static String option = "";
+	public static String url = "";
+	public static String msg = "";
+	public static String msg_type = "";
+	public static String err_msg = "";
+	
+	private static String queryString = null;
+	private static String query0 = null;
+	private static String query = null;
+	private static String query1 = null;
+	private static String query2 = null;
+	private static String query3 = null;
+	private static PreparedStatement stmt = null;
+	private static PreparedStatement stmt1 = null;
+	private static PreparedStatement stmt2 = null;
+	private static PreparedStatement stmt3 = null;
+	private static PreparedStatement stmt4 = null;
+	
+	private static ResultSet rset = null;
+	private static ResultSet rset1 = null;
+	private static ResultSet rset2 = null;
+	private static ResultSet rset3 = null;
+	private static ResultSet rset4 = null;
+	
+	public static String form_id = "0";
+	public static String form_nm = "";
+	public static String mod_cd = "0";
+	public static String mod_nm = "";
+	public static String u = "";
+	
+	public static String old_value="";
+	public static String new_value="";
+	
+	public static String commonUrl_pra="";
+	
+	public static escapeSingleQuotes escObj = new escapeSingleQuotes();
+	
+	static UtilBean utilBean = new UtilBean();
+	static DateUtil utilDate = new DateUtil();
+	static ExcelVersionDtl excelversiondtl = new ExcelVersionDtl();
+	
+	private static final String SAVE_DIR = CommonVariable.work_dir;
+	
+	public static boolean isOLE2Stream(String filePath) throws IOException {return ExcelVersionDtl.isMasterNumberMatch(filePath, ExcelVersionDtl.OLE2_MASTER_NUMBER);}
+	public static boolean isOOXMLStream(String filePath) throws IOException {return ExcelVersionDtl.isMasterNumberMatch(filePath,ExcelVersionDtl. OOXML_MASTER_NUMBER);}
+	
+	static NumberFormat nf = new DecimalFormat("###########0.00");
+	static NumberFormat nf2 = new DecimalFormat("###########0.0000");
+	
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,IOException
+	{
+		synchronized(this)
+		{
+			String function_nm="doPost()";
+			HttpSession session = request.getSession();
+			if(session.getAttribute("emp_uid")==null || session.getAttribute("emp_uid")=="")
+			{
+				url="../sess/Expire.jsp";
+			}
+			else
+			{
+				try
+				{
+					Context Context = new InitialContext();
+					Context envContext  = (Context)Context.lookup("java:/comp/env");
+					DataSource ds = (DataSource)envContext.lookup(RuntimeConf.security_database);
+					
+					if(ds != null)
+					{
+						dbcon = ds.getConnection();				
+					}
+					else
+					{
+						System.out.println("Data Source Not Found");
+					}
+					if(dbcon != null)
+					{
+						dbcon.setAutoCommit(false);
+						
+						form_id=request.getParameter("form_cd")==null?"0":request.getParameter("form_cd");
+						form_nm=request.getParameter("form_nm")==null?"":request.getParameter("form_nm");
+						mod_cd=request.getParameter("mod_cd")==null?"0":request.getParameter("mod_cd");
+						mod_nm=request.getParameter("mod_nm")==null?"":request.getParameter("mod_nm");
+						u=request.getParameter("u")==null?"":request.getParameter("u");
+						
+						new_value="";
+						old_value="";
+						
+						option=request.getParameter("option")==null?"":request.getParameter("option");
+						
+						commonUrl_pra = "&u="+u;
+						
+						if(option.equalsIgnoreCase("GOVT_STAT_TAX_MST"))
+						{
+							InsertUpdateGovtStatTaxMst(request);
+						}
+						else if(option.equalsIgnoreCase("RATE_MASTER"))
+						{
+							InsertUpdateRateMaster(request);
+						}
+						else if(option.equalsIgnoreCase("INTEREST_AND_EXCHANGE_RATE_ENTRY"))
+						{
+							InsertUpdateInterestExchangeRateValue(request);
+						}
+						else if(option.equalsIgnoreCase("HOLIDAY_DTL"))
+						{
+							InsertUpdateHolidayDetail(request);
+						}
+						else if(option.equalsIgnoreCase("TAX_MASTER"))
+						{
+							InsertUpdateTaxMaster(request);
+						}
+						else if(option.equalsIgnoreCase("TAX_STRUCTURE"))
+						{
+							InsertUpdateTaxStructure(request);
+						}
+						else if(option.equalsIgnoreCase("METER_MASTER"))
+						{
+							InsertUpdateMeterMaster(request);
+						}
+						else if(option.equalsIgnoreCase("SECTOR_MST"))
+						{
+							InsertUpdateSectorMaster(request);
+						}
+						else if(option.equalsIgnoreCase("BANK_MST"))
+						{
+							InsertUpdateBankMaster(request);
+						}
+						else if(option.equalsIgnoreCase("VESSEL_MST"))
+						{
+							InsertUpdateShipMaster(request);
+						}
+						else if(option.equalsIgnoreCase("CUSTOM_DUTY_TAX_MST"))
+						{
+							InsertUpdateCustomDutyTaxdtl(request);
+						}
+						else if(option.equalsIgnoreCase("PRODUCT_MST"))
+						{
+							InsertUpdateProductMaster(request);
+						}
+						else if(option.equalsIgnoreCase("MOLECULE_MST"))
+						{
+							InsertUpdateProductmoleMaster(request);
+						}
+						else if(option.equalsIgnoreCase("SAC_MST"))			//Pratham Bhatt 20240925 for adding SAC 
+						{
+							InsertUpdateSACMaster(request);
+						}
+					}
+					
+					dbcon.close();
+					dbcon=null;
+				}
+				catch(Exception e)
+				{
+					new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+					url=CommonVariable.errorpage_url+"?e="+e;
+				}
+				finally
+				{
+					if(rset != null){try {rset.close();}catch(SQLException e){System.out.println("rset is not close " + e);}}
+					if(rset1 != null){try {rset1.close();}catch(SQLException e){System.out.println("rset1 is not close " + e);}}
+					if(rset2 != null){try {rset2.close();}catch(SQLException e){System.out.println("rset2 is not close " + e);}}
+					if(rset3 != null){try {rset3.close();}catch(SQLException e){System.out.println("rset3 is not close " + e);}}
+					if(rset4 != null){try {rset4.close();}catch(SQLException e){System.out.println("rset4 is not close " + e);}}
+					if(stmt != null){try {stmt.close();}catch(SQLException e){System.out.println("stmt is not close " + e);}}
+					if(stmt1 != null){try {stmt1.close();}catch(SQLException e){System.out.println("stmt1 is not close " + e);}}
+					if(stmt2 != null){try {stmt2.close();}catch(SQLException e){System.out.println("stmt2 is not close " + e);}}
+					if(stmt3 != null){try {stmt3.close();}catch(SQLException e){System.out.println("stmt3 is not close " + e);}}
+					if(stmt4 != null){try {stmt4.close();}catch(SQLException e){System.out.println("stmt4 is not close " + e);}}
+					if(dbcon != null){try {dbcon.close();}catch(SQLException e){System.out.println("conn is not close " + e);}}
+				}
+			}
+			try 
+			{
+				response.sendRedirect(url);
+			}catch(IOException e) 
+			{
+				new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			}
+		}
+	}
+	
+	private void InsertUpdateCustomDutyTaxdtl(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateCustomDutyTaxdtl()";
+		msg="";
+		msg_type="";
+		url="";
+		String opration="";
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			String sap_tax_code = request.getParameter("sap_tax_code")==null?"":request.getParameter("sap_tax_code");
+			String tax_struct_cd = request.getParameter("tax_struct_cd")==null?"":request.getParameter("tax_struct_cd");
+			String tax_struct_nm = request.getParameter("tax_struct_nm")==null?"":request.getParameter("tax_struct_nm");
+			String eff_dt = request.getParameter("eff_dt")==null?"":request.getParameter("eff_dt");
+			String tax_struct_eff_dt = request.getParameter("tax_struct_eff_dt")==null?"":request.getParameter("tax_struct_eff_dt");
+			String tax_struct_rmk = request.getParameter("tax_struct_rmk")==null?"":request.getParameter("tax_struct_rmk");
+			
+			int count=0;
+			query="SELECT COUNT(*) "
+				+ "FROM FMS_CUSTOM_TAX_STRUCT_DTL "
+				+ "WHERE COMPANY_CD=? AND EFF_DT=TO_DATE(?,'DD/MM/YYYY') ";
+			stmt=dbcon.prepareStatement(query);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, eff_dt);
+			rset=stmt.executeQuery();
+			if(rset.next())
+			{
+				count=rset.getInt(1);
+			}
+			rset.close();
+			stmt.close();
+			
+			if(count > 0)
+			{
+				int cnt=0;
+				query1 =  "UPDATE FMS_CUSTOM_TAX_STRUCT_DTL SET TAX_STRUCT_CD=?,"
+						+ "TAX_STRUCT_DTL=?,TAX_STRUCT_REMARK=?,FLAG=?,"
+						+ "MODIFY_DT=SYSDATE,MODIFY_BY=? "
+						+ "WHERE EFF_DT=TO_DATE(?,'DD/MM/YYYY') AND COMPANY_CD=? ";
+				stmt1=dbcon.prepareStatement(query1);
+				stmt1.setString(++cnt, tax_struct_cd);
+				stmt1.setString(++cnt, tax_struct_nm);
+				stmt1.setString(++cnt, tax_struct_rmk);
+				stmt1.setString(++cnt, "Y");
+				stmt1.setString(++cnt, emp_cd);
+				stmt1.setString(++cnt, eff_dt);
+				stmt1.setString(++cnt, comp_cd);
+				stmt1.executeUpdate();
+				stmt1.close();
+				
+				msg = "Successful! - Custom Duty Tax Details Modified for Eff date "+eff_dt+" !";
+				msg_type="S";
+			}
+			else
+			{
+				int cnt=0;
+				query1 = "INSERT INTO FMS_CUSTOM_TAX_STRUCT_DTL(EFF_DT,TAX_STRUCT_CD,TAX_STRUCT_DTL,TAX_STRUCT_REMARK,"
+						+ "FLAG,ENT_BY,ENT_DT,COMPANY_CD) "
+						+ "VALUES(TO_DATE(?,'DD/MM/YYYY'),?,?,?,?,?,SYSDATE,?)";
+				stmt1=dbcon.prepareStatement(query1);
+				stmt1.setString(++cnt, eff_dt);
+				stmt1.setString(++cnt, tax_struct_cd);
+				stmt1.setString(++cnt, tax_struct_nm);
+				stmt1.setString(++cnt, tax_struct_rmk);
+				stmt1.setString(++cnt, "Y");
+				stmt1.setString(++cnt, emp_cd);
+				stmt1.setString(++cnt, comp_cd);
+				stmt1.executeUpdate();
+				stmt1.close();
+				
+				msg = "Successful! - Custom Duty Tax Details Inserted for Eff date "+eff_dt+" !";
+				msg_type="S";
+			}
+			
+			dbcon.commit();
+			url = "../master/custom_duty_tax_structure_dtl.jsp?msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in exception! -  Custome Duty Tax Structure detailes insert/Update failed!";
+		}
+	}
+	private void InsertUpdateGovtStatTaxMst(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateGovtStatTaxMst()";
+		msg="";
+		msg_type="";
+		url="";
+		String opration="";
+		
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			opration = request.getParameter("opration")==null?"":request.getParameter("opration");
+			
+			String tax_cd=request.getParameter("tax_cd")==null?"":request.getParameter("tax_cd");
+			String tax_name=request.getParameter("tax_name")==null?"":request.getParameter("tax_name");
+			String tax_type=request.getParameter("tax_type")==null?"0":request.getParameter("tax_type");
+			String status=request.getParameter("status")==null?"0":request.getParameter("status");
+			String remark=request.getParameter("remark")==null?"":request.getParameter("remark");
+			
+			String tax_typeNM="";
+			if(tax_type.equals("S")) {
+				tax_typeNM = "Sales Invoice Tax";
+			}else if (tax_type.equals("R")){
+				tax_typeNM = "Re-Gas Invoice Tax";
+			}else if (tax_type.equals("G")){
+				tax_typeNM = "General Identification Number";
+			}
+			
+			remark = escObj.replaceSingleQuotes(remark);
+			
+			if(opration.equalsIgnoreCase("MODIFY"))
+			{
+				query = "UPDATE FMS_GOVT_STAT_TAX SET STAT_NM=?,STAT_TYPE=?,"
+						+ "STATUS=?,REMARK=?,MODIFY_BY=?,MODIFY_DT=SYSDATE,MOD_PROFILE=? "
+						+ "WHERE STAT_CD=? ";
+				stmt=dbcon.prepareStatement(query);
+				stmt.setString(1, tax_name);
+				stmt.setString(2, tax_type);
+				stmt.setString(3, status);
+				stmt.setString(4, remark);
+				stmt.setString(5, emp_cd);
+				stmt.setString(6, comp_cd);
+				stmt.setString(7, tax_cd);
+				stmt.executeUpdate();
+				
+				stmt.close();
+				
+				msg = "Successful! - "+tax_typeNM+" "+tax_name+" updated at Government Statutory Tax Master!";
+				msg_type="S";
+				
+				dbcon.commit();
+			}
+			else
+			{
+				query = "SELECT NVL(MAX(STAT_CD),1000) "
+						+ "FROM FMS_GOVT_STAT_TAX ";	
+				stmt=dbcon.prepareStatement(query);
+				rset = stmt.executeQuery();
+				if(rset.next())
+				{
+					tax_cd = ""+(rset.getInt(1)+1);
+				}
+				else
+				{
+					tax_cd="1001";
+				}
+				rset.close();
+				stmt.close();
+				
+				query1 = "INSERT INTO FMS_GOVT_STAT_TAX(STAT_CD,STAT_NM,STAT_TYPE,STATUS,REMARK,ENT_BY,ENT_DT,ENT_PROFILE) "
+						+ "VALUES(?,?,?,?,?,?,SYSDATE,?)";
+				stmt1=dbcon.prepareStatement(query1);
+				stmt1.setString(1, tax_cd);
+				stmt1.setString(2, tax_name);
+				stmt1.setString(3, tax_type);
+				stmt1.setString(4, status);
+				stmt1.setString(5, remark);
+				stmt1.setString(6, emp_cd);
+				stmt1.setString(7, comp_cd);
+				stmt1.executeUpdate();
+				
+				stmt1.close();
+				
+				msg = "Successful! - "+tax_typeNM+" "+tax_name+" added at Government Statutory Tax Master!";
+				msg_type="S";
+				
+				dbcon.commit();
+			}
+			url = "../master/frm_govt_stat_no_mst.jsp?msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			
+			if(opration.equalsIgnoreCase("MODIFY"))
+			{
+				msg = "Error in Exception! - Government Statutory Tax Modification Failed!";
+				msg_type="E";
+			}
+			else
+			{
+				msg = "Error in Exception! - Government Statutory Tax Addition Failed!";
+				msg_type="E";
+			}
+			url=CommonVariable.errorpage_url+"?e="+e;
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateRateMaster(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateRateMaster()";
+		msg="";
+		msg_type="";
+		url="";
+		
+		String rate_mode="";
+		
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			rate_mode = request.getParameter("rate_mode")==null?"":request.getParameter("rate_mode");
+			
+			String opration=request.getParameter("opration")==null?"":request.getParameter("opration");
+			
+			String rate_cd=request.getParameter("rate_cd")==null?"":request.getParameter("rate_cd");
+			String rate_nm=request.getParameter("rate_nm")==null?"":request.getParameter("rate_nm");
+			String bank_abbr=request.getParameter("bank_abbr")==null?"":request.getParameter("bank_abbr");
+			String rate_flag=request.getParameter("rate_flag")==null?"":request.getParameter("rate_flag");
+			String component_flag=request.getParameter("comp_rate_flag")==null?"":request.getParameter("comp_rate_flag");
+			String component1=request.getParameter("component1")==null?"":request.getParameter("component1");
+			String component2=request.getParameter("component2")==null?"":request.getParameter("component2");
+		
+			if(opration.equals("MODIFY"))
+			{
+				if(!rate_cd.equals(""))
+				{
+					if(rate_mode.equals("EXCHANGE"))
+					{
+						query="UPDATE FMS_EXCHG_RATE_MST SET EXC_RATE_NM=?, BANK_ABBR=?, FLAG=?, "
+								+ "COMPONENT_FLAG=?, COMPONENT1=?, COMPONENT2=?, "
+								+ "MODIFY_DT=SYSDATE,MODIFY_BY=?,MOD_PROFILE=? "
+								+ "WHERE EXC_RATE_CD=? ";
+						stmt=dbcon.prepareStatement(query);
+						stmt.setString(1, rate_nm);
+						stmt.setString(2, bank_abbr);
+						stmt.setString(3, rate_flag);
+						stmt.setString(4, component_flag);
+						stmt.setString(5, component1);
+						stmt.setString(6, component2);
+						stmt.setString(7, emp_cd);
+						stmt.setString(8, comp_cd);
+						stmt.setString(9, rate_cd);
+						stmt.executeUpdate();
+						
+						stmt.close();
+					}
+					else
+					{
+						query="UPDATE FMS_INT_RATE_MST SET INT_RATE_NM=?, BANK_ABBR=?, FLAG=?, "
+								+ "MODIFY_DT=SYSDATE,MODIFY_BY=?,MOD_PROFILE=? "
+								+ "WHERE INT_RATE_CD=? ";
+						stmt=dbcon.prepareStatement(query);
+						stmt.setString(1, rate_nm);
+						stmt.setString(2, bank_abbr);
+						stmt.setString(3, rate_flag);
+						stmt.setString(4, emp_cd);
+						stmt.setString(5, comp_cd);
+						stmt.setString(6, rate_cd);
+						stmt.executeUpdate();
+						
+						stmt.close();
+					}
+					
+					msg = "Successful! - "+rate_mode+" RATE "+rate_nm+" Updated!";
+					msg_type="S";
+				}
+				else
+				{
+					msg = "Failed! - "+rate_mode+" RATE "+rate_nm+" Update Failed!";
+					msg_type="E";
+				}
+			}
+			else
+			{
+				rate_cd="1";
+				if(rate_mode.equals("EXCHANGE"))
+				{
+					query="SELECT MAX(EXC_RATE_CD) "
+							+ "FROM FMS_EXCHG_RATE_MST ";
+					stmt=dbcon.prepareStatement(query);
+					rset = stmt.executeQuery();
+					if(rset.next())
+					{
+						rate_cd=""+(rset.getInt(1)+1);
+					}
+					else
+					{
+						rate_cd="1";
+					}
+					rset.close();
+					stmt.close();
+				}
+				else
+				{
+					query="SELECT MAX(INT_RATE_CD) "
+							+ "FROM FMS_INT_RATE_MST ";
+					stmt=dbcon.prepareStatement(query);
+					rset = stmt.executeQuery();
+					if(rset.next())
+					{
+						rate_cd=""+(rset.getInt(1)+1);
+					}
+					else
+					{
+						rate_cd="1";
+					}
+					rset.close();
+					stmt.close();
+				}
+				
+				if(!rate_cd.equals(""))
+				{
+					if(rate_mode.equals("EXCHANGE"))
+					{
+						query="INSERT INTO FMS_EXCHG_RATE_MST(EXC_RATE_CD,EXC_RATE_NM,BANK_ABBR,FLAG,ENT_DT,ENT_BY,COMPONENT_FLAG,COMPONENT1,COMPONENT2,ENT_PROFILE) "
+								+ "VALUES(?,?,?,?,SYSDATE,?,?,?,?,?)";
+						stmt=dbcon.prepareStatement(query);
+						stmt.setString(1, rate_cd);
+						stmt.setString(2, rate_nm);
+						stmt.setString(3, bank_abbr);
+						stmt.setString(4, rate_flag);
+						stmt.setString(5, emp_cd);
+						stmt.setString(6, component_flag);
+						stmt.setString(7, component1);
+						stmt.setString(8, component2);
+						stmt.setString(9, comp_cd);
+						stmt.executeUpdate();
+						
+						stmt.close();
+					}
+					else
+					{
+						query="INSERT INTO FMS_INT_RATE_MST(INT_RATE_CD,INT_RATE_NM,BANK_ABBR,FLAG,ENT_DT,ENT_BY,ENT_PROFILE) "
+								+ "VALUES(?,?,?,?,SYSDATE,?,?)";
+						stmt=dbcon.prepareStatement(query);
+						stmt.setString(1, rate_cd);
+						stmt.setString(2, rate_nm);
+						stmt.setString(3, bank_abbr);
+						stmt.setString(4, rate_flag);
+						stmt.setString(5, emp_cd);
+						stmt.setString(6, comp_cd);
+						stmt.executeUpdate();
+						
+						stmt.close();
+					}
+					msg = "Successful! - "+rate_mode+" RATE "+rate_nm+" added!";
+					msg_type="S";
+				}
+				else
+				{	
+					msg = "Failed! - "+rate_mode+" RATE "+rate_nm+" insert failed!";
+					msg_type="S";
+				}
+			}	
+			
+			url = "../master/frm_rate_master.jsp?rate_mode="+rate_mode+"&msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in exception! -  Exchange/Interest Rate insert/Update failed!";
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateInterestExchangeRateValue(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateInterestExchangeRateValue()";
+		msg="";
+		msg_type="";
+		url="";
+		
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			String rate_mode = request.getParameter("rate_mode")==null?"0":request.getParameter("rate_mode");
+			String month = request.getParameter("month")==null?"":request.getParameter("month");
+			String year = request.getParameter("year")==null?"":request.getParameter("year");
+			String component = request.getParameter("component")==null?"0":request.getParameter("component");
+			
+			String[] rate_eff_dt = request.getParameterValues("rate_eff_dt");
+			String currency_from = request.getParameter("currency_from")==null?"":request.getParameter("currency_from");
+			String[] rate_value = request.getParameterValues("rate_value");
+			String currency_to = request.getParameter("currency_to")==null?"":request.getParameter("currency_to");
+			String[] remark = request.getParameterValues("remark");
+			String component_nm = "";
+			
+			if(rate_mode.equals("EXCHANGE"))
+			{
+				query0 = "SELECT EXC_RATE_NM "
+						+ "FROM FMS_EXCHG_RATE_MST "
+						+ "WHERE EXC_RATE_CD=?";
+			}
+			else
+			{
+				query0 = "SELECT INT_RATE_NM "
+						+ "FROM FMS_INT_RATE_MST "
+						+ "WHERE INT_RATE_CD=? ";
+			}
+			stmt4=dbcon.prepareStatement(query0);
+			stmt4.setString(1, component);
+			rset4 = stmt4.executeQuery();
+			while(rset4.next()) 
+			{
+				component_nm = rset4.getString(1)==null?"":rset4.getString(1);
+			}
+			rset4.close();
+			stmt4.close();
+			
+			Vector VRATE_CD = new Vector();
+			Vector VRATE_NM = new Vector();
+			Vector VCOMPONENT1 = new Vector();
+			Vector VCOMPONENT2 = new Vector();
+			if(rate_mode.equals("EXCHANGE"))
+			{
+				query="SELECT EXC_RATE_CD,COMPONENT1,COMPONENT2,EXC_RATE_NM "
+						+ "FROM FMS_EXCHG_RATE_MST "
+						+ "WHERE COMPONENT_FLAG=? "
+						+ "AND (COMPONENT1=? OR COMPONENT2=?)";
+				stmt=dbcon.prepareStatement(query);
+				stmt.setString(1, "Y");
+				stmt.setString(2, component);
+				stmt.setString(3, component);
+				rset=stmt.executeQuery();
+				while(rset.next())
+				{
+					VRATE_CD.add(rset.getString(1)==null?"":rset.getString(1));
+					VCOMPONENT1.add(rset.getString(2)==null?"":rset.getString(2));
+					VCOMPONENT2.add(rset.getString(3)==null?"":rset.getString(3));
+					VRATE_NM.add(rset.getString(4)==null?"":rset.getString(4));
+				}
+				rset.close();
+				stmt.close();
+			}
+			
+			if(rate_eff_dt!=null)
+			{
+				for(int i=0; i<rate_eff_dt.length; i++)
+				{
+					if(rate_mode.equals("EXCHANGE"))
+					{
+						String rate_date = rate_eff_dt[i];
+						
+						if(rate_value != null && !rate_value[i].trim().equals(""))
+						{
+							//if(Double.parseDouble(rate_value[i]) > 0)
+							{
+								int count=0;
+								query="SELECT COUNT(*) "
+										+ "FROM FMS_EXCHG_RATE_ENTRY "
+										+ "WHERE EXCHG_RATE_CD=? AND EFF_DT=TO_DATE(?,'DD/MM/YYYY') "
+										+ "AND CURRENCY_CD_FROM=? AND CURRENCY_CD=?";
+								stmt=dbcon.prepareStatement(query);
+								stmt.setString(1, component);
+								stmt.setString(2, rate_eff_dt[i]);
+								stmt.setString(3, currency_from);
+								stmt.setString(4, currency_to);
+								rset=stmt.executeQuery();
+								if(rset.next())
+								{
+									count=rset.getInt(1);
+								}
+								rset.close();
+								stmt.close();
+								
+								if(count > 0)
+								{
+									query1="UPDATE FMS_EXCHG_RATE_ENTRY SET EXCHG_VAL=?, REMARK=?,"
+											+ "MODIFY_BY=?,MODIFY_DT=SYSDATE,MOD_PROFILE=? "
+											+ "WHERE EXCHG_RATE_CD=? AND EFF_DT=TO_DATE(?,'DD/MM/YYYY') "
+											+ "AND CURRENCY_CD_FROM=? AND CURRENCY_CD=?";
+									stmt1=dbcon.prepareStatement(query1);
+									stmt1.setString(1, rate_value[i]);
+									stmt1.setString(2, remark[i]);
+									stmt1.setString(3, emp_cd);
+									stmt1.setString(4, comp_cd);
+									stmt1.setString(5, component);
+									stmt1.setString(6, rate_eff_dt[i]);
+									stmt1.setString(7, currency_from);
+									stmt1.setString(8, currency_to);
+									stmt1.executeUpdate();
+									
+									stmt1.close();
+									
+									msg = "Successful! - Data updated for "+rate_mode+" Rate "+component_nm+"!";
+									msg_type="S";
+								}	
+								else
+								{
+									query1="INSERT INTO FMS_EXCHG_RATE_ENTRY(EXCHG_RATE_CD,EFF_DT,EXCHG_VAL,CURRENCY_CD,CURRENCY_CD_FROM,"
+											+ "REMARK,FLAG,ENT_DT,ENT_BY,ENT_PROFILE) "
+											+ "VALUES(?,TO_DATE(?,'DD/MM/YYYY'),?,?,?,"
+											+ "?,?,SYSDATE,?,?)";
+									stmt1=dbcon.prepareStatement(query1);
+									stmt1.setString(1, component);
+									stmt1.setString(2, rate_eff_dt[i]);
+									stmt1.setString(3, rate_value[i]);
+									stmt1.setString(4, currency_to);
+									stmt1.setString(5, currency_from);
+									stmt1.setString(6, remark[i]);
+									stmt1.setString(7, "Y");
+									stmt1.setString(8, emp_cd);
+									stmt1.setString(9, comp_cd);
+									stmt1.executeUpdate();
+									
+									stmt1.close();
+									
+									msg = "Successful! - Data added for "+rate_mode+" Rate "+component_nm+"!";
+									msg_type="S";
+								}
+							}
+						}
+						
+						//
+						for(int j=0;j<VRATE_CD.size(); j++)
+						{
+							double compo_1=0;
+							double compo_2=0;
+							
+							double avgExgRate=0;
+							
+							query="SELECT EXCHG_VAL "
+									+ "FROM FMS_EXCHG_RATE_ENTRY "
+									+ "WHERE EXCHG_RATE_CD=? "
+									+ "AND EFF_DT=TO_DATE(?,'DD/MM/YYYY') AND CURRENCY_CD_FROM=? "
+									+ "AND CURRENCY_CD=?";
+							stmt=dbcon.prepareStatement(query);
+							stmt.setString(1, ""+VCOMPONENT1.elementAt(j));
+							stmt.setString(2, rate_date);
+							stmt.setString(3, currency_from);
+							stmt.setString(4, currency_to);
+							rset=stmt.executeQuery();
+							if(rset.next())
+							{
+								compo_1=rset.getDouble(1);
+							}
+							rset.close();
+							stmt.close();
+							
+							query1="SELECT EXCHG_VAL "
+									+ "FROM FMS_EXCHG_RATE_ENTRY "
+									+ "WHERE EXCHG_RATE_CD=? "
+									+ "AND EFF_DT=TO_DATE(?,'DD/MM/YYYY') AND CURRENCY_CD_FROM=? "
+									+ "AND CURRENCY_CD=?";
+							stmt1=dbcon.prepareStatement(query1);
+							stmt1.setString(1, ""+VCOMPONENT2.elementAt(j));
+							stmt1.setString(2, rate_date);
+							stmt1.setString(3, currency_from);
+							stmt1.setString(4, currency_to);
+							rset1=stmt1.executeQuery();
+							if(rset1.next())
+							{
+								compo_2=rset1.getDouble(1);
+							}
+							rset1.close();
+							stmt1.close();
+							
+							avgExgRate = (compo_1 + compo_2)/2;
+							
+							if(avgExgRate > 0 && compo_1 > 0 && compo_2 > 0)
+							{
+								String avgRate=nf2.format(avgExgRate);
+								int count=0;
+								query2="SELECT COUNT(*) "
+										+ "FROM FMS_EXCHG_RATE_ENTRY "
+										+ "WHERE EXCHG_RATE_CD=? "
+										+ "AND EFF_DT=TO_DATE(?,'DD/MM/YYYY') "
+										+ "AND CURRENCY_CD_FROM=? AND CURRENCY_CD=?";
+								stmt2=dbcon.prepareStatement(query2);
+								stmt2.setString(1, ""+VRATE_CD.elementAt(j));
+								stmt2.setString(2, rate_date);
+								stmt2.setString(3, currency_from);
+								stmt2.setString(4, currency_to);
+								rset2=stmt2.executeQuery();
+								if(rset2.next())
+								{
+									count=rset2.getInt(1);
+								}
+								rset2.close();
+								stmt2.close();
+								
+								String avgRemark="Avg. Of "+VRATE_NM.elementAt(j)+" Rate On "+rate_date;
+								if(count > 0)
+								{
+									query3="UPDATE FMS_EXCHG_RATE_ENTRY SET EXCHG_VAL=?, REMARK=?,"
+											+ "MODIFY_BY=?,MODIFY_DT=SYSDATE,MOD_PROFILE=? "
+											+ "WHERE EXCHG_RATE_CD=? "
+											+ "AND EFF_DT=TO_DATE(?,'DD/MM/YYYY') "
+											+ "AND CURRENCY_CD_FROM=? AND CURRENCY_CD=?";
+									stmt3=dbcon.prepareStatement(query3);
+									stmt3.setString(1, avgRate);
+									stmt3.setString(2, avgRemark);
+									stmt3.setString(3, emp_cd);
+									stmt3.setString(4, comp_cd);
+									stmt3.setString(5, ""+VRATE_CD.elementAt(j));
+									stmt3.setString(6, rate_date);
+									stmt3.setString(7, currency_from);
+									stmt3.setString(8, currency_to);
+									stmt3.executeUpdate();
+									
+									stmt3.close();
+								}	
+								else
+								{
+									query3="INSERT INTO FMS_EXCHG_RATE_ENTRY(EXCHG_RATE_CD,EFF_DT,EXCHG_VAL,CURRENCY_CD,CURRENCY_CD_FROM,"
+											+ "REMARK,FLAG,ENT_DT,ENT_BY,ENT_PROFILE) "
+											+ "VALUES(?,TO_DATE(?,'DD/MM/YYYY'),?,?,?,"
+											+ "?,?,SYSDATE,?,?)";
+									stmt3=dbcon.prepareStatement(query3);
+									stmt3.setString(1, ""+VRATE_CD.elementAt(j));
+									stmt3.setString(2, rate_date);
+									stmt3.setString(3, avgRate);
+									stmt3.setString(4, currency_to);
+									stmt3.setString(5, currency_from);
+									stmt3.setString(6, avgRemark);
+									stmt3.setString(7, "Y");
+									stmt3.setString(8, emp_cd);
+									stmt3.setString(9, comp_cd);
+									stmt3.executeUpdate();
+									
+									stmt3.close();
+								}
+							}
+						}
+					}
+					else
+					{
+						if(rate_value != null && !rate_value[i].trim().equals(""))
+						{
+							//if(Double.parseDouble(rate_value[i]) > 0)
+							{
+								int count=0;
+								String curr_cd="1";
+								query="SELECT COUNT(*) "
+										+ "FROM FMS_INT_PAY_RATE_ENTRY "
+										+ "WHERE INT_RATE_CD=? AND EFF_DT=TO_DATE(?,'DD/MM/YYYY')";
+								stmt=dbcon.prepareStatement(query);
+								stmt.setString(1, component);
+								stmt.setString(2, rate_eff_dt[i]);
+								rset=stmt.executeQuery();
+								if(rset.next())
+								{
+									count=rset.getInt(1);
+								}
+								rset.close();
+								stmt.close();
+								
+								if(count > 0)
+								{
+									query1="UPDATE FMS_INT_PAY_RATE_ENTRY SET INT_VAL=?, CURRENCY_CD=?, REMARK=?,"
+											+ "MODIFY_BY=?,MODIFY_DT=SYSDATE,MOD_PROFILE=? "
+											+ "WHERE INT_RATE_CD=? AND EFF_DT=TO_DATE(?,'DD/MM/YYYY')";
+									stmt1=dbcon.prepareStatement(query1);
+									stmt1.setString(1, rate_value[i]);
+									stmt1.setString(2, curr_cd);
+									stmt1.setString(3, remark[i]);
+									stmt1.setString(4, emp_cd);
+									stmt1.setString(5, comp_cd);
+									stmt1.setString(6, component);
+									stmt1.setString(7, rate_eff_dt[i]);
+									stmt1.executeQuery();
+									
+									stmt1.close();
+									
+									msg = "Successful! - Data updated for "+rate_mode+" Rate "+component_nm+"!";
+									msg_type="S";
+								}	
+								else
+								{
+									query="INSERT INTO FMS_INT_PAY_RATE_ENTRY(INT_RATE_CD,EFF_DT,INT_VAL,CURRENCY_CD,REMARK,FLAG,ENT_DT,ENT_BY,ENT_PROFILE) "
+											+ "VALUES(?,TO_DATE(?,'DD/MM/YYYY'),?,?,?,?,SYSDATE,?,?)";
+									stmt1=dbcon.prepareStatement(query);
+									stmt1.setString(1, component);
+									stmt1.setString(2, rate_eff_dt[i]);
+									stmt1.setString(3, rate_value[i]);
+									stmt1.setString(4, curr_cd);
+									stmt1.setString(5, remark[i]);
+									stmt1.setString(6, "Y");
+									stmt1.setString(7, emp_cd);
+									stmt1.setString(8, comp_cd);
+									
+									stmt1.executeQuery();
+									
+									stmt1.close();
+									
+									msg = "Successful! - Data added for "+rate_mode+" Rate "+component_nm+"!";
+									msg_type="S";
+								}
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				msg = "Failed! - Interest/Exchange Rate Value Insert/Update Failed!";
+				msg_type="E";
+			}
+			
+			url = "../master/frm_int_exchg_rate_entry.jsp?rate_mode="+rate_mode+"&month="+month+"&year="+year+
+					"&currency_from="+currency_from+"&currency_to="+currency_to+
+					"&component="+component+"&msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+			
+			dbcon.commit();
+			
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in Exception! - Interest/Exchange Rate Value Insert/Update Failed!";
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateHolidayDetail(HttpServletRequest request)throws IOException,SQLException, ServletException
+	{
+		String function_nm="InsertUpdateHolidayDetail()";
+		msg="";
+		msg_type="";
+		
+		String opration =request.getParameter("opration");
+		
+		if(opration.equals("UPLOAD"))
+		{
+			HttpSession session = request.getSession();
+			String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+			String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+				
+			try
+			{				
+				String appPath = request.getServletContext().getRealPath("");
+		    	
+		    	String main_folder="";
+				if(!comp_cd.equals(""))
+				{
+					main_folder=CommonVariable.work_dir+comp_cd;
+				}
+				File MainDir = new File(appPath+File.separator+main_folder);
+		        if(!MainDir.exists()) 
+		        {
+		        	MainDir.mkdir();
+		        }
+		        
+				String savePath = appPath+File.separator+main_folder+File.separator+SAVE_DIR;
+		        String subSavePath = savePath+File.separator;
+		        
+		        File fileSaveDir = new File(savePath);
+		        if(!fileSaveDir.exists()) 
+		        {
+		            fileSaveDir.mkdir();
+		        }
+		        
+		    	File subfile = new File(subSavePath);
+		        if(!subfile.exists())
+		        {
+		        	subfile.mkdir();
+		        }
+		        
+		        //For File uploaded file naming
+		        //LocalDateTime dateObj = LocalDateTime.now();
+		        //DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd 'at' HH-mm a");
+		        //String date = dateObj.format(formatter1);
+		        String date=utilDate.getSysdateWithTime24hr();
+		        date=date.replaceAll("/", "");
+		        date=date.replaceAll(" ", "_");
+		        date=date.replaceAll(":", "");
+		        
+		        String file_name="";
+		        String fileName="";
+		        String file_extension="";
+		        String final_file="";
+		        
+		        for (Part part : request.getParts()) 
+		        {
+		        	fileName = extractFileName(part);
+		        	//Refines the fileName in case it is an absolute path
+				    fileName = new File(fileName).getName();
+				    if(!fileName.equals("") )
+				    {
+				    	file_name=fileName;
+				    	String[] split=fileName.split("\\.");
+				    	fileName=split[0];
+				    	file_extension=split[1];
+				    	final_file=fileName+"_"+date+"."+file_extension;
+				    	part.write(subSavePath +File.separator+final_file);
+				    } 
+		        }
+				
+				SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+					
+				String file_path =subSavePath+""+final_file;
+				FileInputStream file = new FileInputStream(new File(file_path));
+				String msg_sheet ="";
+				if (isOLE2Stream(file_path)||isOOXMLStream(file_path)) 
+				{
+					org.apache.poi.ss.usermodel.Workbook workbook = WorkbookFactory.create(file);
+					
+					for(int i=0; i<workbook.getNumberOfSheets();i++)
+					{
+						String Holiday_date = "";
+						String Holiday_state = "";
+						String Holiday_nm = "";
+						String Holiday_Flag="N"; // Default disabled
+						
+						String sheet_name = workbook.getSheetName(i);
+						org.apache.poi.ss.usermodel.Sheet sheet = workbook.getSheetAt(i);
+						
+						if(!sheet_name.equals(""))
+						{	
+							int row_no = 0;	
+							int skip_row=0;
+							Iterator<Row>rowIterator = sheet.iterator();
+							while(rowIterator.hasNext()) 
+							{
+								Holiday_date ="";
+								Holiday_nm="";
+								Holiday_state = "";
+								Holiday_Flag="N"; // Default disabled
+								Row row = rowIterator.next();
+								row_no = row.getRowNum();
+								if(row_no!=0) 
+								{
+									Iterator<Cell> cellIterator = row.cellIterator();
+									while(cellIterator.hasNext()) 
+									{
+										Cell cell = cellIterator.next();
+										if(cell.getColumnIndex()==0)
+										{	
+											/*
+											if(cell.getDateCellValue()!=null) 
+											{
+												Holiday_date =""+formatter.format(cell.getDateCellValue());
+											}										
+											*/												
+											if(cell.getCellType()==CellType.NUMERIC && cell.getDateCellValue()!=null) 
+											{												
+												Holiday_date =formatter.format(cell.getDateCellValue());
+												
+											}
+											else
+											{
+												String tmp_date=cell.getStringCellValue();
+												if(tmp_date.length()==10)
+												{
+													String tmp2=""+tmp_date.charAt(2);
+													String tmp5=""+tmp_date.charAt(5);
+													if(tmp2.equals("-") && tmp5.equals("-"))
+													{
+														Holiday_date=tmp_date.replace('-', '/');
+													}
+													else
+													{
+														Holiday_date="";
+													}
+												}
+												else
+												{
+													Holiday_date="";
+												}
+											}
+										}
+										if(cell.getColumnIndex()==1) 
+										{											
+											Holiday_nm = cell.getStringCellValue();												
+										}
+										if(cell.getColumnIndex()==2) 
+										{
+											Holiday_state = cell.getStringCellValue();
+										}
+										if(cell.getColumnIndex()==3) 
+										{
+											Holiday_Flag = cell.getStringCellValue();
+										}
+									}
+									// Row Input
+									//System.out.println("Row "+row_no+" : "+Holiday_date+","+Holiday_nm+","+Holiday_state+","+Holiday_Flag);
+									
+									if((!Holiday_date.trim().equals("") && Holiday_date.trim().length()!=0) && (Holiday_nm.trim().length()!=0)) 
+									{										
+										String Holiday_day = utilDate.getFullWeekDaysName(Holiday_date);
+										Holiday_day=Holiday_day.trim();
+										String state_cd = "";
+									
+										if(Holiday_state.trim().equals("")) 
+										{
+											state_cd = "00";
+											query ="SELECT COUNT(*) "
+													+ "FROM FMS_HOLIDAY_DTL "
+													+ "WHERE HOLIDAY_DT=TO_DATE(?,'DD/MM/YYYY') AND STATE_TIN=? ";
+											stmt=dbcon.prepareStatement(query);
+											stmt.setString(1, Holiday_date);
+											stmt.setString(2, state_cd);
+											rset=stmt.executeQuery();
+											if(rset.next())
+											{
+												if(rset.getInt(1) > 0)
+												{
+													query1="UPDATE FMS_HOLIDAY_DTL SET HOLIDAY_NM=?, HOLIDAY_DAY=?,"
+															+ "MODIFY_BY=?,MODIFY_DT=SYSDATE,FLAG=?,MOD_PROFILE=? "
+															+ "WHERE HOLIDAY_DT=TO_DATE(?,'DD/MM/YYYY') AND STATE_TIN=? ";
+													stmt1=dbcon.prepareStatement(query1);
+													stmt1.setString(1, Holiday_nm);
+													stmt1.setString(2, Holiday_day);
+													stmt1.setString(3, emp_cd);
+													stmt1.setString(4, Holiday_Flag);
+													stmt1.setString(5, comp_cd);
+													stmt1.setString(6, Holiday_date);
+													stmt1.setString(7, state_cd);
+													stmt1.executeUpdate();
+													
+													stmt1.close();
+													
+													msg = "Successful! Holiday Imported/Updated in system from worksheet "+sheet_name+" of File "+file_name+" ";
+													msg_type="S";
+												}
+												else
+												{
+													query1="INSERT INTO FMS_HOLIDAY_DTL(HOLIDAY_DT,HOLIDAY_NM,HOLIDAY_DAY,STATE_TIN,ENT_BY,ENT_DT,FLAG,ENT_PROFILE) "
+															+ "VALUES(TO_DATE(?,'DD/MM/YYYY'),?,?,?,?,SYSDATE,?,?)";
+													stmt1=dbcon.prepareStatement(query1);
+													stmt1.setString(1, Holiday_date);
+													stmt1.setString(2, Holiday_nm);
+													stmt1.setString(3, Holiday_day);
+													stmt1.setString(4, state_cd);
+													stmt1.setString(5, emp_cd);
+													stmt1.setString(6, Holiday_Flag);
+													stmt1.setString(7, comp_cd);
+													stmt1.executeUpdate();
+													
+													stmt1.close();
+													
+													msg = "Successful! Holiday Imported/Inserted in system from worksheet "+sheet_name+" of File "+file_name+" ";
+													msg_type="S";
+												}
+											}
+											else
+											{
+												msg = "Failed! - Holiday/s Data Submission Failed!";
+												msg_type="E";
+											}
+											rset.close();
+											stmt.close();
+										}
+										else 
+										{
+											query0 ="SELECT A.TIN "
+													+ "FROM FMS_STATE_MST A "
+													+ "WHERE A.STATE_NM=? ";
+											stmt=dbcon.prepareStatement(query0);
+											stmt.setString(1, Holiday_state);
+											rset = stmt.executeQuery();
+											if(rset.next()) 
+											{
+												state_cd = rset.getString(1)==null?"00":rset.getString(1);
+												query ="SELECT COUNT(*) "
+														+ "FROM FMS_HOLIDAY_DTL "
+														+ "WHERE HOLIDAY_DT=TO_DATE(?,'DD/MM/YYYY') AND STATE_TIN=? ";
+												stmt1=dbcon.prepareStatement(query);
+												stmt1.setString(1, Holiday_date);
+												stmt1.setString(2, state_cd);
+												rset1=stmt1.executeQuery();
+												if(rset1.next())
+												{
+													if(rset1.getInt(1) > 0)
+													{
+														query1="UPDATE FMS_HOLIDAY_DTL SET HOLIDAY_NM=?, HOLIDAY_DAY=?,"
+																+ "MODIFY_BY=?,MODIFY_DT=SYSDATE,FLAG=?,MOD_PROFILE=? "
+																+ "WHERE HOLIDAY_DT=TO_DATE(?,'DD/MM/YYYY') AND STATE_TIN=? ";
+														stmt2=dbcon.prepareStatement(query1);
+														stmt2.setString(1, Holiday_nm);
+														stmt2.setString(2, Holiday_day);
+														stmt2.setString(3, emp_cd);
+														stmt2.setString(4, Holiday_Flag);
+														stmt2.setString(5, comp_cd);
+														stmt2.setString(6, Holiday_date);
+														stmt2.setString(7, state_cd);
+														stmt2.executeUpdate();
+														
+														stmt2.close();
+														
+														msg = "Successful! Holiday Imported/Updated in system from worksheet "+sheet_name+" of File "+file_name+" ";
+														msg_type="S";
+													}
+													else
+													{
+														//System.out.println("Inside Insert");
+														query1="INSERT INTO FMS_HOLIDAY_DTL(HOLIDAY_DT,HOLIDAY_NM,HOLIDAY_DAY,STATE_TIN,ENT_BY,ENT_DT,FLAG,ENT_PROFILE) "
+																+ "VALUES(TO_DATE(?,'DD/MM/YYYY'),?,?,?,?,SYSDATE,?,?)";
+														stmt2=dbcon.prepareStatement(query1);
+														stmt2.setString(1, Holiday_date);
+														stmt2.setString(2, Holiday_nm);
+														stmt2.setString(3, Holiday_day);
+														stmt2.setString(4, state_cd);
+														stmt2.setString(5, emp_cd);
+														stmt2.setString(6, Holiday_Flag);
+														stmt2.setString(7, comp_cd);
+														stmt2.executeUpdate();														
+														stmt2.close();
+														
+														msg = "Successful! Holiday Imported/Inserted in system from worksheet "+sheet_name+" of File "+file_name+" ";
+														msg_type="S";
+													}
+												}
+												else
+												{
+													msg = "Failed! - Holiday/s Data Submission Failed!";
+													msg_type="E";
+												}
+												stmt1.close();
+												rset1.close();
+											}
+											else
+											{	
+												// Incorrect Holiday State
+												skip_row++;
+											}
+											rset.close();
+											stmt.close();
+										}
+									}
+									else 
+									{
+										// Holiday Date OR Holiday Name Null
+										skip_row++;
+									}	
+								}
+								
+								dbcon.commit();
+							}
+							int success_rows = row_no - skip_row; // For Audit Trail 
+							msg_sheet += success_rows+" out of "+row_no+" Holiday/s Inserted/updated from worksheet "+sheet_name+" of File "+file_name+". ";
+							if (success_rows > 0 || row_no==0)
+							{	
+								msg_type="S";
+							}
+							else
+							{	
+								msg_type="E";
+							}
+							msg=msg_sheet;
+							url = "../master/frm_holiday_mst.jsp?msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+						}	// END of WorkSheet	
+						//Go for next WorkSheet
+						
+					}
+				}
+				else 
+				{
+		            msg = "Failed! - The version of the XLS file you're trying to upload is not supported.";
+					msg_type="E";
+					url = "../master/frm_holiday_mst.jsp?msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+		        }
+				
+				dbcon.commit();
+			}
+			catch(Exception e)
+			{
+				dbcon.rollback();
+				new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+				url=CommonVariable.errorpage_url+"?e="+e;
+	            msg = "Error in Exception! - Holiday XLS file upload Failed!";
+
+			}
+			try
+			{
+				new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+			}
+			catch(Exception infoLogger)
+			{
+				new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+			}	
+		}
+		else if(opration.equals("INSERT"))
+		{	
+			msg="";
+			msg_type="";
+			url="";
+			
+			HttpSession session = request.getSession();
+			String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+			String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+			
+			try 
+			{
+				String holiday_dt = request.getParameter("holiday_dt")==null?"":request.getParameter("holiday_dt");
+				String holiday_day = request.getParameter("holiday_day")==null?"":request.getParameter("holiday_day");
+				String holiday_nm = request.getParameter("holiday_nm")==null?"":request.getParameter("holiday_nm");
+				String state_cd = request.getParameter("state_cd")==null?"00":request.getParameter("state_cd"); //HM Added "00" that shows 00 in database
+				String status = request.getParameter("status_flag")==null?"":request.getParameter("status_flag");
+				
+				String holiday_year = holiday_dt.substring(6, 10);
+				
+				if(!holiday_dt.equals(""))
+				{
+					query ="SELECT COUNT(*) "
+							+ "FROM FMS_HOLIDAY_DTL "
+							+ "WHERE HOLIDAY_DT=TO_DATE(?,'DD/MM/YYYY') AND STATE_TIN=? ";
+					stmt=dbcon.prepareStatement(query);
+					stmt.setString(1, holiday_dt);
+					stmt.setString(2, state_cd);
+					rset=stmt.executeQuery();
+					if(rset.next())
+					{
+						if(rset.getInt(1) > 0)
+						{
+							query1="UPDATE FMS_HOLIDAY_DTL SET HOLIDAY_NM=?, HOLIDAY_DAY=?,"
+									+ "MODIFY_BY=?,MODIFY_DT=SYSDATE,FLAG=?,MOD_PROFILE=? "
+									+ "WHERE HOLIDAY_DT=TO_DATE(?,'DD/MM/YYYY') AND STATE_TIN=? ";
+							stmt1=dbcon.prepareStatement(query1);
+							stmt1.setString(1, holiday_nm);
+							stmt1.setString(2, holiday_day);
+							stmt1.setString(3, emp_cd);
+							stmt1.setString(4, status);
+							stmt1.setString(5, comp_cd);
+							stmt1.setString(6, holiday_dt);
+							stmt1.setString(7, state_cd);
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+							
+							msg = "Successful! - "+holiday_nm+","+holiday_year+" Updated!";
+							msg_type="S";
+						}
+						else
+						{
+							query1="INSERT INTO FMS_HOLIDAY_DTL(HOLIDAY_DT,HOLIDAY_NM,HOLIDAY_DAY,STATE_TIN,ENT_BY,ENT_DT,FLAG,ENT_PROFILE) "
+									+ "VALUES(TO_DATE(?,'DD/MM/YYYY'),?,?,?,?,SYSDATE,?,?)";
+							stmt1=dbcon.prepareStatement(query1);
+							stmt1.setString(1, holiday_dt);
+							stmt1.setString(2, holiday_nm);
+							stmt1.setString(3, holiday_day);
+							stmt1.setString(4, state_cd);
+							stmt1.setString(5, emp_cd);
+							stmt1.setString(6, status);
+							stmt1.setString(7, comp_cd);
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+							
+							msg = "Successful! - "+holiday_nm+","+holiday_year+" Added!";
+							msg_type="S";
+						}
+					}
+					else
+					{
+						msg = "Failed! - Holiday Insert/Update Failed!";
+						msg_type="E";
+					}
+					rset.close();
+					stmt.close();
+				}
+				else
+				{
+					msg = "Failed! - Holiday Insert/Update Failed!";
+					msg_type="E";
+				}
+				
+				url = "../master/frm_holiday_mst.jsp?msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+				
+				dbcon.commit();
+			}
+			catch(Exception e)
+			{
+				dbcon.rollback();
+				new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+				url=CommonVariable.errorpage_url+"?e="+e;
+	            msg = "Error in Exception! - Holiday Insert/Update Failed!";
+			}
+			try
+			{
+				new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+			}
+			catch(Exception infoLogger)
+			{
+				new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+			}
+		}
+	}
+	
+	/*
+	 * <!--Harsh Maheta 20230504 : Added Function for Extracting File-->
+	 */
+	private String extractFileName(Part part) 
+    {
+		String function_nm="extractFileName()";
+        String contentDisp = part.getHeader("content-disposition");
+        String[] items = contentDisp.split(";");
+        String filenm = "";
+        for (String s : items) 
+        {
+            if (s.trim().startsWith("filename") || s.trim().startsWith("meet_file")) 
+            {
+                filenm = s.substring(s.indexOf("=") + 2, s.length()-1);
+            }       
+        }
+        return filenm;
+    }
+	
+	private void InsertUpdateTaxMaster(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateTaxMaster()";
+		msg="";
+		msg_type="";
+		url="";
+		
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			String opration=request.getParameter("opration")==null?"":request.getParameter("opration");
+			
+			String tax_cd=request.getParameter("tax_cd")==null?"":request.getParameter("tax_cd");
+			String tax_nm=request.getParameter("tax_nm")==null?"":request.getParameter("tax_nm");
+			String tax_short_nm=request.getParameter("tax_short_nm")==null?"":request.getParameter("tax_short_nm");
+			String tax_alias_cd=request.getParameter("tax_alias_cd")==null?"":request.getParameter("tax_alias_cd");
+			String status_flag=request.getParameter("status_flag")==null?"1":request.getParameter("status_flag");
+			
+			if(opration.equals("MODIFY"))
+			{
+				if(!tax_cd.equals(""))
+				{
+					query="UPDATE FMS_TAX_MST SET TAX_ALIAS_CODE=?, TAX_NAME=?, SHT_NM=?, "
+							+ "APP_DATE=TO_DATE(SYSDATE,'DD/MM/YYYY'),STATUS=?,MODIFY_DT=SYSDATE,MODIFY_BY=?,MOD_PROFILE=? "
+							+ "WHERE TAX_CODE=? ";
+					stmt=dbcon.prepareStatement(query);
+					stmt.setString(1, tax_alias_cd);
+					stmt.setString(2, tax_nm);
+					stmt.setString(3, tax_short_nm);
+					stmt.setString(4, status_flag);
+					stmt.setString(5, emp_cd);
+					stmt.setString(6, comp_cd);
+					stmt.setString(7, tax_cd);
+					stmt.executeUpdate();
+					
+					stmt.close();
+					
+					msg = "Successful! - "+tax_nm +"TAX updated!";
+					msg_type="S";
+				}
+				else
+				{
+					msg = "Failed! - Data Modification for "+tax_nm+" Failed!";
+					msg_type="E";
+				}
+			}
+			else
+			{
+				tax_cd="100";
+				query="SELECT NVL(MAX(TAX_CODE),100) "
+						+ "FROM FMS_TAX_MST ";
+				stmt=dbcon.prepareStatement(query);
+				rset=stmt.executeQuery();
+				if(rset.next())
+				{
+					tax_cd=""+(rset.getInt(1)+1);
+				}
+				else
+				{
+					tax_cd="101";
+				}
+				rset.close();
+				stmt.close();
+				
+				if(!tax_cd.equals(""))
+				{
+					query1="INSERT INTO FMS_TAX_MST(TAX_CODE,TAX_NAME,TAX_ALIAS_CODE,SHT_NM,APP_DATE,STATUS,ENT_DT,ENT_BY,ENT_PROFILE) "
+						+ "VALUES(?,?,?,?,TO_DATE(SYSDATE,'DD/MM/YYYY'),?,SYSDATE,?,?)";
+					stmt1=dbcon.prepareStatement(query1);
+					stmt1.setString(1, tax_cd);
+					stmt1.setString(2, tax_nm);
+					stmt1.setString(3, tax_alias_cd);
+					stmt1.setString(4, tax_short_nm);
+					stmt1.setString(5, status_flag);
+					stmt1.setString(6, emp_cd);
+					stmt1.setString(7, comp_cd);
+					stmt1.executeUpdate();
+					
+					stmt1.close();
+				}
+				
+				msg = "Successful! - "+tax_nm +"TAX added!";
+				msg_type="S";
+			}	
+			
+			url = "../master/frm_tax_master.jsp?msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in Exception! - TAX Insert/Update Failed!";
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateTaxStructure(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateTaxStructure()";
+		msg="";
+		msg_type="";
+		url="";
+		
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			String opration=request.getParameter("opration")==null?"":request.getParameter("opration");
+			
+			String[] tax_code=request.getParameterValues("tax_code");
+			String[] rate=request.getParameterValues("rate");
+			String[] tax_code_on=request.getParameterValues("tax_code_on");
+			String[] sap_tax_code_dtl=request.getParameterValues("sap_tax_code_dtl");
+			String[] sap_gl_dtl=request.getParameterValues("sap_gl_dtl");
+			
+			String tax_struct_cd=request.getParameter("tax_struct_cd")==null?"":request.getParameter("tax_struct_cd");
+			String eff_dt=request.getParameter("eff_dt")==null?"":request.getParameter("eff_dt");
+			String description=request.getParameter("description")==null?"":request.getParameter("description");
+			String status_flag=request.getParameter("status_flag")==null?"1":request.getParameter("status_flag");
+			String remark=request.getParameter("remark")==null?"":request.getParameter("remark");
+			String tax_category=request.getParameter("tax_category")==null?"P":request.getParameter("tax_category");
+			String sap_tax_code=request.getParameter("sap_tax_code")==null?"":request.getParameter("sap_tax_code");
+			String sap_gl=request.getParameter("sap_gl")==null?"":request.getParameter("sap_gl");
+			String pay_recv=request.getParameter("pay_recv")==null?"":request.getParameter("pay_recv");
+			
+			String tax_type="";
+			if(tax_category.equals("S")) {
+				tax_type="Service Tax";
+			}
+			else if (tax_category.equals("P")) {
+				tax_type="Commodity Tax";
+			}
+			
+			if(opration.equals("MODIFY"))
+			{
+				if(!tax_struct_cd.equals(""))
+				{
+					query="UPDATE FMS_TAX_STRUCTURE SET DESCR=?, STATUS=?, "
+							+ "REMARK=?,MODIFY_DT=SYSDATE,MODIFY_BY=?,TAX_CATEGORY=?,"
+							+ "APP_DATE=TO_DATE(?,'DD/MM/YYYY'),SAP_TAX_CODE=?,SAP_GL=?,"
+							+ "PAY_RECV=?,MOD_PROFILE=? "
+							+ "WHERE TAX_STR_CD=? ";
+					stmt=dbcon.prepareStatement(query);
+					stmt.setString(1, description);
+					stmt.setString(2, status_flag);
+					stmt.setString(3, remark);
+					stmt.setString(4, emp_cd);
+					stmt.setString(5, tax_category);
+					stmt.setString(6, eff_dt);
+					stmt.setString(7, sap_tax_code);
+					stmt.setString(8, sap_gl);
+					stmt.setString(9, pay_recv);
+					stmt.setString(10, comp_cd);
+					stmt.setString(11, tax_struct_cd);
+					stmt.executeUpdate();
+					
+					stmt.close();
+					
+					msg = "Successful! - "+tax_type+" "+description.replace("%", "")+" updated!";
+					msg_type="S";
+				}
+				else
+				{
+					msg = "Failed! - "+tax_type+" "+description.replace("%", "")+" update failed!";
+					msg_type="E";
+				}
+			}
+			else
+			{
+				tax_struct_cd="0";
+				query="SELECT NVL(MAX(TAX_STR_CD),0) "
+						+ "FROM FMS_TAX_STRUCTURE ";
+				stmt=dbcon.prepareStatement(query);
+				rset=stmt.executeQuery();
+				if(rset.next())
+				{
+					tax_struct_cd=""+(rset.getInt(1)+1);
+				}
+				else
+				{
+					tax_struct_cd="1";
+				}
+				rset.close();
+				stmt.close();
+				
+				
+				if(!tax_struct_cd.equals(""))
+				{
+					query1="INSERT INTO FMS_TAX_STRUCTURE(TAX_STR_CD,DESCR,APP_DATE,STATUS,"
+						+ "REMARK,ENT_DT,ENT_BY,TAX_CATEGORY,SAP_TAX_CODE,SAP_GL,PAY_RECV,ENT_PROFILE) "
+						+ "VALUES(?,?,TO_DATE(?,'DD/MM/YYYY'),?,"
+						+ "?,SYSDATE,?,?,?,?,?,?)";
+					stmt1=dbcon.prepareStatement(query1);
+					stmt1.setString(1, tax_struct_cd);
+					stmt1.setString(2, description);
+					stmt1.setString(3, eff_dt);
+					stmt1.setString(4, status_flag);
+					stmt1.setString(5, remark);
+					stmt1.setString(6, emp_cd);
+					stmt1.setString(7, tax_category);
+					stmt1.setString(8, sap_tax_code);
+					stmt1.setString(9, sap_gl);
+					stmt1.setString(10, pay_recv);
+					stmt1.setString(11, comp_cd);
+					stmt1.executeUpdate();
+					
+					stmt1.close();
+					
+					msg = "Successful! - "+tax_type+" "+description.replace("%", "")+" added!";
+					msg_type="S";
+				}
+				else
+				{
+					msg = "Failed! - "+tax_type+" "+description.replace("%", "")+" addition failed!";
+					msg_type="E";
+				}				
+			}
+			
+			if(!tax_struct_cd.equals(""))
+			{
+				if(tax_code != null)
+				{
+					query="DELETE FROM FMS_TAX_STRUCTURE_DTL "
+							+ "WHERE TAX_STR_CD=? ";
+					stmt=dbcon.prepareStatement(query);
+					stmt.setString(1, tax_struct_cd);
+					stmt.executeUpdate();
+					
+					for(int i=0; i<tax_code.length; i++)
+					{
+						String tax_on = request.getParameter("tax_on"+tax_code[i])==null?"1":request.getParameter("tax_on"+tax_code[i]);
+						int count=0;
+						query2="SELECT COUNT(*) "
+							+ "FROM FMS_TAX_STRUCTURE_DTL "
+							+ "WHERE TAX_STR_CD=? "
+							+ "AND TAX_CODE=? ";
+						stmt2=dbcon.prepareStatement(query2);
+						stmt2.setString(1, tax_struct_cd);
+						stmt2.setString(2, tax_code[i]);
+						rset2=stmt2.executeQuery();
+						if(rset2.next())
+						{
+							count=rset2.getInt(1);
+						}
+						rset2.close();
+						stmt2.close();
+						
+						if(count > 0)
+						{
+							query1="UPDATE FMS_TAX_STRUCTURE_DTL SET FACTOR=?, TAX_ON_CD=?,TAX_ON=?,"
+									+ "APP_DATE=TO_DATE(?,'DD/MM/YYYY'),SAP_TAX_CODE=?,SAP_GL=? "
+									+ "WHERE TAX_STR_CD=? AND TAX_CODE=? ";
+							stmt1=dbcon.prepareStatement(query1);
+							stmt1.setString(1, rate[i]);
+							stmt1.setString(2, tax_code_on[i]);
+							stmt1.setString(3, tax_on);
+							stmt1.setString(4, eff_dt);
+							stmt1.setString(5, sap_tax_code_dtl[i]);
+							stmt1.setString(6, sap_gl_dtl[i]);
+							stmt1.setString(7, tax_struct_cd);
+							stmt1.setString(8, tax_code[i]);
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+						}
+						else
+						{
+							query="INSERT INTO FMS_TAX_STRUCTURE_DTL(TAX_STR_CD,TAX_CODE,FACTOR,TAX_ON,TAX_ON_CD,APP_DATE,SAP_TAX_CODE,SAP_GL) "
+								+ "VALUES(?,?,?,?,?,TO_DATE(?,'DD/MM/YYYY'),?,?)";
+							stmt1=dbcon.prepareStatement(query);
+							stmt1.setString(1, tax_struct_cd);
+							stmt1.setString(2, tax_code[i]);
+							stmt1.setString(3, rate[i]);
+							stmt1.setString(4, tax_on);
+							stmt1.setString(5, tax_code_on[i]);
+							stmt1.setString(6, eff_dt);
+							stmt1.setString(7, sap_tax_code_dtl[i]);
+							stmt1.setString(8, sap_gl_dtl[i]);
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+						}
+					}
+				}
+			}
+			
+			url = "../master/frm_tax_structure_dtl.jsp?msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in Exception! - Tax Structure Inser/Update Failed!";
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateMeterMaster(HttpServletRequest request)throws IOException,SQLException
+	{
+		String function_nm="InsertUpdateMeterMaster()";
+		msg="";
+		msg_type="";
+		url="";
+		
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			String opration=request.getParameter("opration")==null?"":request.getParameter("opration");
+			String counterparty_cd=request.getParameter("counterparty_cd")==null?"":request.getParameter("counterparty_cd");
+			String counterparty_nm = utilBean.getCounterpartyName(dbcon,counterparty_cd);
+			String entity_role=request.getParameter("entity_role")==null?"":request.getParameter("entity_role");
+			String plant_seq=request.getParameter("plant_seq")==null?"":request.getParameter("plant_seq");
+			String plant_nm = utilBean.getCounterpartyPlantName(dbcon,counterparty_cd, comp_cd, plant_seq, entity_role);
+			String meter_id=request.getParameter("meter_id")==null?"":request.getParameter("meter_id");
+			String meter_ref=request.getParameter("meter_ref")==null?"":request.getParameter("meter_ref");
+			String specification=request.getParameter("specification")==null?"":request.getParameter("specification");
+			String note=request.getParameter("note")==null?"":request.getParameter("note");
+			String status_flag=request.getParameter("status_flag")==null?"":request.getParameter("status_flag");
+			
+			String meter_type=entity_role;
+			String meter_seq=request.getParameter("meter_seq")==null?"":request.getParameter("meter_seq");;
+			
+			if(opration.equalsIgnoreCase("MODIFY"))
+			{
+				query="UPDATE FMS_METER_MST SET METER_ID=?,METER_REF=?,"
+						+ "SPECIFICATION=?,NOTE=?,STATUS=?,MODIFY_BY=?,"
+						+ "MODIFY_DT=SYSDATE "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND PLANT_SEQ=? AND METER_TYPE=? AND METER_SEQ=?";
+				stmt=dbcon.prepareStatement(query);
+				stmt.setString(1, meter_id);
+				stmt.setString(2, meter_ref);
+				stmt.setString(3, specification);
+				stmt.setString(4, note);
+				stmt.setString(5, status_flag);
+				stmt.setString(6, emp_cd);
+				stmt.setString(7, comp_cd);
+				stmt.setString(8, counterparty_cd);
+				stmt.setString(9, plant_seq);
+				stmt.setString(10, meter_type);
+				stmt.setString(11, meter_seq);
+				stmt.executeUpdate();
+				
+				stmt.close();
+				
+				msg = "Successful! - Meter "+meter_id+" updated for "+counterparty_nm+" ("+plant_nm+")";
+				msg_type="S";
+			}
+			else
+			{
+				query="SELECT MAX(METER_SEQ) "
+						+ "FROM FMS_METER_MST "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND PLANT_SEQ=? AND METER_TYPE=?";
+				stmt=dbcon.prepareStatement(query);
+				stmt.setString(1, comp_cd);
+				stmt.setString(2, counterparty_cd);
+				stmt.setString(3, plant_seq);
+				stmt.setString(4, meter_type);
+				rset=stmt.executeQuery();
+				if(rset.next())
+				{
+					meter_seq=""+(rset.getInt(1)+1);
+				}
+				else
+				{
+					meter_seq="1";
+				}
+				rset.close();
+				stmt.close();
+				
+				String trans_abbr = ""+utilBean.getCounterpartyABBR(dbcon,counterparty_cd);
+				meter_id=trans_abbr+"-P"+plant_seq+"-M"+meter_seq;
+				query1="INSERT INTO FMS_METER_MST(COMPANY_CD,COUNTERPARTY_CD,PLANT_SEQ,METER_TYPE,METER_SEQ,"
+						+ "METER_ID,METER_REF,SPECIFICATION,NOTE,STATUS,ENT_BY,ENT_DT) "
+						+ "VALUES(?,?,?,?,?,"
+						+ "?,?,?,?,?,?,SYSDATE)";
+				stmt1=dbcon.prepareStatement(query1);
+				stmt1.setString(1, comp_cd);
+				stmt1.setString(2, counterparty_cd);
+				stmt1.setString(3, plant_seq);
+				stmt1.setString(4, meter_type);
+				stmt1.setString(5, meter_seq);
+				stmt1.setString(6, meter_id);
+				stmt1.setString(7, meter_ref);
+				stmt1.setString(8, specification);
+				stmt1.setString(9, note);
+				stmt1.setString(10, status_flag);
+				stmt1.setString(11, emp_cd);
+				stmt1.executeUpdate();
+				
+				stmt1.close();
+				
+				msg = "Successful! - Meter "+meter_id+" added for "+counterparty_nm+" ("+plant_nm+")";
+				msg_type="S";
+			}
+			
+			url = "../master/frm_meter_mst.jsp?msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in Exception! - Meter Insert/Update Failed!";
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateSectorMaster(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateSectorMaster()";
+		msg="";
+		msg_type="";
+		url="";
+		
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			String opration=request.getParameter("opration")==null?"":request.getParameter("opration");
+			
+			String sector_cd=request.getParameter("sector_cd")==null?"":request.getParameter("sector_cd");
+			String sector_nm=request.getParameter("sector_nm")==null?"":request.getParameter("sector_nm");
+			String sector_abbr=request.getParameter("sector_abbr")==null?"":request.getParameter("sector_abbr");
+			String sector_type=request.getParameter("sector_type")==null?"":request.getParameter("sector_type");
+			String status_flag=request.getParameter("status_flag")==null?"Y":request.getParameter("status_flag");
+			
+			String filter_status = request.getParameter("filter_status")==null?"0":request.getParameter("filter_status");
+			
+			String eff_dt = request.getParameter("eff_dt")==null?"":request.getParameter("eff_dt");
+			String demand_sector_cd = request.getParameter("demand_sector_cd")==null?"":request.getParameter("demand_sector_cd");
+			String supply_sector_cd = request.getParameter("supply_sector_cd")==null?"":request.getParameter("supply_sector_cd");
+			
+			if(opration.equals("MODIFY"))
+			{
+				int count = 0;
+				
+				queryString = "SELECT COUNT(*) "
+						+ "FROM FMS_SECTOR_DTL "
+						+ "WHERE TO_CHAR(EFF_DT,'DD/MM/YYYY') = ? "
+						+ "AND SECTOR_CD=? ";
+				stmt1=dbcon.prepareStatement(queryString);
+				stmt1.setString(1, eff_dt);
+				stmt1.setString(2,sector_cd);
+				rset1 = stmt1.executeQuery();
+				if(rset1.next())
+				{
+					count = rset1.getInt(1);
+				}
+				rset1.close();
+				stmt1.close();
+				
+				if(!sector_cd.equals(""))
+				{
+					//updating the master table 
+					query="UPDATE FMS_SECTOR_MST SET SECTOR_NAME=?, SECTOR_ABBR=?, SECTOR_TYPE=?, "
+							+ "STATUS_FLAG=?,MODIFY_DT=SYSDATE,MODIFY_BY=?,MOD_PROFILE=? "
+							+ "WHERE SECTOR_CD=? ";
+					stmt=dbcon.prepareStatement(query);
+					stmt.setString(1, sector_nm);
+					stmt.setString(2, sector_abbr);
+					stmt.setString(3, sector_type);
+					stmt.setString(4, status_flag);
+					stmt.setString(5, emp_cd);
+					stmt.setString(6, comp_cd);
+					stmt.setString(7, sector_cd);
+					stmt.executeUpdate();
+					
+					stmt.close();
+					
+					//updating the detail table
+					if(!eff_dt.equals(""))
+					{
+						if(count==0)
+						{
+							query2="INSERT INTO FMS_SECTOR_DTL(SECTOR_CD,EFF_DT,DEMAND_SECT_CD,SUPPLY_SECT_CD,ENT_DT,ENT_BY,ENT_PROFILE) "
+									+ "VALUES(?,TO_DATE(?,'DD/MM/YYYY'),?,?,SYSDATE,?,?) ";
+							stmt2 = dbcon.prepareStatement(query2);
+							stmt2.setString(1,sector_cd);
+							stmt2.setString(2,eff_dt);
+							stmt2.setString(3,demand_sector_cd);
+							stmt2.setString(4,supply_sector_cd);
+							stmt2.setString(5,emp_cd);
+							stmt2.setString(6,comp_cd);
+							stmt2.executeUpdate();
+							
+							stmt2.close();
+						}
+						else
+						{
+							query1="UPDATE FMS_SECTOR_DTL SET DEMAND_SECT_CD=?, SUPPLY_SECT_CD=?,MODIFY_DT=SYSDATE,MODIFY_BY=?,MOD_PROFILE=? "
+									+ "WHERE SECTOR_CD=? AND TO_CHAR(EFF_DT,'DD/MM/YYYY')=? ";
+							stmt1 = dbcon.prepareStatement(query1);
+							stmt1.setString(1, demand_sector_cd);
+							stmt1.setString(2, supply_sector_cd);
+							stmt1.setString(3, emp_cd);
+							stmt1.setString(4, comp_cd);
+							stmt1.setString(5, sector_cd);
+							stmt1.setString(6, eff_dt);
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+						}
+					}
+					
+					msg = "Successful! - "+sector_nm+" updated!";
+					msg_type="S";
+				}
+				else
+				{
+					msg = "Failed! - Data Modification for "+sector_nm+" Failed!";
+					msg_type="E";
+				}
+			}
+			else
+			{
+				sector_cd="1";
+				query="SELECT NVL(MAX(SECTOR_CD),1) "
+						+ "FROM FMS_SECTOR_MST ";
+				stmt=dbcon.prepareStatement(query);
+				rset=stmt.executeQuery();
+				if(rset.next())
+				{
+					sector_cd=""+(rset.getInt(1)+1);
+				}
+				else
+				{
+					sector_cd="1";
+				}
+				rset.close();
+				stmt.close();
+				
+				if(!sector_cd.equals(""))
+				{
+					//inserting the data in the master table
+					query1="INSERT INTO FMS_SECTOR_MST(SECTOR_CD,SECTOR_NAME,SECTOR_ABBR,SECTOR_TYPE,STATUS_FLAG,ENT_DT,ENT_BY,ENT_PROFILE) "
+						+ "VALUES(?,?,?,?,?,SYSDATE,?,?)";
+					stmt1=dbcon.prepareStatement(query1);
+					stmt1.setString(1, sector_cd);
+					stmt1.setString(2, sector_nm);
+					stmt1.setString(3, sector_abbr);
+					stmt1.setString(4, sector_type);
+					stmt1.setString(5, status_flag);
+					stmt1.setString(6, emp_cd);
+					stmt1.setString(7, comp_cd);
+					stmt1.executeUpdate();
+					
+					stmt1.close();
+					
+					//inserting the data in the detail table 
+					if(!eff_dt.equals(""))
+					{
+						query="INSERT INTO FMS_SECTOR_DTL(SECTOR_CD,EFF_DT,DEMAND_SECT_CD,SUPPLY_SECT_CD,ENT_DT,ENT_BY,ENT_PROFILE) "
+								+ "VALUES(?,TO_DATE(?,'DD/MM/YYYY'),?,?,SYSDATE,?,?) ";
+						stmt = dbcon.prepareStatement(query);
+						stmt.setString(1,sector_cd);
+						stmt.setString(2,eff_dt);
+						stmt.setString(3,demand_sector_cd);
+						stmt.setString(4,supply_sector_cd);
+						stmt.setString(5,emp_cd);
+						stmt.setString(6,comp_cd);
+						stmt.executeUpdate();
+						
+						stmt.close();
+					}
+				}
+				
+				msg = "Successful! - "+sector_nm+" Added!";
+				msg_type="S";
+			}	
+			
+			url = "../master/frm_sector_mst.jsp?msg="+msg+"&msg_type="+msg_type+"&filter_status="+filter_status+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in Exception! - Sector Master Insert/Update Failed!";
+
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateBankMaster(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateBankMaster()";
+		msg="";
+		msg_type="";
+		url="";
+		
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			String opration=request.getParameter("opration")==null?"":request.getParameter("opration");
+			
+			String bank_cd=request.getParameter("bank_cd")==null?"":request.getParameter("bank_cd");
+			String bank_nm=request.getParameter("bank_nm")==null?"":request.getParameter("bank_nm");
+			String bank_abbr=request.getParameter("bank_abbr")==null?"":request.getParameter("bank_abbr");
+			String bank_branch=request.getParameter("bank_branch")==null?"":request.getParameter("bank_branch");
+			String eff_dt=request.getParameter("eff_dt")==null?"":request.getParameter("eff_dt");
+			String bank_addr=request.getParameter("bank_addr")==null?"":request.getParameter("bank_addr");
+			String bank_city=request.getParameter("bank_city")==null?"":request.getParameter("bank_city");
+			String bank_pin=request.getParameter("bank_pin")==null?"":request.getParameter("bank_pin");
+			String state_cd=request.getParameter("state_cd")==null?"":request.getParameter("state_cd");
+			String country_cd=request.getParameter("country_cd")==null?"":request.getParameter("country_cd");
+			String bank_phone=request.getParameter("bank_phone")==null?"":request.getParameter("bank_phone");
+			String bank_mobile=request.getParameter("bank_mobile")==null?"":request.getParameter("bank_mobile");
+			String bank_alt_phone=request.getParameter("bank_alt_phone")==null?"":request.getParameter("bank_alt_phone");
+			String bank_ifsc_code=request.getParameter("bank_ifsc_code")==null?"":request.getParameter("bank_ifsc_code");
+			String remarks=request.getParameter("remarks")==null?"":request.getParameter("remarks");
+			String fax1=request.getParameter("fax1")==null?"":request.getParameter("fax1");
+			String fax2=request.getParameter("fax2")==null?"":request.getParameter("fax2");
+			String status_flag=request.getParameter("status_flag")==null?"":request.getParameter("status_flag");
+			String bank_email=request.getParameter("bank_email")==null?"":request.getParameter("bank_email");
+			
+			if(opration.equals("MODIFY"))
+			{
+				if(!bank_cd.equals(""))
+				{
+					query="UPDATE FMS_BANK_MST SET BANK_NAME=?, BANK_ABBR=?, BRANCH_NAME=?, "
+							+ "EFF_DT=TO_DATE(?,'DD/MM/YYYY'), ADDR=?,CITY=?,PIN=?,STATE=?,COUNTRY=?, "
+							+ "PHONE=?,MOBILE=?,ALT_PHONE=?,FAX_1=?,FAX_2=?,EMAIL=?,REMARK=?, "
+							+ "BRANCH_IFSC_CD=?,ACTIVE_FLAG=?,MOD_PROFILE=? "
+							+ "WHERE BANK_CD=? ";
+					stmt=dbcon.prepareStatement(query);
+					stmt.setString(1, bank_nm);
+					stmt.setString(2, bank_abbr);
+					stmt.setString(3, bank_branch);
+					stmt.setString(4, eff_dt);
+					stmt.setString(5, bank_addr);
+					stmt.setString(6, bank_city);
+					stmt.setString(7, bank_pin);
+					stmt.setString(8, state_cd);
+					stmt.setString(9, country_cd);
+					stmt.setString(10, bank_phone);
+					stmt.setString(11, bank_mobile);
+					stmt.setString(12, bank_alt_phone);
+					stmt.setString(13, fax1);
+					stmt.setString(14, fax2);
+					stmt.setString(15, bank_email);
+					stmt.setString(16, remarks);
+					stmt.setString(17, bank_ifsc_code);
+					stmt.setString(18, status_flag);
+					stmt.setString(19, comp_cd);
+					stmt.setString(20, bank_cd);
+					stmt.executeUpdate();
+					
+					stmt.close();
+					
+					msg = "Successful! - "+bank_nm+" updated!";
+					msg_type="S";
+				}
+				else
+				{
+					msg = "Failed! - Data Modification for "+bank_nm+" Failed!";
+					msg_type="E";
+				}
+			}
+			else
+			{
+				bank_cd="1001";
+				query="SELECT NVL(MAX(BANK_CD),1000) "
+						+ "FROM FMS_BANK_MST ";
+				stmt=dbcon.prepareStatement(query);
+				rset=stmt.executeQuery();
+				if(rset.next())
+				{
+					bank_cd=""+(rset.getInt(1)+1);
+				}
+				else
+				{
+					bank_cd="1001";
+				}
+				rset.close();
+				stmt.close();
+				
+				if(!bank_cd.equals(""))
+				{
+					query1="INSERT INTO FMS_BANK_MST(BANK_CD,BANK_NAME,BANK_ABBR,BRANCH_NAME,EFF_DT,ADDR,CITY,PIN,STATE, "
+						+ "COUNTRY,PHONE,MOBILE,ALT_PHONE,FAX_1,FAX_2,EMAIL,REMARK,BRANCH_IFSC_CD,ACTIVE_FLAG,ENT_PROFILE) "
+						+ "VALUES(?,?,?,?,TO_DATE(?,'DD/MM/YYYY'),?,?, "
+						+ "?,?,?,?,?,?,?,?,"
+						+ "?,?,?,?,?)";
+					stmt1=dbcon.prepareStatement(query1);
+					stmt1.setString(1, bank_cd);
+					stmt1.setString(2, bank_nm);
+					stmt1.setString(3, bank_abbr);
+					stmt1.setString(4, bank_branch);
+					stmt1.setString(5, eff_dt);
+					stmt1.setString(6, bank_addr);
+					stmt1.setString(7, bank_city);
+					stmt1.setString(8, bank_pin);
+					stmt1.setString(9, state_cd);
+					stmt1.setString(10, country_cd);
+					stmt1.setString(11, bank_phone);
+					stmt1.setString(12, bank_mobile);
+					stmt1.setString(13, bank_alt_phone);
+					stmt1.setString(14, fax1);
+					stmt1.setString(15, fax2);
+					stmt1.setString(16, bank_email);
+					stmt1.setString(17, remarks);
+					stmt1.setString(18, bank_ifsc_code);
+					stmt1.setString(19, status_flag);
+					stmt1.setString(20, comp_cd);
+					stmt1.executeUpdate();
+					
+					stmt1.close();
+				}
+				
+				msg = "Successful! - "+bank_nm+" Added!";
+				msg_type="S";
+			}	
+			
+			url = "../master/frm_bank_mst.jsp?msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in Exception! - Bank Name Insert/Update Failed!";
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateShipMaster(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateShipMaster()";
+		msg="";
+		msg_type="";
+		url="";
+		
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			String opration=request.getParameter("opration")==null?"":request.getParameter("opration");
+			
+			String ship_cd=request.getParameter("ship_cd")==null?"":request.getParameter("ship_cd");
+			String ship_nm=request.getParameter("ship_nm")==null?"":request.getParameter("ship_nm");
+			String ship_call_sign=request.getParameter("ship_call_sign")==null?"":request.getParameter("ship_call_sign");
+			String imo_no=request.getParameter("imo_no")==null?"":request.getParameter("imo_no");
+			String ship_flag=request.getParameter("ship_flag")==null?"Y":request.getParameter("ship_flag");
+			String class_soc=request.getParameter("class_soc")==null?"":request.getParameter("class_soc");
+			String inmarsat_no=request.getParameter("inmarsat_no")==null?"":request.getParameter("inmarsat_no");
+			String vessel_owner=request.getParameter("vessel_owner")==null?"":request.getParameter("vessel_owner");
+			String vessel_operator=request.getParameter("vessel_operator")==null?"":request.getParameter("vessel_operator");
+			String fax_no=request.getParameter("fax_no")==null?"":request.getParameter("fax_no");
+			String telex_no=request.getParameter("telex_no")==null?"":request.getParameter("telex_no");
+			String vessel_email=request.getParameter("vessel_email")==null?"":request.getParameter("vessel_email");
+			String gross_tonnage=request.getParameter("gross_tonnage")==null?"":request.getParameter("gross_tonnage");
+			String approx_cargo_cap=request.getParameter("approx_cargo_cap")==null?"":request.getParameter("approx_cargo_cap");
+			String app_cargo_capecity_unit=request.getParameter("app_cargo_capecity_unit")==null?"":request.getParameter("app_cargo_capecity_unit");
+			String cap_per=request.getParameter("cap_per")==null?"":request.getParameter("cap_per");
+			String items=request.getParameter("items").equals("")?"LNG":request.getParameter("items");
+			String eff_dt=request.getParameter("eff_dt")==null?"":request.getParameter("eff_dt");
+			
+			if(opration.equals("MODIFY"))
+			{
+				if(!ship_cd.equals(""))
+				{
+					int count = 0;
+					
+					queryString = "SELECT COUNT(*) FROM FMS_SHIP_MST "
+							+ "WHERE SHIP_CD=? AND EFF_DT=TO_DATE(?,'DD/MM/YYYY') ";
+					stmt=dbcon.prepareStatement(queryString);
+					stmt.setString(1, ship_cd);
+					stmt.setString(2, eff_dt);
+					rset = stmt.executeQuery();
+			   		if(rset.next())
+			   		{
+			   			count = rset.getInt(1);
+			   		}
+			   		rset.close();
+			   		stmt.close();
+			   		
+			   		if(count==0)
+			   		{
+			   			query1="INSERT INTO FMS_SHIP_MST(SHIP_CD,SHIP_NAME,SHIP_CALL_SIGN,SHIP_FLAG,"
+								+ "SHIP_IMO_NO,SHIP_CLASS_SOC,INMARSAT_NO,SHIP_OWNER_NAME,SHIP_OPERATOR_NAME,SHIP_FAX_NO,"
+								+ "SHIP_TELEX_NO,SHIP_EMAIL,GROSS_TONNAGE,CARGO_CAPACITY,VOLUME_UNIT,PERCENTAGE_CAPACITY,SHIP_ITEM,"
+								+ "ENT_BY,ENT_DT,EFF_DT,ENT_PROFILE) "
+							+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,SYSDATE,TO_DATE(?,'DD/MM/YYYY'),?)";
+						stmt1=dbcon.prepareStatement(query1);
+						stmt1.setString(1, ship_cd);
+						stmt1.setString(2, ship_nm);
+						stmt1.setString(3, ship_call_sign);
+						stmt1.setString(4, ship_flag);
+						stmt1.setString(5, imo_no);
+						stmt1.setString(6, class_soc);
+						stmt1.setString(7, inmarsat_no);
+						stmt1.setString(8, vessel_owner);
+						stmt1.setString(9, vessel_operator);
+						stmt1.setString(10, fax_no);
+						stmt1.setString(11, telex_no);
+						stmt1.setString(12, vessel_email);
+						stmt1.setString(13, gross_tonnage);
+						stmt1.setString(14, approx_cargo_cap);
+						stmt1.setString(15, app_cargo_capecity_unit);
+						stmt1.setString(16, cap_per);
+						stmt1.setString(17, items);
+						stmt1.setString(18, emp_cd);
+						stmt1.setString(19, eff_dt);
+						stmt1.setString(20, comp_cd);
+						stmt1.executeUpdate();
+						
+						stmt1.close();
+						
+						msg = "Successful! - "+ship_nm+" Vessel Added!";
+						msg_type="S";
+			   		}
+			   		else
+			   		{
+			   			query="UPDATE FMS_SHIP_MST SET SHIP_NAME=?, SHIP_CALL_SIGN=?, SHIP_FLAG=?,SHIP_IMO_NO=?,SHIP_CLASS_SOC=?, "
+								+ "INMARSAT_NO=?,SHIP_OWNER_NAME=?,SHIP_OPERATOR_NAME=?,SHIP_FAX_NO=?,SHIP_TELEX_NO=?,SHIP_EMAIL=?,"
+								+ "GROSS_TONNAGE=?,CARGO_CAPACITY=?,VOLUME_UNIT=?,PERCENTAGE_CAPACITY=?,SHIP_ITEM=?,MODIFY_DT=SYSDATE,"
+								+ "MODIFY_BY=?,EFF_DT=TO_DATE(?,'DD/MM/YYYY'),MOD_PROFILE=? "
+								+ "WHERE SHIP_CD=? AND EFF_DT=TO_DATE(?,'DD/MM/YYYY') ";
+						stmt=dbcon.prepareStatement(query);
+						stmt.setString(1, ship_nm);
+						stmt.setString(2, ship_call_sign);
+						stmt.setString(3, ship_flag);
+						stmt.setString(4, imo_no);
+						stmt.setString(5, class_soc);
+						stmt.setString(6, inmarsat_no);
+						stmt.setString(7, vessel_owner);
+						stmt.setString(8, vessel_operator);
+						stmt.setString(9, fax_no);
+						stmt.setString(10, telex_no);
+						stmt.setString(11, vessel_email);
+						stmt.setString(12, gross_tonnage);
+						stmt.setString(13, approx_cargo_cap);
+						stmt.setString(14, app_cargo_capecity_unit);
+						stmt.setString(15, cap_per);
+						stmt.setString(16, items);
+						stmt.setString(17, emp_cd);
+						stmt.setString(18, eff_dt);
+						stmt.setString(19, comp_cd);
+						stmt.setString(20, ship_cd);
+						stmt.setString(21, eff_dt);
+						stmt.executeUpdate();
+						
+						stmt.close();
+						
+						msg = "Successful! - "+ship_nm+" Vessel updated!";
+						msg_type="S";
+			   		}
+				}
+				else
+				{
+					msg = "Failed! - Data Modification for "+ship_nm+" Failed!";
+					msg_type="E";
+				}
+			}
+			else
+			{
+				ship_cd="1";
+				
+				query="SELECT NVL(MAX(SHIP_CD),0) "
+						+ "FROM FMS_SHIP_MST ";
+				stmt=dbcon.prepareStatement(query);
+				rset=stmt.executeQuery();
+				if(rset.next())
+				{
+					ship_cd=""+(rset.getInt(1)+1);
+				}				
+				rset.close();
+				stmt.close();
+				
+				if(!ship_cd.equals(""))
+				{
+					query1="INSERT INTO FMS_SHIP_MST(SHIP_CD,SHIP_NAME,SHIP_CALL_SIGN,SHIP_FLAG,"
+							+ "SHIP_IMO_NO,SHIP_CLASS_SOC,INMARSAT_NO,SHIP_OWNER_NAME,SHIP_OPERATOR_NAME,SHIP_FAX_NO,"
+							+ "SHIP_TELEX_NO,SHIP_EMAIL,GROSS_TONNAGE,CARGO_CAPACITY,VOLUME_UNIT,PERCENTAGE_CAPACITY,SHIP_ITEM,"
+							+ "ENT_BY,ENT_DT,EFF_DT,ENT_PROFILE) "
+						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,SYSDATE,TO_DATE(?,'DD/MM/YYYY'),?)";
+					stmt1=dbcon.prepareStatement(query1);
+					stmt1.setString(1, ship_cd);
+					stmt1.setString(2, ship_nm);
+					stmt1.setString(3, ship_call_sign);
+					stmt1.setString(4, ship_flag);
+					stmt1.setString(5, imo_no);
+					stmt1.setString(6, class_soc);
+					stmt1.setString(7, inmarsat_no);
+					stmt1.setString(8, vessel_owner);
+					stmt1.setString(9, vessel_operator);
+					stmt1.setString(10, fax_no);
+					stmt1.setString(11, telex_no);
+					stmt1.setString(12, vessel_email);
+					stmt1.setString(13, gross_tonnage);
+					stmt1.setString(14, approx_cargo_cap);
+					stmt1.setString(15, app_cargo_capecity_unit);
+					stmt1.setString(16, cap_per);
+					stmt1.setString(17, items);
+					stmt1.setString(18, emp_cd);
+					stmt1.setString(19, eff_dt);
+					stmt1.setString(20, comp_cd);
+					stmt1.executeUpdate();
+					
+					stmt1.close();
+				}
+				
+				msg = "Successful! - "+ship_nm+" Vessel Added!";
+				msg_type="S";
+			}	
+			
+			url = "../master/frm_vessel_ship_mst.jsp?ship_cd="+ship_cd+"&msg="+msg+"&msg_type="+msg_type+"&opration="+opration+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in Exception! - Vessel Master Insert/Update Failed!";
+
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateProductMaster(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateProductMaster()";
+		msg="";
+		msg_type="";
+		url="";
+		
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			String opration=request.getParameter("opration")==null?"":request.getParameter("opration");
+			
+			String product_cd=request.getParameter("product_cd")==null?"":request.getParameter("product_cd");
+			String product_nm=request.getParameter("product_nm")==null?"":request.getParameter("product_nm");
+			String product_abbr=request.getParameter("product_abbr")==null?"":request.getParameter("product_abbr");
+			String desc=request.getParameter("desc")==null?"":request.getParameter("desc");
+			String status_flag=request.getParameter("status_flag")==null?"Y":request.getParameter("status_flag");
+			
+			if(opration.equals("MODIFY"))
+			{
+				if(!product_cd.equals(""))
+				{
+		   			query="UPDATE FMS_PRODUCT_MST SET PROD_NM=?, PROD_ABBR=?, PROD_DESC=?,"
+		   					+ "MOD_DT=SYSDATE,MOD_BY=?,PROD_FLAG=?,MOD_PROFILE=? "
+							+ "WHERE PROD_CD=? ";
+					stmt=dbcon.prepareStatement(query);
+					stmt.setString(1, product_nm);
+					stmt.setString(2, product_abbr);
+					stmt.setString(3, desc);
+					stmt.setString(4, emp_cd);
+					stmt.setString(5, status_flag);
+					stmt.setString(6, comp_cd);
+					stmt.setString(7, product_cd);
+					stmt.executeUpdate();
+					
+					stmt.close();
+					
+					msg = "Successful! - "+product_nm+" Product updated!";
+					msg_type="S";
+				}
+				else
+				{
+					msg = "Failed! - Data Modification for "+product_nm+" Failed!";
+					msg_type="E";
+				}
+			}
+			else
+			{
+				product_cd="1";
+				
+				query="SELECT NVL(MAX(PROD_CD),0) "
+						+ "FROM FMS_PRODUCT_MST ";
+				stmt=dbcon.prepareStatement(query);
+				rset=stmt.executeQuery();
+				if(rset.next())
+				{
+					product_cd=""+(rset.getInt(1)+1);
+				}				
+				rset.close();
+				stmt.close();
+				
+				if(!product_cd.equals(""))
+				{
+					query1="INSERT INTO FMS_PRODUCT_MST(PROD_CD,PROD_NM,PROD_ABBR,PROD_DESC,"
+							+ "PROD_FLAG,ENT_BY,ENT_DT,ENT_PROFILE) "
+						+ "VALUES(?,?,?,?,?,?,SYSDATE,?)";
+					stmt1=dbcon.prepareStatement(query1);
+					stmt1.setString(1, product_cd);
+					stmt1.setString(2, product_nm);
+					stmt1.setString(3, product_abbr);
+					stmt1.setString(4, desc);
+					stmt1.setString(5, status_flag);
+					stmt1.setString(6, emp_cd);
+					stmt1.setString(7, comp_cd);
+					stmt1.executeUpdate();
+					
+					stmt1.close();
+				}
+				
+				msg = "Successful! - "+product_nm+" Product Added!";
+				msg_type="S";
+			}	
+			
+			url = "../master/frm_product_mst.jsp?product_cd="+product_cd+"&msg="+msg+"&msg_type="+msg_type+"&opration="+opration+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in Exception! - Product Master Insert/Update Failed!";
+
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+		
+	private void InsertUpdateProductmoleMaster(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateProductmoleMaster()";
+		msg="";
+		msg_type="";
+		url="";
+		
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		
+		try
+		{
+			String opration=request.getParameter("opration")==null?"":request.getParameter("opration");
+			
+			String product_cd=request.getParameter("product_cd")==null?"":request.getParameter("product_cd");
+			String molecule_cd=request.getParameter("molecule_cd")==null?"":request.getParameter("molecule_cd");
+			String molecule_nm=request.getParameter("molecule_nm")==null?"":request.getParameter("molecule_nm");
+			String molecule_abbr=request.getParameter("molecule_abbr")==null?"":request.getParameter("molecule_abbr");
+			String desc=request.getParameter("desc")==null?"":request.getParameter("desc");
+			String status_flag=request.getParameter("status_flag")==null?"Y":request.getParameter("status_flag");
+			
+			if(opration.equals("MODIFY"))
+			{
+				if(!product_cd.equals("") && !molecule_cd.equals(""))
+				{
+					int upCnt=0;
+					query="UPDATE FMS_PRODUCT_MOLECULE_MST SET PROD_CD=?, MOLE_NM=?, MOLE_ABBR=?, MOLE_DESC=?,"
+							+ "MOD_DT=SYSDATE,MOD_BY=?,MOLE_FLAG=?,MOD_PROFILE=? "
+							+ "WHERE MOLE_CD=? ";
+					stmt=dbcon.prepareStatement(query);
+					stmt.setString(++upCnt, product_cd);
+					stmt.setString(++upCnt, molecule_nm);
+					stmt.setString(++upCnt, molecule_abbr);
+					stmt.setString(++upCnt, desc);
+					stmt.setString(++upCnt, emp_cd);
+					stmt.setString(++upCnt, status_flag);
+					stmt.setString(++upCnt, comp_cd);
+					stmt.setString(++upCnt, molecule_cd);
+					stmt.executeUpdate();
+					
+					stmt.close();
+					
+					msg = "Successful! - "+molecule_nm+" Product Molecule updated!";
+					msg_type="S";
+				}
+				else
+				{
+					msg = "Failed! - Data Modification for "+molecule_nm+" Failed!";
+					msg_type="E";
+				}
+			}
+			else
+			{
+				molecule_cd="1";
+				
+				query="SELECT NVL(MAX(MOLE_CD),0) "
+						+ "FROM FMS_PRODUCT_MOLECULE_MST ";
+						//+ "WHERE PROD_CD=? ";
+				stmt=dbcon.prepareStatement(query);
+				//stmt.setString(1,product_cd);
+				rset=stmt.executeQuery();
+				if(rset.next())
+				{
+					molecule_cd=""+(rset.getInt(1)+1);
+				}				
+				rset.close();
+				stmt.close();
+				
+				if(!molecule_cd.equals(""))
+				{
+					query1="INSERT INTO FMS_PRODUCT_MOLECULE_MST(PROD_CD,MOLE_CD,MOLE_NM,MOLE_ABBR,MOLE_DESC,"
+							+ "MOLE_FLAG,ENT_BY,ENT_DT,ENT_PROFILE) "
+							+ "VALUES(?,?,?,?,?,?,?,SYSDATE,?)";
+					stmt1=dbcon.prepareStatement(query1);
+					stmt1.setString(1, product_cd);
+					stmt1.setString(2, molecule_cd);
+					stmt1.setString(3, molecule_nm);
+					stmt1.setString(4, molecule_abbr);
+					stmt1.setString(5, desc);
+					stmt1.setString(6, status_flag);
+					stmt1.setString(7, emp_cd);
+					stmt1.setString(8, comp_cd);
+					stmt1.executeUpdate();
+					
+					stmt1.close();
+				}
+				
+				msg = "Successful! - "+molecule_nm+" Product Molecule Added!";
+				msg_type="S";
+			}	
+			
+			url = "../master/frm_product_molecule_mst.jsp?&msg="+msg+"&msg_type="+msg_type+"&opration="+opration+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in Exception! - Product Molecule Master Insert/Update Failed!";
+			
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateSACMaster(HttpServletRequest request) throws SQLException
+	{
+		String function_nm="InsertUpdateSACMaster()";
+		msg="";
+		msg_type="";
+		url="";
+		String opration ="";
+		HttpSession session = request.getSession();
+		String emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+		String comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+		try
+		{
+			String sac_cd = request.getParameter("sac_cd")==null?"":request.getParameter("sac_cd");
+			String sac_code = request.getParameter("sac_code")==null?"":request.getParameter("sac_code");
+			String sac_desc = request.getParameter("desc")==null?"":request.getParameter("desc");
+			String sac_remark = request.getParameter("remark")==null?"":request.getParameter("remark");
+			opration = request.getParameter("opration")==null?"":request.getParameter("opration");
+			String status_flag = request.getParameter("status_flag")==null?"":request.getParameter("status_flag");
+			
+			if(opration.equals("MODIFY"))
+			{
+				if(!sac_cd.equals(""))
+				{
+					query="UPDATE FMS_SAC_MST SET SAC_CODE=?,SAC_DESC=?,REMARKS=?, "
+							+ "MODIFY_DT=SYSDATE,MODIFY_BY=?,SAC_FLAG=?,MOD_PROFILE=?  "
+							+ "WHERE SAC_CD=? ";
+					stmt=dbcon.prepareStatement(query);
+					stmt.setString(1, sac_code);
+					stmt.setString(2, sac_desc);
+					stmt.setString(3, sac_remark);
+					stmt.setString(4, emp_cd);
+					stmt.setString(5, status_flag);
+					stmt.setString(6, comp_cd);
+					stmt.setString(7, sac_cd);
+					stmt.executeUpdate();
+					
+					stmt.close();
+					
+					msg = "Successful! "+sac_code+" - SAC Updated!";
+					msg_type="S";
+				}
+				else
+				{
+					msg = "Failed! - Data Modification for "+sac_code+" Failed!";
+					msg_type="E";
+				}
+			}
+			else
+			{
+				queryString = "SELECT NVL(MAX(SAC_CD),0) FROM FMS_SAC_MST";
+				stmt = dbcon.prepareStatement(queryString);
+				rset = stmt.executeQuery();
+				if(rset.next())
+				{
+					sac_cd = ""+(rset.getInt(1)+1);
+				}
+				rset.close();
+				stmt.close();
+				
+				if(!sac_cd.equals(""))
+				{
+					query1 = "INSERT INTO FMS_SAC_MST"
+							+ "(SAC_CD,SAC_CODE,SAC_DESC,REMARKS,SAC_FLAG,ENT_BY,ENT_DT,ENT_PROFILE) "
+							+ "VALUES(?,?,?,?,?,?,SYSDATE,?)";
+					stmt1=dbcon.prepareStatement(query1);
+					stmt1.setString(1, sac_cd);
+					stmt1.setString(2, sac_code);
+					stmt1.setString(3, sac_desc);
+					stmt1.setString(4, sac_remark);
+					stmt1.setString(5, status_flag);
+					stmt1.setString(6, emp_cd);
+					stmt1.setString(7, comp_cd);
+					stmt1.executeUpdate();
+					
+					stmt1.close();
+				}
+				msg = "Successful! - "+sac_code+" SAC Added!";
+				msg_type="S";
+			}
+			
+			url = "../master/frm_sac_mst.jsp?sac_cd="+sac_cd+"&msg="+msg+"&msg_type="+msg_type+"&opration="+opration+commonUrl_pra;
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			url=CommonVariable.errorpage_url+"?e="+e;
+			msg = "Error in Exception! - SAC Master Insert/Update Failed!";
+		}
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,(String)session.getAttribute("emp_nm"), (String)session.getAttribute("ip"), form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+}

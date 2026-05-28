@@ -1,0 +1,37 @@
+
+
+<<START>>,<<FMS_TRADER_CONT_PLANT_CHRG>>,,,,,, 	(13-JUN-2025 18:24:03)
+ 
+COMNPANY_CD,CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,CONTRACT_TYPE,TIMESTAMP
+2,0, , ,, ,, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,0, , ,, ,, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,0, , ,, ,, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,0, , ,, ,, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,0, , ,, ,, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,0, , ,, ,, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,154, 0, 0,825003, 0,D, 	(13-JUN-2025 18:24:03)
+2,154, 0, 0,825003, 0,D, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,154, 0, 0,825003, 0,D, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,154, 0, 0,824015, 2,D, 	(13-JUN-2025 18:24:03)
+2,154, 0, 0,824016, 2,D, 	(13-JUN-2025 18:24:03)
+2,154, 0, 0,824015, 2,D, 	(13-JUN-2025 18:24:03)
+2,154, 0, 0,824016, 2,D, 	(13-JUN-2025 18:24:03)
+2,154, 0, 0,824015, 2,D, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,154, 0, 0,824016, 2,D, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,154, 0, 0,824015, 2,D, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,154, 0, 0,824016, 2,D, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,154, 0, 0,824015, 2,D, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,154, 0, 0,824016, 2,D, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,154, 0, 0,824015, 2,D, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+2,154, 0, 0,824016, 2,D, 	(13-JUN-2025 18:24:03)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : 21,,,,,,, 	(13-JUN-2025 18:24:03)
+ 
+
+TOTAL DATA INSERTED : 5,,,,,,, 	(13-JUN-2025 18:24:03)
+ 
+
+TOTAL SKIPPED DATA 16,,,,,,, 	(13-JUN-2025 18:24:03)
+ 
+<<END>><<FMS_TRADER_CONT_PLANT_CHRG>> 	(13-JUN-2025 18:24:03)
+ 

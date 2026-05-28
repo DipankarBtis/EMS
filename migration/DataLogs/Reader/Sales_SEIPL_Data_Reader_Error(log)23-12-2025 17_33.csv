@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_INVOICE_MST_LP()>>
+**********AutomationEMS Error  (23-DEC-2025 17:33:45) **********
+java.sql.SQLDataException: ORA-01438: value larger than specified precision allowed for this column
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST_LP(Sales_SEIPL_Data_Reader.java:22667)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:334)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST_LP() ENDED WITH ERRORS>>

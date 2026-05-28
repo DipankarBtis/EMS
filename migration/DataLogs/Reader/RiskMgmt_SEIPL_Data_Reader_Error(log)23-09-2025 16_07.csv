@@ -1,0 +1,22 @@
+
+<<ERROR IN FMS_MR_EXPO_EOD_DTL()>>
+**********AutomationEMS Error  (23-SEP-2025 16:07:09) **********
+java.sql.SQLSyntaxErrorException: ORA-00947: not enough values
+
+
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.FMS_MR_EXPO_EOD_DTL(RiskMgmt_SEIPL_Data_Reader.java:1941)
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.init(RiskMgmt_SEIPL_Data_Reader.java:151)
+**************************************************
+
+<<FUNCTION FMS_MR_EXPO_EOD_DTL() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_MR_EXPO_EOD_DTL()>>
+**********AutomationEMS Error  (23-SEP-2025 16:07:25) **********
+java.sql.SQLSyntaxErrorException: ORA-00947: not enough values
+
+
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.FMS_MR_EXPO_EOD_DTL(RiskMgmt_SEIPL_Data_Reader.java:1941)
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.init(RiskMgmt_SEIPL_Data_Reader.java:151)
+**************************************************
+
+<<FUNCTION FMS_MR_EXPO_EOD_DTL() ENDED WITH ERRORS>>

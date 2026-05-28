@@ -1,0 +1,38 @@
+
+
+<<START>>,<<FMS_BANK_MST>>,,, 	(02-AUG-2025 09:53:39)
+ 
+CD,BANK_NAME,BANK_ABBR,EFF_DT,TIMESTAMP
+1023 , STANDARD CHARTERED BANK , NULL , 01/01/2010, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Mizuho Bank, Ltd , MIZUHO , 01/06/2023, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , RBL Bank Ltd , RBL , 26/02/2024, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , ICICI Bank Ltd , ICICI , 24/03/2021, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , HDFC Bank Ltd , HDFC , 24/03/2021, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Axis Bank Ltd , AXIS , 24/03/2021, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Bank of Baroda , BOB , 24/03/2021, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Indian Bank , IB , 24/03/2021, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Standard Chartered Bank  , SCB , 24/03/2021, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , IDBI Bank Ltd , IDBI , 24/03/2021, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , State Bank of India , SBI , 24/03/2021, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Federal Bank Ltd , FBL , 24/03/2021, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , The Hongkong & Shanghai Banking Corporation Ltd , HSBC , 14/06/2022, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Citibank N.A. ? India Branches , CITI INDIA , 19/07/2022, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Kotak Mahindra Bank Limited , KMB , 03/06/2022, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Yes Bank Ltd , YBL , 04/01/2023, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Union Bank of India , UBI , 10/01/2023, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Punjab National Bank , PNB , 13/05/2021, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Credit Agricole Corporate and Investment Bank (India) , CACIB , 18/05/2022, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Sumitomo Mitsui Banking Corporation , SMBC-DELHI , 22/09/2022, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , Deutsche Bank AG  , DB INDIA , 22/09/2022, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+1023 , INDUSIND BANK LIMITED , INDUSIND , 08/12/2022, 	(02-AUG-2025 09:53:39)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,22,,, 	(02-AUG-2025 09:53:39)
+ 
+
+TOTAL DATA INSERTED : ,0,,, 	(02-AUG-2025 09:53:39)
+ 
+
+TOTAL SKIPPED DATA ,22,,, 	(02-AUG-2025 09:53:39)
+ 
+<<END>>,<<FMS_BANK_MST>>,,, 	(02-AUG-2025 09:53:39)
+ 

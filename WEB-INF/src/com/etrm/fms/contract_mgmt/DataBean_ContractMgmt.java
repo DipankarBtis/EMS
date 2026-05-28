@@ -1,0 +1,10706 @@
+package com.etrm.fms.contract_mgmt;
+
+import java.io.File; 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Vector;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
+import com.etrm.fms.mail.MailDelivery;
+import com.etrm.fms.util.CommonVariable;
+import com.etrm.fms.util.DateUtil;
+import com.etrm.fms.util.RuntimeConf;
+import com.etrm.fms.util.SystemErrorLogger;
+import com.etrm.fms.util.UtilBean;
+
+//Coded By          : Harsh Patel
+//Code Reviewed by	:  
+//CR Date			: 03/01/2023 
+//Status	  		: Developing
+
+public class DataBean_ContractMgmt
+{
+	String db_src_file_name="DataBean_ContractMgmt.java";
+	
+	Connection conn; 
+	PreparedStatement stmt;
+	PreparedStatement stmt0;
+	PreparedStatement stmt1;
+	PreparedStatement stmt2;
+	PreparedStatement stmt3;
+	PreparedStatement stmt4;
+	PreparedStatement stmt5;
+	PreparedStatement stmt6;
+	PreparedStatement stmt7;
+	PreparedStatement stmt_temp;
+	PreparedStatement stmt_temp1;
+	ResultSet rset; 
+	ResultSet rset0; 
+	ResultSet rset1;
+	ResultSet rset2;
+	ResultSet rset3;
+	ResultSet rset4;
+	ResultSet rset5;
+	ResultSet rset6;
+	ResultSet rset7;
+	ResultSet rset_temp;
+	ResultSet rset_temp1;
+	String queryString="";
+	String queryString1="";
+	String queryString2="";
+	String queryString3="";
+	String queryString4="";
+	String queryString5="";
+	String queryString6="";
+	String queryString7="";
+	
+	UtilBean utilBean = new UtilBean();
+	DateUtil dateUtil = new DateUtil();
+	MailDelivery mailDelv = new MailDelivery();
+	
+	NumberFormat nf = new DecimalFormat("###########0.00");
+	NumberFormat nf2 = new DecimalFormat("###########0.0000");
+	
+	public void init()
+	{
+		String function_nm="init()";
+		try
+		{
+			Context initContext = new InitialContext();
+	    	Context envContext  = (Context)initContext.lookup("java:/comp/env");
+	    	DataSource ds = (DataSource)envContext.lookup(RuntimeConf.security_database);
+	    	if(ds != null) 
+	    	{
+	    		conn = ds.getConnection();       
+	    		if(conn != null)  
+	    		{    			
+	    			if(callFlag.equalsIgnoreCase("DAILY_BUYER_NOM"))
+	    			{
+	    				from_date=gas_dt;
+	    				to_date=gas_dt;
+	    				getDailyBuyerNomination();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("DAILY_SELLER_NOM"))
+	    			{
+	    				from_date=gas_dt;
+	    				to_date=gas_dt;
+	    				
+	    				getDailySellerNomination();
+	    				getContractTCQ();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("METER_TICKET_READING"))
+	    			{
+	    				getMeterTicketReading();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("DAILY_ALLOCATION"))
+	    			{
+	    				getMoleculeMaster();
+	    				getDailyAllocation();
+	    				getContractTCQforAllocation();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+	    			{
+	    				getSupplyContractDetail();
+	    				getPeriodicDate();
+	    				getDailyBuyerNomination();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+	    			{
+	    				getSupplyContractDetail();
+	    				getPeriodicDate();
+	    				//getPeriodicSellerNomination();
+	    				getDailySellerNomination();
+	    				getContractWiseTCQ();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("DAILY_TRANSPORTER_NOM"))
+	    			{
+	    				getDailyTransporterNomination();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("JOINT_TICKET"))
+	    			{
+	    				getDailyJointTicket();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("VIEW_JOINT_TICKET"))
+	    			{
+	    				getViewJointTicketData();
+	    				getViewJointTicketInfo();
+	    				//getJointTicketCTContractData();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("SEND_MAIL_JOINT_TICKET"))
+	    			{
+	    				getSendMailJTDetail();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("SELLER_ALLOC_TO_TRANSPORTER"))
+	    			{
+	    				getSellerAllocToTransporter();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("VIEW_SELLER_ALLOC_TO_TRANSPORTER"))
+	    			{
+	    				getViewSellerAllocToTransporterData();
+	    				getViewSellerAllocToTransporterInfo();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("SEND_MAIL_ALLOC_TO_TRANS"))
+	    			{
+	    				getSendMailAllocToTransDetail();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("SELLER_NOMINATION_TO_CUSTOMER"))
+	    			{
+	    				getContractTypeMasterForNomToCust();
+	    				getDailySellerNominationToCustomer();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("VIEW_SELLER_NOMINATION_TO_CUSTOMER"))
+	    			{
+	    				getViewNominationToCustomerData();
+	    				getViewNominationToCustomerInfo();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("SELLER_NOMINATION_TO_TRANSPORTER"))
+	    			{
+	    				getDailySellerNominationToTransporter();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("VIEW_SELLER_NOMINATION_TO_TRANSPORTER"))
+	    			{
+	    				getViewNominationToTransporterData();
+	    				getViewNominationToTransporterInfo();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("SEND_MAIL_SELLER_TO_CUST"))
+	    			{
+	    				getSendMailSellerToCustomerDetail();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("SEND_MAIL_SELLER_TO_TRANS"))
+	    			{
+	    				getSendMailSellerToTransporterDetail();
+	    			}
+	    			else if(callFlag.equalsIgnoreCase("DAILY_SELLER_CONTROL_ROOM"))
+	    			{
+	    				getDailySellerControlRoom();
+	    			}
+	    		}
+	    		
+	    		conn.close();
+    			conn = null;
+	    	}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		finally
+	    {
+	    	if(rset != null){try{rset.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset0 != null){try{rset0.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset1 != null){try{rset1.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset2 != null){try{rset2.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset3 != null){try{rset3.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset4 != null){try{rset4.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset5 != null){try{rset5.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset6 != null){try{rset6.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset7 != null){try{rset7.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset_temp != null){try{rset_temp.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset_temp1 != null){try{rset_temp1.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt != null){try{stmt.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt0 != null){try{stmt0.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt1 != null){try{stmt1.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt2 != null){try{stmt2.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt3 != null){try{stmt3.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt4 != null){try{stmt4.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt5 != null){try{stmt5.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt6 != null){try{stmt6.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt7 != null){try{stmt7.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt_temp != null){try{stmt_temp.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt_temp1 != null){try{stmt_temp1.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(conn != null){try{conn.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    }
+	}
+	
+	public void getJointTicketCTContractData()
+	{
+		String function_nm="getJointTicketCTContractData()";
+		try
+		{
+			Vector TEMPTRANS_CD = new Vector();
+			Vector TEMPCONT_NO = new Vector();
+			Vector TEMPAGMT_NO = new Vector();			
+			Vector TEMPCONTRACT_TYPE = new Vector();
+			Vector TEMPCUST_CD = new Vector();
+			int trans_count=0;
+			HashMap map_custId = new HashMap();
+			HashMap map_contId = new HashMap();
+			
+			String queryString="SELECT DISTINCT(TRANSPORTER_CD),NVL(GCV,'0'),NVL(NCV,'0'),CONT_NO,AGMT_NO "
+					+ "FROM FMS_DAILY_ALLOCATION_DTL "
+					+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND COUNTERPARTY_CD=? "
+					+ "AND CONTRACT_TYPE=? AND PLANT_SEQ=? AND BU_SEQ=? "
+					+ "ORDER BY TRANSPORTER_CD";
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, gas_dt);
+			stmt.setString(3, counterparty_cd);
+			stmt.setString(4, contract_type);
+			stmt.setString(5, plant_seq);
+			stmt.setString(6, bu_plant_seq);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				TEMPTRANS_CD.add(rset.getString(1)==null?"":rset.getString(1));
+				TEMPCUST_CD.add(counterparty_cd);
+				TEMPCONTRACT_TYPE.add(contract_type);
+				TEMPCONT_NO.add(rset.getString(4)==null?"":rset.getString(4));
+				TEMPAGMT_NO.add(rset.getString(5)==null?"":rset.getString(5));
+				trans_count++;
+				
+				String queryString1 = "SELECT DEFINE_GCV,DEFINE_NCV "
+						+ "FROM FMS_METER_TICKET_READING "
+						+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+						+ "AND COUNTERPARTY_CD=? AND PLANT_SEQ=? AND DEFINE_GCV NOT IN ('0')";
+				stmt1 = conn.prepareStatement(queryString1);
+				stmt1.setString(1, comp_cd);
+				stmt1.setString(2, gas_dt);
+				stmt1.setString(3, counterparty_cd);
+				stmt1.setString(4, plant_seq);
+				rset1=stmt1.executeQuery();
+				if(rset1.next()) 
+				{
+					String gcv = rset1.getString(1)==null?"0":rset1.getString(1);
+					String ncv = rset1.getString(2)==null?"0":rset1.getString(2);
+					VLINKJT_GCV.add(nf2.format(Double.parseDouble(gcv)));
+					VLINKJT_NCV.add(nf2.format(Double.parseDouble(ncv)));
+				}
+				else 
+				{
+					VLINKJT_GCV.add(nf2.format(Double.parseDouble(rset.getString(2))));
+					VLINKJT_NCV.add(nf2.format(Double.parseDouble(rset.getString(3))));
+				}
+				rset1.close();
+				stmt1.close();
+			}
+			rset.close();
+			stmt.close();
+			
+			if(trans_count==0)
+			{
+				TEMPTRANS_CD.add("0");
+				VLINKJT_GCV.add("0");
+				VLINKJT_NCV.add("0");
+			}
+			
+			int count=0;
+			for(int j=0; j<TEMPTRANS_CD.size(); j++)
+			{
+				VLINKJT_TRANSPORTER_NM.add(utilBean.getCounterpartyName(conn, ""+TEMPTRANS_CD.elementAt(j)));
+				VLINKJT_TRANSPORTER_ABBR.add(utilBean.getCounterpartyABBR(conn, ""+TEMPTRANS_CD.elementAt(j)));
+				count+=1;
+				double seller_qty_mmbtu = 0;
+				String agmt_base="";
+				String cont_mapping_id="";
+				String entry_pty_map = "";
+				String exit_pty_map = "";
+				String trns_cd = "";
+				String trns_plant_seq="";
+				
+				String queryString2="SELECT NVL(QTY_MMBTU,'0'),AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,TRANSPORTER_CD,TRANS_SEQ "
+						+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+						+ "WHERE A.COMPANY_CD=? AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND A.COUNTERPARTY_CD=? AND A.PLANT_SEQ=? "
+						+ "AND A.CONTRACT_TYPE=? AND A.CONT_NO=? AND A.AGMT_NO=? AND A.TRANSPORTER_CD=? AND A.BU_SEQ=? "
+						+ "AND A.NOM_REV_NO=(SELECT MAX(B.NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+						+ "WHERE A.COMPANY_CD=B.COMPANY_CD AND A.GAS_DT=B.GAS_DT AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.PLANT_SEQ=B.PLANT_SEQ AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.CONT_NO=B.CONT_NO "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.TRANSPORTER_CD=B.TRANSPORTER_CD AND A.BU_SEQ=B.BU_SEQ)";
+				stmt2 = conn.prepareStatement(queryString2);
+				stmt2.setString(1, comp_cd);
+				stmt2.setString(2, gas_dt);
+				stmt2.setString(3, counterparty_cd);
+				stmt2.setString(4, plant_seq);
+				stmt2.setString(5, contract_type);
+				stmt2.setString(6, ""+TEMPCONT_NO.elementAt(j));
+				stmt2.setString(7, ""+TEMPAGMT_NO.elementAt(j));
+				stmt2.setString(8, ""+TEMPTRANS_CD.elementAt(j));
+				stmt2.setString(9, bu_plant_seq);
+				rset2=stmt2.executeQuery();
+				while(rset2.next())
+				{
+					seller_qty_mmbtu += Double.parseDouble(rset2.getString(1));
+					trns_cd=rset2.getString(6)==null?"":rset2.getString(6);
+					trns_plant_seq=rset2.getString(7)==null?"":rset2.getString(7);
+					
+					String queryString3="SELECT AGMT_BASE "
+							+ "FROM FMS_SUPPLY_CONT_MST "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND AGMT_NO=? "
+							+ "AND CONT_NO=? AND CONTRACT_TYPE=? ";
+					stmt3 = conn.prepareStatement(queryString3);
+					stmt3.setString(1, comp_cd);
+					stmt3.setString(2, counterparty_cd);
+					stmt3.setString(3, ""+TEMPAGMT_NO.elementAt(j));
+					stmt3.setString(4, ""+TEMPCONT_NO.elementAt(j));
+					stmt3.setString(5, contract_type);
+					rset3=stmt3.executeQuery();
+					if(rset3.next())
+					{
+						agmt_base=rset3.getString(1)==null?"":rset3.getString(1);
+					}
+					rset3.close();
+					stmt3.close();
+					
+					cont_mapping_id= counterparty_cd+"-"+contract_type+"-"+TEMPAGMT_NO.elementAt(j)+"-%-"+TEMPCONT_NO.elementAt(j)+"-%";
+					entry_pty_map = trns_cd+"-"+trns_plant_seq;
+					exit_pty_map = "C-"+counterparty_cd+"-"+plant_seq;
+				}
+				rset2.close();
+				stmt2.close();
+				
+				VLINKJT_SELLER_NOM_QTY_MMBTU.add(nf.format(seller_qty_mmbtu));
+				
+				if(agmt_base.equals("D"))
+				{
+					String queryString1 = "SELECT NVL(SUM(EXIT_QTY_MMBTU),'0'),NVL(SUM(EXIT_QTY_SCM),'0') "
+							+ "FROM FMS_DAILY_TRANSPORTER_ALLOC A "
+							+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND SELL_CONT_MAP=? "
+							+ "AND EXIT_PT_MAPPING_ID=? AND ENTRY_PT_MAPPING_ID=? AND BU_SEQ=? "
+							+ "AND ALLOC_REV_NO=(SELECT MAX(ALLOC_REV_NO) FROM FMS_DAILY_TRANSPORTER_ALLOC B "
+							+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+							+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+							+ "AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.SELL_CONT_MAP=A.SELL_CONT_MAP "
+							+ "AND B.GAS_DT=A.GAS_DT AND A.ENTRY_PT_MAPPING_ID=B.ENTRY_PT_MAPPING_ID AND A.EXIT_PT_MAPPING_ID=B.EXIT_PT_MAPPING_ID) ";
+					stmt1 = conn.prepareStatement(queryString1);
+					stmt1.setString(1, comp_cd);
+					stmt1.setString(2, gas_dt);
+					stmt1.setString(3, cont_mapping_id);
+					stmt1.setString(4, exit_pty_map);
+					stmt1.setString(5, entry_pty_map);
+					stmt1.setString(6, bu_plant_seq);
+					rset1=stmt1.executeQuery();
+					if(rset1.next()) 
+					{
+						VLINKJT_TRANSPORTER_QTY_MMBTU.add(nf.format(Double.parseDouble(rset1.getString(1))));
+						VLINKJT_QTY_SCM.add(nf.format(Double.parseDouble(rset1.getString(2))));
+					}
+					else
+					{
+						VLINKJT_TRANSPORTER_QTY_MMBTU.add(nf.format(Double.parseDouble("0")));
+						VLINKJT_QTY_SCM.add(nf.format(Double.parseDouble("0")));
+					}
+					rset1.close();
+					stmt1.close();
+				}
+				else
+				{
+					String queryString1="SELECT SUM(QTY_MMBTU),SUM(QTY_SCM) "
+			  				+ "FROM FMS_DAILY_ALLOCATION_DTL A "
+			  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+							+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND TRANSPORTER_CD=? "
+							+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? "
+							+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND BU_SEQ=? "
+							+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+							+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+							+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+							+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+							+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+							+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+					stmt1 = conn.prepareStatement(queryString1);
+					stmt1.setString(1, ""+TEMPCONT_NO.elementAt(j));
+					stmt1.setString(2, ""+TEMPAGMT_NO.elementAt(j));
+					stmt1.setString(3, comp_cd);
+					stmt1.setString(4, counterparty_cd);
+					stmt1.setString(5, ""+TEMPTRANS_CD.elementAt(j));
+					stmt1.setString(6, plant_seq);
+					stmt1.setString(7, contract_type);
+					stmt1.setString(8, gas_dt);
+					stmt1.setString(9, bu_plant_seq);
+					rset1=stmt1.executeQuery();
+					if(rset1.next())
+					{
+						VLINKJT_TRANSPORTER_QTY_MMBTU.add(nf.format(Double.parseDouble(rset1.getString(1))));
+						VLINKJT_QTY_SCM.add(nf.format(Double.parseDouble(rset1.getString(2))));
+					}
+					else
+					{
+						VLINKJT_TRANSPORTER_QTY_MMBTU.add("0");
+						VLINKJT_QTY_SCM.add("0");
+					}
+					rset1.close();
+					stmt1.close();
+				}
+				
+				String queryString3="SELECT SUM(QTY_MMBTU),SUM(QTY_SCM) "
+		  				+ "FROM FMS_DAILY_ALLOCATION_DTL A "
+		  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+						+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND TRANSPORTER_CD=? "
+						+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? "
+						+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND BU_SEQ=? "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+						+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+						+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+				stmt3 = conn.prepareStatement(queryString3);
+				stmt3.setString(1, ""+TEMPCONT_NO.elementAt(j));
+				stmt3.setString(2, ""+TEMPAGMT_NO.elementAt(j));
+				stmt3.setString(3, comp_cd);
+				stmt3.setString(4, counterparty_cd);
+				stmt3.setString(5, ""+TEMPTRANS_CD.elementAt(j));
+				stmt3.setString(6, plant_seq);
+				stmt3.setString(7, contract_type);
+				stmt3.setString(8, gas_dt);
+				stmt3.setString(9, bu_plant_seq);
+				rset3=stmt3.executeQuery();
+				if(rset3.next())
+				{
+					VLINKJT_QTY_MMBTU.add(nf.format(Double.parseDouble(rset3.getString(1))));
+				}
+				else
+				{
+					VLINKJT_QTY_MMBTU.add(nf.format(Double.parseDouble("0")));
+				}
+				rset3.close();
+				stmt3.close();
+				
+				String ct_cont_mapping=contract_type+"-"+counterparty_cd+"-"+TEMPAGMT_NO.elementAt(j)+"-%-"+TEMPCONT_NO.elementAt(j)+"-%";
+				String cust_id="";
+				String cont_id="";
+				String queryString4="SELECT CT_REF_NO,UTR_NO "
+						+ "FROM FMS_TRANSPORTER_CT_MST A,FMS_TRANS_CT_CONT_MAP B "
+						+ "WHERE A.COMPANY_CD=? AND A.CONTRACT_TYPE=? "
+						+ "AND A.ENTRY_TRANS_CD=? AND A.ENTRY_TRANS_PLANT=? "
+						+ "AND A.EXIT_COUNTERPARTY=? AND A.EXIT_PLANT_SEQ=? "
+						+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+						+ "AND B.CONT_MAPPING LIKE ? AND A.STATUS='Y' "
+						+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+						+ "AND A.ENTRY_TRANS_CD=B.ENTRY_TRANS_CD AND A.ENTRY_TRANS_PLANT=B.ENTRY_TRANS_PLANT "
+						+ "AND A.EXIT_COUNTERPARTY=B.EXIT_COUNTERPARTY AND A.EXIT_PLANT_SEQ=B.EXIT_PLANT_SEQ "
+						+ "AND A.SEQ_NO=B.SEQ_NO AND A.BU_SEQ=B.BU_SEQ ";
+				stmt4 = conn.prepareStatement(queryString4);
+				stmt4.setString(1, comp_cd);
+				stmt4.setString(2, "C");
+				stmt4.setString(3, trns_cd);
+				stmt4.setString(4, trns_plant_seq);
+				stmt4.setString(5, counterparty_cd);
+				stmt4.setString(6, plant_seq);
+				stmt4.setString(7, gas_dt);
+				stmt4.setString(8, gas_dt);
+				stmt4.setString(9, ct_cont_mapping);
+				rset4=stmt4.executeQuery();
+				if(rset4.next())
+				{
+					cont_id=rset4.getString(1)==null?"":rset4.getString(1);
+					cust_id=rset4.getString(2)==null?"":rset4.getString(2);
+					VLINKCONTID.add(rset4.getString(1)==null?"":rset4.getString(1)); 
+					VLINKCUSTID.add(rset4.getString(2)==null?"":rset4.getString(2)); 
+				}
+				else
+				{
+					cust_id="*";
+					cont_id="*";
+					VLINKCUSTID.add("*");
+					VLINKCONTID.add("*");
+				}
+				rset4.close();
+				stmt4.close();
+				
+				map_contId.put(""+count, cont_id);
+				map_custId.put(""+count, cust_id);
+			}
+			view_join_ticket_data.put("v_cont_id", map_contId);
+			view_join_ticket_data.put("v_cust_id", map_custId);
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getDailySellerControlRoom()
+	{
+		String function_nm="getDailySellerControlRoom()";
+		try
+		{
+			String plant_no="";
+			double tmp_scm = 0.0;
+			double tmp_mmbtu = 0.0;
+			double tmp_oblg_mcm = 0.0;
+			String queryString = "SELECT DISTINCT TRANSPORTER_CD "
+					+ "FROM FMS_DAILY_SELLER_NOM "
+					+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+					+ "ORDER BY TRANSPORTER_CD ";
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, gas_dt);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String trans_cd="";
+				trans_cd = rset.getString(1)==null?"":rset.getString(1);
+				
+				//VTRANSPORTER_CD.add(trans_cd);
+				VTRANSPORTER_NM.add(utilBean.getCounterpartyName(conn, trans_cd));
+				VTRANSPORTER_ABBR.add(utilBean.getCounterpartyABBR(conn, trans_cd));
+				
+				String queryString7 = "SELECT DISTINCT TRANS_SEQ "
+						+ "FROM FMS_DAILY_SELLER_NOM "
+						+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND TRANSPORTER_CD=? "
+						+ "ORDER BY TRANS_SEQ ";
+				stmt7 = conn.prepareStatement(queryString7);
+				stmt7.setString(1, comp_cd);
+				stmt7.setString(2, gas_dt);
+				stmt7.setString(3, trans_cd);
+				rset7=stmt7.executeQuery();
+				while(rset7.next())
+				{
+					tmp_scm = 0.0;
+					tmp_mmbtu = 0.0;
+					tmp_oblg_mcm = 0.0;
+					String trans_plant_seq="";
+					trans_plant_seq = rset7.getString(1)==null?"":rset7.getString(1);
+					VTRANSPORTER_CD.add(trans_cd);
+					VTRANSPORTER_PLANT_SEQ.add(trans_plant_seq);
+					VTRANSPORTER_PLANT_ABBR.add(""+utilBean.getCounterpartyPlantABBR(conn,trans_cd, comp_cd, trans_plant_seq, "R"));
+					
+					String queryString1 = "SELECT DISTINCT COUNTERPARTY_CD,CONTRACT_TYPE "
+							+ "FROM FMS_DAILY_SELLER_NOM "
+							+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND TRANSPORTER_CD=? AND TRANS_SEQ=?";
+					stmt1 = conn.prepareStatement(queryString1);
+					stmt1.setString(1, comp_cd);
+					stmt1.setString(2, gas_dt);
+					stmt1.setString(3, trans_cd);
+					stmt1.setString(4, trans_plant_seq);
+					rset1=stmt1.executeQuery();			
+					while(rset1.next())
+					{
+						String cust_cd="";
+						String contType="";
+						cust_cd = rset1.getString(1)==null?"":rset1.getString(1);
+						contType = rset1.getString(2)==null?"":rset1.getString(2);
+						VCOUNTPTY_CD.add(cust_cd);
+						
+						int inner_cnt=0;
+						boolean flag=true;
+						String plant_seq_no="0";
+						int cnt=0;
+						int count=0;
+						double mmscm = 0;
+						double mmbtu = 0;					
+						double oblg_mmscm = 0;
+						String dcq="0";
+						
+						String top_per="100";
+						String oblig_pndcq="0";
+						String oblig_dcq="0";
+						String cont_type="";
+						
+						String queryString2 ="SELECT DISTINCT PLANT_SEQ,NOM_REV_NO,CONT_NO,AGMT_NO,CONTRACT_TYPE,QTY_SCM,QTY_MMBTU "
+							      + "FROM FMS_DAILY_SELLER_NOM A "
+							      + "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND COUNTERPARTY_CD=? "
+							      + "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+							      + "AND CONTRACT_TYPE=? "
+							      + "AND NOM_REV_NO=(SELECT MAX(B.NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.GAS_DT=B.GAS_DT AND "
+					  			  + "A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND "
+					  			  + "A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.TRANSPORTER_CD=B.TRANSPORTER_CD AND A.TRANS_SEQ=B.TRANS_SEQ AND "
+					  			  + "A.PLANT_SEQ=B.PLANT_SEQ) "
+					  			  + "GROUP BY PLANT_SEQ,NOM_REV_NO,CONT_NO,AGMT_NO,CONTRACT_TYPE,QTY_SCM,QTY_MMBTU "
+					  			  + "ORDER BY CONTRACT_TYPE,PLANT_SEQ ";
+						stmt2 = conn.prepareStatement(queryString2);
+						stmt2.setString(1, comp_cd);
+						stmt2.setString(2, gas_dt);
+						stmt2.setString(3, cust_cd);
+						stmt2.setString(4, trans_cd);
+						stmt2.setString(5, trans_plant_seq);
+						stmt2.setString(6, contType);
+						rset2=stmt2.executeQuery();	
+						while(rset2.next())
+						{
+							++inner_cnt;
+							plant_no=rset2.getString(1)==null?"0":rset2.getString(1);
+							cont_type = rset2.getString(5)==null?"":rset2.getString(5);
+							contract_type=cont_type;
+							cont_no = rset2.getString(3)==null?"":rset2.getString(3);
+							agmt_no = rset2.getString(4)==null?"":rset2.getString(4);
+							
+							if(!plant_seq_no.trim().equals(plant_no))
+							{
+								if(cnt==0 || flag)
+								{
+									if(count>0)
+									{
+										VPLANT_SEQ.add(plant_seq_no);
+										VCOUNTERPARTY_CD.add(cust_cd);
+										if(cont_type.equals("O") || cont_type.equals("Q"))
+										{
+											VCATEGORY.add("TP");
+										}
+										else
+										{
+											VCATEGORY.add("OWN");
+										}
+										VCONTRACT_TYPE.add(cont_type);
+										
+										VQTY_MMSCM.add(nf.format(mmscm));
+										VQTY_MMBTU.add(nf.format(mmbtu));
+										VOBLG_MMSCM.add(nf.format(oblg_mmscm));
+										tmp_oblg_mcm = tmp_oblg_mcm + Double.parseDouble(nf.format(oblg_mmscm));
+										tmp_scm  = tmp_scm  + Double.parseDouble(nf.format(mmscm));
+										tmp_mmbtu = tmp_mmbtu + Double.parseDouble(nf.format(mmbtu));
+										cnt=-1;
+										flag = false;
+										
+										VTEMP_TRANSPORTER_CD.add(trans_cd);
+										VTEMP_TRANSPORTER_PLANT_SEQ.add(trans_plant_seq);
+										
+										if(cont_type.equals("O") || cont_type.equals("Q"))
+										{
+											String queryString3 = "SELECT LQ_DAMG_LIAB_PER "
+													+ "FROM FMS_LTCORA_CONT_LIABILITY A "
+													+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+												    + "AND CONT_NO=? AND AGMT_NO=? AND CONTRACT_TYPE=? "
+												    + "AND CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_LTCORA_CONT_LIABILITY B WHERE A.COMPANY_CD=B.COMPANY_CD "
+												    + "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) ";
+											stmt3 = conn.prepareStatement(queryString3);
+											stmt3.setString(1, comp_cd);
+											stmt3.setString(2, cust_cd);
+											stmt3.setString(3, cont_no);
+											stmt3.setString(4, agmt_no);
+											stmt3.setString(5, cont_type);
+											rset3=stmt3.executeQuery();	
+											if(rset3.next())
+											{
+												top_per = rset3.getString(1)==null?"100":rset3.getString(1);
+											}
+											else
+											{
+												top_per = "100";
+											}
+											rset3.close();
+											stmt3.close();
+										}
+										else
+										{
+											String queryString3 = "SELECT LQ_DAMG_LIAB_PER "
+													+ "FROM FMS_SUPPLY_CONT_LIABILITY A "
+													+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+												    + "AND CONT_NO=? AND AGMT_NO=? AND CONTRACT_TYPE=? "
+												    + "AND CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_LIABILITY B WHERE A.COMPANY_CD=B.COMPANY_CD "
+												    + "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) ";
+											stmt3 = conn.prepareStatement(queryString3);
+											stmt3.setString(1, comp_cd);
+											stmt3.setString(2, cust_cd);
+											stmt3.setString(3, cont_no);
+											stmt3.setString(4, agmt_no);
+											stmt3.setString(5, cont_type);
+											rset3=stmt3.executeQuery();	
+											if(rset3.next())
+											{
+												top_per = rset3.getString(1)==null?"100":rset3.getString(1);
+											}
+											else
+											{
+												top_per = "100";
+											}
+											rset3.close();
+											stmt3.close();
+										}
+										
+										if(cont_type.equals("O") || cont_type.equals("Q"))
+										{
+											String queryString6 = "SELECT CSOC_QTY "
+													+ "FROM FMS_LTCORA_CONT_CARGO_DTL A, FMS_LTCORA_CONT_MST B "
+													+ "WHERE A.COMPANY_CD=? AND A.COUNTERPARTY_CD=? "
+													+ "AND A.AGMT_NO=? AND A.CONT_NO=? AND A.CONTRACT_TYPE=? "
+													+ "AND B.END_DT >= TO_DATE(?,'DD/MM/YYYY') AND B.START_DT <= TO_DATE(?,'DD/MM/YYYY') "
+													+ "AND A.CONT_REV=(SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_CARGO_DTL B WHERE A.COMPANY_CD=B.COMPANY_CD "
+													+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+													+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE";
+											stmt6 = conn.prepareStatement(queryString6);
+											stmt6.setString(1, comp_cd);
+											stmt6.setString(2, cust_cd);
+											stmt6.setString(3, agmt_no);
+											stmt6.setString(4, cont_no);
+											stmt6.setString(5, cont_type);
+											stmt6.setString(6, gas_dt);
+											stmt6.setString(7, gas_dt);
+											rset6=stmt6.executeQuery();	
+											if(rset6.next())
+											{	
+												dcq = rset6.getString(1)==null?"":nf.format(Double.parseDouble(rset6.getString(1)) * Double.parseDouble(top_per) / 100 );
+											}
+											else
+											{
+												dcq = "0.00";
+											}
+											rset6.close();
+											stmt6.close();
+										}
+										else
+										{
+											
+											String queryString4 = "SELECT SUM(A.QTY_MMBTU) "
+													+ "FROM FMS_DAILY_BUYER_NOM A "
+													+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONT_NO=? "
+													+ "AND AGMT_NO=? AND TRANSPORTER_CD=? AND PLANT_SEQ=? "
+													+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CONTRACT_TYPE=? AND TRANS_SEQ=? "
+													+ "AND NOM_REV_NO=(SELECT MAX(B.NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM B WHERE A.COMPANY_CD=B.COMPANY_CD "
+												    + "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.GAS_DT=B.GAS_DT "
+												    + "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.PLANT_SEQ=B.PLANT_SEQ AND A.TRANSPORTER_CD=B.TRANSPORTER_CD AND A.TRANS_SEQ=B.TRANS_SEQ)";
+											stmt4 = conn.prepareStatement(queryString4);
+											stmt4.setString(1, comp_cd);
+											stmt4.setString(2, cust_cd);
+											stmt4.setString(3, cont_no);
+											stmt4.setString(4, agmt_no);
+											stmt4.setString(5, trans_cd);
+											stmt4.setString(6, plant_no);
+											stmt4.setString(7, gas_dt);
+											stmt4.setString(8, cont_type);
+											stmt4.setString(9, trans_plant_seq);
+											rset4=stmt4.executeQuery();	
+											if(rset4.next())
+											{
+												oblig_pndcq = rset4.getString(1)==null?"0.00":nf.format(Double.parseDouble(rset4.getString(1)));										
+											}
+											else
+											{
+												oblig_pndcq = "0.00";
+											}
+											rset4.close();
+											stmt4.close();
+											
+											String queryString5 = "SELECT DCQ "
+													+ "FROM FMS_SUPPLY_CONT_DCQ_DTL A "
+													+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+													+ "AND AGMT_NO=? AND CONT_NO=? AND CONTRACT_TYPE=? "
+													+ "AND TO_DT >= TO_DATE(?,'DD/MM/YYYY') AND FROM_DT <= TO_DATE(?,'DD/MM/YYYY') "
+													+ "AND CONT_REV=(SELECT MAX(B.CONT_REV) FROM FMS_SUPPLY_CONT_DCQ_DTL B WHERE A.COMPANY_CD=B.COMPANY_CD "
+													+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) ";
+											stmt5 = conn.prepareStatement(queryString5);
+											stmt5.setString(1, comp_cd);
+											stmt5.setString(2, cust_cd);
+											stmt5.setString(3, agmt_no);
+											stmt5.setString(4, cont_no);
+											stmt5.setString(5, cont_type);
+											stmt5.setString(6, gas_dt);
+											stmt5.setString(7, gas_dt);
+											rset5=stmt5.executeQuery();	
+											if(rset5.next())
+											{							
+												oblig_dcq = rset5.getString(1)==null?"":nf.format(Double.parseDouble(rset5.getString(1)) * Double.parseDouble(top_per) / 100 );																							
+											}
+											else
+											{
+												String queryString6 = "SELECT DCQ "
+														+ "FROM FMS_SUPPLY_CONT_MST A "
+														+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+														+ "AND AGMT_NO=? AND CONT_NO=? AND CONTRACT_TYPE=? "
+														+ "AND END_DT >= TO_DATE(?,'DD/MM/YYYY') AND START_DT <= TO_DATE(?,'DD/MM/YYYY') "
+														+ "AND CONT_REV=(SELECT MAX(B.CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+														+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) ";
+												stmt6 = conn.prepareStatement(queryString6);
+												stmt6.setString(1, comp_cd);
+												stmt6.setString(2, cust_cd);
+												stmt6.setString(3, agmt_no);
+												stmt6.setString(4, cont_no);
+												stmt6.setString(5, cont_type);
+												stmt6.setString(6, gas_dt);
+												stmt6.setString(7, gas_dt);
+												rset6=stmt6.executeQuery();	
+												if(rset6.next())
+												{	
+													oblig_dcq = rset6.getString(1)==null?"":nf.format(Double.parseDouble(rset6.getString(1)) * Double.parseDouble(top_per) / 100 );
+												}
+												else
+												{
+													oblig_dcq = "0.00";
+												}
+												rset6.close();
+												stmt6.close();
+											}
+											rset5.close();
+											stmt5.close();
+											
+											if(oblig_dcq.equals("0.00"))
+											{
+												dcq = oblig_pndcq;
+											}
+											else if(oblig_pndcq.equals("0.00"))
+											{
+												dcq = oblig_dcq; 
+											}
+											else if(Double.parseDouble(oblig_dcq)<Double.parseDouble(oblig_pndcq))
+											{
+												dcq = oblig_dcq; 
+											}
+											else
+											{
+												dcq = oblig_pndcq;
+											}
+										}
+									}
+									mmscm = Double.parseDouble(rset2.getString(6)==null?"0":rset2.getString(6))/1000000;
+									mmbtu = Double.parseDouble(rset2.getString(7)==null?"0":rset2.getString(7));
+									oblg_mmscm =(Double.parseDouble(dcq) * Double.parseDouble(top_per))/3890000;
+									++cnt;
+									++count;
+									plant_seq_no=plant_no;
+								}
+							}
+							else
+							{
+								mmscm += Double.parseDouble(rset2.getString(6)==null?"0":rset2.getString(6))/1000000;
+								mmbtu += Double.parseDouble(rset2.getString(7)==null?"0":rset2.getString(7));	
+								oblg_mmscm +=(Double.parseDouble(dcq) * Double.parseDouble(top_per))/3890000;
+								cnt=0;
+							}
+							
+							
+						}
+						rset2.close();
+						stmt2.close();
+						
+						if(inner_cnt>0)
+						{
+							VPLANT_SEQ.add(plant_seq_no);
+							VCOUNTERPARTY_CD.add(cust_cd);
+							if(contract_type.equals("O") || contract_type.equals("Q"))
+							{
+								VCATEGORY.add("TP");
+							}
+							else
+							{
+								VCATEGORY.add("OWN");
+							}
+							VCONTRACT_TYPE.add(contract_type);
+							
+							VQTY_MMSCM.add(nf.format(mmscm));
+							VQTY_MMBTU.add(nf.format(mmbtu));
+							VOBLG_MMSCM.add(nf.format(oblg_mmscm));
+							tmp_oblg_mcm = tmp_oblg_mcm + Double.parseDouble(nf.format(oblg_mmscm));
+							tmp_scm  = tmp_scm  + Double.parseDouble(nf.format(mmscm));
+							tmp_mmbtu = tmp_mmbtu + Double.parseDouble(nf.format(mmbtu));
+							
+							VTEMP_TRANSPORTER_CD.add(trans_cd);
+							VTEMP_TRANSPORTER_PLANT_SEQ.add(trans_plant_seq);
+						}
+					}
+					rset1.close();
+					stmt1.close();
+					
+					VTOT_MMSCM.add(""+nf.format(tmp_scm));
+					VTOT_MMBTU.add(""+nf.format(tmp_mmbtu));
+					VTOT_OBLG_MMSCM.add(""+nf.format(tmp_oblg_mcm));
+					
+				}
+				rset7.close();
+				stmt7.close();
+			}
+			rset.close();
+			stmt.close();
+			
+			for(int i=0;i<VCOUNTERPARTY_CD.size();i++)
+			{
+				VTEMP_COUNTERPARTY_CD.add(""+VCOUNTERPARTY_CD.elementAt(i));
+				VTEMP_TRANS_CD.add(""+VTEMP_TRANSPORTER_CD.elementAt(i));
+				VTEMP_TRANS_PLANT_SEQ.add(""+VTEMP_TRANSPORTER_PLANT_SEQ.elementAt(i));
+				VCUST_WISE_MMSCM.add(""+VQTY_MMSCM.elementAt(i));
+				VCUST_WISE_MMBTU.add(""+VQTY_MMBTU.elementAt(i));
+				VCUST_WISE_OBLG.add(""+VOBLG_MMSCM.elementAt(i));
+				
+				VPLANT_NM.add(""+utilBean.getCounterpartyPlantName(conn, ""+VCOUNTERPARTY_CD.elementAt(i), comp_cd, ""+VPLANT_SEQ.elementAt(i), "C"));
+				VPLANT_ABBR.add(""+utilBean.getCounterpartyPlantABBR(conn, ""+VCOUNTERPARTY_CD.elementAt(i), comp_cd, ""+VPLANT_SEQ.elementAt(i), "C"));
+				VCOUNTERPARTY_NM.add(""+utilBean.getCounterpartyName(conn, ""+VCOUNTERPARTY_CD.elementAt(i)));
+				VCOUNTERPARTY_ABBR.add(""+utilBean.getCounterpartyABBR(conn, ""+VCOUNTERPARTY_CD.elementAt(i)));
+			}
+			
+			tmp_scm = 0.0;
+			tmp_mmbtu = 0.0;
+			tmp_oblg_mcm = 0.0;
+			for(int k=0;k<VTOT_MMSCM.size();k++)	
+			{
+				tmp_scm = tmp_scm + Double.parseDouble(""+VTOT_MMSCM.elementAt(k));
+				tmp_mmbtu = tmp_mmbtu + Double.parseDouble(""+VTOT_MMBTU.elementAt(k)); 
+				tmp_oblg_mcm = tmp_oblg_mcm + Double.parseDouble(""+VTOT_OBLG_MMSCM.elementAt(k));
+			}
+			tot_mmscm 	  = ""+nf.format(tmp_scm);
+			tot_mmbtu 	  = ""+nf.format(tmp_mmbtu);
+			tot_obl_mcm   = ""+nf.format(tmp_oblg_mcm);  //Reserve for future use
+			if(!tot_mmscm.trim().equals(""))
+			{
+				ask_nom_mcm   = ""+nf2.format(Double.parseDouble(tot_mmscm)/24);
+			}
+			if(!tot_mmbtu.trim().equals(""))
+			{
+				ask_nom_mmbtu = ""+nf.format(Double.parseDouble(tot_mmbtu)/24);
+			}
+			if(!tot_obl_mcm.trim().equals(""))
+			{
+				ask_obl_mcm   = ""+nf.format(Double.parseDouble(tot_obl_mcm)/24);
+			}
+			
+			for(int j=0;j<VTEMP_COUNTERPARTY_CD.size();j++)
+			{
+				String queryString2 = "SELECT EXP_MMSCM "
+						+ "FROM FMS_DAILY_SELLER_CNTRL_ROOM "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND TRANSPORTER_CD=? AND PLANT_SEQ=? "
+						+ "AND CATEGORY=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND TRANS_SEQ=?";
+				stmt2 = conn.prepareStatement(queryString2);
+				stmt2.setString(1, comp_cd);
+				stmt2.setString(2, ""+VTEMP_COUNTERPARTY_CD.elementAt(j));
+				stmt2.setString(3, ""+VTEMP_TRANS_CD.elementAt(j));
+				stmt2.setString(4, ""+VPLANT_SEQ.elementAt(j));
+				stmt2.setString(5, ""+VCATEGORY.elementAt(j));
+				stmt2.setString(6, gas_dt);
+				stmt2.setString(7, ""+VTEMP_TRANS_PLANT_SEQ.elementAt(j));
+				rset2=stmt2.executeQuery();	
+				if(rset2.next())
+				{
+					String exp_mmscm = rset2.getString(1)==null?"":rset2.getString(1);
+					if(!exp_mmscm.trim().equals(""))
+					{
+						VEXP_MMSCM.add(nf.format(Double.parseDouble(exp_mmscm)));
+					}
+					else
+					{
+						VEXP_MMSCM.add("");
+					}
+				}
+				else
+				{
+					VEXP_MMSCM.add("");
+				}
+				rset2.close();
+				stmt2.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+
+	public void getDailyBuyerNomination()
+	{
+		String function_nm="getDailyBuyerNomination()";
+		try
+		{
+			dateTime = dateUtil.getSysdateWithTime24hr();
+			String temp_gen_dt=dateUtil.getDate(gas_dt, "-1");
+			
+			queryString="SELECT DISTINCT C.TRANSPORTER_CD AS TRANSPORTER_CD "
+					+ "FROM FMS_SUPPLY_CONT_MST A, FMS_SUPPLY_CONT_TRANSPTR C "
+					+ "WHERE A.COMPANY_CD=? AND A.BUYER_NOM_FLAG=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? "
+					+ "AND A.CONTRACT_TYPE IN ('S','L','X') "
+					+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+					+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+					+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE ";
+			if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+			{
+				queryString+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? ";
+			}
+			else
+			{
+				queryString+= "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') ";
+			}
+			queryString+= " UNION "
+					+ "SELECT DISTINCT C.TRANSPORTER_CD AS TRANSPORTER_CD "
+					+ "FROM FMS_LTCORA_CONT_MST A,"
+						+ "FMS_LTCORA_CONT_CARGO_DTL B,"
+						+ "FMS_LTCORA_CONT_TRANSPTR C "
+					+ "WHERE A.COMPANY_CD=? AND A.BUY_SALE=? AND A.FCC_FLAG=? AND B.CARGO_STATUS=? AND A.AGMT_TYPE=? AND B.BOE_NO IS NOT NULL "
+					+ "AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+					+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE) "
+					+ ""
+					+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE "
+					+ ""
+					+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV "
+					+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE ";
+			if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+			{
+				queryString+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? AND B.CARGO_NO=? ";
+			}
+			else
+			{
+				queryString+="AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')<=TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0) >=TO_DATE(?,'DD/MM/YYYY') ";
+			}		
+			queryString+= "ORDER BY TRANSPORTER_CD";
+			int stmt_cnt=0;
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(++stmt_cnt, comp_cd);
+			stmt.setString(++stmt_cnt, "Y");
+			stmt.setString(++stmt_cnt, "Y");
+			stmt.setString(++stmt_cnt, "Y");
+			if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+			{
+				stmt.setString(++stmt_cnt, counterparty_cd);
+				stmt.setString(++stmt_cnt, agmt_no);
+				stmt.setString(++stmt_cnt, agmt_rev_no);
+				stmt.setString(++stmt_cnt, cont_no);
+				stmt.setString(++stmt_cnt, cont_rev_no);
+				stmt.setString(++stmt_cnt, contract_type);
+			}
+			else
+			{
+				stmt.setString(++stmt_cnt, gas_dt);
+				stmt.setString(++stmt_cnt, gas_dt);
+			}
+			stmt.setString(++stmt_cnt, comp_cd);
+			stmt.setString(++stmt_cnt, "C");
+			stmt.setString(++stmt_cnt, "Y");
+			stmt.setString(++stmt_cnt, "Y");
+			stmt.setString(++stmt_cnt, "A");
+			if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+			{
+				stmt.setString(++stmt_cnt, counterparty_cd);
+				stmt.setString(++stmt_cnt, agmt_no);
+				stmt.setString(++stmt_cnt, agmt_rev_no);
+				stmt.setString(++stmt_cnt, cont_no);
+				stmt.setString(++stmt_cnt, cont_rev_no);
+				stmt.setString(++stmt_cnt, contract_type);
+				stmt.setString(++stmt_cnt, cargo_no);
+			}
+			else
+			{
+				stmt.setString(++stmt_cnt, gas_dt);
+				stmt.setString(++stmt_cnt, gas_dt);
+			}
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String trns_cd = rset.getString(1)==null?"":rset.getString(1);
+				String trns_abbr = ""+utilBean.getCounterpartyABBR(conn,trns_cd);
+				
+				VTRANSPORTER_CD.add(trns_cd);
+				VTRANSPORTER_ABBR.add(trns_abbr);
+			}
+			rset.close();
+			stmt.close();
+			
+			int total_entry=-1;
+			for(int i=0; i<VTRANSPORTER_CD.size(); i++)
+			{
+				int index=0;
+				
+				queryString3="SELECT DISTINCT C.PLANT_SEQ_NO AS PLANT_SEQ_NO "
+						+ "FROM FMS_SUPPLY_CONT_MST A, FMS_SUPPLY_CONT_TRANSPTR C "
+						+ "WHERE A.COMPANY_CD=? AND A.BUYER_NOM_FLAG=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? "
+						+ "AND A.CONTRACT_TYPE IN ('S','L','X') "
+						+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+						+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+						+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+						+ "AND C.TRANSPORTER_CD=? ";
+				if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+				{
+					queryString3+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? ";
+				}
+				else
+				{
+					queryString3+= "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') ";
+				}
+				queryString3+= " UNION "
+						+ "SELECT DISTINCT C.PLANT_SEQ_NO AS PLANT_SEQ_NO "
+						+ "FROM FMS_LTCORA_CONT_MST A,"
+							+ "FMS_LTCORA_CONT_CARGO_DTL B,"
+							+ "FMS_LTCORA_CONT_TRANSPTR C "
+						+ "WHERE A.COMPANY_CD=? AND A.BUY_SALE=? AND A.FCC_FLAG=? AND B.CARGO_STATUS=? AND A.AGMT_TYPE=? AND B.BOE_NO IS NOT NULL "
+						+ "AND C.TRANSPORTER_CD=? "
+						+ "AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+						+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE) "
+						+ ""
+						+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE "
+						+ ""
+						+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV "
+						+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE ";
+				if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+				{
+					queryString3+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? AND B.CARGO_NO=? ";
+				}
+				else
+				{
+					queryString3+="AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')<=TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0) >=TO_DATE(?,'DD/MM/YYYY') ";
+				}
+				queryString3+= "ORDER BY PLANT_SEQ_NO ";
+				stmt_cnt=0;
+				stmt3 = conn.prepareStatement(queryString3);
+				stmt3.setString(++stmt_cnt, comp_cd);
+				stmt3.setString(++stmt_cnt, "Y");
+				stmt3.setString(++stmt_cnt, "Y");
+				stmt3.setString(++stmt_cnt, "Y");
+				stmt3.setString(++stmt_cnt, ""+VTRANSPORTER_CD.elementAt(i));
+				if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+				{
+					stmt3.setString(++stmt_cnt, counterparty_cd);
+					stmt3.setString(++stmt_cnt, agmt_no);
+					stmt3.setString(++stmt_cnt, agmt_rev_no);
+					stmt3.setString(++stmt_cnt, cont_no);
+					stmt3.setString(++stmt_cnt, cont_rev_no);
+					stmt3.setString(++stmt_cnt, contract_type);
+				}
+				else
+				{
+					stmt3.setString(++stmt_cnt, gas_dt);
+					stmt3.setString(++stmt_cnt, gas_dt);
+				}
+				stmt3.setString(++stmt_cnt, comp_cd);
+				stmt3.setString(++stmt_cnt, "C");
+				stmt3.setString(++stmt_cnt, "Y");
+				stmt3.setString(++stmt_cnt, "Y");
+				stmt3.setString(++stmt_cnt, "A");
+				stmt3.setString(++stmt_cnt, ""+VTRANSPORTER_CD.elementAt(i));
+				if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+				{
+					stmt3.setString(++stmt_cnt, counterparty_cd);
+					stmt3.setString(++stmt_cnt, agmt_no);
+					stmt3.setString(++stmt_cnt, agmt_rev_no);
+					stmt3.setString(++stmt_cnt, cont_no);
+					stmt3.setString(++stmt_cnt, cont_rev_no);
+					stmt3.setString(++stmt_cnt, contract_type);
+					stmt3.setString(++stmt_cnt, cargo_no);
+				}
+				else
+				{
+					stmt3.setString(++stmt_cnt, gas_dt);
+					stmt3.setString(++stmt_cnt, gas_dt);
+				}
+				rset3=stmt3.executeQuery();
+				while(rset3.next())
+				{
+					String trns_cd = ""+VTRANSPORTER_CD.elementAt(i);
+					String trns_plant_seq = rset3.getString(1)==null?"":rset3.getString(1);
+					
+					VTRANSPORTER_PLANT_SEQ.add(trns_plant_seq);
+					VTRANSPORTER_PLANT_ABBR.add(""+utilBean.getCounterpartyPlantABBR(conn,trns_cd, comp_cd, trns_plant_seq, "R"));
+					
+					index++;
+					int sub_index=0;
+					double trans_plant_wise_total_mmbtu=0;
+					double trans_plant_wise_total_scm=0;
+					
+					String entry_range=(total_entry+1)+"-";
+					
+					int count = dateUtil.getDays(to_date,from_date);
+					for(int k=0; k<count; k++)
+					{
+						String weekofdt=""+dateUtil.getDate(from_date, ""+k);
+						
+						int gas_index=0;
+						int rowspan=0;
+						int periodic_i=0;
+						
+						queryString="SELECT A.COMPANY_CD,A.COUNTERPARTY_CD,A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONTRACT_TYPE,"
+								+ "A.CONT_REF_NO,C.TRANSPORTER_CD,C.PLANT_SEQ_NO,A.DCQ,A.CONT_NAME,A.MDCQ_PERCENTAGE,A.TRADE_REF_NO,"
+								+ "B.PLANT_SEQ_NO,D.COMPANY_CD,D.PLANT_SEQ_NO,0,'CONT',NULL,NULL "
+								+ "FROM FMS_SUPPLY_CONT_MST A, FMS_SUPPLY_CONT_PLANT B, FMS_SUPPLY_CONT_TRANSPTR C, FMS_SUPPLY_CONT_BU D  "
+								+ "WHERE A.COMPANY_CD=? AND A.BUYER_NOM_FLAG=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? "
+								+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+								+ "AND C.TRANSPORTER_CD=? AND C.PLANT_SEQ_NO=? "
+								+ "AND A.CONTRACT_TYPE IN ('S','L','X') "
+								+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+								+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+								+ ""
+								+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+								+ "AND A.CONT_NO=B.CONT_NO AND A.CONT_REV=B.CONT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+								+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=D.COMPANY_CD AND A.COUNTERPARTY_CD=D.COUNTERPARTY_CD AND A.AGMT_NO=D.AGMT_NO AND A.AGMT_REV=D.AGMT_REV "
+								+ "AND A.CONT_NO=D.CONT_NO AND A.CONT_REV=D.CONT_REV AND A.CONTRACT_TYPE=D.CONTRACT_TYPE ";
+						if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+						{
+							queryString+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? ";
+						}
+						queryString+= " UNION ALL "
+								+ "SELECT A.COMPANY_CD,A.COUNTERPARTY_CD,A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONTRACT_TYPE,"
+								+ "B.CARGO_REF,C.TRANSPORTER_CD,C.PLANT_SEQ_NO,B.CSOC_QTY,A.CONT_NAME,A.MDCQ_PERCENTAGE,NULL,"
+								+ "D.PLANT_SEQ_NO,E.COMPANY_CD,E.PLANT_SEQ_NO,B.CARGO_NO,'LTCORA',A.BUY_SALE,A.AGMT_TYPE "
+								+ "FROM FMS_LTCORA_CONT_MST A,FMS_LTCORA_CONT_CARGO_DTL B,FMS_LTCORA_CONT_TRANSPTR C,FMS_LTCORA_CONT_PLANT D,FMS_LTCORA_CONT_BU E "
+								+ "WHERE A.COMPANY_CD=? AND A.BUY_SALE=? AND A.FCC_FLAG=? AND B.CARGO_STATUS=? AND A.AGMT_TYPE=? AND B.BOE_NO IS NOT NULL "
+								+ "AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')<=TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0) >=TO_DATE(?,'DD/MM/YYYY') "
+								+ "AND C.TRANSPORTER_CD=? AND C.PLANT_SEQ_NO=? "
+								+ "AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+								+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+								+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE) "
+								+ ""
+								+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+								+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV "
+								+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=D.COMPANY_CD AND A.COUNTERPARTY_CD=D.COUNTERPARTY_CD AND A.CONT_NO=D.CONT_NO AND A.CONT_REV=D.CONT_REV "
+								+ "AND A.AGMT_NO=D.AGMT_NO AND A.AGMT_REV=D.AGMT_REV AND A.CONTRACT_TYPE=D.CONTRACT_TYPE AND A.BUY_SALE=D.BUY_SALE AND A.AGMT_TYPE=D.AGMT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=E.COMPANY_CD AND A.COUNTERPARTY_CD=E.COUNTERPARTY_CD AND A.CONT_NO=E.CONT_NO AND A.CONT_REV=E.CONT_REV "
+								+ "AND A.AGMT_NO=E.AGMT_NO AND A.AGMT_REV=E.AGMT_REV AND A.CONTRACT_TYPE=E.CONTRACT_TYPE AND A.BUY_SALE=E.BUY_SALE AND A.AGMT_TYPE=E.AGMT_TYPE ";
+						if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+						{
+							queryString+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? AND B.CARGO_NO=? ";
+						}
+						stmt_cnt=0;
+						stmt = conn.prepareStatement(queryString);
+						stmt.setString(++stmt_cnt, comp_cd);
+						stmt.setString(++stmt_cnt, "Y");
+						stmt.setString(++stmt_cnt, "Y");
+						stmt.setString(++stmt_cnt, "Y");
+						stmt.setString(++stmt_cnt, weekofdt);
+						stmt.setString(++stmt_cnt, weekofdt);
+						stmt.setString(++stmt_cnt, ""+VTRANSPORTER_CD.elementAt(i));
+						stmt.setString(++stmt_cnt, trns_plant_seq);
+						if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+						{
+							stmt.setString(++stmt_cnt, counterparty_cd);
+							stmt.setString(++stmt_cnt, agmt_no);
+							stmt.setString(++stmt_cnt, agmt_rev_no);
+							stmt.setString(++stmt_cnt, cont_no);
+							stmt.setString(++stmt_cnt, cont_rev_no);
+							stmt.setString(++stmt_cnt, contract_type);
+						}
+						stmt.setString(++stmt_cnt, comp_cd);
+						stmt.setString(++stmt_cnt, "C");
+						stmt.setString(++stmt_cnt, "Y");
+						stmt.setString(++stmt_cnt, "Y");
+						stmt.setString(++stmt_cnt, "A");
+						stmt.setString(++stmt_cnt, weekofdt);
+						stmt.setString(++stmt_cnt, weekofdt);
+						stmt.setString(++stmt_cnt, ""+VTRANSPORTER_CD.elementAt(i));
+						stmt.setString(++stmt_cnt, trns_plant_seq);
+						if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+						{
+							stmt.setString(++stmt_cnt, counterparty_cd);
+							stmt.setString(++stmt_cnt, agmt_no);
+							stmt.setString(++stmt_cnt, agmt_rev_no);
+							stmt.setString(++stmt_cnt, cont_no);
+							stmt.setString(++stmt_cnt, cont_rev_no);
+							stmt.setString(++stmt_cnt, contract_type);
+							stmt.setString(++stmt_cnt, cargo_no); 
+						}
+						rset=stmt.executeQuery();
+						while(rset.next())
+						{
+							if(callFlag.equalsIgnoreCase("PERIODIC_BUYER_NOM"))
+							{
+								if(periodic_i==0) {
+									VGAS_DT.add(weekofdt);
+									int tempDays=dateUtil.getDays(dateUtil.getSysdate(), weekofdt);
+									if(tempDays<=0)
+									{
+										temp_gen_dt=dateUtil.getSysdate();
+									}
+									else
+									{
+										temp_gen_dt=dateUtil.getDate(weekofdt, "-1");
+									}
+									
+									sub_index++;
+								}
+								periodic_i++;
+							}
+							else
+							{
+								sub_index++;
+							}
+							
+							gas_index++;
+							total_entry++;
+							
+							String companyCd = rset.getString(1)==null?"":rset.getString(1);
+							String countpty_cd = rset.getString(2)==null?"":rset.getString(2);
+							String agmt = rset.getString(3)==null?"":rset.getString(3);
+							String agmt_rev = rset.getString(4)==null?"":rset.getString(4);
+							String cont = rset.getString(5)==null?"":rset.getString(5);
+							String cont_rev = rset.getString(6)==null?"":rset.getString(6);
+							String cont_type = rset.getString(7)==null?"":rset.getString(7);
+							String cont_ref = rset.getString(8)==null?"":rset.getString(8);
+							String transporter_cd = rset.getString(9)==null?"":rset.getString(9);
+							String transporter_plant_seq = rset.getString(10)==null?"":rset.getString(10);
+							String dcq = nf.format(rset.getDouble(11));
+							String cont_name = rset.getString(12)==null?"":rset.getString(12);
+							String mdcq_percentage = nf.format(rset.getDouble(13));
+							double mdcq_qty = (Double.parseDouble(dcq)*Double.parseDouble(mdcq_percentage))/100;
+							
+							String trade_ref = rset.getString(14)==null?"":rset.getString(14);
+							if(cont_type.equals("X")) {
+								cont_ref=trade_ref;
+							}
+							
+							String plant_seq = rset.getString(15)==null?"":rset.getString(15);
+							String plant_abbr=utilBean.getCounterpartyPlantABBR(conn,countpty_cd, companyCd, plant_seq, "C");
+							String buCd = rset.getString(16)==null?"":rset.getString(16);
+							String bu_plant_seq = rset.getString(17)==null?"":rset.getString(17);
+							String bu_plant_abbr=utilBean.getCounterpartyPlantABBR(conn,buCd, comp_cd, bu_plant_seq, "B");
+							String cargo_no = rset.getString(18)==null?"0":rset.getString(18);
+							String contractName = rset.getString(19)==null?"":rset.getString(19);
+							String buySell = rset.getString(20)==null?"":rset.getString(20);
+							String agmtType = rset.getString(21)==null?"":rset.getString(21);
+							
+							String internal_map_id = cont_type+"-"+countpty_cd+"-"+agmt+"-"+agmt_rev+"-"+cont+"-"+cont_rev;
+							String ct_cont_mapping = cont_type+"-"+countpty_cd+"-"+agmt+"-%-"+cont+"-%";
+							String customer_code=""+utilBean.getTranspoterCustomerCode(conn,companyCd, transporter_cd, countpty_cd, plant_seq, weekofdt);
+							
+							String dis_cont_mapping= utilBean.NewDealMappingId(companyCd, countpty_cd, agmt, agmt_rev, cont, cont_rev, cont_type, cargo_no);
+							String variable_dcq="";
+							String billingFrq="";
+							String taxDtl="";
+							if(contractName.equals("LTCORA"))
+							{
+								ct_cont_mapping+="-"+cargo_no;
+								internal_map_id+="-"+cargo_no;
+								variable_dcq=utilBean.getCargoVariableCSOC(conn,companyCd, countpty_cd, buySell, agmt, cont, cont_type, cargo_no, weekofdt);
+								
+								queryString2="SELECT BILLING_FREQ "
+										+ "FROM FMS_LTCORA_CONT_BILLING_DTL A "
+										+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND BUY_SALE=? AND AGMT_TYPE=? "
+										+ "AND AGMT_NO=? AND AGMT_REV=? AND CONT_NO=? AND CONT_REV=? AND CONTRACT_TYPE=? ";
+								stmt2 = conn.prepareStatement(queryString2);
+								stmt2.setString(1, companyCd);
+								stmt2.setString(2, countpty_cd);
+								stmt2.setString(3, buySell);
+								stmt2.setString(4, agmtType);
+								stmt2.setString(5, agmt);
+								stmt2.setString(6, agmt_rev);
+								stmt2.setString(7, cont);
+								stmt2.setString(8, cont_rev);
+								stmt2.setString(9, cont_type);
+								rset2=stmt2.executeQuery();
+								if(rset2.next())
+						  		{
+						  			billingFrq=rset2.getString(1)==null?"":rset2.getString(1);
+						  		}
+								rset2.close();
+								stmt2.close();
+								
+								String periodStDt=utilBean.getFirstDtOfBillingCycle(billingFrq, "", weekofdt);
+								taxDtl=utilBean.getEntityServiceStructureDtl(conn,companyCd, countpty_cd, "C", plant_seq, bu_plant_seq, periodStDt,"SI");
+							}
+							else
+							{
+								variable_dcq=utilBean.getContVariableDCQ(conn,companyCd, countpty_cd, agmt, cont, cont_type, weekofdt);
+								
+								queryString2="SELECT BILLING_FREQ "
+										+ "FROM FMS_SUPPLY_BILLING_DTL A "
+										+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND AGMT_NO=? "//AND AGMT_REV='"+agmt_rev+"' "
+										+ "AND CONT_NO=? "//AND CONT_REV='"+cont_rev+"' "
+										+ "AND CONTRACT_TYPE=? "
+										+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_SUPPLY_BILLING_DTL B WHERE A.COMPANY_CD=B.COMPANY_CD "
+										+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO "
+										+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND TO_DATE(?,'DD/MM/YYYY') > EFF_DT)";
+								stmt2 = conn.prepareStatement(queryString2);
+								stmt2.setString(1, companyCd);
+								stmt2.setString(2, countpty_cd);
+								stmt2.setString(3, agmt);
+								stmt2.setString(4, cont);
+								stmt2.setString(5, cont_type);
+								stmt2.setString(6, weekofdt);
+								rset2=stmt2.executeQuery();
+								if(rset2.next())
+						  		{
+						  			billingFrq=rset2.getString(1)==null?"":rset2.getString(1);
+						  		}
+								rset2.close();
+								stmt2.close();
+								
+								String periodStDt=utilBean.getFirstDtOfBillingCycle(billingFrq, "", weekofdt);
+								taxDtl=utilBean.getEntityTaxStructureDtl(conn,companyCd, countpty_cd, "C", plant_seq, bu_plant_seq, periodStDt, "S");
+							}
+							if(!variable_dcq.equals(""))
+							{
+								dcq=variable_dcq;
+							}
+							
+							VCOUNTERPARTY_CD.add(countpty_cd);
+							VCOUNTERPARTY_ABBR.add(""+utilBean.getCounterpartyABBR(conn,countpty_cd));
+							VCOUNTERPARTY_NM.add(""+utilBean.getCounterpartyName(conn,countpty_cd));
+							VAGMT_NO.add(agmt);
+							VAGMT_REV_NO.add(agmt_rev);
+							VCONT_NO.add(cont);
+							VCONT_REV_NO.add(cont_rev);
+							VCONTRACT_TYPE.add(cont_type);
+							VCARGO_NO.add(cargo_no);
+							VDIS_CONT_MAPPING.add(dis_cont_mapping);
+							VCOUNTERPARTY_PLANT_SEQ.add(plant_seq);
+							VCOUNTERPARTY_PLANT_ABBR.add(plant_abbr);
+							VBU_CD.add(buCd);
+							VBU_PLANT_SEQ.add(bu_plant_seq);
+							VBU_PLANT_ABBR.add(bu_plant_abbr);
+							VDCQ.add(dcq);
+							VCONT_REF.add(cont_ref);
+							VCONT_NAME.add(cont_name);
+							VMDCQ_QTY.add(nf.format(mdcq_qty));
+							VINTERNAL_MAP_ID.add(internal_map_id);
+							
+							String transCd = ""+VTRANSPORTER_CD.elementAt(i);
+							String transStatus = (String) utilBean.getCounterpartyDetails(conn, transCd, weekofdt).get("status");
+
+							VTRANSPORTER_STATUS.add(transStatus);
+
+							String cpCd = countpty_cd;
+							String cpStatus = (String) utilBean.getCounterpartyDetails(conn, cpCd, weekofdt).get("status");
+							
+							VCOUNTERPARTY_STATUS.add(cpStatus);
+							
+							VCUSTOMER_CODE.add(customer_code);
+					  		VTAX_DTL.add(taxDtl);
+							
+							int isInvoiceSubmitted=isInvoiceSubmitted(countpty_cd, cont, agmt, plant_seq, cont_type, bu_plant_seq, weekofdt,cargo_no,"F",false);
+							if(isInvoiceSubmitted>0)
+							{
+								VNOM_BLOCK.add("Y");
+							}
+							else
+							{
+								VNOM_BLOCK.add("N");
+							}
+							
+							//GET BUYER NOMINATION DATA FOR THE CONTRACT WISE
+							queryString2="SELECT NOM_REV_NO,GEN_TIME,BASE,GCV,NCV,QTY_MMBTU,QTY_SCM,TO_CHAR(GEN_DT,'DD/MM/YYYY') "
+					  				+ "FROM FMS_DAILY_BUYER_NOM A "
+					  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+									+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+									+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? "
+									+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM B "
+									+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+									+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+									+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+									+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+									+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+							stmt2 = conn.prepareStatement(queryString2);
+							stmt2.setString(1, cont);
+							stmt2.setString(2, agmt);
+							stmt2.setString(3, companyCd);
+							stmt2.setString(4, countpty_cd);
+							stmt2.setString(5, transporter_cd);
+							stmt2.setString(6, transporter_plant_seq);
+							stmt2.setString(7, plant_seq);
+							stmt2.setString(8, cont_type);
+							stmt2.setString(9, bu_plant_seq);
+							stmt2.setString(10, weekofdt);
+							stmt2.setString(11, cargo_no);
+							rset2=stmt2.executeQuery();
+							if(rset2.next())
+							{
+					  			VNOM_REV_NO.add(rset2.getString(1)==null?"":rset2.getString(1));
+					  			VGEN_TIME.add(rset2.getString(2)==null?"":rset2.getString(2));
+					  			VBASE.add(rset2.getString(3)==null?"":rset2.getString(3));
+					  			VGCV.add(rset2.getString(4)==null?"9802.80":rset2.getString(4));
+					  			VNCV.add(rset2.getString(5)==null?"8831.35":rset2.getString(5));
+					  			VQTY_MMBTU.add(nf.format(rset2.getDouble(6)));
+					  			VQTY_SCM.add(nf.format(rset2.getDouble(7)));
+					  			VGEN_DT.add(rset2.getString(8)==null?"":rset2.getString(8));
+					  			
+					  			VNOM_COLOR.add("#99ffcc");	
+					  			
+					  			trans_plant_wise_total_mmbtu += rset2.getDouble(6);
+					  			trans_plant_wise_total_scm += rset2.getDouble(7);
+					  		}
+					  		else
+					  		{
+					  			VNOM_REV_NO.add("");
+					  			
+					  			String split[] = dateTime.split(" ");
+					  			//VGEN_DT.add(split[0]);
+					  			VGEN_DT.add(temp_gen_dt);
+					  			VGEN_TIME.add(split[1]);
+					  			VBASE.add("GCV");
+					  			VGCV.add("9802.80");
+					  			VNCV.add("8831.35");
+					  			VQTY_MMBTU.add("");
+					  			VQTY_SCM.add("");
+					  			VNOM_COLOR.add("");
+					  		}
+							rset2.close();
+							stmt2.close();	
+							
+							int index1=0;
+							
+							queryString2="SELECT CT_REF_NO,UTR_NO "
+									+ "FROM FMS_TRANSPORTER_CT_MST A,FMS_TRANS_CT_CONT_MAP B "
+									+ "WHERE A.COMPANY_CD=? AND A.CONTRACT_TYPE=? "
+									+ "AND A.ENTRY_TRANS_CD=? AND A.ENTRY_TRANS_PLANT=? "
+									+ "AND A.EXIT_COUNTERPARTY=? AND A.EXIT_PLANT_SEQ=? "
+									+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+									+ "AND B.CONT_MAPPING LIKE ? AND A.BU_SEQ=? AND A.STATUS='Y' "
+									+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+									+ "AND A.ENTRY_TRANS_CD=B.ENTRY_TRANS_CD AND A.ENTRY_TRANS_PLANT=B.ENTRY_TRANS_PLANT "
+									+ "AND A.EXIT_COUNTERPARTY=B.EXIT_COUNTERPARTY AND A.EXIT_PLANT_SEQ=B.EXIT_PLANT_SEQ "
+									+ "AND A.SEQ_NO=B.SEQ_NO AND A.BU_SEQ=B.BU_SEQ ";
+							stmt2 = conn.prepareStatement(queryString2);
+							stmt2.setString(1, companyCd);
+							stmt2.setString(2, "C");
+							stmt2.setString(3, transporter_cd);
+							stmt2.setString(4, transporter_plant_seq);
+							stmt2.setString(5, countpty_cd);
+							stmt2.setString(6, plant_seq);
+							stmt2.setString(7, weekofdt);
+							stmt2.setString(8, weekofdt);
+							stmt2.setString(9, ct_cont_mapping);
+							stmt2.setString(10, bu_plant_seq);
+							rset2=stmt2.executeQuery();
+							while(rset2.next())
+							{
+								index1+=1;
+								
+								String ct_ref=rset2.getString(1)==null?"":rset2.getString(1);
+								String utr_no=rset2.getString(2)==null?"":rset2.getString(2);
+								
+								queryString5="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+						  				+ "FROM FMS_DAILY_BUYER_NOM_DTL A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF=? AND CARGO_NO=? "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM_DTL B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+										+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+								stmt5 = conn.prepareStatement(queryString5);
+								stmt5.setString(1, cont);
+								stmt5.setString(2, agmt);
+								stmt5.setString(3, companyCd);
+								stmt5.setString(4, countpty_cd);
+								stmt5.setString(5, transporter_cd);
+								stmt5.setString(6, transporter_plant_seq);
+								stmt5.setString(7, plant_seq);
+								stmt5.setString(8, cont_type);
+								stmt5.setString(9, bu_plant_seq);
+								stmt5.setString(10, weekofdt);
+								stmt5.setString(11, ct_ref);
+								stmt5.setString(12, cargo_no);
+								rset5=stmt5.executeQuery();
+								if(rset5.next())
+								{
+									VSUB_NOM_REV_NO.add(rset5.getString(1)==null?"":rset5.getString(1));
+									VSUB_SEQ_NO.add(rset5.getString(2)==null?"":rset5.getString(2));
+									VSUB_CT_REF.add(ct_ref);
+									VSUB_UTR_REF.add(utr_no);
+									VSUB_QTY_MMBTU.add(nf.format(rset5.getDouble(3)));
+						  			VSUB_QTY_SCM.add(nf.format(rset5.getDouble(4)));
+						  			VSUB_NOM_SF_ID.add(rset5.getString(5)==null?"":rset5.getString(5));
+									
+									VSUB_IS_EXIST.add("Y");
+									VSUB_NOM_COLOR.add("#99ffcc");
+								}
+								else
+								{
+									VSUB_NOM_REV_NO.add("");
+									VSUB_SEQ_NO.add("");
+									VSUB_CT_REF.add(ct_ref);
+									VSUB_UTR_REF.add(utr_no);
+									VSUB_QTY_MMBTU.add("");
+									VSUB_QTY_SCM.add("");
+									VSUB_NOM_SF_ID.add("");
+									
+									VSUB_IS_EXIST.add("N");
+									VSUB_NOM_COLOR.add("");
+								}
+								rset5.close();
+								stmt5.close();
+							}
+							rset2.close();
+							stmt2.close();
+							
+							queryString5="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM,CT_REF,UTR_NO,SF_ID "
+					  				+ "FROM FMS_DAILY_BUYER_NOM_DTL A "
+					  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+									+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+									+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF IS NOT NULL AND CARGO_NO=? "
+									+ "AND CT_REF NOT IN (SELECT C.CT_REF_NO "
+											+ "FROM FMS_TRANSPORTER_CT_MST C,FMS_TRANS_CT_CONT_MAP B "
+											+ "WHERE A.COMPANY_CD=C.COMPANY_CD AND C.CONTRACT_TYPE='C' "
+											+ "AND C.ENTRY_TRANS_CD=A.TRANSPORTER_CD AND C.ENTRY_TRANS_PLANT=A.TRANS_SEQ "
+											+ "AND C.EXIT_COUNTERPARTY=A.COUNTERPARTY_CD AND C.EXIT_PLANT_SEQ=A.PLANT_SEQ AND C.BU_SEQ=A.BU_SEQ "
+											+ "AND C.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND C.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+											+ "AND B.CONT_MAPPING LIKE CASE WHEN '"+contractName+"'='LTCORA' THEN A.CONTRACT_TYPE||'-'||A.COUNTERPARTY_CD||'-'||A.AGMT_NO||'-%-'||A.CONT_NO||'-%-'||A.CARGO_NO "
+													+ "ELSE A.CONTRACT_TYPE||'-'||A.COUNTERPARTY_CD||'-'||A.AGMT_NO||'-%-'||A.CONT_NO||'-%' END "
+											+ "AND C.STATUS='Y' "
+											+ "AND C.COMPANY_CD=B.COMPANY_CD AND C.CONTRACT_TYPE=B.CONTRACT_TYPE "
+											+ "AND C.ENTRY_TRANS_CD=B.ENTRY_TRANS_CD AND C.ENTRY_TRANS_PLANT=B.ENTRY_TRANS_PLANT "
+											+ "AND C.EXIT_COUNTERPARTY=B.EXIT_COUNTERPARTY AND C.EXIT_PLANT_SEQ=B.EXIT_PLANT_SEQ "
+											+ "AND C.SEQ_NO=B.SEQ_NO AND C.BU_SEQ=B.BU_SEQ) "
+									+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM_DTL B "
+									+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+									+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+									+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+									+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+									+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+							stmt5 = conn.prepareStatement(queryString5);
+							stmt5.setString(1, cont);
+							stmt5.setString(2, agmt);
+							stmt5.setString(3, companyCd);
+							stmt5.setString(4, countpty_cd);
+							stmt5.setString(5, transporter_cd);
+							stmt5.setString(6, transporter_plant_seq);
+							stmt5.setString(7, plant_seq);
+							stmt5.setString(8, cont_type);
+							stmt5.setString(9, bu_plant_seq);
+							stmt5.setString(10, weekofdt);
+							stmt5.setString(11, cargo_no);
+							stmt5.setString(12, weekofdt);
+							stmt5.setString(13, weekofdt);
+							rset5=stmt5.executeQuery();
+							while(rset5.next())
+							{
+								index1+=1;
+								
+								VSUB_NOM_REV_NO.add(rset5.getString(1)==null?"":rset5.getString(1));
+								VSUB_SEQ_NO.add(rset5.getString(2)==null?"":rset5.getString(2));
+								VSUB_CT_REF.add(rset5.getString(5)==null?"":rset5.getString(5));
+								VSUB_UTR_REF.add(rset5.getString(6)==null?"":rset5.getString(6));
+								VSUB_QTY_MMBTU.add(nf.format(rset5.getDouble(3)));
+					  			VSUB_QTY_SCM.add(nf.format(rset5.getDouble(4)));
+					  			VSUB_NOM_SF_ID.add(rset5.getString(7)==null?"":rset5.getString(7));
+								
+								VSUB_IS_EXIST.add("Y");
+								VSUB_NOM_COLOR.add("#99ffcc");
+							}
+							rset5.close();
+							stmt5.close();
+							
+							if(index1>0)
+							{
+								queryString5="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+						  				+ "FROM FMS_DAILY_BUYER_NOM_DTL A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF IS NULL AND CARGO_NO=? "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM_DTL B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+										+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+								stmt5 = conn.prepareStatement(queryString5);
+								stmt5.setString(1, cont);
+								stmt5.setString(2, agmt);
+								stmt5.setString(3, companyCd);
+								stmt5.setString(4, countpty_cd);
+								stmt5.setString(5, transporter_cd);
+								stmt5.setString(6, transporter_plant_seq);
+								stmt5.setString(7, plant_seq);
+								stmt5.setString(8, cont_type);
+								stmt5.setString(9, bu_plant_seq);
+								stmt5.setString(10, weekofdt);
+								stmt5.setString(11, cargo_no);
+								rset5=stmt5.executeQuery();
+								if(rset5.next())
+								{
+									index1+=1;
+									
+									VSUB_NOM_REV_NO.add(rset5.getString(1)==null?"":rset5.getString(1));
+									VSUB_SEQ_NO.add(rset5.getString(2)==null?"":rset5.getString(2));
+									VSUB_CT_REF.add("");
+									VSUB_UTR_REF.add("");
+									VSUB_QTY_MMBTU.add(nf.format(rset5.getDouble(3)));
+						  			VSUB_QTY_SCM.add(nf.format(rset5.getDouble(4)));
+						  			VSUB_NOM_SF_ID.add(rset5.getString(5)==null?"":rset5.getString(5));
+									
+									VSUB_IS_EXIST.add("Y");
+									VSUB_NOM_COLOR.add("#99ffcc");
+								}
+								rset5.close();
+								stmt5.close();
+								
+								VNOM_SF_ID.add("");
+							}
+							else
+							{
+								queryString5="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+						  				+ "FROM FMS_DAILY_BUYER_NOM_DTL A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM_DTL B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+										+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+								stmt5 = conn.prepareStatement(queryString5);
+								stmt5.setString(1, cont);
+								stmt5.setString(2, agmt);
+								stmt5.setString(3, companyCd);
+								stmt5.setString(4, countpty_cd);
+								stmt5.setString(5, transporter_cd);
+								stmt5.setString(6, transporter_plant_seq);
+								stmt5.setString(7, plant_seq);
+								stmt5.setString(8, cont_type);
+								stmt5.setString(9, bu_plant_seq);
+								stmt5.setString(10, weekofdt);
+								stmt5.setString(11, cargo_no);
+								rset5=stmt5.executeQuery();
+								if(rset5.next())
+								{
+									VNOM_SF_ID.add(rset5.getString(5)==null?"":rset5.getString(5));
+									
+								}
+								else
+								{
+									VNOM_SF_ID.add("");
+								}
+								rset5.close();
+								stmt5.close();
+							}
+							VINDEX1.add(index1);
+							if(index1>0)
+							{
+								rowspan+=(index1+2+1);
+							}
+							else
+							{
+								rowspan+=1;
+							}
+						}
+						rset.close();
+						stmt.close();
+						
+						VTRANS_PLANT_WISE_TOTAL_MMBTU.add(nf.format(trans_plant_wise_total_mmbtu));
+						VTRANS_PLANT_WISE_TOTAL_SCM.add(nf.format(trans_plant_wise_total_scm));
+						
+						if(periodic_i>0) {
+						VGAS_INDEX.add(gas_index);
+						VROWSPAN.add(rowspan);
+						}
+					}
+					entry_range+=total_entry;
+					VSUB_INDEX.add(sub_index);	
+					VENTRY_RANGE.add(entry_range);
+				}
+				VINDEX.add(index);
+				rset3.close();
+				stmt3.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+
+	public int isInvoiceSubmitted(String countpty_cd,String cont, String agmt,String plant_seq, String cont_type, String bu_plant_seq, String gas_dt, String cargo_no,String inv_flag, boolean isAllocation)
+	{
+		String function_nm="isInvoiceSubmitted()";
+		int count=0;
+		try
+		{
+			queryString="SELECT COUNT(*) "
+					+ "FROM FMS_INVOICE_MST "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND CONT_NO=? AND AGMT_NO=? "
+					+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_UNIT=? "
+					+ "AND PERIOD_START_DT<=TO_DATE(?,'DD/MM/YYYY') AND PERIOD_END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND CARGO_NO=? AND INV_FLAG=? ";
+			stmt_temp = conn.prepareStatement(queryString);
+			stmt_temp.setString(1, comp_cd);
+			stmt_temp.setString(2, countpty_cd);
+			stmt_temp.setString(3, cont);
+			stmt_temp.setString(4, agmt);
+			stmt_temp.setString(5, plant_seq);
+			stmt_temp.setString(6, cont_type);
+			stmt_temp.setString(7, bu_plant_seq);
+			stmt_temp.setString(8, gas_dt);
+			stmt_temp.setString(9, gas_dt);
+			stmt_temp.setString(10, cargo_no);
+			stmt_temp.setString(11, inv_flag);
+			rset_temp=stmt_temp.executeQuery();
+			if(rset_temp.next())
+			{
+				count=rset_temp.getInt(1);
+			}
+			rset_temp.close();
+			stmt_temp.close();
+			
+			if(isAllocation)
+			{
+				queryString="SELECT COUNT(*) "
+						+ "FROM FMS_INVOICE_MST "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND CONT_NO=? AND AGMT_NO=? "
+						+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_UNIT=? "
+						+ "AND PERIOD_START_DT<=TO_DATE(?,'DD/MM/YYYY') AND PERIOD_END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+						+ "AND CARGO_NO=? AND INV_FLAG IN ('CR','DR') AND CRITERIA LIKE ? "
+						+ "AND (CHECKED_FLAG != ? OR CHECKED_FLAG IS NULL) ";
+				stmt_temp = conn.prepareStatement(queryString);
+				stmt_temp.setString(1, comp_cd);
+				stmt_temp.setString(2, countpty_cd);
+				stmt_temp.setString(3, cont);
+				stmt_temp.setString(4, agmt);
+				stmt_temp.setString(5, plant_seq);
+				stmt_temp.setString(6, cont_type);
+				stmt_temp.setString(7, bu_plant_seq);
+				stmt_temp.setString(8, gas_dt);
+				stmt_temp.setString(9, gas_dt);
+				stmt_temp.setString(10, cargo_no);
+				stmt_temp.setString(11, "%QTY%");
+				stmt_temp.setString(12, "Y");
+				rset_temp=stmt_temp.executeQuery();
+				if(rset_temp.next())
+				{
+					int temp_count=rset_temp.getInt(1);
+					
+					if(temp_count > 0)
+					{
+						count=0;
+					}
+				}
+				rset_temp.close();
+				stmt_temp.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return count;
+	}
+	
+	public void getContractTCQ()
+	{
+		String function_nm="getContractTCQ()";
+		try
+		{
+			queryString="SELECT COMPANY_CD,COUNTERPARTY_CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,CONTRACT_TYPE,"
+					+ "TO_CHAR(START_DT,'DD/MM/YYYY'),TO_CHAR(END_DT,'DD/MM/YYYY'),TCQ "
+					+ "FROM FMS_SUPPLY_CONT_MST A "
+					+ "WHERE COMPANY_CD=? AND BUYER_NOM_FLAG=? AND A.FCC_FLAG=? AND IS_ALLOCATED=? "
+					+ "AND START_DT<=TO_DATE(?,'DD/MM/YYYY') AND END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND A.CONT_REV=(SELECT MAX(B.CONT_REV) FROM FMS_SUPPLY_CONT_MST B "
+					+ "WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) ";
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, "Y");
+			stmt.setString(3, "Y");
+			stmt.setString(4, "Y");
+			stmt.setString(5, gas_dt);
+			stmt.setString(6, gas_dt);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String companyCd = rset.getString(1)==null?"":rset.getString(1);
+				String countpty_cd = rset.getString(2)==null?"":rset.getString(2);
+				String agmt = rset.getString(3)==null?"":rset.getString(3);
+				String agmt_rev = rset.getString(4)==null?"":rset.getString(4);
+				String cont = rset.getString(5)==null?"":rset.getString(5);
+				String cont_rev = rset.getString(6)==null?"":rset.getString(6);
+				String cont_type = rset.getString(7)==null?"":rset.getString(7);
+				String start_dt = rset.getString(8)==null?"":rset.getString(8);
+				String end_dt = rset.getString(9)==null?"":rset.getString(9);
+				double tcq = rset.getDouble(10);
+				
+				String internal_map_id = cont_type+"-"+countpty_cd+"-"+agmt+"-"+agmt_rev+"-"+cont+"-"+cont_rev;
+				
+				double total_buyerNom=0;
+				queryString1 ="SELECT SUM(QTY_MMBTU) "
+	                       + "FROM ( "
+	                       + "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU, A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'ALLOCATION' "
+	                       + "FROM FMS_DAILY_ALLOCATION_DTL A "
+	                       + "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+	                       //+ "AND GAS_DT!=TO_DATE(?,'DD/MM/YYYY') "
+	                       + "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+	                       + "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+	                       + "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+	                       + "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+	                       + "GROUP BY A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'ALLOCATION' "
+	                       + "UNION ALL "
+	                       + "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU, A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'SELLER_NOM' "
+	                       + "FROM FMS_DAILY_SELLER_NOM A "
+	                       + "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+	                       + "AND GAS_DT!=TO_DATE(?,'DD/MM/YYYY') "
+	                       + "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+	                       + "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+	                       + "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+	                       + "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+	                       + "AND NVL((SELECT COUNT(*) FROM FMS_DAILY_ALLOCATION_DTL C "
+	                       + "WHERE A.CONT_NO=C.CONT_NO AND A.AGMT_NO=C.AGMT_NO "
+	                       + "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+	                       + "AND A.TRANSPORTER_CD=C.TRANSPORTER_CD AND A.TRANS_SEQ=C.TRANS_SEQ "
+	                       + "AND A.PLANT_SEQ=C.PLANT_SEQ AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BU_SEQ=C.BU_SEQ "
+	                       + "AND A.GAS_DT=C.GAS_DT AND A.CARGO_NO=C.CARGO_NO "
+	                       + "AND C.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+	                       + "WHERE B.CONT_NO=C.CONT_NO AND B.AGMT_NO=C.AGMT_NO "
+	                       + "AND B.COMPANY_CD=C.COMPANY_CD AND B.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=C.TRANSPORTER_CD AND B.TRANS_SEQ=C.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=C.PLANT_SEQ AND B.CONTRACT_TYPE=C.CONTRACT_TYPE AND B.BU_SEQ=C.BU_SEQ "
+	                       + "AND B.GAS_DT=C.GAS_DT AND B.CARGO_NO=C.CARGO_NO)),0)=0 "
+	                       + "GROUP BY A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'SELLER_NOM' "
+	                       /*+ "UNION ALL "
+	                       + "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU, A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'BUYER_NOM' "
+	                       + "FROM FMS_DAILY_BUYER_NOM A "
+	                       + "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+	                       + "AND GAS_DT!=TO_DATE(?,'DD/MM/YYYY') "
+	                       + "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM B "
+	                       + "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+	                       + "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+	                       + "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+	                       + "AND NVL((SELECT COUNT(*) FROM FMS_DAILY_SELLER_NOM C "
+	                       + "WHERE A.CONT_NO=C.CONT_NO AND A.AGMT_NO=C.AGMT_NO "
+	                       + "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+	                       + "AND A.TRANSPORTER_CD=C.TRANSPORTER_CD AND A.TRANS_SEQ=C.TRANS_SEQ "
+	                       + "AND A.PLANT_SEQ=C.PLANT_SEQ AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BU_SEQ=C.BU_SEQ "
+	                       + "AND A.GAS_DT=C.GAS_DT AND A.CARGO_NO=C.CARGO_NO "
+	                       + "AND C.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+	                       + "WHERE B.CONT_NO=C.CONT_NO AND B.AGMT_NO=C.AGMT_NO "
+	                       + "AND B.COMPANY_CD=C.COMPANY_CD AND B.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=C.TRANSPORTER_CD AND B.TRANS_SEQ=C.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=C.PLANT_SEQ AND B.CONTRACT_TYPE=C.CONTRACT_TYPE AND B.BU_SEQ=C.BU_SEQ "
+	                       + "AND B.GAS_DT=C.GAS_DT AND B.CARGO_NO=C.CARGO_NO)),0)=0 "
+	                       + "GROUP BY A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'BUYER_NOM' "*/
+	                       + ") Z";
+				stmt1 = conn.prepareStatement(queryString1);
+				stmt1.setString(1, cont);
+				stmt1.setString(2, agmt);
+				stmt1.setString(3, companyCd);
+				stmt1.setString(4, countpty_cd);
+				stmt1.setString(5, cont_type);
+				stmt1.setString(6, "0");
+				//stmt1.setString(7, gas_dt);
+				stmt1.setString(7, cont);
+				stmt1.setString(8, agmt);
+				stmt1.setString(9, companyCd);
+				stmt1.setString(10, countpty_cd);
+				stmt1.setString(11, cont_type);
+				stmt1.setString(12, "0");
+				stmt1.setString(13, gas_dt);
+				/*stmt1.setString(15, cont);
+				stmt1.setString(16, agmt);
+				stmt1.setString(17, companyCd);
+				stmt1.setString(18, countpty_cd);
+				stmt1.setString(19, cont_type);
+				stmt1.setString(20, "0");
+				stmt1.setString(21, gas_dt);*/
+				rset1=stmt1.executeQuery();
+				if(rset1.next())
+				{
+					total_buyerNom=rset1.getDouble(1);
+				}
+				rset1.close();
+				stmt1.close();
+				
+				VCONT_INTERNAL_MAPP_ID.add(internal_map_id);
+				VCONT_BUYER_NOM.add(nf.format(total_buyerNom));
+				VCONT_TCQ.add(nf.format(tcq));
+			}
+			rset.close();
+			stmt.close();
+			
+			queryString="SELECT A.COMPANY_CD,A.COUNTERPARTY_CD,A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONTRACT_TYPE,"
+					+ "B.CARGO_NO,A.SUG,"
+					+ "(SELECT SUM(C.ADQ_QTY) FROM FMS_LTCORA_CONT_CARGO_ADQ C WHERE A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND B.CARGO_NO=C.CARGO_NO AND A.CONT_NO=C.CONT_NO "
+					+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE), "
+					+ "B.EDQ_QTY "
+					+ "FROM FMS_LTCORA_CONT_MST A,"
+						+ "FMS_LTCORA_CONT_CARGO_DTL B "
+						//+ "FMS_LTCORA_CONT_CARGO_ADQ C "
+					+ "WHERE A.COMPANY_CD=? AND A.BUY_SALE=? AND B.CARGO_STATUS=? AND A.AGMT_TYPE=? "
+					+ "AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')<=TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0) >=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+					+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE) "
+					+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE ";
+					//+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND B.CARGO_NO=C.CARGO_NO AND A.CONT_NO=C.CONT_NO "
+					//+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE "
+					//+ "GROUP BY A.COMPANY_CD,A.COUNTERPARTY_CD,A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONTRACT_TYPE,B.CARGO_NO,A.SUG,B.EDQ_QTY ";
+			int st_count=0;
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(++st_count, comp_cd);
+			stmt.setString(++st_count, "C");
+			stmt.setString(++st_count, "Y");
+			stmt.setString(++st_count, "A");
+			stmt.setString(++st_count, gas_dt);
+			stmt.setString(++st_count, gas_dt);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String companyCd = rset.getString(1)==null?"":rset.getString(1);
+				String countpty_cd = rset.getString(2)==null?"":rset.getString(2);
+				String agmt = rset.getString(3)==null?"":rset.getString(3);
+				String agmt_rev = rset.getString(4)==null?"":rset.getString(4);
+				String cont = rset.getString(5)==null?"":rset.getString(5);
+				String cont_rev = rset.getString(6)==null?"":rset.getString(6);
+				String cont_type = rset.getString(7)==null?"":rset.getString(7);
+				//String start_dt = rset.getString(8)==null?"":rset.getString(8);
+				//String end_dt = rset.getString(9)==null?"":rset.getString(9);
+				String cargo_no = rset.getString(8)==null?"":rset.getString(8);
+				String sug_percent = rset.getString(9)==null?"":nf.format(rset.getDouble(9));
+				double adq_qty = rset.getDouble(10);
+				double edq_qty = rset.getDouble(11);
+				double tcq=0;
+				
+				String internal_map_id = cont_type+"-"+countpty_cd+"-"+agmt+"-"+agmt_rev+"-"+cont+"-"+cont_rev+"-"+cargo_no;
+				
+				queryString1="SELECT LTCORA_TARIFF,LTCORA_TARIFF_UNIT,SUG "
+						+ "FROM FMS_LTCORA_CONT_CARGO_MOD "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND BUY_SALE=? "
+						+ "AND AGMT_NO=? AND AGMT_REV=? AND AGMT_TYPE=? AND CONT_NO=? AND CONTRACT_TYPE=? AND CARGO_NO=? ";
+				stmt1=conn.prepareStatement(queryString1);
+				stmt1.setString(1, companyCd);
+				stmt1.setString(2, countpty_cd);
+				stmt1.setString(3, "C");
+				stmt1.setString(4, agmt);
+				stmt1.setString(5, agmt_rev);
+				stmt1.setString(6, "A");
+				stmt1.setString(7, cont);
+				stmt1.setString(8, cont_type);
+				stmt1.setString(9, cargo_no);
+				rset1=stmt1.executeQuery();
+				if(rset1.next())
+				{
+					sug_percent = rset1.getString(3)==null?"":nf.format(rset1.getDouble(3));
+				}
+				rset1.close();
+				stmt1.close();
+				
+				if(adq_qty > 0 && !sug_percent.equals(""))
+				{
+					tcq= adq_qty - (adq_qty * Double.parseDouble(sug_percent) / 100);
+				}
+				else if(edq_qty > 0 && !sug_percent.equals(""))
+				{
+					tcq= edq_qty - (edq_qty * Double.parseDouble(sug_percent) / 100);
+				}
+				
+				double total_buyerNom=0;
+				queryString1 ="SELECT SUM(QTY_MMBTU) "
+	                       + "FROM ( "
+	                       + "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU, A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'ALLOCATION' "
+	                       + "FROM FMS_DAILY_ALLOCATION_DTL A "
+	                       + "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+	                       //+ "AND GAS_DT!=TO_DATE(?,'DD/MM/YYYY') "
+	                       + "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+	                       + "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+	                       + "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+	                       + "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+	                       + "GROUP BY A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'ALLOCATION' "
+	                       + "UNION ALL "
+	                       + "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU, A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'SELLER_NOM' "
+	                       + "FROM FMS_DAILY_SELLER_NOM A "
+	                       + "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+	                       + "AND GAS_DT!=TO_DATE(?,'DD/MM/YYYY') "
+	                       + "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+	                       + "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+	                       + "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+	                       + "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+	                       + "AND NVL((SELECT COUNT(*) FROM FMS_DAILY_ALLOCATION_DTL C "
+	                       + "WHERE A.CONT_NO=C.CONT_NO AND A.AGMT_NO=C.AGMT_NO "
+	                       + "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+	                       + "AND A.TRANSPORTER_CD=C.TRANSPORTER_CD AND A.TRANS_SEQ=C.TRANS_SEQ "
+	                       + "AND A.PLANT_SEQ=C.PLANT_SEQ AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BU_SEQ=C.BU_SEQ "
+	                       + "AND A.GAS_DT=C.GAS_DT AND A.CARGO_NO=C.CARGO_NO "
+	                       + "AND C.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+	                       + "WHERE B.CONT_NO=C.CONT_NO AND B.AGMT_NO=C.AGMT_NO "
+	                       + "AND B.COMPANY_CD=C.COMPANY_CD AND B.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=C.TRANSPORTER_CD AND B.TRANS_SEQ=C.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=C.PLANT_SEQ AND B.CONTRACT_TYPE=C.CONTRACT_TYPE AND B.BU_SEQ=C.BU_SEQ "
+	                       + "AND B.GAS_DT=C.GAS_DT AND B.CARGO_NO=C.CARGO_NO)),0)=0 "
+	                       + "GROUP BY A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'SELLER_NOM' "
+	                      /* + "UNION ALL "
+	                       + "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU, A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'BUYER_NOM' "
+	                       + "FROM FMS_DAILY_BUYER_NOM A "
+	                       + "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+	                       + "AND GAS_DT!=TO_DATE(?,'DD/MM/YYYY') "
+	                       + "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM B "
+	                       + "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+	                       + "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+	                       + "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+	                       + "AND NVL((SELECT COUNT(*) FROM FMS_DAILY_SELLER_NOM C "
+	                       + "WHERE A.CONT_NO=C.CONT_NO AND A.AGMT_NO=C.AGMT_NO "
+	                       + "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+	                       + "AND A.TRANSPORTER_CD=C.TRANSPORTER_CD AND A.TRANS_SEQ=C.TRANS_SEQ "
+	                       + "AND A.PLANT_SEQ=C.PLANT_SEQ AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BU_SEQ=C.BU_SEQ "
+	                       + "AND A.GAS_DT=C.GAS_DT AND A.CARGO_NO=C.CARGO_NO "
+	                       + "AND C.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+	                       + "WHERE B.CONT_NO=C.CONT_NO AND B.AGMT_NO=C.AGMT_NO "
+	                       + "AND B.COMPANY_CD=C.COMPANY_CD AND B.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=C.TRANSPORTER_CD AND B.TRANS_SEQ=C.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=C.PLANT_SEQ AND B.CONTRACT_TYPE=C.CONTRACT_TYPE AND B.BU_SEQ=C.BU_SEQ "
+	                       + "AND B.GAS_DT=C.GAS_DT AND B.CARGO_NO=C.CARGO_NO)),0)=0 "
+	                       + "GROUP BY A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'BUYER_NOM' "*/
+	                       + ") Z";
+				stmt1 = conn.prepareStatement(queryString1);
+				stmt1.setString(1, cont);
+				stmt1.setString(2, agmt);
+				stmt1.setString(3, companyCd);
+				stmt1.setString(4, countpty_cd);
+				stmt1.setString(5, cont_type);
+				stmt1.setString(6, cargo_no);
+				//stmt1.setString(7, gas_dt);
+				stmt1.setString(7, cont);
+				stmt1.setString(8, agmt);
+				stmt1.setString(9, companyCd);
+				stmt1.setString(10, countpty_cd);
+				stmt1.setString(11, cont_type);
+				stmt1.setString(12, cargo_no);
+				stmt1.setString(13, gas_dt);
+				/*stmt1.setString(15, cont);
+				stmt1.setString(16, agmt);
+				stmt1.setString(17, companyCd);
+				stmt1.setString(18, countpty_cd);
+				stmt1.setString(19, cont_type);
+				stmt1.setString(20, cargo_no);
+				stmt1.setString(21, gas_dt);*/
+				rset1=stmt1.executeQuery();
+				if(rset1.next())
+				{
+					total_buyerNom=rset1.getDouble(1);
+				}
+				rset1.close();
+				stmt1.close();
+				
+				queryString1="SELECT SUM(QTY_MMBTU) "
+						+ "FROM ( "
+						+ "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU,A.BU_SEQ,A.PLANT_SEQ,A.TRUCK_TRANS_CD,A.TRUCK_CD,A.FILL_STATION_CD,A.BAY_CD,"
+						+ "A.SLOT_START_TIME,A.SLOT_END_TIME,A.GAS_DT "
+						+ "FROM FMS_DLNG_ALLOC_MST A "
+						+ "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DLNG_ALLOC_MST C "
+						+ "WHERE A.CONT_NO=C.CONT_NO AND A.AGMT_NO=C.AGMT_NO AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+						+ "AND A.PLANT_SEQ=C.PLANT_SEQ AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BU_SEQ=C.BU_SEQ AND A.GAS_DT=C.GAS_DT "
+						+ "AND A.TRUCK_TRANS_CD=C.TRUCK_TRANS_CD AND A.TRUCK_CD=C.TRUCK_CD AND A.FILL_STATION_CD=C.FILL_STATION_CD "
+						+ "AND A.BAY_CD=C.BAY_CD AND A.SLOT_START_TIME=C.SLOT_START_TIME AND A.SLOT_END_TIME=C.SLOT_END_TIME) "
+						+ "GROUP BY A.BU_SEQ,A.PLANT_SEQ,A.TRUCK_TRANS_CD,A.TRUCK_CD,A.FILL_STATION_CD,A.BAY_CD,"
+						+ "A.SLOT_START_TIME,A.SLOT_END_TIME,A.GAS_DT "
+						+ "UNION ALL "
+						+ "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU,A.BU_SEQ,A.PLANT_SEQ,A.TRUCK_TRANS_CD,A.TRUCK_CD,A.FILL_STATION_CD,A.BAY_CD,"
+						+ "A.SLOT_START_TIME,A.SLOT_END_TIME,A.GAS_DT "
+						+ "FROM FMS_DLNG_SELLER_NOM_DTL A "
+						+ "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DLNG_SELLER_NOM_DTL D "
+						+ "WHERE D.CONT_NO=A.CONT_NO AND D.AGMT_NO=A.AGMT_NO "
+						+ "AND D.COMPANY_CD=A.COMPANY_CD AND D.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND A.BU_SEQ=D.BU_SEQ "
+						+ "AND D.PLANT_SEQ=A.PLANT_SEQ AND D.CONTRACT_TYPE=A.CONTRACT_TYPE "
+						+ "AND D.GAS_DT=A.GAS_DT AND D.CARGO_NO=A.CARGO_NO) "
+						+ "AND NVL((SELECT COUNT(*) "
+						+ "FROM FMS_DLNG_ALLOC_MST B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ AND B.GAS_DT=A.GAS_DT "
+						+ "AND B.TRUCK_TRANS_CD=A.TRUCK_TRANS_CD AND B.TRUCK_CD=A.TRUCK_CD AND B.FILL_STATION_CD=A.FILL_STATION_CD "
+						+ "AND B.BAY_CD=A.BAY_CD AND B.SLOT_START_TIME=A.SLOT_START_TIME AND B.SLOT_END_TIME=A.SLOT_END_TIME "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DLNG_ALLOC_MST C "
+						+ "WHERE B.CONT_NO=C.CONT_NO AND B.AGMT_NO=C.AGMT_NO AND B.COMPANY_CD=C.COMPANY_CD AND B.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+						+ "AND B.PLANT_SEQ=C.PLANT_SEQ AND B.CONTRACT_TYPE=C.CONTRACT_TYPE AND B.BU_SEQ=C.BU_SEQ AND B.GAS_DT=C.GAS_DT "
+						+ "AND B.TRUCK_TRANS_CD=C.TRUCK_TRANS_CD AND B.TRUCK_CD=C.TRUCK_CD AND B.FILL_STATION_CD=C.FILL_STATION_CD "
+						+ "AND B.BAY_CD=C.BAY_CD AND B.SLOT_START_TIME=C.SLOT_START_TIME AND B.SLOT_END_TIME=C.SLOT_END_TIME)),0) = 0 "
+						+ "GROUP BY A.BU_SEQ,A.PLANT_SEQ,A.TRUCK_TRANS_CD,A.TRUCK_CD,A.FILL_STATION_CD,A.BAY_CD,"
+						+ "A.SLOT_START_TIME,A.SLOT_END_TIME,A.GAS_DT "
+						 + ") Z";
+				stmt1 = conn.prepareStatement(queryString1);
+				stmt1.setString(1, cont);
+				stmt1.setString(2, agmt);
+				stmt1.setString(3, companyCd);
+				stmt1.setString(4, countpty_cd);
+				stmt1.setString(5, cont_type);
+				stmt1.setString(6, cargo_no);
+				stmt1.setString(7, cont);
+				stmt1.setString(8, agmt);
+				stmt1.setString(9, companyCd);
+				stmt1.setString(10, countpty_cd);
+				stmt1.setString(11, cont_type);
+				stmt1.setString(12, cargo_no);
+				rset1=stmt1.executeQuery();
+				if(rset1.next())
+				{
+					total_buyerNom+=rset1.getDouble(1);
+				}
+				rset1.close();
+				stmt1.close();
+				
+				VCONT_INTERNAL_MAPP_ID.add(internal_map_id);
+				VCONT_BUYER_NOM.add(nf.format(total_buyerNom));
+				VCONT_TCQ.add(nf.format(tcq));
+			}
+			rset.close();
+			stmt.close();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getContractTCQforAllocation()
+	{
+		String function_nm="getContractTCQforAllocation()";
+		try
+		{
+			queryString="SELECT COMPANY_CD,COUNTERPARTY_CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,CONTRACT_TYPE,"
+					+ "TO_CHAR(START_DT,'DD/MM/YYYY'),TO_CHAR(END_DT,'DD/MM/YYYY'),TCQ "
+					+ "FROM FMS_SUPPLY_CONT_MST A "
+					+ "WHERE COMPANY_CD=? AND BUYER_NOM_FLAG=? AND A.FCC_FLAG=? AND IS_ALLOCATED=? "
+					+ "AND START_DT<=TO_DATE(?,'DD/MM/YYYY') AND END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND A.CONT_REV=(SELECT MAX(B.CONT_REV) FROM FMS_SUPPLY_CONT_MST B "
+					+ "WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) ";
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, "Y");
+			stmt.setString(3, "Y");
+			stmt.setString(4, "Y");
+			stmt.setString(5, gas_dt);
+			stmt.setString(6, gas_dt);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String companyCd = rset.getString(1)==null?"":rset.getString(1);
+				String countpty_cd = rset.getString(2)==null?"":rset.getString(2);
+				String agmt = rset.getString(3)==null?"":rset.getString(3);
+				String agmt_rev = rset.getString(4)==null?"":rset.getString(4);
+				String cont = rset.getString(5)==null?"":rset.getString(5);
+				String cont_rev = rset.getString(6)==null?"":rset.getString(6);
+				String cont_type = rset.getString(7)==null?"":rset.getString(7);
+				String start_dt = rset.getString(8)==null?"":rset.getString(8);
+				String end_dt = rset.getString(9)==null?"":rset.getString(9);
+				double tcq = rset.getDouble(10);
+				
+				String internal_map_id = cont_type+"-"+countpty_cd+"-"+agmt+"-"+agmt_rev+"-"+cont+"-"+cont_rev;
+				
+				double total_buyerNom=0;
+				queryString1 ="SELECT SUM(QTY_MMBTU) "
+	                       + "FROM ( "
+	                       + "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU, A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'ALLOCATION' "
+	                       + "FROM FMS_DAILY_ALLOCATION_DTL A "
+	                       + "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+	                       + "AND GAS_DT!=TO_DATE(?,'DD/MM/YYYY') "
+	                       + "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+	                       + "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+	                       + "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+	                       + "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+	                       + "GROUP BY A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'ALLOCATION' "
+	                       + ") Z";
+				stmt1 = conn.prepareStatement(queryString1);
+				stmt1.setString(1, cont);
+				stmt1.setString(2, agmt);
+				stmt1.setString(3, companyCd);
+				stmt1.setString(4, countpty_cd);
+				stmt1.setString(5, cont_type);
+				stmt1.setString(6, "0");
+				stmt1.setString(7, gas_dt);
+				rset1=stmt1.executeQuery();
+				if(rset1.next())
+				{
+					total_buyerNom=rset1.getDouble(1);
+				}
+				rset1.close();
+				stmt1.close();
+				
+				VCONT_INTERNAL_MAPP_ID.add(internal_map_id);
+				VCONT_BUYER_NOM.add(nf.format(total_buyerNom));
+				VCONT_TCQ.add(nf.format(tcq));
+			}
+			rset.close();
+			stmt.close();
+			
+			queryString="SELECT A.COMPANY_CD,A.COUNTERPARTY_CD,A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONTRACT_TYPE,"
+					+ "B.CARGO_NO,A.SUG,"
+					+ "(SELECT SUM(C.ADQ_QTY) FROM FMS_LTCORA_CONT_CARGO_ADQ C WHERE A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND B.CARGO_NO=C.CARGO_NO AND A.CONT_NO=C.CONT_NO "
+					+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE), "
+					+ "B.EDQ_QTY "
+					+ "FROM FMS_LTCORA_CONT_MST A,"
+						+ "FMS_LTCORA_CONT_CARGO_DTL B "
+						//+ "FMS_LTCORA_CONT_CARGO_ADQ C "
+					+ "WHERE A.COMPANY_CD=? AND A.BUY_SALE=? AND B.CARGO_STATUS=? AND A.AGMT_TYPE=? "
+					+ "AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')<=TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0) >=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+					+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE) "
+					+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE ";
+					//+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND B.CARGO_NO=C.CARGO_NO AND A.CONT_NO=C.CONT_NO "
+					//+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE "
+					//+ "GROUP BY A.COMPANY_CD,A.COUNTERPARTY_CD,A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONTRACT_TYPE,B.CARGO_NO,A.SUG,B.EDQ_QTY ";
+			int st_count=0;
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(++st_count, comp_cd);
+			stmt.setString(++st_count, "C");
+			stmt.setString(++st_count, "Y");
+			stmt.setString(++st_count, "A");
+			stmt.setString(++st_count, gas_dt);
+			stmt.setString(++st_count, gas_dt);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String companyCd = rset.getString(1)==null?"":rset.getString(1);
+				String countpty_cd = rset.getString(2)==null?"":rset.getString(2);
+				String agmt = rset.getString(3)==null?"":rset.getString(3);
+				String agmt_rev = rset.getString(4)==null?"":rset.getString(4);
+				String cont = rset.getString(5)==null?"":rset.getString(5);
+				String cont_rev = rset.getString(6)==null?"":rset.getString(6);
+				String cont_type = rset.getString(7)==null?"":rset.getString(7);
+				//String start_dt = rset.getString(8)==null?"":rset.getString(8);
+				//String end_dt = rset.getString(9)==null?"":rset.getString(9);
+				String cargo_no = rset.getString(8)==null?"":rset.getString(8);
+				String sug_percent = rset.getString(9)==null?"":nf.format(rset.getDouble(9));
+				double adq_qty = rset.getDouble(10);
+				double edq_qty = rset.getDouble(11);
+				double tcq=0;
+				
+				String internal_map_id = cont_type+"-"+countpty_cd+"-"+agmt+"-"+agmt_rev+"-"+cont+"-"+cont_rev+"-"+cargo_no;
+				
+				queryString1="SELECT LTCORA_TARIFF,LTCORA_TARIFF_UNIT,SUG "
+						+ "FROM FMS_LTCORA_CONT_CARGO_MOD "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND BUY_SALE=? "
+						+ "AND AGMT_NO=? AND AGMT_REV=? AND AGMT_TYPE=? AND CONT_NO=? AND CONTRACT_TYPE=? AND CARGO_NO=? ";
+				stmt1=conn.prepareStatement(queryString1);
+				stmt1.setString(1, companyCd);
+				stmt1.setString(2, countpty_cd);
+				stmt1.setString(3, "C");
+				stmt1.setString(4, agmt);
+				stmt1.setString(5, agmt_rev);
+				stmt1.setString(6, "A");
+				stmt1.setString(7, cont);
+				stmt1.setString(8, cont_type);
+				stmt1.setString(9, cargo_no);
+				rset1=stmt1.executeQuery();
+				if(rset1.next())
+				{
+					sug_percent = rset1.getString(3)==null?"":nf.format(rset1.getDouble(3));
+				}
+				rset1.close();
+				stmt1.close();
+				
+				if(adq_qty > 0 && !sug_percent.equals(""))
+				{
+					tcq= adq_qty - (adq_qty * Double.parseDouble(sug_percent) / 100);
+				}
+				else if(edq_qty > 0 && !sug_percent.equals(""))
+				{
+					tcq= edq_qty - (edq_qty * Double.parseDouble(sug_percent) / 100);
+				}
+				
+				double total_buyerNom=0;
+				queryString1 ="SELECT SUM(QTY_MMBTU) "
+	                       + "FROM ( "
+	                       + "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU, A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'ALLOCATION' "
+	                       + "FROM FMS_DAILY_ALLOCATION_DTL A "
+	                       + "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+	                       + "AND GAS_DT!=TO_DATE(?,'DD/MM/YYYY') "
+	                       + "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+	                       + "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+	                       + "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+	                       + "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+	                       + "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+	                       + "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+	                       + "GROUP BY A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'ALLOCATION' "
+	                       + ") Z";
+				stmt1 = conn.prepareStatement(queryString1);
+				stmt1.setString(1, cont);
+				stmt1.setString(2, agmt);
+				stmt1.setString(3, companyCd);
+				stmt1.setString(4, countpty_cd);
+				stmt1.setString(5, cont_type);
+				stmt1.setString(6, cargo_no);
+				stmt1.setString(7, gas_dt);
+				rset1=stmt1.executeQuery();
+				if(rset1.next())
+				{
+					total_buyerNom=rset1.getDouble(1);
+				}
+				rset1.close();
+				stmt1.close();
+				
+				queryString1="SELECT SUM(QTY_MMBTU) "
+						+ "FROM ( "
+						+ "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU,A.BU_SEQ,A.PLANT_SEQ,A.TRUCK_TRANS_CD,A.TRUCK_CD,A.FILL_STATION_CD,A.BAY_CD,"
+						+ "A.SLOT_START_TIME,A.SLOT_END_TIME,A.GAS_DT "
+						+ "FROM FMS_DLNG_ALLOC_MST A "
+						+ "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DLNG_ALLOC_MST C "
+						+ "WHERE A.CONT_NO=C.CONT_NO AND A.AGMT_NO=C.AGMT_NO AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+						+ "AND A.PLANT_SEQ=C.PLANT_SEQ AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BU_SEQ=C.BU_SEQ AND A.GAS_DT=C.GAS_DT "
+						+ "AND A.TRUCK_TRANS_CD=C.TRUCK_TRANS_CD AND A.TRUCK_CD=C.TRUCK_CD AND A.FILL_STATION_CD=C.FILL_STATION_CD "
+						+ "AND A.BAY_CD=C.BAY_CD AND A.SLOT_START_TIME=C.SLOT_START_TIME AND A.SLOT_END_TIME=C.SLOT_END_TIME) "
+						+ "GROUP BY A.BU_SEQ,A.PLANT_SEQ,A.TRUCK_TRANS_CD,A.TRUCK_CD,A.FILL_STATION_CD,A.BAY_CD,"
+						+ "A.SLOT_START_TIME,A.SLOT_END_TIME,A.GAS_DT "
+						+ ") Z";
+				stmt1 = conn.prepareStatement(queryString1);
+				stmt1.setString(1, cont);
+				stmt1.setString(2, agmt);
+				stmt1.setString(3, companyCd);
+				stmt1.setString(4, countpty_cd);
+				stmt1.setString(5, cont_type);
+				stmt1.setString(6, cargo_no);
+				rset1=stmt1.executeQuery();
+				if(rset1.next())
+				{
+					total_buyerNom+=rset1.getDouble(1);
+				}
+				rset1.close();
+				stmt1.close();
+				
+				VCONT_INTERNAL_MAPP_ID.add(internal_map_id);
+				VCONT_BUYER_NOM.add(nf.format(total_buyerNom));
+				VCONT_TCQ.add(nf.format(tcq));
+			}
+			rset.close();
+			stmt.close();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getContractWiseTCQ()
+	{
+		String function_nm="getContractWiseTCQ()";
+		try
+		{
+			double total_buyerNom=0;
+			queryString1 ="SELECT SUM(QTY_MMBTU) "
+                    + "FROM ( "
+                    + "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU, A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'ALLOCATION' "
+                    + "FROM FMS_DAILY_ALLOCATION_DTL A "
+                    + "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+                    //+ "AND GAS_DT NOT BETWEEN TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(?,'DD/MM/YYYY')  "
+                    + "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+                    + "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+                    + "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+                    + "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+                    + "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+                    + "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+                    + "GROUP BY A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'ALLOCATION' "
+                    + "UNION ALL "
+                    + "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU, A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'SELLER_NOM' "
+                    + "FROM FMS_DAILY_SELLER_NOM A "
+                    + "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+                    + "AND GAS_DT NOT BETWEEN TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(?,'DD/MM/YYYY')  "
+                    + "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+                    + "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+                    + "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+                    + "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+                    + "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+                    + "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+                    + "AND NVL((SELECT COUNT(*) FROM FMS_DAILY_ALLOCATION_DTL C "
+                    + "WHERE A.CONT_NO=C.CONT_NO AND A.AGMT_NO=C.AGMT_NO "
+                    + "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+                    + "AND A.TRANSPORTER_CD=C.TRANSPORTER_CD AND A.TRANS_SEQ=C.TRANS_SEQ "
+                    + "AND A.PLANT_SEQ=C.PLANT_SEQ AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BU_SEQ=C.BU_SEQ "
+                    + "AND A.GAS_DT=C.GAS_DT AND A.CARGO_NO=C.CARGO_NO "
+                    + "AND C.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+                    + "WHERE B.CONT_NO=C.CONT_NO AND B.AGMT_NO=C.AGMT_NO "
+                    + "AND B.COMPANY_CD=C.COMPANY_CD AND B.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+                    + "AND B.TRANSPORTER_CD=C.TRANSPORTER_CD AND B.TRANS_SEQ=C.TRANS_SEQ "
+                    + "AND B.PLANT_SEQ=C.PLANT_SEQ AND B.CONTRACT_TYPE=C.CONTRACT_TYPE AND B.BU_SEQ=C.BU_SEQ "
+                    + "AND B.GAS_DT=C.GAS_DT AND B.CARGO_NO=C.CARGO_NO)),0)=0 "
+                    + "GROUP BY A.TRANSPORTER_CD, A.TRANS_SEQ, A.PLANT_SEQ, A.BU_SEQ, A.GAS_DT, 'SELLER_NOM' "
+                    + ") Z";
+			stmt1 = conn.prepareStatement(queryString1);
+			stmt1.setString(1, cont_no);
+			stmt1.setString(2, agmt_no);
+			stmt1.setString(3, comp_cd);
+			stmt1.setString(4, counterparty_cd);
+			stmt1.setString(5, contract_type);
+			stmt1.setString(6, cargo_no);
+			//stmt1.setString(7, from_date);
+			//stmt1.setString(8, to_date);
+			stmt1.setString(7, cont_no);
+			stmt1.setString(8, agmt_no);
+			stmt1.setString(9, comp_cd);
+			stmt1.setString(10, counterparty_cd);
+			stmt1.setString(11, contract_type);
+			stmt1.setString(12, cargo_no);
+			stmt1.setString(13, from_date);
+			stmt1.setString(14, to_date);
+			rset1=stmt1.executeQuery();
+			if(rset1.next())
+			{
+				total_buyerNom=rset1.getDouble(1);
+			}
+			rset1.close();
+			stmt1.close();
+			
+			queryString1="SELECT SUM(QTY_MMBTU) "
+					+ "FROM ( "
+					+ "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU,A.BU_SEQ,A.PLANT_SEQ,A.TRUCK_TRANS_CD,A.TRUCK_CD,A.FILL_STATION_CD,A.BAY_CD,"
+					+ "A.SLOT_START_TIME,A.SLOT_END_TIME,A.GAS_DT "
+					+ "FROM FMS_DLNG_ALLOC_MST A "
+					+ "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DLNG_ALLOC_MST C "
+					+ "WHERE A.CONT_NO=C.CONT_NO AND A.AGMT_NO=C.AGMT_NO AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+					+ "AND A.PLANT_SEQ=C.PLANT_SEQ AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BU_SEQ=C.BU_SEQ AND A.GAS_DT=C.GAS_DT "
+					+ "AND A.TRUCK_TRANS_CD=C.TRUCK_TRANS_CD AND A.TRUCK_CD=C.TRUCK_CD AND A.FILL_STATION_CD=C.FILL_STATION_CD "
+					+ "AND A.BAY_CD=C.BAY_CD AND A.SLOT_START_TIME=C.SLOT_START_TIME AND A.SLOT_END_TIME=C.SLOT_END_TIME) "
+					+ "GROUP BY A.BU_SEQ,A.PLANT_SEQ,A.TRUCK_TRANS_CD,A.TRUCK_CD,A.FILL_STATION_CD,A.BAY_CD,"
+					+ "A.SLOT_START_TIME,A.SLOT_END_TIME,A.GAS_DT "
+					+ "UNION ALL "
+					+ "SELECT SUM(QTY_MMBTU) AS QTY_MMBTU,A.BU_SEQ,A.PLANT_SEQ,A.TRUCK_TRANS_CD,A.TRUCK_CD,A.FILL_STATION_CD,A.BAY_CD,"
+					+ "A.SLOT_START_TIME,A.SLOT_END_TIME,A.GAS_DT "
+					+ "FROM FMS_DLNG_SELLER_NOM_DTL A "
+					+ "WHERE CONT_NO=? AND AGMT_NO=? AND COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DLNG_SELLER_NOM_DTL D "
+					+ "WHERE D.CONT_NO=A.CONT_NO AND D.AGMT_NO=A.AGMT_NO "
+					+ "AND D.COMPANY_CD=A.COMPANY_CD AND D.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND A.BU_SEQ=D.BU_SEQ "
+					+ "AND D.PLANT_SEQ=A.PLANT_SEQ AND D.CONTRACT_TYPE=A.CONTRACT_TYPE "
+					+ "AND D.GAS_DT=A.GAS_DT AND D.CARGO_NO=A.CARGO_NO) "
+					+ "AND NVL((SELECT COUNT(*) "
+					+ "FROM FMS_DLNG_ALLOC_MST B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ AND B.GAS_DT=A.GAS_DT "
+					+ "AND B.TRUCK_TRANS_CD=A.TRUCK_TRANS_CD AND B.TRUCK_CD=A.TRUCK_CD AND B.FILL_STATION_CD=A.FILL_STATION_CD "
+					+ "AND B.BAY_CD=A.BAY_CD AND B.SLOT_START_TIME=A.SLOT_START_TIME AND B.SLOT_END_TIME=A.SLOT_END_TIME "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DLNG_ALLOC_MST C "
+					+ "WHERE B.CONT_NO=C.CONT_NO AND B.AGMT_NO=C.AGMT_NO AND B.COMPANY_CD=C.COMPANY_CD AND B.COUNTERPARTY_CD=C.COUNTERPARTY_CD "
+					+ "AND B.PLANT_SEQ=C.PLANT_SEQ AND B.CONTRACT_TYPE=C.CONTRACT_TYPE AND B.BU_SEQ=C.BU_SEQ AND B.GAS_DT=C.GAS_DT "
+					+ "AND B.TRUCK_TRANS_CD=C.TRUCK_TRANS_CD AND B.TRUCK_CD=C.TRUCK_CD AND B.FILL_STATION_CD=C.FILL_STATION_CD "
+					+ "AND B.BAY_CD=C.BAY_CD AND B.SLOT_START_TIME=C.SLOT_START_TIME AND B.SLOT_END_TIME=C.SLOT_END_TIME)),0) = 0 "
+					+ "GROUP BY A.BU_SEQ,A.PLANT_SEQ,A.TRUCK_TRANS_CD,A.TRUCK_CD,A.FILL_STATION_CD,A.BAY_CD,"
+					+ "A.SLOT_START_TIME,A.SLOT_END_TIME,A.GAS_DT "
+					 + ") Z";
+			stmt1 = conn.prepareStatement(queryString1);
+			stmt1.setString(1, cont_no);
+			stmt1.setString(2, agmt_no);
+			stmt1.setString(3, comp_cd);
+			stmt1.setString(4, counterparty_cd);
+			stmt1.setString(5, contract_type);
+			stmt1.setString(6, cargo_no);
+			stmt1.setString(7, cont_no);
+			stmt1.setString(8, agmt_no);
+			stmt1.setString(9, comp_cd);
+			stmt1.setString(10, counterparty_cd);
+			stmt1.setString(11, contract_type);
+			stmt1.setString(12, cargo_no);
+			rset1=stmt1.executeQuery();
+			if(rset1.next())
+			{
+				total_buyerNom+=rset1.getDouble(1);
+			}
+			rset1.close();
+			stmt1.close();
+			
+			totalBuyerNom=total_buyerNom;
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+
+	public void getDailySellerNomination()
+	{
+		String function_nm="getDailySellerNomination()";
+		try
+		{
+			dateTime = dateUtil.getSysdateWithTime24hr();
+			
+			queryString="SELECT DISTINCT C.TRANSPORTER_CD AS TRANSPORTER_CD "
+					+ "FROM FMS_SUPPLY_CONT_MST A, FMS_SUPPLY_CONT_TRANSPTR C "
+					+ "WHERE A.COMPANY_CD=? AND A.BUYER_NOM_FLAG=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? "
+					+ "AND A.CONTRACT_TYPE IN ('S','L','X') "
+					+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+					+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+					+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+					+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_BUYER_NOM B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+					+ "AND C.TRANSPORTER_CD=B.TRANSPORTER_CD AND C.PLANT_SEQ_NO=B.TRANS_SEQ "
+					+ "AND B.GAS_DT>=TO_DATE(?,'DD/MM/YYYY') AND B.GAS_DT<=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM E "
+					+ "WHERE B.CONT_NO=E.CONT_NO AND B.AGMT_NO=E.AGMT_NO "
+					+ "AND B.COMPANY_CD=E.COMPANY_CD AND B.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=E.TRANSPORTER_CD AND B.TRANS_SEQ=E.TRANS_SEQ AND B.BU_SEQ=E.BU_SEQ "
+					+ "AND B.PLANT_SEQ=E.PLANT_SEQ AND B.CONTRACT_TYPE=E.CONTRACT_TYPE "
+					+ "AND B.GAS_DT=E.GAS_DT AND B.CARGO_NO=E.CARGO_NO)) > 0 ";
+			if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+			{
+				queryString+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? ";
+			}
+			else
+			{
+				queryString+= "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') ";
+			}
+			queryString+= " UNION "
+					+ "SELECT DISTINCT C.TRANSPORTER_CD AS TRANSPORTER_CD "
+					+ "FROM FMS_LTCORA_CONT_MST A,"
+						+ "FMS_LTCORA_CONT_CARGO_DTL B,"
+						+ "FMS_LTCORA_CONT_TRANSPTR C "
+					+ "WHERE A.COMPANY_CD=? AND A.BUY_SALE=? AND A.FCC_FLAG=? AND B.CARGO_STATUS=? AND A.AGMT_TYPE=? AND B.BOE_NO IS NOT NULL "
+					+ "AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+					+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE) "
+					+ ""
+					+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE "
+					+ ""
+					+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV "
+					+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE "
+					+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_BUYER_NOM D WHERE A.COMPANY_CD=D.COMPANY_CD AND A.COUNTERPARTY_CD=D.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=D.AGMT_NO AND A.CONT_NO=D.CONT_NO AND A.CONTRACT_TYPE=D.CONTRACT_TYPE "
+					+ "AND C.TRANSPORTER_CD=D.TRANSPORTER_CD AND C.PLANT_SEQ_NO=D.TRANS_SEQ "
+					+ "AND D.GAS_DT>=TO_DATE(?,'DD/MM/YYYY') AND D.GAS_DT<=TO_DATE(?,'DD/MM/YYYY') AND D.CARGO_NO=B.CARGO_NO "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM E "
+					+ "WHERE D.CONT_NO=E.CONT_NO AND D.AGMT_NO=E.AGMT_NO "
+					+ "AND D.COMPANY_CD=E.COMPANY_CD AND D.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+					+ "AND D.TRANSPORTER_CD=E.TRANSPORTER_CD AND D.TRANS_SEQ=E.TRANS_SEQ AND D.BU_SEQ=E.BU_SEQ "
+					+ "AND D.PLANT_SEQ=E.PLANT_SEQ AND D.CONTRACT_TYPE=E.CONTRACT_TYPE "
+					+ "AND D.GAS_DT=E.GAS_DT AND D.CARGO_NO=E.CARGO_NO)) > 0 ";
+			if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+			{
+				queryString+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? AND B.CARGO_NO=? ";
+			}
+			else
+			{
+				queryString+="AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')<=TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0) >=TO_DATE(?,'DD/MM/YYYY') ";
+			}
+			queryString+= "ORDER BY TRANSPORTER_CD";
+			int stmt_cnt=0;
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(++stmt_cnt, comp_cd);
+			stmt.setString(++stmt_cnt, "Y");
+			stmt.setString(++stmt_cnt, "Y");
+			stmt.setString(++stmt_cnt, "Y");
+			stmt.setString(++stmt_cnt, from_date);
+			stmt.setString(++stmt_cnt, to_date);
+			if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+			{
+				stmt.setString(++stmt_cnt, counterparty_cd);
+				stmt.setString(++stmt_cnt, agmt_no);
+				stmt.setString(++stmt_cnt, agmt_rev_no);
+				stmt.setString(++stmt_cnt, cont_no);
+				stmt.setString(++stmt_cnt, cont_rev_no);
+				stmt.setString(++stmt_cnt, contract_type);
+			}
+			else
+			{
+				stmt.setString(++stmt_cnt, gas_dt);
+				stmt.setString(++stmt_cnt, gas_dt);
+			}
+			stmt.setString(++stmt_cnt, comp_cd);
+			stmt.setString(++stmt_cnt, "C");
+			stmt.setString(++stmt_cnt, "Y");
+			stmt.setString(++stmt_cnt, "Y");
+			stmt.setString(++stmt_cnt, "A");
+			stmt.setString(++stmt_cnt, from_date);
+			stmt.setString(++stmt_cnt, to_date);
+			if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+			{
+				stmt.setString(++stmt_cnt, counterparty_cd);
+				stmt.setString(++stmt_cnt, agmt_no);
+				stmt.setString(++stmt_cnt, agmt_rev_no);
+				stmt.setString(++stmt_cnt, cont_no);
+				stmt.setString(++stmt_cnt, cont_rev_no);
+				stmt.setString(++stmt_cnt, contract_type);
+				stmt.setString(++stmt_cnt, cargo_no);
+			}
+			else
+			{
+				stmt.setString(++stmt_cnt, gas_dt);
+				stmt.setString(++stmt_cnt, gas_dt);
+			}
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String trns_cd = rset.getString(1)==null?"":rset.getString(1);
+				String trns_abbr = ""+utilBean.getCounterpartyABBR(conn,trns_cd);
+				
+				VTRANSPORTER_CD.add(trns_cd);
+				VTRANSPORTER_ABBR.add(trns_abbr);
+			}
+			rset.close();
+			stmt.close();
+			
+			int total_entry=-1;
+			for(int i=0; i<VTRANSPORTER_CD.size(); i++)
+			{
+				int index=0;
+				
+				queryString3="SELECT DISTINCT C.PLANT_SEQ_NO AS PLANT_SEQ_NO "
+						+ "FROM FMS_SUPPLY_CONT_MST A, FMS_SUPPLY_CONT_TRANSPTR C "
+						+ "WHERE A.COMPANY_CD=? AND A.BUYER_NOM_FLAG=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? "
+						+ "AND A.CONTRACT_TYPE IN ('S','L','X') "
+						+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+						+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+						+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+						+ "AND C.TRANSPORTER_CD=? "
+						+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_BUYER_NOM B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+						+ "AND C.TRANSPORTER_CD=B.TRANSPORTER_CD AND C.PLANT_SEQ_NO=B.TRANS_SEQ "
+						+ "AND B.GAS_DT>=TO_DATE(?,'DD/MM/YYYY') AND B.GAS_DT<=TO_DATE(?,'DD/MM/YYYY') "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM E "
+						+ "WHERE B.CONT_NO=E.CONT_NO AND B.AGMT_NO=E.AGMT_NO "
+						+ "AND B.COMPANY_CD=E.COMPANY_CD AND B.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=E.TRANSPORTER_CD AND B.TRANS_SEQ=E.TRANS_SEQ AND B.BU_SEQ=E.BU_SEQ "
+						+ "AND B.PLANT_SEQ=E.PLANT_SEQ AND B.CONTRACT_TYPE=E.CONTRACT_TYPE "
+						+ "AND B.GAS_DT=E.GAS_DT AND B.CARGO_NO=E.CARGO_NO)) > 0 ";
+				if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+				{
+					queryString3+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? ";
+				}
+				else
+				{
+					queryString3+= "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') ";
+				}
+				queryString3+= " UNION "
+						+ "SELECT DISTINCT C.PLANT_SEQ_NO AS PLANT_SEQ_NO "
+						+ "FROM FMS_LTCORA_CONT_MST A,"
+							+ "FMS_LTCORA_CONT_CARGO_DTL B,"
+							+ "FMS_LTCORA_CONT_TRANSPTR C "
+						+ "WHERE A.COMPANY_CD=? AND A.BUY_SALE=? AND A.FCC_FLAG=? AND B.CARGO_STATUS=? AND A.AGMT_TYPE=? AND B.BOE_NO IS NOT NULL "
+						+ "AND C.TRANSPORTER_CD=? "
+						+ "AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+						+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE) "
+						+ ""
+						+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE "
+						+ ""
+						+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV "
+						+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE "
+						+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_BUYER_NOM D WHERE A.COMPANY_CD=D.COMPANY_CD AND A.COUNTERPARTY_CD=D.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=D.AGMT_NO AND A.CONT_NO=D.CONT_NO AND A.CONTRACT_TYPE=D.CONTRACT_TYPE "
+						+ "AND C.TRANSPORTER_CD=D.TRANSPORTER_CD AND C.PLANT_SEQ_NO=D.TRANS_SEQ "
+						+ "AND D.GAS_DT>=TO_DATE(?,'DD/MM/YYYY') AND D.GAS_DT<=TO_DATE(?,'DD/MM/YYYY') AND D.CARGO_NO=B.CARGO_NO "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM E "
+						+ "WHERE D.CONT_NO=E.CONT_NO AND D.AGMT_NO=E.AGMT_NO "
+						+ "AND D.COMPANY_CD=E.COMPANY_CD AND D.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+						+ "AND D.TRANSPORTER_CD=E.TRANSPORTER_CD AND D.TRANS_SEQ=E.TRANS_SEQ AND D.BU_SEQ=E.BU_SEQ "
+						+ "AND D.PLANT_SEQ=E.PLANT_SEQ AND D.CONTRACT_TYPE=E.CONTRACT_TYPE "
+						+ "AND D.GAS_DT=E.GAS_DT AND D.CARGO_NO=E.CARGO_NO)) > 0 ";
+				if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+				{
+					queryString3+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? AND B.CARGO_NO=? ";
+				}
+				else
+				{
+					queryString3+="AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')<=TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0) >=TO_DATE(?,'DD/MM/YYYY') ";
+				}
+				queryString3+= "ORDER BY PLANT_SEQ_NO ";
+				stmt_cnt=0;
+				stmt3 = conn.prepareStatement(queryString3);
+				stmt3.setString(++stmt_cnt, comp_cd);
+				stmt3.setString(++stmt_cnt, "Y");
+				stmt3.setString(++stmt_cnt, "Y");
+				stmt3.setString(++stmt_cnt, "Y");
+				stmt3.setString(++stmt_cnt, ""+VTRANSPORTER_CD.elementAt(i));
+				stmt3.setString(++stmt_cnt, from_date);
+				stmt3.setString(++stmt_cnt, to_date);
+				if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+				{
+					stmt3.setString(++stmt_cnt, counterparty_cd);
+					stmt3.setString(++stmt_cnt, agmt_no);
+					stmt3.setString(++stmt_cnt, agmt_rev_no);
+					stmt3.setString(++stmt_cnt, cont_no);
+					stmt3.setString(++stmt_cnt, cont_rev_no);
+					stmt3.setString(++stmt_cnt, contract_type);
+				}
+				else
+				{
+					stmt3.setString(++stmt_cnt, gas_dt);
+					stmt3.setString(++stmt_cnt, gas_dt);
+				}
+				stmt3.setString(++stmt_cnt, comp_cd);
+				stmt3.setString(++stmt_cnt, "C");
+				stmt3.setString(++stmt_cnt, "Y");
+				stmt3.setString(++stmt_cnt, "Y");
+				stmt3.setString(++stmt_cnt, "A");
+				stmt3.setString(++stmt_cnt, ""+VTRANSPORTER_CD.elementAt(i));
+				stmt3.setString(++stmt_cnt, from_date);
+				stmt3.setString(++stmt_cnt, to_date);
+				if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+				{
+					stmt3.setString(++stmt_cnt, counterparty_cd);
+					stmt3.setString(++stmt_cnt, agmt_no);
+					stmt3.setString(++stmt_cnt, agmt_rev_no);
+					stmt3.setString(++stmt_cnt, cont_no);
+					stmt3.setString(++stmt_cnt, cont_rev_no);
+					stmt3.setString(++stmt_cnt, contract_type);
+					stmt3.setString(++stmt_cnt, cargo_no);
+				}
+				else
+				{
+					stmt3.setString(++stmt_cnt, gas_dt);
+					stmt3.setString(++stmt_cnt, gas_dt);
+				}
+				rset3=stmt3.executeQuery();
+				while(rset3.next())
+				{
+					String trns_cd = ""+VTRANSPORTER_CD.elementAt(i);
+					String trns_plant_seq = rset3.getString(1)==null?"":rset3.getString(1);
+					
+					VTRANSPORTER_PLANT_SEQ.add(trns_plant_seq);
+					VTRANSPORTER_PLANT_ABBR.add(""+utilBean.getCounterpartyPlantABBR(conn,trns_cd, comp_cd, trns_plant_seq, "R"));
+					
+					index++;
+					int sub_index=0;
+					double trans_plant_wise_total_mmbtu=0;
+					double trans_plant_wise_total_scm=0;
+					int partial_count=0;
+					int submitted_count=0;
+					
+					String entry_range=(total_entry+1)+"-";
+					
+					int count = dateUtil.getDays(to_date,from_date);
+					for(int k=0; k<count; k++)
+					{
+						String weekofdt=""+dateUtil.getDate(from_date, ""+k);
+						
+						int gas_index=0;
+						int rowspan=0;
+						int periodic_i=0;
+						
+						queryString="SELECT A.COMPANY_CD,A.COUNTERPARTY_CD,A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONTRACT_TYPE,"
+								+ "A.CONT_REF_NO,C.TRANSPORTER_CD,C.PLANT_SEQ_NO,A.DCQ,A.CONT_NAME,A.MDCQ_PERCENTAGE,A.TRADE_REF_NO,"
+								+ "B.PLANT_SEQ_NO,D.COMPANY_CD,D.PLANT_SEQ_NO,0,'CONT',NULL,NULL,"
+								+ "E.NOM_REV_NO,E.QTY_MMBTU,E.QTY_SCM,TO_CHAR(E.GEN_DT,'DD/MM/YYYY'),E.GEN_TIME,E.BASE,E.GCV,E.NCV "
+								+ "FROM FMS_SUPPLY_CONT_MST A,"
+									+ "FMS_SUPPLY_CONT_PLANT B, "
+									+ "FMS_SUPPLY_CONT_TRANSPTR C, "
+									+ "FMS_SUPPLY_CONT_BU D, "
+									+ "FMS_DAILY_BUYER_NOM E "
+								+ "WHERE A.COMPANY_CD=? AND A.BUYER_NOM_FLAG=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? "
+								+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+								+ "AND C.TRANSPORTER_CD=? AND C.PLANT_SEQ_NO=? "
+								+ "AND A.CONTRACT_TYPE IN ('S','L','X') "
+								+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+								+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+								+ ""
+								+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+								+ "AND A.CONT_NO=B.CONT_NO AND A.CONT_REV=B.CONT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+								+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=D.COMPANY_CD AND A.COUNTERPARTY_CD=D.COUNTERPARTY_CD AND A.AGMT_NO=D.AGMT_NO AND A.AGMT_REV=D.AGMT_REV "
+								+ "AND A.CONT_NO=D.CONT_NO AND A.CONT_REV=D.CONT_REV AND A.CONTRACT_TYPE=D.CONTRACT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=E.COMPANY_CD AND A.COUNTERPARTY_CD=E.COUNTERPARTY_CD AND A.AGMT_NO=E.AGMT_NO AND A.CONT_NO=E.CONT_NO AND A.CONTRACT_TYPE=E.CONTRACT_TYPE "
+								+ "AND C.TRANSPORTER_CD=E.TRANSPORTER_CD AND E.TRANS_SEQ=C.PLANT_SEQ_NO AND E.PLANT_SEQ=B.PLANT_SEQ_NO AND E.BU_SEQ=D.PLANT_SEQ_NO AND E.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+								+ "AND E.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM F "
+								+ "WHERE F.CONT_NO=E.CONT_NO AND F.AGMT_NO=E.AGMT_NO AND F.COMPANY_CD=E.COMPANY_CD AND F.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+								+ "AND F.TRANSPORTER_CD=E.TRANSPORTER_CD AND F.TRANS_SEQ=E.TRANS_SEQ AND F.BU_SEQ=E.BU_SEQ "
+								+ "AND F.PLANT_SEQ=E.PLANT_SEQ AND F.CONTRACT_TYPE=E.CONTRACT_TYPE AND F.GAS_DT=E.GAS_DT AND F.CARGO_NO=E.CARGO_NO) ";
+						if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+						{
+							queryString+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? ";
+						}	
+						queryString+= " UNION ALL "
+								+ "SELECT A.COMPANY_CD,A.COUNTERPARTY_CD,A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONTRACT_TYPE,"
+								+ "B.CARGO_REF,C.TRANSPORTER_CD,C.PLANT_SEQ_NO,B.CSOC_QTY,A.CONT_NAME,A.MDCQ_PERCENTAGE,NULL,"
+								+ "D.PLANT_SEQ_NO,E.COMPANY_CD,E.PLANT_SEQ_NO,B.CARGO_NO,'LTCORA',A.BUY_SALE,A.AGMT_TYPE,"
+								+ "F.NOM_REV_NO,F.QTY_MMBTU,F.QTY_SCM,TO_CHAR(F.GEN_DT,'DD/MM/YYYY'),F.GEN_TIME,F.BASE,F.GCV,F.NCV "
+								+ "FROM FMS_LTCORA_CONT_MST A,"
+									+ "FMS_LTCORA_CONT_CARGO_DTL B,"
+									+ "FMS_LTCORA_CONT_TRANSPTR C,"
+									+ "FMS_LTCORA_CONT_PLANT D,"
+									+ "FMS_LTCORA_CONT_BU E, "
+									+ "FMS_DAILY_BUYER_NOM F "
+								+ "WHERE A.COMPANY_CD=? AND A.BUY_SALE=? AND A.FCC_FLAG=? AND B.CARGO_STATUS=? AND A.AGMT_TYPE=? AND B.BOE_NO IS NOT NULL "
+								+ "AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')<=TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0) >=TO_DATE(?,'DD/MM/YYYY') "
+								+ "AND C.TRANSPORTER_CD=? AND C.PLANT_SEQ_NO=? "
+								+ "AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+								+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+								+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE) "
+								+ ""
+								+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+								+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV "
+								+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=D.COMPANY_CD AND A.COUNTERPARTY_CD=D.COUNTERPARTY_CD AND A.CONT_NO=D.CONT_NO AND A.CONT_REV=D.CONT_REV "
+								+ "AND A.AGMT_NO=D.AGMT_NO AND A.AGMT_REV=D.AGMT_REV AND A.CONTRACT_TYPE=D.CONTRACT_TYPE AND A.BUY_SALE=D.BUY_SALE AND A.AGMT_TYPE=D.AGMT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=E.COMPANY_CD AND A.COUNTERPARTY_CD=E.COUNTERPARTY_CD AND A.CONT_NO=E.CONT_NO AND A.CONT_REV=E.CONT_REV "
+								+ "AND A.AGMT_NO=E.AGMT_NO AND A.AGMT_REV=E.AGMT_REV AND A.CONTRACT_TYPE=E.CONTRACT_TYPE AND A.BUY_SALE=E.BUY_SALE AND A.AGMT_TYPE=E.AGMT_TYPE "
+								+ ""
+								+ "AND A.COMPANY_CD=F.COMPANY_CD AND A.COUNTERPARTY_CD=F.COUNTERPARTY_CD AND A.AGMT_NO=F.AGMT_NO AND A.CONT_NO=F.CONT_NO AND A.CONTRACT_TYPE=F.CONTRACT_TYPE "
+								+ "AND C.TRANSPORTER_CD=F.TRANSPORTER_CD AND F.TRANS_SEQ=C.PLANT_SEQ_NO AND F.PLANT_SEQ=D.PLANT_SEQ_NO AND F.BU_SEQ=E.PLANT_SEQ_NO "
+								+ "AND F.CARGO_NO=B.CARGO_NO AND F.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+								+ "AND F.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM G "
+								+ "WHERE F.CONT_NO=G.CONT_NO AND F.AGMT_NO=G.AGMT_NO AND F.COMPANY_CD=G.COMPANY_CD AND F.COUNTERPARTY_CD=G.COUNTERPARTY_CD "
+								+ "AND F.TRANSPORTER_CD=G.TRANSPORTER_CD AND F.TRANS_SEQ=G.TRANS_SEQ AND F.BU_SEQ=G.BU_SEQ "
+								+ "AND F.PLANT_SEQ=G.PLANT_SEQ AND F.CONTRACT_TYPE=G.CONTRACT_TYPE AND F.GAS_DT=G.GAS_DT AND F.CARGO_NO=G.CARGO_NO) ";
+						if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+						{
+							queryString+="AND A.COUNTERPARTY_CD=? AND A.AGMT_NO=? AND A.AGMT_REV=? AND A.CONT_NO=? AND A.CONT_REV=? AND A.CONTRACT_TYPE=? AND B.CARGO_NO=? ";
+						}
+						stmt_cnt=0;
+						stmt = conn.prepareStatement(queryString);
+						stmt.setString(++stmt_cnt, comp_cd);
+						stmt.setString(++stmt_cnt, "Y");
+						stmt.setString(++stmt_cnt, "Y");
+						stmt.setString(++stmt_cnt, "Y");
+						stmt.setString(++stmt_cnt, weekofdt);
+						stmt.setString(++stmt_cnt, weekofdt);
+						stmt.setString(++stmt_cnt, ""+VTRANSPORTER_CD.elementAt(i));
+						stmt.setString(++stmt_cnt, trns_plant_seq);
+						stmt.setString(++stmt_cnt, weekofdt);
+						if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+						{
+							stmt.setString(++stmt_cnt, counterparty_cd);
+							stmt.setString(++stmt_cnt, agmt_no);
+							stmt.setString(++stmt_cnt, agmt_rev_no);
+							stmt.setString(++stmt_cnt, cont_no);
+							stmt.setString(++stmt_cnt, cont_rev_no);
+							stmt.setString(++stmt_cnt, contract_type);
+						}
+						stmt.setString(++stmt_cnt, comp_cd);
+						stmt.setString(++stmt_cnt, "C");
+						stmt.setString(++stmt_cnt, "Y");
+						stmt.setString(++stmt_cnt, "Y");
+						stmt.setString(++stmt_cnt, "A");
+						stmt.setString(++stmt_cnt, weekofdt);
+						stmt.setString(++stmt_cnt, weekofdt);
+						stmt.setString(++stmt_cnt, ""+VTRANSPORTER_CD.elementAt(i));
+						stmt.setString(++stmt_cnt, trns_plant_seq);
+						stmt.setString(++stmt_cnt, weekofdt);
+						if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+						{
+							stmt.setString(++stmt_cnt, counterparty_cd);
+							stmt.setString(++stmt_cnt, agmt_no);
+							stmt.setString(++stmt_cnt, agmt_rev_no);
+							stmt.setString(++stmt_cnt, cont_no);
+							stmt.setString(++stmt_cnt, cont_rev_no);
+							stmt.setString(++stmt_cnt, contract_type);
+							stmt.setString(++stmt_cnt, cargo_no); 
+						}
+						rset=stmt.executeQuery();
+						while(rset.next())
+						{
+							if(callFlag.equalsIgnoreCase("PERIODIC_SELLER_NOM"))
+							{
+								if(periodic_i==0) {
+									VGAS_DT.add(weekofdt);
+									sub_index++;
+								}
+								periodic_i++;
+							}
+							else
+							{
+								sub_index++;
+							}
+							
+							gas_index++;
+							total_entry++;
+							
+							String companyCd = rset.getString(1)==null?"":rset.getString(1);
+							String countpty_cd = rset.getString(2)==null?"":rset.getString(2);
+							String agmt = rset.getString(3)==null?"":rset.getString(3);
+							String agmt_rev = rset.getString(4)==null?"":rset.getString(4);
+							String cont = rset.getString(5)==null?"":rset.getString(5);
+							String cont_rev = rset.getString(6)==null?"":rset.getString(6);
+							String cont_type = rset.getString(7)==null?"":rset.getString(7);
+							String cont_ref = rset.getString(8)==null?"":rset.getString(8);
+							String transporter_cd = rset.getString(9)==null?"":rset.getString(9);
+							String transporter_plant_seq = rset.getString(10)==null?"":rset.getString(10);
+							String dcq = nf.format(rset.getDouble(11));
+							String cont_name = rset.getString(12)==null?"":rset.getString(12);
+							String mdcq_percentage = nf.format(rset.getDouble(13));
+							double mdcq_qty = (Double.parseDouble(dcq)*Double.parseDouble(mdcq_percentage))/100;
+							
+							String trade_ref = rset.getString(14)==null?"":rset.getString(14);
+							if(cont_type.equals("X")) {
+								cont_ref=trade_ref;
+							}
+							
+							String plant_seq = rset.getString(15)==null?"":rset.getString(15);
+							String plant_abbr=utilBean.getCounterpartyPlantABBR(conn,countpty_cd, companyCd, plant_seq, "C");
+							String buCd = rset.getString(16)==null?"":rset.getString(16);
+							String bu_plant_seq = rset.getString(17)==null?"":rset.getString(17);
+							String bu_plant_abbr=utilBean.getCounterpartyPlantABBR(conn,buCd, comp_cd, bu_plant_seq, "B");
+							String cargo_no = rset.getString(18)==null?"0":rset.getString(18);
+							String contractName = rset.getString(19)==null?"":rset.getString(19);
+							String buySell = rset.getString(20)==null?"":rset.getString(20);
+							String agmtType = rset.getString(21)==null?"":rset.getString(21);
+							
+							String nom_rev_no = rset.getString(22)==null?"":rset.getString(22);
+							double buyer_nom_mmbtu = rset.getDouble(23);
+							double buyer_nom_scm = rset.getDouble(24);
+							String buyer_gen_dt=rset.getString(25)==null?"":rset.getString(25);
+							String buyer_gen_time=rset.getString(26)==null?"":rset.getString(26);
+							String buyer_base=rset.getString(27)==null?"":rset.getString(27);
+							String buyer_gcv=rset.getString(28)==null?"9802.80":rset.getString(28);
+							String buyer_ncv=rset.getString(29)==null?"8831.35":rset.getString(29);
+							
+							String internal_map_id = cont_type+"-"+countpty_cd+"-"+agmt+"-"+agmt_rev+"-"+cont+"-"+cont_rev;
+							String ct_cont_mapping = cont_type+"-"+countpty_cd+"-"+agmt+"-%-"+cont+"-%";
+							String customer_code=""+utilBean.getTranspoterCustomerCode(conn,companyCd, transporter_cd, countpty_cd, plant_seq, weekofdt);
+							
+							String dis_cont_mapping= utilBean.NewDealMappingId(companyCd, countpty_cd, agmt, agmt_rev, cont, cont_rev, cont_type, cargo_no);
+							String variable_dcq="";
+							String billingFrq="";
+							String taxDtl="";
+							if(contractName.equals("LTCORA"))
+							{
+								ct_cont_mapping+="-"+cargo_no;
+								internal_map_id+="-"+cargo_no;
+								variable_dcq=utilBean.getCargoVariableCSOC(conn,companyCd, countpty_cd, buySell, agmt, cont, cont_type, cargo_no, weekofdt);
+								
+								queryString2="SELECT BILLING_FREQ "
+										+ "FROM FMS_LTCORA_CONT_BILLING_DTL A "
+										+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND BUY_SALE=? AND AGMT_TYPE=? "
+										+ "AND AGMT_NO=? AND AGMT_REV=? AND CONT_NO=? AND CONT_REV=? AND CONTRACT_TYPE=? ";
+								stmt2 = conn.prepareStatement(queryString2);
+								stmt2.setString(1, companyCd);
+								stmt2.setString(2, countpty_cd);
+								stmt2.setString(3, buySell);
+								stmt2.setString(4, agmtType);
+								stmt2.setString(5, agmt);
+								stmt2.setString(6, agmt_rev);
+								stmt2.setString(7, cont);
+								stmt2.setString(8, cont_rev);
+								stmt2.setString(9, cont_type);
+								rset2=stmt2.executeQuery();
+								if(rset2.next())
+						  		{
+						  			billingFrq=rset2.getString(1)==null?"":rset2.getString(1);
+						  		}
+								rset2.close();
+								stmt2.close();
+								
+								String periodStDt=utilBean.getFirstDtOfBillingCycle(billingFrq, "", weekofdt);
+								taxDtl=utilBean.getEntityServiceStructureDtl(conn,companyCd, countpty_cd, "C", plant_seq, bu_plant_seq, periodStDt,"SI");
+							}
+							else
+							{
+								variable_dcq=utilBean.getContVariableDCQ(conn,companyCd, countpty_cd, agmt, cont, cont_type, weekofdt);
+								
+								queryString2="SELECT BILLING_FREQ "
+										+ "FROM FMS_SUPPLY_BILLING_DTL A "
+										+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND AGMT_NO=? "//AND AGMT_REV='"+agmt_rev+"' "
+										+ "AND CONT_NO=? "//AND CONT_REV='"+cont_rev+"' "
+										+ "AND CONTRACT_TYPE=? "
+										+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_SUPPLY_BILLING_DTL B WHERE A.COMPANY_CD=B.COMPANY_CD "
+										+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO "
+										+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND TO_DATE(?,'DD/MM/YYYY') > EFF_DT)";
+								stmt2 = conn.prepareStatement(queryString2);
+								stmt2.setString(1, companyCd);
+								stmt2.setString(2, countpty_cd);
+								stmt2.setString(3, agmt);
+								stmt2.setString(4, cont);
+								stmt2.setString(5, cont_type);
+								stmt2.setString(6, weekofdt);
+								rset2=stmt2.executeQuery();
+								if(rset2.next())
+						  		{
+						  			billingFrq=rset2.getString(1)==null?"":rset2.getString(1);
+						  		}
+								rset2.close();
+								stmt2.close();
+								
+								String periodStDt=utilBean.getFirstDtOfBillingCycle(billingFrq, "", weekofdt);
+								taxDtl=utilBean.getEntityTaxStructureDtl(conn,companyCd, countpty_cd, "C", plant_seq, bu_plant_seq, periodStDt, "S");
+							}
+							if(!variable_dcq.equals(""))
+							{
+								dcq=variable_dcq;
+							}
+							
+							VCOUNTERPARTY_CD.add(countpty_cd);
+							VCOUNTERPARTY_ABBR.add(""+utilBean.getCounterpartyABBR(conn,countpty_cd));
+							VCOUNTERPARTY_NM.add(""+utilBean.getCounterpartyName(conn,countpty_cd));
+							VAGMT_NO.add(agmt);
+							VAGMT_REV_NO.add(agmt_rev);
+							VCONT_NO.add(cont);
+							VCONT_REV_NO.add(cont_rev);
+							VCONTRACT_TYPE.add(cont_type);
+							VCARGO_NO.add(cargo_no);
+							VDIS_CONT_MAPPING.add(dis_cont_mapping);
+							VCOUNTERPARTY_PLANT_SEQ.add(plant_seq);
+							VCOUNTERPARTY_PLANT_ABBR.add(plant_abbr);
+							VBU_CD.add(buCd);
+							VBU_PLANT_SEQ.add(bu_plant_seq);
+							VBU_PLANT_ABBR.add(bu_plant_abbr);
+							VDCQ.add(dcq);
+							VCONT_REF.add(cont_ref);
+							VCONT_NAME.add(cont_name);
+							VMDCQ_QTY.add(nf.format(mdcq_qty));
+							VINTERNAL_MAP_ID.add(internal_map_id);
+							
+							String transCd = ""+VTRANSPORTER_CD.elementAt(i);
+							String transStatus = (String) utilBean.getCounterpartyDetails(conn, transCd, weekofdt).get("status");
+
+							VTRANSPORTER_STATUS.add(transStatus);
+
+							String cpCd = countpty_cd;
+							String cpStatus = (String) utilBean.getCounterpartyDetails(conn, cpCd, weekofdt).get("status");
+							
+							VCOUNTERPARTY_STATUS.add(cpStatus);
+							
+							VCUSTOMER_CODE.add(customer_code);
+					  		VTAX_DTL.add(taxDtl);
+							
+							int isInvoiceSubmitted=isInvoiceSubmitted(countpty_cd, cont, agmt, plant_seq, cont_type, bu_plant_seq, weekofdt,cargo_no,"F",false);
+							if(isInvoiceSubmitted>0)
+							{
+								VNOM_BLOCK.add("Y");
+							}
+							else
+							{
+								VNOM_BLOCK.add("N");
+							}
+							
+							//GET SELLER NOMINATION DATA FOR THE CONTRACT WISE
+							queryString2="SELECT NOM_REV_NO,GEN_TIME,BASE,GCV,NCV,QTY_MMBTU,QTY_SCM,TO_CHAR(GEN_DT,'DD/MM/YYYY') "
+					  				+ "FROM FMS_DAILY_SELLER_NOM A "
+					  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+									+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+									+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? "
+									+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+									+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+									+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+									+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND B.BU_SEQ=A.BU_SEQ "
+									+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+									+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+							stmt2 = conn.prepareStatement(queryString2);
+							stmt2.setString(1, cont);
+							stmt2.setString(2, agmt);
+							stmt2.setString(3, companyCd);
+							stmt2.setString(4, countpty_cd);
+							stmt2.setString(5, transporter_cd);
+							stmt2.setString(6, transporter_plant_seq);
+							stmt2.setString(7, plant_seq);
+							stmt2.setString(8, cont_type);
+							stmt2.setString(9, bu_plant_seq);
+							stmt2.setString(10, weekofdt);
+							stmt2.setString(11, cargo_no);
+							rset2=stmt2.executeQuery();
+							if(rset2.next())
+							{
+					  			VNOM_REV_NO.add(rset2.getString(1)==null?"":rset2.getString(1));
+					  			VGEN_TIME.add(rset2.getString(2)==null?"":rset2.getString(2));
+					  			VBASE.add(rset2.getString(3)==null?"":rset2.getString(3));
+					  			VGCV.add(rset2.getString(4)==null?"9802.80":rset2.getString(4));
+					  			VNCV.add(rset2.getString(5)==null?"8831.35":rset2.getString(5));
+					  			VQTY_MMBTU.add(nf.format(rset2.getDouble(6)));
+					  			VQTY_SCM.add(nf.format(rset2.getDouble(7)));
+					  			VGEN_DT.add(rset2.getString(8)==null?"":rset2.getString(8));
+					  			
+					  			VNOM_COLOR.add("#99ffcc");	
+					  			
+					  			submitted_count++;
+					  			trans_plant_wise_total_mmbtu += rset2.getDouble(6);
+					  			trans_plant_wise_total_scm += rset2.getDouble(7);
+					  			
+					  			VBUYER_NOM_REV_NO.add(nom_rev_no);
+						  		VBUYER_NOM.add(nf.format(buyer_nom_mmbtu));
+						  	}
+					  		else
+					  		{
+					  			//GET BUYER NOMINATION DATA FOR THE CONTRACT WISE
+					  			VNOM_REV_NO.add("");
+					  			VBASE.add(buyer_base);
+					  			VGCV.add(buyer_gcv);
+					  			VNCV.add(buyer_ncv);
+					  			VQTY_MMBTU.add(nf.format(buyer_nom_mmbtu));
+					  			VQTY_SCM.add(nf.format(buyer_nom_scm));
+					  			VGEN_DT.add(buyer_gen_dt);
+					  			
+					  			VBUYER_NOM_REV_NO.add(nom_rev_no);
+					  			VBUYER_NOM.add(nf.format(buyer_nom_mmbtu));
+					  			
+					  			String split[] = dateTime.split(" ");
+					  			VGEN_TIME.add(split[1]);
+					  			VNOM_COLOR.add("");
+					  			
+					  			partial_count++;
+					  			trans_plant_wise_total_mmbtu += buyer_nom_mmbtu;
+					  			trans_plant_wise_total_scm += buyer_nom_scm;
+						  	}
+							rset2.close();
+							stmt2.close();
+							
+							int isAllocatioDone=0;
+							queryString2="SELECT COUNT(*) "
+					  				+ "FROM FMS_DAILY_ALLOCATION_DTL A "
+					  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+									+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+									+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? "
+									+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+									+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+									+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+									+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+									+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+									+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+							stmt2 = conn.prepareStatement(queryString2);
+							stmt2.setString(1, cont);
+							stmt2.setString(2, agmt);
+							stmt2.setString(3, companyCd);
+							stmt2.setString(4, countpty_cd);
+							stmt2.setString(5, transporter_cd);
+							stmt2.setString(6, transporter_plant_seq);
+							stmt2.setString(7, plant_seq);
+							stmt2.setString(8, cont_type);
+							stmt2.setString(9, bu_plant_seq);
+							stmt2.setString(10, weekofdt);
+							stmt2.setString(11, cargo_no);
+							rset2=stmt2.executeQuery();
+							if(rset2.next())
+							{
+								isAllocatioDone=rset2.getInt(1);
+							}
+							rset2.close();
+							stmt2.close();
+							VIS_ALLOCATION_DONE.add(isAllocatioDone>0?"Y":"N");
+							
+							int index1=0;
+							
+							queryString2="SELECT CT_REF_NO,UTR_NO "
+									+ "FROM FMS_TRANSPORTER_CT_MST A,FMS_TRANS_CT_CONT_MAP B "
+									+ "WHERE A.COMPANY_CD=? AND A.CONTRACT_TYPE=? "
+									+ "AND A.ENTRY_TRANS_CD=? AND A.ENTRY_TRANS_PLANT=? "
+									+ "AND A.EXIT_COUNTERPARTY=? AND A.EXIT_PLANT_SEQ=? "
+									+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+									+ "AND B.CONT_MAPPING LIKE ? AND A.BU_SEQ=? AND A.STATUS='Y' "
+									+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+									+ "AND A.ENTRY_TRANS_CD=B.ENTRY_TRANS_CD AND A.ENTRY_TRANS_PLANT=B.ENTRY_TRANS_PLANT "
+									+ "AND A.EXIT_COUNTERPARTY=B.EXIT_COUNTERPARTY AND A.EXIT_PLANT_SEQ=B.EXIT_PLANT_SEQ "
+									+ "AND A.SEQ_NO=B.SEQ_NO AND A.BU_SEQ=B.BU_SEQ";
+							stmt2 = conn.prepareStatement(queryString2);
+							stmt2.setString(1, companyCd);
+							stmt2.setString(2, "C");
+							stmt2.setString(3, transporter_cd);
+							stmt2.setString(4, transporter_plant_seq);
+							stmt2.setString(5, countpty_cd);
+							stmt2.setString(6, plant_seq);
+							stmt2.setString(7, weekofdt);
+							stmt2.setString(8, weekofdt);
+							stmt2.setString(9, ct_cont_mapping);
+							stmt2.setString(10, bu_plant_seq);
+							rset2=stmt2.executeQuery();
+							while(rset2.next())
+							{
+								String ct_ref=rset2.getString(1)==null?"":rset2.getString(1);
+								String utr_no=rset2.getString(2)==null?"":rset2.getString(2);
+								
+								queryString7="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+						  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF=? AND CARGO_NO=? "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+										+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+								stmt7 = conn.prepareStatement(queryString7);
+								stmt7.setString(1, cont);
+								stmt7.setString(2, agmt);
+								stmt7.setString(3, companyCd);
+								stmt7.setString(4, countpty_cd);
+								stmt7.setString(5, transporter_cd);
+								stmt7.setString(6, transporter_plant_seq);
+								stmt7.setString(7, plant_seq);
+								stmt7.setString(8, cont_type);
+								stmt7.setString(9, bu_plant_seq);
+								stmt7.setString(10, weekofdt);
+								stmt7.setString(11, ct_ref);
+								stmt7.setString(12, cargo_no);
+								rset7=stmt7.executeQuery();
+								if(rset7.next())
+								{
+									index1+=1;
+									
+									VSUB_NOM_REV_NO.add(rset7.getString(1)==null?"":rset7.getString(1));
+									VSUB_SEQ_NO.add(rset7.getString(2)==null?"":rset7.getString(2));
+									VSUB_CT_REF.add(ct_ref);
+									VSUB_UTR_REF.add(utr_no);
+									VSUB_QTY_MMBTU.add(nf.format(rset7.getDouble(3)));
+						  			VSUB_QTY_SCM.add(nf.format(rset7.getDouble(4)));
+						  			//VSUB_NOM_SF_ID.add(rset7.getString(5)==null?"":rset7.getString(5));
+									
+									VSUB_IS_EXIST.add("Y");
+									VSUB_NOM_COLOR.add("#99ffcc");
+									
+									String buyerSfId=rset7.getString(5)==null?"":rset7.getString(5);
+									
+									queryString6="SELECT NOM_REV_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+							  				+ "FROM FMS_DAILY_BUYER_NOM_DTL A "
+							  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+											+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+											+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+											+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+											+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF=? AND CARGO_NO=? "
+											+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM_DTL B "
+											+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+											+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+											+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+											+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+											+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+									stmt6 = conn.prepareStatement(queryString6);
+									stmt6.setString(1, cont);
+									stmt6.setString(2, agmt);
+									stmt6.setString(3, companyCd);
+									stmt6.setString(4, countpty_cd);
+									stmt6.setString(5, transporter_cd);
+									stmt6.setString(6, transporter_plant_seq);
+									stmt6.setString(7, plant_seq);
+									stmt6.setString(8, cont_type);
+									stmt6.setString(9, bu_plant_seq);
+									stmt6.setString(10, weekofdt);
+									stmt6.setString(11, ct_ref);
+									stmt6.setString(12, cargo_no);
+									rset6=stmt6.executeQuery();
+									if(rset6.next())
+									{
+										VSUB_BUYER_NOM_REV.add(rset6.getString(1)==null?"":rset6.getString(1));
+										VSUB_BUYER_NOM_QTY.add(nf.format(rset6.getDouble(2)));
+										
+										buyerSfId=rset6.getString(4)==null?"":rset6.getString(4);
+									}
+									else
+									{
+										VSUB_BUYER_NOM_REV.add("");
+										VSUB_BUYER_NOM_QTY.add("");
+									}
+									rset6.close();
+									stmt6.close();
+									
+									VSUB_NOM_SF_ID.add(buyerSfId);
+								}
+								else
+								{
+									queryString7="SELECT NOM_REV_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+							  				+ "FROM FMS_DAILY_BUYER_NOM_DTL A "
+							  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+											+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+											+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+											+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+											+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF=? AND CARGO_NO=? "
+											+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM_DTL B "
+											+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+											+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+											+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+											+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+											+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+									stmt6 = conn.prepareStatement(queryString7);
+									stmt6.setString(1, cont);
+									stmt6.setString(2, agmt);
+									stmt6.setString(3, companyCd);
+									stmt6.setString(4, countpty_cd);
+									stmt6.setString(5, transporter_cd);
+									stmt6.setString(6, transporter_plant_seq);
+									stmt6.setString(7, plant_seq);
+									stmt6.setString(8, cont_type);
+									stmt6.setString(9, bu_plant_seq);
+									stmt6.setString(10, weekofdt);
+									stmt6.setString(11, ct_ref);
+									stmt6.setString(12, cargo_no);
+									rset6=stmt6.executeQuery();
+									if(rset6.next())
+									{
+										index1+=1;
+										
+										VSUB_NOM_REV_NO.add("");
+										VSUB_SEQ_NO.add("");
+										VSUB_CT_REF.add(ct_ref);
+										VSUB_UTR_REF.add(utr_no);
+										
+										VSUB_QTY_MMBTU.add(nf.format(rset6.getDouble(2)));
+							  			VSUB_QTY_SCM.add(nf.format(rset6.getDouble(3)));
+							  			VSUB_NOM_SF_ID.add(rset6.getString(4)==null?"":rset6.getString(4));
+										
+										VSUB_IS_EXIST.add("N");
+										VSUB_NOM_COLOR.add("");
+										
+										VSUB_BUYER_NOM_REV.add(rset6.getString(1)==null?"":rset6.getString(1));
+										VSUB_BUYER_NOM_QTY.add(nf.format(rset6.getDouble(2)));
+									}
+									rset6.close();
+									stmt6.close();
+								}
+								rset7.close();
+								stmt7.close();
+							}
+							rset2.close();
+							stmt2.close();
+							
+							queryString6="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM,CT_REF,UTR_NO,SF_ID "
+					  				+ "FROM FMS_DAILY_BUYER_NOM_DTL A "
+					  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+									+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+									+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? AND CT_REF IS NOT NULL AND CT_REF NOT IN (SELECT C.CT_REF_NO "
+											+ "FROM FMS_TRANSPORTER_CT_MST C,FMS_TRANS_CT_CONT_MAP B "
+											+ "WHERE A.COMPANY_CD=C.COMPANY_CD AND C.CONTRACT_TYPE='C' "
+											+ "AND C.ENTRY_TRANS_CD=A.TRANSPORTER_CD AND C.ENTRY_TRANS_PLANT=A.TRANS_SEQ "
+											+ "AND C.EXIT_COUNTERPARTY=A.COUNTERPARTY_CD AND C.EXIT_PLANT_SEQ=A.PLANT_SEQ AND C.BU_SEQ=A.BU_SEQ "
+											+ "AND C.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND C.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+											+ "AND B.CONT_MAPPING LIKE CASE WHEN '"+contractName+"'='LTCORA' THEN A.CONTRACT_TYPE||'-'||A.COUNTERPARTY_CD||'-'||A.AGMT_NO||'-%-'||A.CONT_NO||'-%-'||A.CARGO_NO "
+												+ "ELSE A.CONTRACT_TYPE||'-'||A.COUNTERPARTY_CD||'-'||A.AGMT_NO||'-%-'||A.CONT_NO||'-%' END "
+											+ "AND C.STATUS='Y' "
+											+ "AND C.COMPANY_CD=B.COMPANY_CD AND C.CONTRACT_TYPE=B.CONTRACT_TYPE "
+											+ "AND C.ENTRY_TRANS_CD=B.ENTRY_TRANS_CD AND C.ENTRY_TRANS_PLANT=B.ENTRY_TRANS_PLANT "
+											+ "AND C.EXIT_COUNTERPARTY=B.EXIT_COUNTERPARTY AND C.EXIT_PLANT_SEQ=B.EXIT_PLANT_SEQ "
+											+ "AND C.SEQ_NO=B.SEQ_NO AND C.BU_SEQ=B.BU_SEQ) "
+									+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM_DTL B "
+									+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+									+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+									+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+									+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+									+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+							stmt6 = conn.prepareStatement(queryString6);
+							stmt6.setString(1, cont);
+							stmt6.setString(2, agmt);
+							stmt6.setString(3, companyCd);
+							stmt6.setString(4, countpty_cd);
+							stmt6.setString(5, transporter_cd);
+							stmt6.setString(6, transporter_plant_seq);
+							stmt6.setString(7, plant_seq);
+							stmt6.setString(8, cont_type);
+							stmt6.setString(9, bu_plant_seq);
+							stmt6.setString(10, weekofdt);
+							stmt6.setString(11, cargo_no);
+							stmt6.setString(12, weekofdt);
+							stmt6.setString(13, weekofdt);
+							rset6=stmt6.executeQuery();
+							while(rset6.next())
+							{
+								index1+=1;
+								
+								String ct_ref=rset6.getString(5)==null?"":rset6.getString(5);
+								String utr_no=rset6.getString(6)==null?"":rset6.getString(6);
+								String buyerSfId=rset6.getString(7)==null?"":rset6.getString(7);
+								
+								queryString7="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+						  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF=? AND CARGO_NO=? "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+										+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+								stmt7 = conn.prepareStatement(queryString7);
+								stmt7.setString(1, cont);
+								stmt7.setString(2, agmt);
+								stmt7.setString(3, companyCd);
+								stmt7.setString(4, countpty_cd);
+								stmt7.setString(5, transporter_cd);
+								stmt7.setString(6, transporter_plant_seq);
+								stmt7.setString(7, plant_seq);
+								stmt7.setString(8, cont_type);
+								stmt7.setString(9, bu_plant_seq);
+								stmt7.setString(10, weekofdt);
+								stmt7.setString(11, ct_ref);
+								stmt7.setString(12, cargo_no);
+								rset7=stmt7.executeQuery();
+								if(rset7.next())
+								{
+									VSUB_NOM_REV_NO.add(rset7.getString(1)==null?"":rset7.getString(1));
+									VSUB_SEQ_NO.add(rset7.getString(2)==null?"":rset7.getString(2));
+									VSUB_CT_REF.add(ct_ref);
+									VSUB_UTR_REF.add(utr_no);
+									VSUB_QTY_MMBTU.add(nf.format(rset7.getDouble(3)));
+						  			VSUB_QTY_SCM.add(nf.format(rset7.getDouble(4)));
+						  			//VSUB_NOM_SF_ID.add(rset7.getString(5)==null?"":rset7.getString(5));
+									
+						  			VSUB_NOM_SF_ID.add(buyerSfId);
+						  			
+									VSUB_IS_EXIST.add("Y");
+									VSUB_NOM_COLOR.add("#99ffcc");
+									
+									VSUB_BUYER_NOM_REV.add(rset6.getString(1)==null?"":rset6.getString(1));
+									VSUB_BUYER_NOM_QTY.add(nf.format(rset6.getDouble(3)));
+								}
+								else
+								{
+									VSUB_NOM_REV_NO.add("");
+									VSUB_SEQ_NO.add("");
+									VSUB_CT_REF.add(ct_ref);
+									VSUB_UTR_REF.add(utr_no);
+									
+									VSUB_QTY_MMBTU.add(nf.format(rset6.getDouble(3)));
+						  			VSUB_QTY_SCM.add(nf.format(rset6.getDouble(4)));
+						  			//VSUB_NOM_SF_ID.add(rset6.getString(7)==null?"":rset6.getString(7));
+						  			
+						  			VSUB_NOM_SF_ID.add(buyerSfId);
+						  			
+									VSUB_IS_EXIST.add("N");
+									VSUB_NOM_COLOR.add("");
+									
+									VSUB_BUYER_NOM_REV.add(rset6.getString(1)==null?"":rset6.getString(1));
+									VSUB_BUYER_NOM_QTY.add(nf.format(rset6.getDouble(3)));
+								}
+								rset7.close();
+								stmt7.close();
+							}
+							rset6.close();
+							stmt6.close();
+							
+							if(index1>0)
+							{
+								queryString7="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+						  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF IS NULL AND CARGO_NO=? "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+										+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+								stmt7 = conn.prepareStatement(queryString7);
+								stmt7.setString(1, cont);
+								stmt7.setString(2, agmt);
+								stmt7.setString(3, companyCd);
+								stmt7.setString(4, countpty_cd);
+								stmt7.setString(5, transporter_cd);
+								stmt7.setString(6, transporter_plant_seq);
+								stmt7.setString(7, plant_seq);
+								stmt7.setString(8, cont_type);
+								stmt7.setString(9, bu_plant_seq);
+								stmt7.setString(10, weekofdt);
+								stmt7.setString(11, cargo_no);
+								rset7=stmt7.executeQuery();
+								if(rset7.next())
+								{
+									index1+=1;
+									
+									VSUB_NOM_REV_NO.add(rset7.getString(1)==null?"":rset7.getString(1));
+									VSUB_SEQ_NO.add(rset7.getString(2)==null?"":rset7.getString(2));
+									VSUB_CT_REF.add("");
+									VSUB_UTR_REF.add("");
+									
+									VSUB_QTY_MMBTU.add(nf.format(rset7.getDouble(3)));
+						  			VSUB_QTY_SCM.add(nf.format(rset7.getDouble(4)));
+						  			//VSUB_NOM_SF_ID.add(rset7.getString(5)==null?"":rset7.getString(5));
+									
+									VSUB_IS_EXIST.add("Y");
+									VSUB_NOM_COLOR.add("#99ffcc");
+									
+									String buyerSfId=rset7.getString(5)==null?"":rset7.getString(5);
+									queryString6="SELECT NOM_REV_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+							  				+ "FROM FMS_DAILY_BUYER_NOM_DTL A "
+							  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+											+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+											+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+											+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+											+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF IS NULL AND CARGO_NO=? "
+											+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM_DTL B "
+											+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+											+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+											+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+											+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+											+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+									stmt6 = conn.prepareStatement(queryString6);
+									stmt6.setString(1, cont);
+									stmt6.setString(2, agmt);
+									stmt6.setString(3, companyCd);
+									stmt6.setString(4, countpty_cd);
+									stmt6.setString(5, transporter_cd);
+									stmt6.setString(6, transporter_plant_seq);
+									stmt6.setString(7, plant_seq);
+									stmt6.setString(8, cont_type);
+									stmt6.setString(9, bu_plant_seq);
+									stmt6.setString(10, weekofdt);
+									stmt6.setString(11, cargo_no);
+									rset6=stmt6.executeQuery();
+									if(rset6.next())
+									{
+										VSUB_BUYER_NOM_REV.add(rset6.getString(1)==null?"":rset6.getString(1));
+										VSUB_BUYER_NOM_QTY.add(nf.format(rset6.getDouble(2)));
+										
+										buyerSfId=rset6.getString(4)==null?"":rset6.getString(4);
+									}
+									else
+									{
+										VSUB_BUYER_NOM_REV.add("");
+										VSUB_BUYER_NOM_QTY.add("");
+									}
+									rset6.close();
+									stmt6.close();
+									
+									VSUB_NOM_SF_ID.add(buyerSfId);
+								}
+								else
+								{
+									queryString6="SELECT NOM_REV_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+							  				+ "FROM FMS_DAILY_BUYER_NOM_DTL A "
+							  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+											+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+											+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+											+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+											+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF IS NULL AND CARGO_NO=? "
+											+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM_DTL B "
+											+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+											+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+											+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+											+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+											+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+									stmt6 = conn.prepareStatement(queryString6);
+									stmt6.setString(1, cont);
+									stmt6.setString(2, agmt);
+									stmt6.setString(3, companyCd);
+									stmt6.setString(4, countpty_cd);
+									stmt6.setString(5, transporter_cd);
+									stmt6.setString(6, transporter_plant_seq);
+									stmt6.setString(7, plant_seq);
+									stmt6.setString(8, cont_type);
+									stmt6.setString(9, bu_plant_seq);
+									stmt6.setString(10, weekofdt);
+									stmt6.setString(11, cargo_no);
+									rset6=stmt6.executeQuery();
+									if(rset6.next())
+									{
+										index1+=1;
+										
+										VSUB_NOM_REV_NO.add("");
+										VSUB_SEQ_NO.add("");
+										VSUB_CT_REF.add("");
+										VSUB_UTR_REF.add("");
+										
+										VSUB_QTY_MMBTU.add(nf.format(rset6.getDouble(2)));
+							  			VSUB_QTY_SCM.add(nf.format(rset6.getDouble(3)));
+							  			VSUB_NOM_SF_ID.add(rset6.getString(4)==null?"":rset6.getString(4));
+										
+										VSUB_IS_EXIST.add("N");
+										VSUB_NOM_COLOR.add("");
+										
+										VSUB_BUYER_NOM_REV.add(rset6.getString(1)==null?"":rset6.getString(1));
+										VSUB_BUYER_NOM_QTY.add(nf.format(rset6.getDouble(2)));
+									}
+									rset6.close();
+									stmt6.close();
+								}
+								rset7.close();
+								stmt7.close();
+								
+								VNOM_SF_ID.add("");
+							}
+							else
+							{
+								queryString7="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+						  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+										+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+								stmt7 = conn.prepareStatement(queryString7);
+								stmt7.setString(1, cont);
+								stmt7.setString(2, agmt);
+								stmt7.setString(3, companyCd);
+								stmt7.setString(4, countpty_cd);
+								stmt7.setString(5, transporter_cd);
+								stmt7.setString(6, transporter_plant_seq);
+								stmt7.setString(7, plant_seq);
+								stmt7.setString(8, cont_type);
+								stmt7.setString(9, bu_plant_seq);
+								stmt7.setString(10, weekofdt);
+								stmt7.setString(11, cargo_no);
+								rset7=stmt7.executeQuery();
+								if(rset7.next())
+								{
+									VNOM_SF_ID.add(rset7.getString(5)==null?"":rset7.getString(5));
+								}
+								else
+								{
+									queryString6="SELECT NOM_REV_NO,QTY_MMBTU,QTY_SCM,SF_ID "
+							  				+ "FROM FMS_DAILY_BUYER_NOM_DTL A "
+							  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+											+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+											+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+											+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+											+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? "
+											+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM_DTL B "
+											+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+											+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+											+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+											+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+											+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+									stmt6 = conn.prepareStatement(queryString6);
+									stmt6.setString(1, cont);
+									stmt6.setString(2, agmt);
+									stmt6.setString(3, companyCd);
+									stmt6.setString(4, countpty_cd);
+									stmt6.setString(5, transporter_cd);
+									stmt6.setString(6, transporter_plant_seq);
+									stmt6.setString(7, plant_seq);
+									stmt6.setString(8, cont_type);
+									stmt6.setString(9, bu_plant_seq);
+									stmt6.setString(10, weekofdt);
+									stmt6.setString(11, cargo_no);
+									rset6=stmt6.executeQuery();
+									if(rset6.next())
+									{
+										VNOM_SF_ID.add(rset6.getString(4)==null?"":rset6.getString(4));
+									}
+									rset6.close();
+									stmt6.close();
+								}
+								rset7.close();
+								stmt7.close();
+							}
+							VINDEX1.add(index1);
+							if(index1>0)
+							{
+								rowspan+=(index1+2+1);
+							}
+							else
+							{
+								rowspan+=1;
+							}
+						}
+						VTRANS_PLANT_WISE_TOTAL_MMBTU.add(nf.format(trans_plant_wise_total_mmbtu));
+						VTRANS_PLANT_WISE_TOTAL_SCM.add(nf.format(trans_plant_wise_total_scm));
+						
+						
+						if(rowspan>0) {
+							VGAS_INDEX.add(gas_index);
+							VROWSPAN.add(rowspan);
+						}
+						
+						String total_mmbtu_color="green";
+						if(submitted_count > 0 && partial_count > 0)
+						{
+							total_mmbtu_color="orange";
+						}
+						else if(submitted_count == 0 && partial_count > 0)
+						{
+							total_mmbtu_color="red";
+						}
+						VTOTAL_MMBTU_COLOR.add(total_mmbtu_color);
+						
+						rset.close();
+						stmt.close();
+					}
+					entry_range+=total_entry;
+					VSUB_INDEX.add(sub_index);	
+					VENTRY_RANGE.add(entry_range);
+				}
+				VINDEX.add(index);
+				rset3.close();
+				stmt3.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getDailyTransporterNomination()
+	{
+		String function_nm="getDailyTransporterNomination()";
+		try
+		{
+			dateTime = dateUtil.getSysdateWithTime24hr();
+			
+			queryString="SELECT DISTINCT C.TRANSPORTER_CD "
+					+ "FROM FMS_SUPPLY_CONT_MST A, FMS_SUPPLY_CONT_TRANSPTR C "
+					+ "WHERE A.COMPANY_CD=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? AND A.AGMT_BASE=? "
+					+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+					+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+					+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+					+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_SELLER_NOM B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+					+ "AND C.TRANSPORTER_CD=B.TRANSPORTER_CD AND C.PLANT_SEQ_NO=B.TRANS_SEQ AND B.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM E "
+					+ "WHERE B.CONT_NO=E.CONT_NO AND B.AGMT_NO=E.AGMT_NO "
+					+ "AND B.COMPANY_CD=E.COMPANY_CD AND B.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=E.TRANSPORTER_CD AND B.TRANS_SEQ=E.TRANS_SEQ AND B.BU_SEQ=E.BU_SEQ "
+					+ "AND B.PLANT_SEQ=E.PLANT_SEQ AND B.CONTRACT_TYPE=E.CONTRACT_TYPE "
+					+ "AND B.GAS_DT=E.GAS_DT AND B.CARGO_NO=E.CARGO_NO)) > 0 "
+					+ "ORDER BY C.TRANSPORTER_CD";
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, "Y");
+			stmt.setString(3, "Y");
+			stmt.setString(4, "D");
+			stmt.setString(5, gas_dt);
+			stmt.setString(6, gas_dt);
+			stmt.setString(7, gas_dt);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String trns_cd = rset.getString(1)==null?"":rset.getString(1);
+				String trns_abbr = ""+utilBean.getCounterpartyABBR(conn,trns_cd);
+				
+				VTRANSPORTER_CD.add(trns_cd);
+				VTRANSPORTER_ABBR.add(trns_abbr);
+			}
+			rset.close();
+			stmt.close();
+			
+			for(int i=0; i<VTRANSPORTER_CD.size(); i++)
+			{
+				int index=0;
+				queryString3="SELECT DISTINCT C.PLANT_SEQ_NO "
+						+ "FROM FMS_SUPPLY_CONT_MST A, FMS_SUPPLY_CONT_TRANSPTR C "
+						+ "WHERE A.COMPANY_CD=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? AND A.AGMT_BASE=? "
+						+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+						+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+						+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+						+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+						+ "AND C.TRANSPORTER_CD=? "
+						+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_SELLER_NOM B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+						+ "AND C.TRANSPORTER_CD=B.TRANSPORTER_CD AND C.PLANT_SEQ_NO=B.TRANS_SEQ AND B.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM E "
+						+ "WHERE B.CONT_NO=E.CONT_NO AND B.AGMT_NO=E.AGMT_NO "
+						+ "AND B.COMPANY_CD=E.COMPANY_CD AND B.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=E.TRANSPORTER_CD AND B.TRANS_SEQ=E.TRANS_SEQ AND B.BU_SEQ=E.BU_SEQ "
+						+ "AND B.PLANT_SEQ=E.PLANT_SEQ AND B.CONTRACT_TYPE=E.CONTRACT_TYPE "
+						+ "AND B.GAS_DT=E.GAS_DT AND B.CARGO_NO=E.CARGO_NO)) > 0 "
+						+ "ORDER BY C.PLANT_SEQ_NO ";
+				stmt3 = conn.prepareStatement(queryString3);
+				stmt3.setString(1, comp_cd);
+				stmt3.setString(2, "Y");
+				stmt3.setString(3, "Y");
+				stmt3.setString(4, "D");
+				stmt3.setString(5, gas_dt);
+				stmt3.setString(6, gas_dt);
+				stmt3.setString(7, ""+VTRANSPORTER_CD.elementAt(i));
+				stmt3.setString(8, gas_dt);
+				rset3=stmt3.executeQuery();
+				while(rset3.next())
+				{
+					String trns_cd = ""+VTRANSPORTER_CD.elementAt(i);
+					String trns_plant_seq = rset3.getString(1)==null?"":rset3.getString(1);
+					
+					VTRANSPORTER_PLANT_SEQ.add(trns_plant_seq);
+					VTRANSPORTER_PLANT_ABBR.add(""+utilBean.getCounterpartyPlantABBR(conn,trns_cd, comp_cd, trns_plant_seq, "R"));
+					
+					index++;
+					int sub_index=0;
+					double trans_plant_wise_total_mmbtu=0;
+					double trans_plant_wise_total_scm=0;
+					
+					double trans_plant_wise_exit_total_mmbtu=0;
+					double trans_plant_wise_exit_total_scm=0;
+			
+					queryString="SELECT A.COMPANY_CD,A.COUNTERPARTY_CD,A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONTRACT_TYPE,"
+							+ "A.CONT_REF_NO,C.TRANSPORTER_CD,C.PLANT_SEQ_NO,A.DCQ,A.CONT_NAME,A.MDCQ_PERCENTAGE,A.TRADE_REF_NO,"
+							+ "TO_CHAR(A.START_DT,'DD/MM/YYYY') "
+							+ "FROM FMS_SUPPLY_CONT_MST A, FMS_SUPPLY_CONT_TRANSPTR C  "
+							+ "WHERE A.COMPANY_CD=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? AND A.AGMT_BASE=? "
+							+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+							+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+							+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+							+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+							+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+							+ "AND C.TRANSPORTER_CD=? AND C.PLANT_SEQ_NO=? ";
+					stmt0 = conn.prepareStatement(queryString);
+					stmt0.setString(1, comp_cd);
+					stmt0.setString(2, "Y");
+					stmt0.setString(3, "Y");
+					stmt0.setString(4, "D");
+					stmt0.setString(5, gas_dt);
+					stmt0.setString(6, gas_dt);
+					stmt0.setString(7, ""+VTRANSPORTER_CD.elementAt(i));
+					stmt0.setString(8, trns_plant_seq);
+					rset0=stmt0.executeQuery();
+					while(rset0.next())
+					{
+						String companyCd = rset0.getString(1)==null?"":rset0.getString(1);
+						String countpty_cd = rset0.getString(2)==null?"":rset0.getString(2);
+						String agmt = rset0.getString(3)==null?"":rset0.getString(3);
+						String agmt_rev = rset0.getString(4)==null?"":rset0.getString(4);
+						String cont = rset0.getString(5)==null?"":rset0.getString(5);
+						String cont_rev = rset0.getString(6)==null?"":rset0.getString(6);
+						String cont_type = rset0.getString(7)==null?"":rset0.getString(7);
+						String cont_ref = rset0.getString(8)==null?"":rset0.getString(8);
+						String transporter_cd = rset0.getString(9)==null?"":rset0.getString(9);
+						String transporter_plant_seq = rset0.getString(10)==null?"":rset0.getString(10);
+						
+						String dcq = nf.format(rset0.getDouble(11));
+						String variable_dcq=utilBean.getContVariableDCQ(conn,companyCd, countpty_cd, agmt, cont, cont_type, gas_dt);
+						if(!variable_dcq.equals(""))
+						{
+							dcq=variable_dcq;
+						}
+						String cont_name = rset0.getString(12)==null?"":rset0.getString(12);
+						String mdcq_percentage = nf.format(rset0.getDouble(13));
+						double mdcq_qty = (Double.parseDouble(dcq)*Double.parseDouble(mdcq_percentage))/100;
+						
+						String trade_ref = rset0.getString(14)==null?"":rset0.getString(14);
+						if(cont_type.equals("X")) {
+							cont_ref=trade_ref;
+						}
+						
+						String internal_map_id = cont_type+"-"+countpty_cd+"-"+agmt+"-"+agmt_rev+"-"+cont+"-"+cont_rev;
+						
+						String cont_start_dt = rset0.getString(15)==null?"":rset0.getString(15);
+						
+						queryString1="SELECT PLANT_SEQ_NO "
+								+ "FROM FMS_SUPPLY_CONT_PLANT A "
+								+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONT_NO=? "
+								+ "AND CONT_REV=? AND CONTRACT_TYPE=? "
+								+ "AND AGMT_NO=? AND AGMT_REV=? "
+								+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_SELLER_NOM B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+								+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+								+ "AND B.TRANSPORTER_CD=? AND B.TRANS_SEQ=? "
+								+ "AND B.PLANT_SEQ=A.PLANT_SEQ_NO AND B.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+								+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM E "
+								+ "WHERE B.CONT_NO=E.CONT_NO AND B.AGMT_NO=E.AGMT_NO "
+								+ "AND B.COMPANY_CD=E.COMPANY_CD AND B.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+								+ "AND B.TRANSPORTER_CD=E.TRANSPORTER_CD AND B.TRANS_SEQ=E.TRANS_SEQ AND B.BU_SEQ=E.BU_SEQ "
+								+ "AND B.PLANT_SEQ=E.PLANT_SEQ AND B.CONTRACT_TYPE=E.CONTRACT_TYPE "
+								+ "AND B.GAS_DT=E.GAS_DT AND B.CARGO_NO=E.CARGO_NO)) > 0 ";
+						stmt1 = conn.prepareStatement(queryString1);
+						stmt1.setString(1, companyCd);
+						stmt1.setString(2, countpty_cd);
+						stmt1.setString(3, cont);
+						stmt1.setString(4, cont_rev);
+						stmt1.setString(5, cont_type);
+						stmt1.setString(6, agmt);
+						stmt1.setString(7, agmt_rev);
+						stmt1.setString(8, transporter_cd);
+						stmt1.setString(9, transporter_plant_seq);
+						stmt1.setString(10, gas_dt);
+						rset1=stmt1.executeQuery();
+						while(rset1.next())
+						{
+							String plant_seq = rset1.getString(1)==null?"":rset1.getString(1);
+							String plant_abbr=utilBean.getCounterpartyPlantABBR(conn,countpty_cd, companyCd, plant_seq, "C");
+							
+							String entry_point_mapping=transporter_cd+"-"+transporter_plant_seq;
+							String exit_point_mapping="C-"+countpty_cd+"-"+plant_seq;
+							String sales_cont_map=cont_type+"-"+agmt+"-%-"+cont+"-%"; //THIS IS USED FOR GTC
+							String cont_map=countpty_cd+"-"+cont_type+"-"+agmt+"-%-"+cont+"-%"; //THIS IS USED FOR NOMINATION
+							
+							queryString5="SELECT COMPANY_CD,PLANT_SEQ_NO "
+									+ "FROM FMS_SUPPLY_CONT_BU A "
+									+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONT_NO=? "
+									+ "AND CONT_REV=? AND CONTRACT_TYPE=? "
+									+ "AND AGMT_NO=? AND AGMT_REV=? "
+									+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_SELLER_NOM B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+									+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+									+ "AND B.TRANSPORTER_CD=? AND B.TRANS_SEQ=? AND B.PLANT_SEQ=? "
+									+ "AND B.BU_SEQ=A.PLANT_SEQ_NO AND B.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+									+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM E "
+									+ "WHERE B.CONT_NO=E.CONT_NO AND B.AGMT_NO=E.AGMT_NO "
+									+ "AND B.COMPANY_CD=E.COMPANY_CD AND B.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+									+ "AND B.TRANSPORTER_CD=E.TRANSPORTER_CD AND B.TRANS_SEQ=E.TRANS_SEQ AND B.BU_SEQ=E.BU_SEQ "
+									+ "AND B.PLANT_SEQ=E.PLANT_SEQ AND B.CONTRACT_TYPE=E.CONTRACT_TYPE "
+									+ "AND B.GAS_DT=E.GAS_DT AND B.CARGO_NO=E.CARGO_NO)) > 0 ";
+							stmt5 = conn.prepareStatement(queryString5);
+							stmt5.setString(1, companyCd);
+							stmt5.setString(2, countpty_cd);
+							stmt5.setString(3, cont);
+							stmt5.setString(4, cont_rev);
+							stmt5.setString(5, cont_type);
+							stmt5.setString(6, agmt);
+							stmt5.setString(7, agmt_rev);
+							stmt5.setString(8, transporter_cd);
+							stmt5.setString(9, transporter_plant_seq);
+							stmt5.setString(10, plant_seq);
+							stmt5.setString(11, gas_dt);
+							rset5=stmt5.executeQuery();
+							while(rset5.next())
+							{
+								sub_index++;
+								
+								String buCd = rset5.getString(1)==null?"":rset5.getString(1);
+								String bu_plant_seq = rset5.getString(2)==null?"":rset5.getString(2);
+								String bu_plant_abbr=utilBean.getCounterpartyPlantABBR(conn,buCd, comp_cd, bu_plant_seq, "B");
+								
+								String gt_contract_dtl="";
+								String gtc_calc_base="";
+					  			String gtc_gcv="";
+					  			String gtc_ncv="";
+					  			String gta_no="";
+					  			String gtc_no="";
+					  			
+								int isGTC=0;
+						  		queryString6="SELECT A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONT_REF_NO,A.CT_REF_NO,A.CONTRACT_TYPE,A.COUNTERPARTY_CD,"
+						  				+ "A.CALC_BASE,A.GCV,A.NCV "
+										+ "FROM FMS_GTA_CONT_MST A,FMS_GTA_CONT_MAP B,FMS_GTA_CONT_BU C "
+										+ "WHERE A.COMPANY_CD=? AND B.CUSTOMER_CD=? AND A.COUNTERPARTY_CD=? "
+										+ "AND B.SELL_CONT_MAP LIKE ? AND A.CONTRACT_TYPE=? "
+										+ "AND A.ENTRY_PT_MAPPING_ID=? AND A.EXIT_PT_MAPPING_ID=? "
+										+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+										+ "AND C.PLANT_SEQ_NO=? "
+										+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO "
+										+ "AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONT_REV=B.CONT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+										+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO "
+										+ "AND A.AGMT_REV=C.AGMT_REV AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+										+ "AND A.CONT_REV=(SELECT MAX(C.CONT_REV) FROM FMS_GTA_CONT_MST C WHERE A.COMPANY_CD=C.COMPANY_CD "
+										+ "AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+										+ "AND A.CONT_NO=C.CONT_NO AND A.CONTRACT_TYPE=C.CONTRACT_TYPE)";
+						  		stmt6 = conn.prepareStatement(queryString6);
+								stmt6.setString(1, comp_cd);
+								stmt6.setString(2, countpty_cd);
+								stmt6.setString(3, transporter_cd);
+								stmt6.setString(4, sales_cont_map);
+								stmt6.setString(5, "C");
+								stmt6.setString(6, entry_point_mapping);
+								stmt6.setString(7, exit_point_mapping);
+								stmt6.setString(8, gas_dt);
+								stmt6.setString(9, gas_dt);
+								stmt6.setString(10, bu_plant_seq);
+								rset6=stmt6.executeQuery();
+								if(rset6.next())
+								{
+									String agmtno=rset6.getString(1)==null?"":rset6.getString(1);
+									String agmt_revno=rset6.getString(2)==null?"":rset6.getString(2);
+									String contno=rset6.getString(3)==null?"":rset6.getString(3);
+									String cont_revno=rset6.getString(4)==null?"":rset6.getString(4);
+									
+									String cont_refno=rset6.getString(5)==null?"":rset6.getString(5);
+									String ct_ref=rset6.getString(6)==null?"":rset6.getString(6);
+									String contType=rset6.getString(7)==null?"":rset6.getString(7);
+									
+									String counterpty_cd=rset6.getString(8)==null?"":rset6.getString(8);
+									
+									gta_no=agmtno;
+									gtc_no=contno;
+									
+									gtc_calc_base=rset6.getString(9)==null?"":rset6.getString(9);
+									gtc_gcv=rset6.getString(10)==null?"":rset6.getString(10);
+									gtc_ncv=rset6.getString(11)==null?"":rset6.getString(11);
+									
+									String counterpty_abbr=""+utilBean.getCounterpartyABBR(conn,counterpty_cd);
+									
+									gt_contract_dtl=counterpty_abbr+"-"+contType+""+agmtno+"-"+contno+"<br>("+cont_refno+")";
+									
+									isGTC=1;
+								}
+								else
+								{
+									gt_contract_dtl="<font color='red'>GTC Not Avaialable!</font>";
+									
+									isGTC=0;
+								}
+								rset6.close();
+								stmt6.close();
+							
+								VCOUNTERPARTY_CD.add(countpty_cd);
+								VCOUNTERPARTY_ABBR.add(""+utilBean.getCounterpartyABBR(conn,countpty_cd));
+								VAGMT_NO.add(agmt);
+								VAGMT_REV_NO.add(agmt_rev);
+								VCONT_NO.add(cont);
+								VCONT_REV_NO.add(cont_rev);
+								VCONTRACT_TYPE.add(cont_type);
+								VDIS_CONT_MAPPING.add(utilBean.NewDealMappingId(comp_cd, countpty_cd, agmt, agmt_rev, cont, cont_rev, cont_type, ""));
+								/*if(cont_type.equals("S"))
+								{
+									VDIS_CONT_MAPPING.add(cont_type+agmt+"-"+cont);
+								}
+								else
+								{
+									VDIS_CONT_MAPPING.add(cont_type+""+cont);
+								}*/
+								VCOUNTERPARTY_PLANT_SEQ.add(plant_seq);
+								VCOUNTERPARTY_PLANT_ABBR.add(plant_abbr);
+								VBU_CD.add(buCd);
+								VBU_PLANT_SEQ.add(bu_plant_seq);
+								VBU_PLANT_ABBR.add(bu_plant_abbr);
+								VDCQ.add(dcq);
+								VCONT_REF.add(cont_ref);
+								VCONT_NAME.add(cont_name);
+								VMDCQ_QTY.add(nf.format(mdcq_qty));
+								VINTERNAL_MAP_ID.add(internal_map_id);
+								
+								String transStatus = (String) utilBean.getCounterpartyDetails(conn, trns_cd, gas_dt).get("status");
+								VTRANSPORTER_STATUS.add(transStatus);
+
+								String cpStatus = (String) utilBean.getCounterpartyDetails(conn, countpty_cd, gas_dt).get("status");
+								VCOUNTERPARTY_STATUS.add(cpStatus);
+								
+								
+								VLINKED_GTC.add(gt_contract_dtl);
+								VIS_GTC.add(isGTC);
+								VGTA_NO.add(gta_no);
+								VGTC_NO.add(gtc_no);
+								VENTRY_POINT_MAP.add(entry_point_mapping);
+								VEXIT_POINT_MAP.add(exit_point_mapping);
+								VCONT_MAPPING.add(cont_map);
+								
+								String billingFrq="";
+								queryString2="SELECT BILLING_FREQ "
+										+ "FROM FMS_SUPPLY_BILLING_DTL A "
+										+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND AGMT_NO=? "//AND AGMT_REV='"+agmt_rev+"' "
+										+ "AND CONT_NO=? "//AND CONT_REV='"+cont_rev+"' "
+										+ "AND CONTRACT_TYPE=? "
+										+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_SUPPLY_BILLING_DTL B WHERE A.COMPANY_CD=B.COMPANY_CD "
+										+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO "
+										+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND TO_DATE(?,'DD/MM/YYYY') > EFF_DT)";
+								stmt2 = conn.prepareStatement(queryString2);
+								stmt2.setString(1, companyCd);
+								stmt2.setString(2, countpty_cd);
+								stmt2.setString(3, agmt);
+								stmt2.setString(4, cont);
+								stmt2.setString(5, cont_type);
+								stmt2.setString(6, gas_dt);
+								rset2=stmt2.executeQuery();
+								if(rset2.next())
+						  		{
+						  			billingFrq=rset2.getString(1)==null?"":rset2.getString(1);
+						  		}
+								rset2.close();
+								stmt2.close();
+						  		
+						  		String periodStDt=utilBean.getFirstDtOfBillingCycle(billingFrq, "", gas_dt);
+								
+								VTAX_DTL.add(utilBean.getEntityTaxStructureDtl(conn,companyCd, countpty_cd, "C", plant_seq, bu_plant_seq, periodStDt, "S"));
+								
+								//GET TRANSPORTER NOMINATION DATA FOR THE CONTRACT WISE
+								queryString2="SELECT NOM_REV_NO,GEN_TIME,BASE,GCV,NCV,QTY_MMBTU,QTY_SCM,TO_CHAR(GEN_DT,'DD/MM/YYYY'),"
+										+ "EXIT_BASE,EXIT_GCV,EXIT_NCV,EXIT_QTY_MMBTU,EXIT_QTY_SCM "
+						  				+ "FROM FMS_DAILY_TRANSPORTER_NOM A "
+						  				+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND AGMT_NO=? AND CONT_NO=? "
+										+ "AND ENTRY_PT_MAPPING_ID=? AND EXIT_PT_MAPPING_ID=? "
+										+ "AND SELL_CONT_MAP LIKE ? AND BU_SEQ=? "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_TRANSPORTER_NOM B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.SELL_CONT_MAP=A.SELL_CONT_MAP AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.GAS_DT=A.GAS_DT AND A.ENTRY_PT_MAPPING_ID=B.ENTRY_PT_MAPPING_ID AND A.EXIT_PT_MAPPING_ID=B.EXIT_PT_MAPPING_ID) ";
+								stmt_temp = conn.prepareStatement(queryString2);
+								stmt_temp.setString(1, comp_cd);
+								stmt_temp.setString(2, transporter_cd);
+								stmt_temp.setString(3, "C");
+								stmt_temp.setString(4, gas_dt);
+								stmt_temp.setString(5, gta_no);
+								stmt_temp.setString(6, gtc_no);
+								stmt_temp.setString(7, entry_point_mapping);
+								stmt_temp.setString(8, exit_point_mapping);
+								stmt_temp.setString(9, cont_map);
+								stmt_temp.setString(10, bu_plant_seq);
+								rset_temp=stmt_temp.executeQuery();
+								if(rset_temp.next())
+								{
+						  			VNOM_REV_NO.add(rset_temp.getString(1)==null?"":rset_temp.getString(1));
+						  			VGEN_TIME.add(rset_temp.getString(2)==null?"":rset_temp.getString(2));
+						  			VBASE.add(rset_temp.getString(3)==null?"":rset_temp.getString(3));
+						  			VGCV.add(rset_temp.getString(4)==null?"9802.80":rset_temp.getString(4));
+						  			VNCV.add(rset_temp.getString(5)==null?"8831.35":rset_temp.getString(5));
+						  			VQTY_MMBTU.add(nf.format(rset_temp.getDouble(6)));
+						  			VQTY_SCM.add(nf.format(rset_temp.getDouble(7)));
+						  			VGEN_DT.add(rset_temp.getString(8)==null?"":rset_temp.getString(8));
+						  			
+						  			VEXIT_BASE.add(rset_temp.getString(9)==null?"":rset_temp.getString(9));
+						  			VEXIT_GCV.add(rset_temp.getString(10)==null?"9802.80":rset_temp.getString(10));
+						  			VEXIT_NCV.add(rset_temp.getString(11)==null?"8831.35":rset_temp.getString(11));
+						  			VEXIT_QTY_MMBTU.add(nf.format(rset_temp.getDouble(12)));
+						  			VEXIT_QTY_SCM.add(nf.format(rset_temp.getDouble(13)));
+						  			
+						  			VNOM_COLOR.add("#99ffcc");	
+						  			
+						  			trans_plant_wise_total_mmbtu += rset_temp.getDouble(6);
+						  			trans_plant_wise_total_scm += rset_temp.getDouble(7);
+						  			
+						  			trans_plant_wise_exit_total_mmbtu += rset_temp.getDouble(12);
+						  			trans_plant_wise_exit_total_scm += rset_temp.getDouble(13);
+						  		}
+						  		else
+						  		{
+						  			//GET BUYER NOMINATION DATA FOR THE CONTRACT WISE
+						  			queryString2="SELECT NOM_REV_NO,GEN_TIME,BASE,GCV,NCV,QTY_MMBTU,QTY_SCM,TO_CHAR(GEN_DT,'DD/MM/YYYY') "
+							  				+ "FROM FMS_DAILY_SELLER_NOM A "
+							  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+											+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+											+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+											+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+											+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+											+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+											+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+											+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+											+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+											+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+											+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+						  			stmt_temp1 = conn.prepareStatement(queryString2);
+									stmt_temp1.setString(1, cont);
+									stmt_temp1.setString(2, agmt);
+									stmt_temp1.setString(3, companyCd);
+									stmt_temp1.setString(4, countpty_cd);
+									stmt_temp1.setString(5, transporter_cd);
+									stmt_temp1.setString(6, transporter_plant_seq);
+									stmt_temp1.setString(7, plant_seq);
+									stmt_temp1.setString(8, cont_type);
+									stmt_temp1.setString(9, bu_plant_seq);
+									stmt_temp1.setString(10, gas_dt);
+									rset_temp1=stmt_temp1.executeQuery();
+									if(rset_temp1.next())
+									{
+							  			VNOM_REV_NO.add("");
+							  			VBASE.add(rset_temp1.getString(3)==null?"":rset_temp1.getString(3));
+							  			VGCV.add(rset_temp1.getString(4)==null?"9802.80":rset_temp1.getString(4));
+							  			VNCV.add(rset_temp1.getString(5)==null?"8831.35":rset_temp1.getString(5));
+							  			VQTY_MMBTU.add(nf.format(rset_temp1.getDouble(6)));
+							  			VQTY_SCM.add(nf.format(rset_temp1.getDouble(7)));
+							  			VGEN_DT.add(rset_temp1.getString(8)==null?"":rset_temp1.getString(8));
+							  			
+							  			VEXIT_BASE.add(gtc_calc_base);
+							  			VEXIT_GCV.add(gtc_gcv);
+							  			VEXIT_NCV.add(gtc_ncv);
+							  			VEXIT_QTY_MMBTU.add(nf.format(rset_temp1.getDouble(6)));
+							  			//VEXIT_QTY_SCM.add(nf.format(rset_temp1.getDouble(7)));
+							  			VEXIT_QTY_SCM.add("");
+							  			
+							  			String split[] = dateTime.split(" ");
+							  			VGEN_TIME.add(split[1]);
+							  			VNOM_COLOR.add("");
+							  			
+							  			trans_plant_wise_total_mmbtu += rset_temp1.getDouble(6);
+							  			trans_plant_wise_total_scm += rset_temp1.getDouble(7);
+							  		}
+									rset_temp1.close();
+									stmt_temp1.close();
+						  		}
+								rset_temp.close();
+								stmt_temp.close();
+								
+								queryString4="SELECT NOM_REV_NO,GEN_TIME,BASE,GCV,NCV,QTY_MMBTU,QTY_SCM "
+						  				+ "FROM FMS_DAILY_BUYER_NOM A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_BUYER_NOM B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+										+ "AND B.GAS_DT=A.GAS_DT AND A.CARGO_NO=B.CARGO_NO) ";
+								stmt4 = conn.prepareStatement(queryString4);
+					  			stmt4.setString(1, cont);
+								stmt4.setString(2, agmt);
+								stmt4.setString(3, companyCd);
+								stmt4.setString(4, countpty_cd);
+								stmt4.setString(5, transporter_cd);
+								stmt4.setString(6, transporter_plant_seq);
+								stmt4.setString(7, plant_seq);
+								stmt4.setString(8, cont_type);
+								stmt4.setString(9, bu_plant_seq);
+								stmt4.setString(10, gas_dt);
+								rset4=stmt4.executeQuery();
+						  		if(rset4.next())
+						  		{
+						  			VBUYER_NOM_REV_NO.add(rset4.getString(1)==null?"":rset4.getString(1));
+						  			VBUYER_NOM.add(nf.format(rset4.getDouble(6)));
+						  		}
+						  		rset4.close();
+						  		stmt4.close();
+							}
+							rset5.close();
+							stmt5.close();
+						}
+						rset1.close();
+						stmt1.close();
+					}
+					VTRANS_PLANT_WISE_TOTAL_MMBTU.add(nf.format(trans_plant_wise_total_mmbtu));
+					VTRANS_PLANT_WISE_TOTAL_SCM.add(nf.format(trans_plant_wise_total_scm));
+					
+					VTRANS_PLANT_WISE_EXIT_TOTAL_MMBTU.add(nf.format(trans_plant_wise_exit_total_mmbtu));
+					VTRANS_PLANT_WISE_EXIT_TOTAL_SCM.add(nf.format(trans_plant_wise_exit_total_scm));
+					VSUB_INDEX.add(sub_index);
+					rset0.close();
+					stmt0.close();
+				}
+				VINDEX.add(index);
+				rset3.close();
+				stmt3.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getMeterTicketReading()
+	{
+		String function_nm="getMeterTicketReading()";
+		try
+		{
+			multiplyFactor=""+CommonVariable.multiplying_factor;
+			dividFactor=""+CommonVariable.dividing_factor;
+			
+			queryString="SELECT DISTINCT COUNTERPARTY_CD "
+					+ "FROM FMS_METER_MST A "
+					+ "WHERE COMPANY_CD=? AND METER_TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_METER_MST B "
+					+ "WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.PLANT_SEQ=B.PLANT_SEQ "
+					+ "AND A.METER_TYPE=B.METER_TYPE AND A.METER_SEQ=B.METER_SEQ AND EFF_DT<=TO_DATE(?,'DD/MM/YYYY')) "
+					+ "AND (CASE WHEN STATUS='N' THEN (SELECT NVL(COUNT(*),0) FROM FMS_METER_TICKET_READING B "
+					+ "WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.PLANT_SEQ=B.PLANT_SEQ "
+					+ "AND A.METER_TYPE=B.METER_TYPE AND A.METER_SEQ=B.METER_SEQ AND B.GAS_DT=TO_DATE(?,'DD/MM/YYYY')) "
+					+ "ELSE 1 END) > 0 ";
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, "R");
+			stmt.setString(3, gas_dt);
+			stmt.setString(4, gas_dt);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String countpty_cd = rset.getString(1)==null?"":rset.getString(1);
+				String countpty_abbr=""+utilBean.getCounterpartyABBR(conn,countpty_cd);
+				int index=0;
+				
+				String cpStatus = (String) utilBean.getCounterpartyDetails(conn, countpty_cd, gas_dt).get("status");
+
+				//HM20260323 : Added below BOC as per Vijay's feedback : De-actived Transporter not to be shown after de-activate date
+			    if ("N".equals(cpStatus))
+			    {
+			        String checkQuery = "SELECT COUNT(*) FROM FMS_METER_TICKET_READING "
+			                + "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+			                + "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY')";
+			        stmt4 = conn.prepareStatement(checkQuery);
+			        stmt4.setString(1, comp_cd);
+			        stmt4.setString(2, countpty_cd);
+			        stmt4.setString(3, gas_dt);
+			        rset4 = stmt4.executeQuery();
+			        int ticketCount = 0;
+			        if (rset4.next()) 
+			        {
+			            ticketCount = rset4.getInt(1);
+			        }
+			        rset4.close();
+			        stmt4.close();
+			        
+			        if (ticketCount == 0)
+			        {
+			            continue;//Skip the counterparty's iteration
+			        }
+			    }
+			    
+				VCOUNTERPARTY_CD.add(countpty_cd);
+				VCOUNTERPARTY_STATUS.add(cpStatus);
+				VCOUNTERPARTY_ABBR.add(countpty_abbr);
+				
+				queryString1="SELECT DISTINCT PLANT_SEQ "
+						+ "FROM FMS_METER_MST A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND METER_TYPE=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_METER_MST B "
+						+ "WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.PLANT_SEQ=B.PLANT_SEQ "
+						+ "AND A.METER_TYPE=B.METER_TYPE AND A.METER_SEQ=B.METER_SEQ AND EFF_DT<=TO_DATE(?,'DD/MM/YYYY')) "
+						+ "AND (CASE WHEN STATUS='N' THEN (SELECT NVL(COUNT(*),0) FROM FMS_METER_TICKET_READING B "
+						+ "WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.PLANT_SEQ=B.PLANT_SEQ "
+						+ "AND A.METER_TYPE=B.METER_TYPE AND A.METER_SEQ=B.METER_SEQ AND B.GAS_DT=TO_DATE(?,'DD/MM/YYYY')) "
+						+ "ELSE 1 END) > 0 ";
+				stmt1 = conn.prepareStatement(queryString1);
+				stmt1.setString(1, comp_cd);
+				stmt1.setString(2, countpty_cd);
+				stmt1.setString(3, "R");
+				stmt1.setString(4, gas_dt);
+				stmt1.setString(5, gas_dt);
+				rset1=stmt1.executeQuery();
+				while(rset1.next())
+				{
+					String plant_seq = rset1.getString(1)==null?"":rset1.getString(1);
+					VCOUNTERPARTY_PLANT_SEQ.add(plant_seq);
+					VCOUNTERPARTY_PLANT_ABBR.add(""+utilBean.getCounterpartyPlantABBR(conn,countpty_cd, comp_cd, plant_seq, "R"));
+					index+=1;
+					int sub_index=0;
+					
+					double total_seller_nom=0;
+					queryString2 = "SELECT SUM(QTY_MMBTU) "
+							+ "FROM FMS_DAILY_SELLER_NOM A "
+							+ "WHERE COMPANY_CD=? AND TRANSPORTER_CD=? AND TRANS_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+		                    + "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+		                    + "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+		                    + "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+		                    + "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+		                    + "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+		                    + "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+					stmt2 = conn.prepareStatement(queryString2);
+					stmt2.setString(1, comp_cd);
+					stmt2.setString(2, countpty_cd);
+					stmt2.setString(3, plant_seq);
+					stmt2.setString(4, gas_dt);
+					rset2=stmt2.executeQuery();
+					if(rset2.next())
+					{
+						total_seller_nom=rset2.getDouble(1);
+					}
+					rset2.close();
+					stmt2.close();
+					VSELLER_NOM.add(nf.format(total_seller_nom));
+					
+					queryString2="SELECT METER_SEQ,METER_ID,METER_REF,STATUS,TO_CHAR(EFF_DT,'DD/MM/YYYY') "
+							+ "FROM FMS_METER_MST A "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND PLANT_SEQ=? AND METER_TYPE=? "
+							+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_METER_MST B "
+							+ "WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.PLANT_SEQ=B.PLANT_SEQ "
+							+ "AND A.METER_TYPE=B.METER_TYPE AND A.METER_SEQ=B.METER_SEQ AND EFF_DT<=TO_DATE(?,'DD/MM/YYYY')) "
+							+ "AND (CASE WHEN STATUS='N' THEN (SELECT NVL(COUNT(*),0) FROM FMS_METER_TICKET_READING B "
+							+ "WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.PLANT_SEQ=B.PLANT_SEQ "
+							+ "AND A.METER_TYPE=B.METER_TYPE AND A.METER_SEQ=B.METER_SEQ AND B.GAS_DT=TO_DATE(?,'DD/MM/YYYY')) "
+							+ "ELSE 1 END) > 0 ";
+					stmt2 = conn.prepareStatement(queryString2);
+					stmt2.setString(1, comp_cd);
+					stmt2.setString(2, countpty_cd);
+					stmt2.setString(3, plant_seq);
+					stmt2.setString(4, "R");
+					stmt2.setString(5, gas_dt);
+					stmt2.setString(6, gas_dt);
+					rset2=stmt2.executeQuery();
+					while(rset2.next())
+					{
+						String meter_seq =  rset2.getString(1)==null?"":rset2.getString(1);
+						VMETER_SEQ.add(meter_seq);
+						VMETER_ID.add(rset2.getString(2)==null?"":rset2.getString(2));
+						VMETER_REF.add(rset2.getString(3)==null?"":rset2.getString(3));
+						VMETER_STATUS.add(rset2.getString(4)==null?"":rset2.getString(4));
+						VMETER_EFF_DT.add(rset2.getString(5)==null?"":rset2.getString(5));
+						
+						sub_index+=1;
+						queryString3="SELECT QTY_MMBTU,QTY_SCM,QTY_BTU,RECONCIL_QTY_MMBTU,RECONCIL_QTY_SCM,RECONCIL_QTY_BTU,"
+								+ "TOTAL_QTY_MMBTU,CALC_GCV,CALC_NCV,DEFINE_GCV,DEFINE_NCV,GEN_TIME,TOTAL_QTY_SCM "
+								+ "FROM FMS_METER_TICKET_READING "
+								+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+								+ "AND PLANT_SEQ=? AND METER_SEQ=? AND METER_TYPE=? "
+								+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY')";
+						stmt3 = conn.prepareStatement(queryString3);
+						stmt3.setString(1, comp_cd);
+						stmt3.setString(2, countpty_cd);
+						stmt3.setString(3, plant_seq);
+						stmt3.setString(4, meter_seq);
+						stmt3.setString(5, "R");
+						stmt3.setString(6, gas_dt);
+						rset3=stmt3.executeQuery();
+						if(rset3.next())
+						{
+							VQTY_MMBTU.add(nf.format(rset3.getDouble(1)));
+							VQTY_SCM.add(nf.format(rset3.getDouble(2)));
+							VQTY_BTU.add(nf.format(rset3.getDouble(3)));
+							VRECONCIL_QTY_MMBTU.add(nf.format(rset3.getDouble(4)));
+							VRECONCIL_QTY_SCM.add(nf.format(rset3.getDouble(5)));
+							VRECONCIL_QTY_BTU.add(nf.format(rset3.getDouble(6)));
+							VTOTAL_QTY_MMBTU.add(nf.format(rset3.getDouble(7)));
+							VCALC_GCV.add(nf2.format(rset3.getDouble(8)));
+							VCALC_NCV.add(nf2.format(rset3.getDouble(9)));
+							VDEFINE_GCV.add(nf2.format(rset3.getDouble(10)));
+							VDEFINE_NCV.add(nf2.format(rset3.getDouble(11)));
+							
+							gen_time=rset3.getString(12)==null?"":rset3.getString(12);
+							VTOTAL_QTY_SCM.add(nf.format(rset3.getDouble(13)));
+							
+							VNOM_COLOR.add("#99ffcc");
+						}
+						else
+						{
+							VQTY_MMBTU.add("");
+							VQTY_SCM.add("");
+							VQTY_BTU.add("");
+							VRECONCIL_QTY_MMBTU.add("");
+							VRECONCIL_QTY_SCM.add("");
+							VRECONCIL_QTY_BTU.add("");
+							VTOTAL_QTY_MMBTU.add("");
+							VCALC_GCV.add("");
+							VCALC_NCV.add("");
+							VDEFINE_GCV.add("");
+							VDEFINE_NCV.add("");
+							VTOTAL_QTY_SCM.add("");
+							
+							VNOM_COLOR.add("");
+						}
+						rset3.close();
+						stmt3.close();
+					}
+					VSUB_INDEX.add(sub_index);
+					rset2.close();
+					stmt2.close();
+					
+					queryString3="SELECT SUM(QTY_MMBTU),SUM(QTY_SCM),SUM(QTY_BTU),SUM(RECONCIL_QTY_MMBTU),SUM(RECONCIL_QTY_SCM),SUM(RECONCIL_QTY_BTU),"
+							+ "SUM(TOTAL_QTY_MMBTU),SUM(TOTAL_QTY_SCM) "
+							+ "FROM FMS_METER_TICKET_READING "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND PLANT_SEQ=? AND METER_TYPE=? "
+							+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY')";
+					stmt3 = conn.prepareStatement(queryString3);
+					stmt3.setString(1, comp_cd);
+					stmt3.setString(2, countpty_cd);
+					stmt3.setString(3, plant_seq);
+					stmt3.setString(4, "R");
+					stmt3.setString(5, gas_dt);
+					rset3=stmt3.executeQuery();
+					if(rset3.next())
+					{
+						VTOT_QTY_MMBTU.add(nf.format(rset3.getDouble(1)));
+						VTOT_QTY_SCM.add(nf.format(rset3.getDouble(2)));
+						VTOT_QTY_BTU.add(nf.format(rset3.getDouble(3)));
+						VTOT_RECONCIL_QTY_MMBTU.add(nf.format(rset3.getDouble(4)));
+						VTOT_RECONCIL_QTY_SCM.add(nf.format(rset3.getDouble(5)));
+						VTOT_RECONCIL_QTY_BTU.add(nf.format(rset3.getDouble(6)));
+						
+						double tot_qty_mmbtu=rset3.getDouble(7);
+						double tot_qty_scm=rset3.getDouble(8);
+						
+						VTOT_TOTAL_QTY_MMBTU.add(nf.format(tot_qty_mmbtu));
+						VTOT_TOTAL_QTY_SCM.add(nf.format(tot_qty_scm));
+						
+						double gcv = 0;
+						double ncv = 0;
+						
+						if(tot_qty_mmbtu > 0)
+						{
+							gcv = (tot_qty_mmbtu * CommonVariable.multiplying_factor)/tot_qty_scm;
+							ncv = gcv/CommonVariable.dividing_factor;
+						}
+						
+						VTOT_CALC_GCV.add(nf2.format(gcv));
+						VTOT_CALC_NCV.add(nf2.format(ncv));
+						
+						VTOT_DEFINE_GCV.add(nf2.format(gcv));
+						VTOT_DEFINE_NCV.add(nf2.format(ncv));
+					}
+					else
+					{
+						VTOT_QTY_MMBTU.add(nf.format(0));
+						VTOT_QTY_SCM.add(nf.format(0));
+						VTOT_QTY_BTU.add(nf.format(0));
+						VTOT_RECONCIL_QTY_MMBTU.add(nf.format(0));
+						VTOT_RECONCIL_QTY_SCM.add(nf.format(0));
+						VTOT_RECONCIL_QTY_BTU.add(nf.format(0));
+						VTOT_TOTAL_QTY_MMBTU.add(nf.format(0));
+						VTOT_TOTAL_QTY_SCM.add(nf.format(0));
+						
+						VTOT_CALC_GCV.add(nf2.format(0));
+						VTOT_CALC_NCV.add(nf2.format(0));
+						VTOT_DEFINE_GCV.add(nf2.format(0));
+						VTOT_DEFINE_NCV.add(nf2.format(0));
+					}
+					rset3.close();
+					stmt3.close();
+					
+					/*queryString4="SELECT AVG(CALC_GCV) "
+							+ "FROM FMS_METER_TICKET_READING "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND PLANT_SEQ=? AND METER_TYPE=? "
+							+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CALC_GCV > 0";
+					stmt4 = conn.prepareStatement(queryString4);
+					stmt4.setString(1, comp_cd);
+					stmt4.setString(2, countpty_cd);
+					stmt4.setString(3, plant_seq);
+					stmt4.setString(4, "R");
+					stmt4.setString(5, gas_dt);
+					rset4=stmt4.executeQuery();
+					if(rset4.next())
+					{
+						VTOT_CALC_GCV.add(nf2.format(rset4.getDouble(1)));
+					}
+					else
+					{
+						VTOT_CALC_GCV.add(nf2.format(0));
+					}
+					rset4.close();
+					stmt4.close();
+					
+					queryString5="SELECT AVG(CALC_NCV) "
+							+ "FROM FMS_METER_TICKET_READING "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND PLANT_SEQ=? AND METER_TYPE=? "
+							+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CALC_NCV > 0";
+					stmt5 = conn.prepareStatement(queryString5);
+					stmt5.setString(1, comp_cd);
+					stmt5.setString(2, countpty_cd);
+					stmt5.setString(3, plant_seq);
+					stmt5.setString(4, "R");
+					stmt5.setString(5, gas_dt);
+					rset5=stmt5.executeQuery();
+					if(rset5.next())
+					{
+						VTOT_CALC_NCV.add(nf2.format(rset5.getDouble(1)));
+					}
+					else
+					{
+						VTOT_CALC_NCV.add(nf2.format(0));
+					}
+					rset5.close();
+					stmt5.close();
+					
+					queryString6="SELECT AVG(DEFINE_GCV) "
+							+ "FROM FMS_METER_TICKET_READING "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND PLANT_SEQ=? AND METER_TYPE=? "
+							+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND DEFINE_GCV > 0";
+					stmt6 = conn.prepareStatement(queryString6);
+					stmt6.setString(1, comp_cd);
+					stmt6.setString(2, countpty_cd);
+					stmt6.setString(3, plant_seq);
+					stmt6.setString(4, "R");
+					stmt6.setString(5, gas_dt);
+					rset6=stmt6.executeQuery();
+					if(rset6.next())
+					{
+						VTOT_DEFINE_GCV.add(nf2.format(rset6.getDouble(1)));
+					}
+					else
+					{
+						VTOT_DEFINE_GCV.add(nf2.format(0));
+					}
+					rset6.close();
+					stmt6.close();
+					
+					queryString7="SELECT AVG(DEFINE_NCV) "
+							+ "FROM FMS_METER_TICKET_READING "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND PLANT_SEQ=? AND METER_TYPE=? "
+							+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND DEFINE_NCV > 0";
+					stmt7 = conn.prepareStatement(queryString7);
+					stmt7.setString(1, comp_cd);
+					stmt7.setString(2, countpty_cd);
+					stmt7.setString(3, plant_seq);
+					stmt7.setString(4, "R");
+					stmt7.setString(5, gas_dt);
+					rset7=stmt7.executeQuery();
+					if(rset7.next())
+					{
+						VTOT_DEFINE_NCV.add(nf2.format(rset7.getDouble(1)));
+					}
+					else
+					{
+						VTOT_DEFINE_NCV.add(nf2.format(0));
+					}
+					rset7.close();
+					stmt7.close();*/
+					
+				}
+				VINDEX.add(index);
+				rset1.close();
+				stmt1.close();
+			}
+			rset.close();
+			stmt.close();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getDailyAllocation()
+	{
+		String function_nm="getDailyAllocation()";
+		try
+		{
+			dateTime = dateUtil.getSysdateWithTime24hr();
+			
+			queryString="SELECT DISTINCT C.TRANSPORTER_CD AS TRANSPORTER_CD "
+					+ "FROM FMS_SUPPLY_CONT_MST A, FMS_SUPPLY_CONT_TRANSPTR C "
+					+ "WHERE A.COMPANY_CD=? AND A.BUYER_NOM_FLAG=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? "
+					+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND A.CONTRACT_TYPE IN ('S','L','X') "
+					+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+					+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+					+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+					+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_SELLER_NOM B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+					+ "AND C.TRANSPORTER_CD=B.TRANSPORTER_CD AND C.PLANT_SEQ_NO=B.TRANS_SEQ AND B.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM E "
+					+ "WHERE B.CONT_NO=E.CONT_NO AND B.AGMT_NO=E.AGMT_NO "
+					+ "AND B.COMPANY_CD=E.COMPANY_CD AND B.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=E.TRANSPORTER_CD AND B.TRANS_SEQ=E.TRANS_SEQ AND B.BU_SEQ=E.BU_SEQ "
+					+ "AND B.PLANT_SEQ=E.PLANT_SEQ AND B.CONTRACT_TYPE=E.CONTRACT_TYPE "
+					+ "AND B.GAS_DT=E.GAS_DT AND B.CARGO_NO=E.CARGO_NO)) > 0 "
+					+ " UNION "
+					+ "SELECT DISTINCT C.TRANSPORTER_CD AS TRANSPORTER_CD "
+					+ "FROM FMS_LTCORA_CONT_MST A,"
+						+ "FMS_LTCORA_CONT_CARGO_DTL B,"
+						+ "FMS_LTCORA_CONT_TRANSPTR C "
+					+ "WHERE A.COMPANY_CD=? AND A.BUY_SALE=? AND A.FCC_FLAG=? AND B.CARGO_STATUS=? AND A.AGMT_TYPE=? AND B.BOE_NO IS NOT NULL "
+					+ "AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')<=TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0) >=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+					+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE) "
+					+ ""
+					+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE "
+					+ ""
+					+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV "
+					+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE "
+					+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_SELLER_NOM D WHERE A.COMPANY_CD=D.COMPANY_CD AND A.COUNTERPARTY_CD=D.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=D.AGMT_NO AND A.CONT_NO=D.CONT_NO AND A.CONTRACT_TYPE=D.CONTRACT_TYPE "
+					+ "AND C.TRANSPORTER_CD=D.TRANSPORTER_CD AND C.PLANT_SEQ_NO=D.TRANS_SEQ AND D.GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND D.CARGO_NO=B.CARGO_NO "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM E "
+					+ "WHERE D.CONT_NO=E.CONT_NO AND D.AGMT_NO=E.AGMT_NO "
+					+ "AND D.COMPANY_CD=E.COMPANY_CD AND D.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+					+ "AND D.TRANSPORTER_CD=E.TRANSPORTER_CD AND D.TRANS_SEQ=E.TRANS_SEQ AND D.BU_SEQ=E.BU_SEQ "
+					+ "AND D.PLANT_SEQ=E.PLANT_SEQ AND D.CONTRACT_TYPE=E.CONTRACT_TYPE "
+					+ "AND D.GAS_DT=E.GAS_DT AND D.CARGO_NO=E.CARGO_NO)) > 0 "
+					+ "ORDER BY TRANSPORTER_CD";
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, "Y");
+			stmt.setString(3, "Y");
+			stmt.setString(4, "Y");
+			stmt.setString(5, gas_dt);
+			stmt.setString(6, gas_dt);
+			stmt.setString(7, gas_dt);
+			stmt.setString(8, comp_cd);
+			stmt.setString(9, "C");
+			stmt.setString(10, "Y");
+			stmt.setString(11, "Y");
+			stmt.setString(12, "A");
+			stmt.setString(13, gas_dt);
+			stmt.setString(14, gas_dt);
+			stmt.setString(15, gas_dt);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String trns_cd = rset.getString(1)==null?"":rset.getString(1);
+				String trns_abbr = ""+utilBean.getCounterpartyABBR(conn,trns_cd);
+				
+				VTRANSPORTER_CD.add(trns_cd);
+				VTRANSPORTER_ABBR.add(trns_abbr);
+			}
+			rset.close();
+			stmt.close();
+			
+			for(int i=0; i<VTRANSPORTER_CD.size(); i++)
+			{
+				int index=0;
+				
+				queryString3="SELECT DISTINCT C.PLANT_SEQ_NO AS PLANT_SEQ_NO "
+						+ "FROM FMS_SUPPLY_CONT_MST A, FMS_SUPPLY_CONT_TRANSPTR C "
+						+ "WHERE A.COMPANY_CD=? AND A.BUYER_NOM_FLAG=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? "
+						+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+						+ "AND A.CONTRACT_TYPE IN ('S','L','X') "
+						+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+						+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+						+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+						+ "AND C.TRANSPORTER_CD=? "
+						+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_SELLER_NOM B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+						+ "AND C.TRANSPORTER_CD=B.TRANSPORTER_CD AND C.PLANT_SEQ_NO=B.TRANS_SEQ AND B.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM E "
+						+ "WHERE B.CONT_NO=E.CONT_NO AND B.AGMT_NO=E.AGMT_NO "
+						+ "AND B.COMPANY_CD=E.COMPANY_CD AND B.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=E.TRANSPORTER_CD AND B.TRANS_SEQ=E.TRANS_SEQ AND B.BU_SEQ=E.BU_SEQ "
+						+ "AND B.PLANT_SEQ=E.PLANT_SEQ AND B.CONTRACT_TYPE=E.CONTRACT_TYPE "
+						+ "AND B.GAS_DT=E.GAS_DT AND B.CARGO_NO=E.CARGO_NO)) > 0 "
+						+ " UNION "
+						+ "SELECT DISTINCT C.PLANT_SEQ_NO AS PLANT_SEQ_NO "
+						+ "FROM FMS_LTCORA_CONT_MST A,"
+							+ "FMS_LTCORA_CONT_CARGO_DTL B,"
+							+ "FMS_LTCORA_CONT_TRANSPTR C "
+						+ "WHERE A.COMPANY_CD=? AND A.BUY_SALE=? AND A.FCC_FLAG=? AND B.CARGO_STATUS=? AND A.AGMT_TYPE=? AND B.BOE_NO IS NOT NULL "
+						+ "AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')<=TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0) >=TO_DATE(?,'DD/MM/YYYY') "
+						+ "AND C.TRANSPORTER_CD=? "
+						+ "AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+						+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE) "
+						+ ""
+						+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE "
+						+ ""
+						+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV "
+						+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE "
+						+ "AND (SELECT NVL(COUNT(*),0) FROM FMS_DAILY_SELLER_NOM D WHERE A.COMPANY_CD=D.COMPANY_CD AND A.COUNTERPARTY_CD=D.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=D.AGMT_NO AND A.CONT_NO=D.CONT_NO AND A.CONTRACT_TYPE=D.CONTRACT_TYPE "
+						+ "AND C.TRANSPORTER_CD=D.TRANSPORTER_CD AND C.PLANT_SEQ_NO=D.TRANS_SEQ AND D.GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND D.CARGO_NO=B.CARGO_NO "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM E "
+						+ "WHERE D.CONT_NO=E.CONT_NO AND D.AGMT_NO=E.AGMT_NO "
+						+ "AND D.COMPANY_CD=E.COMPANY_CD AND D.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+						+ "AND D.TRANSPORTER_CD=E.TRANSPORTER_CD AND D.TRANS_SEQ=E.TRANS_SEQ AND D.BU_SEQ=E.BU_SEQ "
+						+ "AND D.PLANT_SEQ=E.PLANT_SEQ AND D.CONTRACT_TYPE=E.CONTRACT_TYPE "
+						+ "AND D.GAS_DT=E.GAS_DT AND D.CARGO_NO=E.CARGO_NO)) > 0 "
+						+ "ORDER BY PLANT_SEQ_NO ";
+				stmt3 = conn.prepareStatement(queryString3);
+				stmt3.setString(1, comp_cd);
+				stmt3.setString(2, "Y");
+				stmt3.setString(3, "Y");
+				stmt3.setString(4, "Y");
+				stmt3.setString(5, gas_dt);
+				stmt3.setString(6, gas_dt);
+				stmt3.setString(7, ""+VTRANSPORTER_CD.elementAt(i));
+				stmt3.setString(8, gas_dt);
+				stmt3.setString(9, comp_cd);
+				stmt3.setString(10, "C");
+				stmt3.setString(11, "Y");
+				stmt3.setString(12, "Y");
+				stmt3.setString(13, "A");
+				stmt3.setString(14, gas_dt);
+				stmt3.setString(15, gas_dt);
+				stmt3.setString(16, ""+VTRANSPORTER_CD.elementAt(i));
+				stmt3.setString(17, gas_dt);
+				rset3=stmt3.executeQuery();
+				while(rset3.next())
+				{
+					String trns_cd = ""+VTRANSPORTER_CD.elementAt(i);
+					String trns_plant_seq = rset3.getString(1)==null?"":rset3.getString(1);
+					
+					VTRANSPORTER_PLANT_SEQ.add(trns_plant_seq);
+					VTRANSPORTER_PLANT_ABBR.add(""+utilBean.getCounterpartyPlantABBR(conn,trns_cd, comp_cd, trns_plant_seq, "R"));
+					
+					index++;
+					int sub_index=0;
+					double trans_plant_wise_total_mmbtu=0;
+					double trans_plant_wise_total_scm=0;
+					int partial_count=0;
+					int submitted_count=0;
+					queryString="SELECT A.COMPANY_CD,A.COUNTERPARTY_CD,A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONTRACT_TYPE,"
+							+ "A.CONT_REF_NO,C.TRANSPORTER_CD,C.PLANT_SEQ_NO,A.DCQ,A.CONT_NAME,A.MDCQ_PERCENTAGE,A.TRADE_REF_NO,"
+							+ "B.PLANT_SEQ_NO,D.COMPANY_CD,D.PLANT_SEQ_NO,0,'CONT',NULL,NULL,"
+							+ "E.NOM_REV_NO,E.QTY_MMBTU,E.QTY_SCM,TO_CHAR(E.GEN_DT,'DD/MM/YYYY'),E.GEN_TIME,E.BASE,E.GCV,E.NCV "
+							+ "FROM FMS_SUPPLY_CONT_MST A,"
+								+ "FMS_SUPPLY_CONT_PLANT B, "
+								+ "FMS_SUPPLY_CONT_TRANSPTR C, "
+								+ "FMS_SUPPLY_CONT_BU D, "
+								+ "FMS_DAILY_SELLER_NOM E "
+							+ "WHERE A.COMPANY_CD=? AND A.BUYER_NOM_FLAG=? AND A.FCC_FLAG=? AND A.IS_ALLOCATED=? "
+							+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+							+ "AND C.TRANSPORTER_CD=? AND C.PLANT_SEQ_NO=? "
+							+ "AND A.CONTRACT_TYPE IN ('S','L','X') "
+							+ "AND A.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+							+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+							+ ""
+							+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+							+ "AND A.CONT_NO=B.CONT_NO AND A.CONT_REV=B.CONT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+							+ ""
+							+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV "
+							+ "AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE "
+							+ ""
+							+ "AND A.COMPANY_CD=D.COMPANY_CD AND A.COUNTERPARTY_CD=D.COUNTERPARTY_CD AND A.AGMT_NO=D.AGMT_NO AND A.AGMT_REV=D.AGMT_REV "
+							+ "AND A.CONT_NO=D.CONT_NO AND A.CONT_REV=D.CONT_REV AND A.CONTRACT_TYPE=D.CONTRACT_TYPE "
+							+ ""
+							+ "AND A.COMPANY_CD=E.COMPANY_CD AND A.COUNTERPARTY_CD=E.COUNTERPARTY_CD AND A.AGMT_NO=E.AGMT_NO AND A.CONT_NO=E.CONT_NO AND A.CONTRACT_TYPE=E.CONTRACT_TYPE "
+							+ "AND C.TRANSPORTER_CD=E.TRANSPORTER_CD AND E.TRANS_SEQ=C.PLANT_SEQ_NO AND E.PLANT_SEQ=B.PLANT_SEQ_NO AND E.BU_SEQ=D.PLANT_SEQ_NO AND E.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+							+ "AND E.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM F "
+							+ "WHERE F.CONT_NO=E.CONT_NO AND F.AGMT_NO=E.AGMT_NO AND F.COMPANY_CD=E.COMPANY_CD AND F.COUNTERPARTY_CD=E.COUNTERPARTY_CD "
+							+ "AND F.TRANSPORTER_CD=E.TRANSPORTER_CD AND F.TRANS_SEQ=E.TRANS_SEQ AND F.BU_SEQ=E.BU_SEQ "
+							+ "AND F.PLANT_SEQ=E.PLANT_SEQ AND F.CONTRACT_TYPE=E.CONTRACT_TYPE AND F.GAS_DT=E.GAS_DT AND F.CARGO_NO=E.CARGO_NO) "
+							+ " UNION ALL "
+							+ "SELECT A.COMPANY_CD,A.COUNTERPARTY_CD,A.AGMT_NO,A.AGMT_REV,A.CONT_NO,A.CONT_REV,A.CONTRACT_TYPE,"
+							+ "B.CARGO_REF,C.TRANSPORTER_CD,C.PLANT_SEQ_NO,B.CSOC_QTY,A.CONT_NAME,A.MDCQ_PERCENTAGE,NULL,"
+							+ "D.PLANT_SEQ_NO,E.COMPANY_CD,E.PLANT_SEQ_NO,B.CARGO_NO,'LTCORA',A.BUY_SALE,A.AGMT_TYPE,"
+							+ "F.NOM_REV_NO,F.QTY_MMBTU,F.QTY_SCM,TO_CHAR(F.GEN_DT,'DD/MM/YYYY'),F.GEN_TIME,F.BASE,F.GCV,F.NCV "
+							+ "FROM FMS_LTCORA_CONT_MST A,"
+								+ "FMS_LTCORA_CONT_CARGO_DTL B,"
+								+ "FMS_LTCORA_CONT_TRANSPTR C,"
+								+ "FMS_LTCORA_CONT_PLANT D,"
+								+ "FMS_LTCORA_CONT_BU E, "
+								+ "FMS_DAILY_SELLER_NOM F "
+							+ "WHERE A.COMPANY_CD=? AND A.BUY_SALE=? AND A.FCC_FLAG=? AND B.CARGO_STATUS=? AND A.AGMT_TYPE=? AND B.BOE_NO IS NOT NULL "
+							+ "AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')<=TO_DATE(?,'DD/MM/YYYY') AND TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0) >=TO_DATE(?,'DD/MM/YYYY') "
+							+ "AND C.TRANSPORTER_CD=? AND C.PLANT_SEQ_NO=? "
+							+ "AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+							+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV "
+							+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE) "
+							+ ""
+							+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+							+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE "
+							+ ""
+							+ "AND A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND A.CONT_NO=C.CONT_NO AND A.CONT_REV=C.CONT_REV "
+							+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE "
+							+ ""
+							+ "AND A.COMPANY_CD=D.COMPANY_CD AND A.COUNTERPARTY_CD=D.COUNTERPARTY_CD AND A.CONT_NO=D.CONT_NO AND A.CONT_REV=D.CONT_REV "
+							+ "AND A.AGMT_NO=D.AGMT_NO AND A.AGMT_REV=D.AGMT_REV AND A.CONTRACT_TYPE=D.CONTRACT_TYPE AND A.BUY_SALE=D.BUY_SALE AND A.AGMT_TYPE=D.AGMT_TYPE "
+							+ ""
+							+ "AND A.COMPANY_CD=E.COMPANY_CD AND A.COUNTERPARTY_CD=E.COUNTERPARTY_CD AND A.CONT_NO=E.CONT_NO AND A.CONT_REV=E.CONT_REV "
+							+ "AND A.AGMT_NO=E.AGMT_NO AND A.AGMT_REV=E.AGMT_REV AND A.CONTRACT_TYPE=E.CONTRACT_TYPE AND A.BUY_SALE=E.BUY_SALE AND A.AGMT_TYPE=E.AGMT_TYPE "
+							+ ""
+							+ "AND A.COMPANY_CD=F.COMPANY_CD AND A.COUNTERPARTY_CD=F.COUNTERPARTY_CD AND A.AGMT_NO=F.AGMT_NO AND A.CONT_NO=F.CONT_NO AND A.CONTRACT_TYPE=F.CONTRACT_TYPE "
+							+ "AND C.TRANSPORTER_CD=F.TRANSPORTER_CD AND F.TRANS_SEQ=C.PLANT_SEQ_NO AND F.PLANT_SEQ=D.PLANT_SEQ_NO AND F.BU_SEQ=E.PLANT_SEQ_NO "
+							+ "AND F.CARGO_NO=B.CARGO_NO AND F.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+							+ "AND F.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM G "
+							+ "WHERE F.CONT_NO=G.CONT_NO AND F.AGMT_NO=G.AGMT_NO AND F.COMPANY_CD=G.COMPANY_CD AND F.COUNTERPARTY_CD=G.COUNTERPARTY_CD "
+							+ "AND F.TRANSPORTER_CD=G.TRANSPORTER_CD AND F.TRANS_SEQ=G.TRANS_SEQ AND F.BU_SEQ=G.BU_SEQ "
+							+ "AND F.PLANT_SEQ=G.PLANT_SEQ AND F.CONTRACT_TYPE=G.CONTRACT_TYPE AND F.GAS_DT=G.GAS_DT AND F.CARGO_NO=G.CARGO_NO) ";
+					stmt = conn.prepareStatement(queryString);
+					stmt.setString(1, comp_cd);
+					stmt.setString(2, "Y");
+					stmt.setString(3, "Y");
+					stmt.setString(4, "Y");
+					stmt.setString(5, gas_dt);
+					stmt.setString(6, gas_dt);
+					stmt.setString(7, ""+VTRANSPORTER_CD.elementAt(i));
+					stmt.setString(8, trns_plant_seq);
+					stmt.setString(9, gas_dt);
+					stmt.setString(10, comp_cd);
+					stmt.setString(11, "C");
+					stmt.setString(12, "Y");
+					stmt.setString(13, "Y");
+					stmt.setString(14, "A");
+					stmt.setString(15, gas_dt);
+					stmt.setString(16, gas_dt);
+					stmt.setString(17, ""+VTRANSPORTER_CD.elementAt(i));
+					stmt.setString(18, trns_plant_seq);
+					stmt.setString(19, gas_dt);
+					rset=stmt.executeQuery();
+					while(rset.next())
+					{
+						String companyCd = rset.getString(1)==null?"":rset.getString(1);
+						String countpty_cd = rset.getString(2)==null?"":rset.getString(2);
+						String agmt = rset.getString(3)==null?"":rset.getString(3);
+						String agmt_rev = rset.getString(4)==null?"":rset.getString(4);
+						String cont = rset.getString(5)==null?"":rset.getString(5);
+						String cont_rev = rset.getString(6)==null?"":rset.getString(6);
+						String cont_type = rset.getString(7)==null?"":rset.getString(7);
+						String cont_ref = rset.getString(8)==null?"":rset.getString(8);
+						String transporter_cd = rset.getString(9)==null?"":rset.getString(9);
+						String transporter_plant_seq = rset.getString(10)==null?"":rset.getString(10);
+						String dcq = nf.format(rset.getDouble(11));
+						String cont_name = rset.getString(12)==null?"":rset.getString(12);
+						String mdcq_percentage = nf.format(rset.getDouble(13));
+						double mdcq_qty = (Double.parseDouble(dcq)*Double.parseDouble(mdcq_percentage))/100;
+						
+						String trade_ref = rset.getString(14)==null?"":rset.getString(14);
+						if(cont_type.equals("X")) {
+							cont_ref=trade_ref;
+						}
+						
+						String plant_seq = rset.getString(15)==null?"":rset.getString(15);
+						String plant_abbr=utilBean.getCounterpartyPlantABBR(conn,countpty_cd, companyCd, plant_seq, "C");
+						String buCd = rset.getString(16)==null?"":rset.getString(16);
+						String bu_plant_seq = rset.getString(17)==null?"":rset.getString(17);
+						String bu_plant_abbr=utilBean.getCounterpartyPlantABBR(conn,buCd, comp_cd, bu_plant_seq, "B");
+						String cargo_no = rset.getString(18)==null?"0":rset.getString(18);
+						String contractName = rset.getString(19)==null?"":rset.getString(19);
+						String buySell = rset.getString(20)==null?"":rset.getString(20);
+						String agmtType = rset.getString(21)==null?"":rset.getString(21);
+						
+						String nom_rev_no = rset.getString(22)==null?"":rset.getString(22);
+						double buyer_nom_mmbtu = rset.getDouble(23);
+						double buyer_nom_scm = rset.getDouble(24);
+						String buyer_gen_dt=rset.getString(25)==null?"":rset.getString(25);
+						String buyer_gen_time=rset.getString(26)==null?"":rset.getString(26);
+						String buyer_base=rset.getString(27)==null?"":rset.getString(27);
+						String buyer_gcv=rset.getString(28)==null?"9802.80":rset.getString(28);
+						String buyer_ncv=rset.getString(29)==null?"8831.35":rset.getString(29);
+						
+						String internal_map_id = cont_type+"-"+countpty_cd+"-"+agmt+"-"+agmt_rev+"-"+cont+"-"+cont_rev;
+						String ct_cont_mapping = cont_type+"-"+countpty_cd+"-"+agmt+"-%-"+cont+"-%";
+						String customer_code=""+utilBean.getTranspoterCustomerCode(conn,companyCd, transporter_cd, countpty_cd, plant_seq, gas_dt);
+						
+						String dis_cont_mapping= utilBean.NewDealMappingId(companyCd, countpty_cd, agmt, agmt_rev, cont, cont_rev, cont_type, cargo_no);
+						String variable_dcq="";
+						String billingFrq="";
+						String taxDtl="";
+						if(contractName.equals("LTCORA"))
+						{
+							ct_cont_mapping+="-"+cargo_no;
+							internal_map_id+="-"+cargo_no;
+							variable_dcq=utilBean.getCargoVariableCSOC(conn,companyCd, countpty_cd, buySell, agmt, cont, cont_type, cargo_no, gas_dt);
+							
+							queryString2="SELECT BILLING_FREQ "
+									+ "FROM FMS_LTCORA_CONT_BILLING_DTL A "
+									+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND BUY_SALE=? AND AGMT_TYPE=? "
+									+ "AND AGMT_NO=? AND AGMT_REV=? AND CONT_NO=? AND CONT_REV=? AND CONTRACT_TYPE=? ";
+							stmt2 = conn.prepareStatement(queryString2);
+							stmt2.setString(1, companyCd);
+							stmt2.setString(2, countpty_cd);
+							stmt2.setString(3, buySell);
+							stmt2.setString(4, agmtType);
+							stmt2.setString(5, agmt);
+							stmt2.setString(6, agmt_rev);
+							stmt2.setString(7, cont);
+							stmt2.setString(8, cont_rev);
+							stmt2.setString(9, cont_type);
+							rset2=stmt2.executeQuery();
+							if(rset2.next())
+					  		{
+					  			billingFrq=rset2.getString(1)==null?"":rset2.getString(1);
+					  		}
+							rset2.close();
+							stmt2.close();
+							
+							String periodStDt=utilBean.getFirstDtOfBillingCycle(billingFrq, "", gas_dt);
+							taxDtl=utilBean.getEntityServiceStructureDtl(conn,companyCd, countpty_cd, "C", plant_seq, bu_plant_seq, periodStDt,"SI");
+						}
+						else
+						{
+							variable_dcq=utilBean.getContVariableDCQ(conn,companyCd, countpty_cd, agmt, cont, cont_type, gas_dt);
+							
+							queryString2="SELECT BILLING_FREQ "
+									+ "FROM FMS_SUPPLY_BILLING_DTL A "
+									+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND AGMT_NO=? "//AND AGMT_REV='"+agmt_rev+"' "
+									+ "AND CONT_NO=? "//AND CONT_REV='"+cont_rev+"' "
+									+ "AND CONTRACT_TYPE=? "
+									+ "AND EFF_DT=(SELECT MAX(EFF_DT) FROM FMS_SUPPLY_BILLING_DTL B WHERE A.COMPANY_CD=B.COMPANY_CD "
+									+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO "
+									+ "AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND TO_DATE(?,'DD/MM/YYYY') > EFF_DT)";
+							stmt2 = conn.prepareStatement(queryString2);
+							stmt2.setString(1, companyCd);
+							stmt2.setString(2, countpty_cd);
+							stmt2.setString(3, agmt);
+							stmt2.setString(4, cont);
+							stmt2.setString(5, cont_type);
+							stmt2.setString(6, gas_dt);
+							rset2=stmt2.executeQuery();
+							if(rset2.next())
+					  		{
+					  			billingFrq=rset2.getString(1)==null?"":rset2.getString(1);
+					  		}
+							rset2.close();
+							stmt2.close();
+							
+							String periodStDt=utilBean.getFirstDtOfBillingCycle(billingFrq, "", gas_dt);
+							taxDtl=utilBean.getEntityTaxStructureDtl(conn,companyCd, countpty_cd, "C", plant_seq, bu_plant_seq, periodStDt, "S");
+						}
+						if(!variable_dcq.equals(""))
+						{
+							dcq=variable_dcq;
+						}
+						
+						sub_index++;
+						
+						VCOUNTERPARTY_CD.add(countpty_cd);
+						VCOUNTERPARTY_ABBR.add(""+utilBean.getCounterpartyABBR(conn,countpty_cd));
+						VCOUNTERPARTY_NM.add(""+utilBean.getCounterpartyName(conn,countpty_cd));
+						VAGMT_NO.add(agmt);
+						VAGMT_REV_NO.add(agmt_rev);
+						VCONT_NO.add(cont);
+						VCONT_REV_NO.add(cont_rev);
+						VCONTRACT_TYPE.add(cont_type);
+						VCARGO_NO.add(cargo_no);
+						VDIS_CONT_MAPPING.add(dis_cont_mapping);
+						VCOUNTERPARTY_PLANT_SEQ.add(plant_seq);
+						VCOUNTERPARTY_PLANT_ABBR.add(plant_abbr);
+						VBU_CD.add(buCd);
+						VBU_PLANT_SEQ.add(bu_plant_seq);
+						VBU_PLANT_ABBR.add(bu_plant_abbr);
+						VDCQ.add(dcq);
+						VCONT_REF.add(cont_ref);
+						VCONT_NAME.add(cont_name);
+						VMDCQ_QTY.add(nf.format(mdcq_qty));
+						VINTERNAL_MAP_ID.add(internal_map_id);
+						
+						String transStatus = (String) utilBean.getCounterpartyDetails(conn, trns_cd, gas_dt).get("status");
+						VTRANSPORTER_STATUS.add(transStatus);
+
+						String cpStatus = (String) utilBean.getCounterpartyDetails(conn, countpty_cd, gas_dt).get("status");
+						VCOUNTERPARTY_STATUS.add(cpStatus);
+						
+						VCUSTOMER_CODE.add(customer_code);
+				  		VTAX_DTL.add(taxDtl);
+						
+						int isInvoiceSubmitted=isInvoiceSubmitted(countpty_cd, cont, agmt, plant_seq, cont_type, bu_plant_seq, gas_dt,cargo_no,"F",true);
+						if(isInvoiceSubmitted>0)
+						{
+							VNOM_BLOCK.add("Y");
+						}
+						else
+						{
+							VNOM_BLOCK.add("N");
+						}
+						
+						int mole_count=0;
+						Vector TEMP_MOLE_MAP=new Vector();
+						Vector TEMP_MOLE_SEQ_NO=new Vector();
+						Vector TEMP_MOLE_QTY_MMBTU=new Vector();
+						Vector TEMP_MOLE_QTY_SCM=new Vector();
+						Vector TEMP_MOLE_EXIST=new Vector();
+						Vector TEMP_MOLE_COLOR=new Vector();
+						
+						//GET ALLOCATION DATA FOR THE CONTRACT WISE
+						queryString2="SELECT NOM_REV_NO,GEN_TIME,BASE,GCV,NCV,QTY_MMBTU,QTY_SCM,TO_CHAR(GEN_DT,'DD/MM/YYYY') "
+				  				+ "FROM FMS_DAILY_ALLOCATION_DTL A "
+				  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+								+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+								+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+								+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+								+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? "
+								+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+								+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+								+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+								+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+								+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+								+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+						stmt2 = conn.prepareStatement(queryString2);
+						stmt2.setString(1, cont);
+						stmt2.setString(2, agmt);
+						stmt2.setString(3, companyCd);
+						stmt2.setString(4, countpty_cd);
+						stmt2.setString(5, transporter_cd);
+						stmt2.setString(6, transporter_plant_seq);
+						stmt2.setString(7, plant_seq);
+						stmt2.setString(8, cont_type);
+						stmt2.setString(9, bu_plant_seq);
+						stmt2.setString(10, gas_dt);
+						stmt2.setString(11, cargo_no);
+						rset2=stmt2.executeQuery();
+						if(rset2.next())
+						{
+				  			VNOM_REV_NO.add(rset2.getString(1)==null?"":rset2.getString(1));
+				  			VGEN_TIME.add(rset2.getString(2)==null?"":rset2.getString(2));
+				  			VBASE.add(rset2.getString(3)==null?"":rset2.getString(3));
+				  			VGCV.add(rset2.getString(4)==null?"9802.80":rset2.getString(4));
+				  			VNCV.add(rset2.getString(5)==null?"8831.35":rset2.getString(5));
+				  			VQTY_MMBTU.add(nf.format(rset2.getDouble(6)));
+				  			VQTY_SCM.add(nf.format(rset2.getDouble(7)));
+				  			VGEN_DT.add(rset2.getString(8)==null?"":rset2.getString(8));
+				  			
+				  			VNOM_COLOR.add("#99ffcc");
+				  			
+				  			VIS_EXIST.add("Y");
+				  			
+				  			submitted_count++;
+				  			trans_plant_wise_total_mmbtu += rset2.getDouble(6);
+				  			trans_plant_wise_total_scm += rset2.getDouble(7);
+				  			
+				  			VBUYER_NOM_REV_NO.add(nom_rev_no);
+					  		VBUYER_NOM.add(buyer_nom_mmbtu);
+					  		
+					  		queryString5="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM,MOLECULE_MAP "
+					  				+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A "
+					  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+									+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+									+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? AND DTL_CATEGORY='MOL' "
+									+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+									+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+									+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+									+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+									+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+									+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO AND B.DTL_CATEGORY=A.DTL_CATEGORY) ";
+							stmt5 = conn.prepareStatement(queryString5);
+							stmt5.setString(1, cont);
+							stmt5.setString(2, agmt);
+							stmt5.setString(3, companyCd);
+							stmt5.setString(4, countpty_cd);
+							stmt5.setString(5, transporter_cd);
+							stmt5.setString(6, transporter_plant_seq);
+							stmt5.setString(7, plant_seq);
+							stmt5.setString(8, cont_type);
+							stmt5.setString(9, bu_plant_seq);
+							stmt5.setString(10, gas_dt);
+							stmt5.setString(11, cargo_no);
+							rset5=stmt5.executeQuery();
+							while(rset5.next())
+							{
+								mole_count++;
+								
+								TEMP_MOLE_SEQ_NO.add(rset5.getString(2)==null?"":rset5.getString(2));
+								TEMP_MOLE_QTY_MMBTU.add(nf.format(rset5.getDouble(3)));
+								TEMP_MOLE_QTY_SCM.add(nf.format(rset5.getDouble(4)));
+								TEMP_MOLE_MAP.add(rset5.getString(5)==null?"":rset5.getString(5));
+								TEMP_MOLE_EXIST.add("Y");
+								TEMP_MOLE_COLOR.add("#99ffcc");
+							}
+							rset5.close();
+							stmt5.close();
+					  	}
+				  		else
+				  		{
+				  			//GET SELLER NOMINATION DATA FOR THE CONTRACT WISE	
+				  			VNOM_REV_NO.add("");
+				  			VBASE.add(buyer_base);
+				  			VGCV.add(buyer_gcv);
+				  			VNCV.add(buyer_ncv);
+				  			VGEN_DT.add(buyer_gen_dt);
+				  			
+				  			VBUYER_NOM_REV_NO.add(nom_rev_no);
+				  			VBUYER_NOM.add(nf.format(buyer_nom_mmbtu));
+				  			
+				  			String split[] = dateTime.split(" ");
+				  			VGEN_TIME.add(split[1]);
+				  			VNOM_COLOR.add("");
+				  			
+				  			VIS_EXIST.add("N");
+				  			
+				  			if(isInvoiceSubmitted>0)
+							{
+				  				VQTY_MMBTU.add("");
+					  			VQTY_SCM.add("");
+							}
+				  			else
+				  			{	
+					  			VQTY_MMBTU.add(nf.format(buyer_nom_mmbtu));
+					  			VQTY_SCM.add(nf.format(buyer_nom_scm));
+					  			
+					  			partial_count++;
+					  			trans_plant_wise_total_mmbtu += buyer_nom_mmbtu;
+					  			trans_plant_wise_total_scm += buyer_nom_scm;
+				  			}
+				  			
+					  	}
+						rset2.close();
+						stmt2.close();
+						
+						//FETCHING LAST DATE FOR AUTO SELECTION
+						if(mole_count==0)
+						{
+							queryString5="SELECT MOLECULE_MAP,MAX(GAS_DT) "
+					  				+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A "
+					  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+									+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+									+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+									+ "AND GAS_DT < TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? AND DTL_CATEGORY='MOL' "
+									+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+									+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+									+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+									+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+									+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+									+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO AND B.DTL_CATEGORY=A.DTL_CATEGORY) "
+									+ "GROUP BY MOLECULE_MAP ";
+							stmt5 = conn.prepareStatement(queryString5);
+							stmt5.setString(1, cont);
+							stmt5.setString(2, agmt);
+							stmt5.setString(3, companyCd);
+							stmt5.setString(4, countpty_cd);
+							stmt5.setString(5, transporter_cd);
+							stmt5.setString(6, transporter_plant_seq);
+							stmt5.setString(7, plant_seq);
+							stmt5.setString(8, cont_type);
+							stmt5.setString(9, bu_plant_seq);
+							stmt5.setString(10, gas_dt);
+							stmt5.setString(11, cargo_no);
+							rset5=stmt5.executeQuery();
+							while(rset5.next())
+							{
+								TEMP_MOLE_SEQ_NO.add("");
+								TEMP_MOLE_QTY_MMBTU.add("");
+								TEMP_MOLE_QTY_SCM.add("");
+								TEMP_MOLE_MAP.add(rset5.getString(1)==null?"":rset5.getString(1));
+								TEMP_MOLE_EXIST.add("N");
+								TEMP_MOLE_COLOR.add("");
+							}
+							rset5.close();
+							stmt5.close();
+						}
+						
+						VALLOC_MOLE_MAPPING.add(TEMP_MOLE_MAP);
+						VALLOC_MOLE_SEQ_NO.add(TEMP_MOLE_SEQ_NO);
+						VALLOC_MOLE_QTY_MMBTU.add(TEMP_MOLE_QTY_MMBTU);
+						VALLOC_MOLE_QTY_SCM.add(TEMP_MOLE_QTY_SCM);
+						VALLOC_MOLE_EXIST.add(TEMP_MOLE_EXIST);
+						VALLOC_MOLE_COLOR.add(TEMP_MOLE_COLOR);
+						
+						int index1=0;
+						
+						queryString2="SELECT CT_REF_NO,UTR_NO "
+								+ "FROM FMS_TRANSPORTER_CT_MST A,FMS_TRANS_CT_CONT_MAP B "
+								+ "WHERE A.COMPANY_CD=? AND A.CONTRACT_TYPE=? "
+								+ "AND A.ENTRY_TRANS_CD=? AND A.ENTRY_TRANS_PLANT=? "
+								+ "AND A.EXIT_COUNTERPARTY=? AND A.EXIT_PLANT_SEQ=? "
+								+ "AND A.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND A.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+								+ "AND B.CONT_MAPPING LIKE ? AND A.BU_SEQ=? AND A.STATUS='Y' "
+								+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+								+ "AND A.ENTRY_TRANS_CD=B.ENTRY_TRANS_CD AND A.ENTRY_TRANS_PLANT=B.ENTRY_TRANS_PLANT "
+								+ "AND A.EXIT_COUNTERPARTY=B.EXIT_COUNTERPARTY AND A.EXIT_PLANT_SEQ=B.EXIT_PLANT_SEQ "
+								+ "AND A.SEQ_NO=B.SEQ_NO AND A.BU_SEQ=B.BU_SEQ ";
+						stmt2 = conn.prepareStatement(queryString2);
+						stmt2.setString(1, companyCd);
+						stmt2.setString(2, "C");
+						stmt2.setString(3, transporter_cd);
+						stmt2.setString(4, transporter_plant_seq);
+						stmt2.setString(5, countpty_cd);
+						stmt2.setString(6, plant_seq);
+						stmt2.setString(7, gas_dt);
+						stmt2.setString(8, gas_dt);
+						stmt2.setString(9, ct_cont_mapping);
+						stmt2.setString(10, bu_plant_seq);
+						rset2=stmt2.executeQuery();
+						while(rset2.next())
+						{
+							String ct_ref=rset2.getString(1)==null?"":rset2.getString(1);
+							String utr_no=rset2.getString(2)==null?"":rset2.getString(2);
+							
+							queryString5="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM "
+					  				+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A "
+					  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+									+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+									+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF=? AND CARGO_NO=? AND DTL_CATEGORY='CT' "
+									+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+									+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+									+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+									+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+									+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+									+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO AND B.DTL_CATEGORY=A.DTL_CATEGORY) ";
+							stmt5 = conn.prepareStatement(queryString5);
+							stmt5.setString(1, cont);
+							stmt5.setString(2, agmt);
+							stmt5.setString(3, companyCd);
+							stmt5.setString(4, countpty_cd);
+							stmt5.setString(5, transporter_cd);
+							stmt5.setString(6, transporter_plant_seq);
+							stmt5.setString(7, plant_seq);
+							stmt5.setString(8, cont_type);
+							stmt5.setString(9, bu_plant_seq);
+							stmt5.setString(10, gas_dt);
+							stmt5.setString(11, ct_ref);
+							stmt5.setString(12, cargo_no);
+							rset5=stmt5.executeQuery();
+							if(rset5.next())
+							{
+								index1+=1;
+								
+								VSUB_NOM_REV_NO.add(rset5.getString(1)==null?"":rset5.getString(1));
+								VSUB_SEQ_NO.add(rset5.getString(2)==null?"":rset5.getString(2));
+								VSUB_CT_REF.add(ct_ref);
+								VSUB_UTR_REF.add(utr_no);
+								VSUB_QTY_MMBTU.add(nf.format(rset5.getDouble(3)));
+					  			VSUB_QTY_SCM.add(nf.format(rset5.getDouble(4)));
+								
+								VSUB_IS_EXIST.add("Y");
+								VSUB_NOM_COLOR.add("#99ffcc");
+								
+								queryString6="SELECT NOM_REV_NO,QTY_MMBTU,QTY_SCM "
+						  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF=? AND CARGO_NO=? "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+										+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+								stmt6 = conn.prepareStatement(queryString6);
+								stmt6.setString(1, cont);
+								stmt6.setString(2, agmt);
+								stmt6.setString(3, companyCd);
+								stmt6.setString(4, countpty_cd);
+								stmt6.setString(5, transporter_cd);
+								stmt6.setString(6, transporter_plant_seq);
+								stmt6.setString(7, plant_seq);
+								stmt6.setString(8, cont_type);
+								stmt6.setString(9, bu_plant_seq);
+								stmt6.setString(10, gas_dt);
+								stmt6.setString(11, ct_ref);
+								stmt6.setString(12, cargo_no);
+								rset6=stmt6.executeQuery();
+								if(rset6.next())
+								{
+									VSUB_BUYER_NOM_REV.add(rset6.getString(1)==null?"":rset6.getString(1));
+									VSUB_BUYER_NOM_QTY.add(nf.format(rset6.getDouble(2)));
+								}
+								else
+								{
+									VSUB_BUYER_NOM_REV.add("");
+									VSUB_BUYER_NOM_QTY.add("");
+								}
+								rset6.close();
+								stmt6.close();
+							}
+							else
+							{
+								queryString7="SELECT NOM_REV_NO,QTY_MMBTU,QTY_SCM "
+						  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF=? AND CARGO_NO=? "
+						  				+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+										+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+								stmt7 = conn.prepareStatement(queryString7);
+								stmt7.setString(1, cont);
+								stmt7.setString(2, agmt);
+								stmt7.setString(3, companyCd);
+								stmt7.setString(4, countpty_cd);
+								stmt7.setString(5, transporter_cd);
+								stmt7.setString(6, transporter_plant_seq);
+								stmt7.setString(7, plant_seq);
+								stmt7.setString(8, cont_type);
+								stmt7.setString(9, bu_plant_seq);
+								stmt7.setString(10, gas_dt);
+								stmt7.setString(11, ct_ref);
+								stmt7.setString(12, cargo_no);
+								rset7=stmt7.executeQuery();
+								if(rset7.next())
+								{
+									index1+=1;
+									
+									VSUB_NOM_REV_NO.add("");
+									VSUB_SEQ_NO.add("");
+									VSUB_CT_REF.add(ct_ref);
+									VSUB_UTR_REF.add(utr_no);
+									
+									if(isInvoiceSubmitted > 0)
+									{
+										VSUB_QTY_MMBTU.add("");
+										VSUB_QTY_SCM.add("");
+									}
+									else
+									{
+										VSUB_QTY_MMBTU.add(nf.format(rset7.getDouble(2)));
+										VSUB_QTY_SCM.add(nf.format(rset7.getDouble(3)));
+									}
+									
+									VSUB_IS_EXIST.add("N");
+									VSUB_NOM_COLOR.add("");
+									
+									VSUB_BUYER_NOM_REV.add(rset7.getString(1)==null?"":rset7.getString(1));
+									VSUB_BUYER_NOM_QTY.add(nf.format(rset7.getDouble(2)));
+								}
+								rset7.close();
+								stmt7.close();
+							}
+							rset5.close();
+							stmt5.close();
+						}
+						rset2.close();
+						stmt2.close();
+						
+						queryString6="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM,CT_REF,UTR_NO "
+				  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+				  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+								+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+								+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+								+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+								+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? AND CT_REF IS NOT NULL "
+								+ "AND CT_REF NOT IN (SELECT C.CT_REF_NO "
+										+ "FROM FMS_TRANSPORTER_CT_MST C,FMS_TRANS_CT_CONT_MAP B "
+										+ "WHERE A.COMPANY_CD=C.COMPANY_CD AND C.CONTRACT_TYPE='C' "
+										+ "AND C.ENTRY_TRANS_CD=A.TRANSPORTER_CD AND C.ENTRY_TRANS_PLANT=A.TRANS_SEQ "
+										+ "AND C.EXIT_COUNTERPARTY=A.COUNTERPARTY_CD AND C.EXIT_PLANT_SEQ=A.PLANT_SEQ AND C.BU_SEQ=A.BU_SEQ "
+										+ "AND C.START_DT<=TO_DATE(?,'DD/MM/YYYY') AND C.END_DT>=TO_DATE(?,'DD/MM/YYYY') "
+										+ "AND B.CONT_MAPPING LIKE CASE WHEN '"+contractName+"'='LTCORA' THEN A.CONTRACT_TYPE||'-'||A.COUNTERPARTY_CD||'-'||A.AGMT_NO||'-%-'||A.CONT_NO||'-%-'||A.CARGO_NO "
+											+ "ELSE A.CONTRACT_TYPE||'-'||A.COUNTERPARTY_CD||'-'||A.AGMT_NO||'-%-'||A.CONT_NO||'-%' END "
+										+ "AND C.STATUS='Y' "
+										+ "AND C.COMPANY_CD=B.COMPANY_CD AND C.CONTRACT_TYPE=B.CONTRACT_TYPE "
+										+ "AND C.ENTRY_TRANS_CD=B.ENTRY_TRANS_CD AND C.ENTRY_TRANS_PLANT=B.ENTRY_TRANS_PLANT "
+										+ "AND C.EXIT_COUNTERPARTY=B.EXIT_COUNTERPARTY AND C.EXIT_PLANT_SEQ=B.EXIT_PLANT_SEQ "
+										+ "AND C.SEQ_NO=B.SEQ_NO) "
+								+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+								+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+								+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+								+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+								+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+								+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+						stmt6 = conn.prepareStatement(queryString6);
+						stmt6.setString(1, cont);
+						stmt6.setString(2, agmt);
+						stmt6.setString(3, companyCd);
+						stmt6.setString(4, countpty_cd);
+						stmt6.setString(5, transporter_cd);
+						stmt6.setString(6, transporter_plant_seq);
+						stmt6.setString(7, plant_seq);
+						stmt6.setString(8, cont_type);
+						stmt6.setString(9, bu_plant_seq);
+						stmt6.setString(10, gas_dt);
+						stmt6.setString(11, cargo_no);
+						stmt6.setString(12, gas_dt);
+						stmt6.setString(13, gas_dt);
+						rset6=stmt6.executeQuery();
+						while(rset6.next())
+						{
+							index1+=1;
+							
+							String ct_ref=rset6.getString(5)==null?"":rset6.getString(5);
+							String utr_no=rset6.getString(6)==null?"":rset6.getString(6);
+							
+							queryString7="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM "
+					  				+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A "
+					  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+									+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+									+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF=? AND CARGO_NO=? AND DTL_CATEGORY='CT' "
+									+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+									+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+									+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+									+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+									+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+									+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO AND B.DTL_CATEGORY=A.DTL_CATEGORY) ";
+							stmt7 = conn.prepareStatement(queryString7);
+							stmt7.setString(1, cont);
+							stmt7.setString(2, agmt);
+							stmt7.setString(3, companyCd);
+							stmt7.setString(4, countpty_cd);
+							stmt7.setString(5, transporter_cd);
+							stmt7.setString(6, transporter_plant_seq);
+							stmt7.setString(7, plant_seq);
+							stmt7.setString(8, cont_type);
+							stmt7.setString(9, bu_plant_seq);
+							stmt7.setString(10, gas_dt);
+							stmt7.setString(11, ct_ref);
+							stmt7.setString(12, cargo_no);
+							rset7=stmt7.executeQuery();
+							if(rset7.next())
+							{
+								VSUB_NOM_REV_NO.add(rset7.getString(1)==null?"":rset7.getString(1));
+								VSUB_SEQ_NO.add(rset7.getString(2)==null?"":rset7.getString(2));
+								VSUB_CT_REF.add(ct_ref);
+								VSUB_UTR_REF.add(utr_no);
+								VSUB_QTY_MMBTU.add(nf.format(rset7.getDouble(3)));
+					  			VSUB_QTY_SCM.add(nf.format(rset7.getDouble(4)));
+								
+								VSUB_IS_EXIST.add("Y");
+								VSUB_NOM_COLOR.add("#99ffcc");
+								
+								VSUB_BUYER_NOM_REV.add(rset6.getString(1)==null?"":rset6.getString(1));
+								VSUB_BUYER_NOM_QTY.add(nf.format(rset6.getDouble(3)));
+							}
+							else
+							{
+								VSUB_NOM_REV_NO.add("");
+								VSUB_SEQ_NO.add("");
+								VSUB_CT_REF.add(ct_ref);
+								VSUB_UTR_REF.add(utr_no);
+								
+								if(isInvoiceSubmitted > 0)
+								{
+									VSUB_QTY_MMBTU.add("");
+									VSUB_QTY_SCM.add("");
+								}
+								else
+								{
+									VSUB_QTY_MMBTU.add(nf.format(rset6.getDouble(3)));
+									VSUB_QTY_SCM.add(nf.format(rset6.getDouble(4)));
+								}
+								
+								VSUB_IS_EXIST.add("N");
+								VSUB_NOM_COLOR.add("");
+								
+								VSUB_BUYER_NOM_REV.add(rset6.getString(1)==null?"":rset6.getString(1));
+								VSUB_BUYER_NOM_QTY.add(nf.format(rset6.getDouble(3)));
+							}
+							rset7.close();
+							stmt7.close();
+						}
+						rset6.close();
+						stmt6.close();
+						
+						if(index1>0)
+						{
+							queryString7="SELECT NOM_REV_NO,SEQ_NO,QTY_MMBTU,QTY_SCM "
+					  				+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A "
+					  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+									+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+									+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF IS NULL AND CARGO_NO=? AND DTL_CATEGORY='CT' "
+									+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+									+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+									+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+									+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+									+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+									+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO AND B.DTL_CATEGORY=A.DTL_CATEGORY) ";
+							stmt7 = conn.prepareStatement(queryString7);
+							stmt7.setString(1, cont);
+							stmt7.setString(2, agmt);
+							stmt7.setString(3, companyCd);
+							stmt7.setString(4, countpty_cd);
+							stmt7.setString(5, transporter_cd);
+							stmt7.setString(6, transporter_plant_seq);
+							stmt7.setString(7, plant_seq);
+							stmt7.setString(8, cont_type);
+							stmt7.setString(9, bu_plant_seq);
+							stmt7.setString(10, gas_dt);
+							stmt7.setString(11, cargo_no);
+							rset7=stmt7.executeQuery();
+							if(rset7.next())
+							{
+								index1+=1;
+								
+								VSUB_NOM_REV_NO.add(rset7.getString(1)==null?"":rset7.getString(1));
+								VSUB_SEQ_NO.add(rset7.getString(2)==null?"":rset7.getString(2));
+								VSUB_CT_REF.add("");
+								VSUB_UTR_REF.add("");
+								
+								VSUB_QTY_MMBTU.add(nf.format(rset7.getDouble(3)));
+					  			VSUB_QTY_SCM.add(nf.format(rset7.getDouble(4)));
+								
+								VSUB_IS_EXIST.add("Y");
+								VSUB_NOM_COLOR.add("#99ffcc");
+								
+								queryString6="SELECT NOM_REV_NO,QTY_MMBTU,QTY_SCM "
+						  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF IS NULL AND CARGO_NO=? "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+										+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+								stmt6 = conn.prepareStatement(queryString6);
+								stmt6.setString(1, cont);
+								stmt6.setString(2, agmt);
+								stmt6.setString(3, companyCd);
+								stmt6.setString(4, countpty_cd);
+								stmt6.setString(5, transporter_cd);
+								stmt6.setString(6, transporter_plant_seq);
+								stmt6.setString(7, plant_seq);
+								stmt6.setString(8, cont_type);
+								stmt6.setString(9, bu_plant_seq);
+								stmt6.setString(10, gas_dt);
+								stmt6.setString(11, cargo_no);
+								rset6=stmt6.executeQuery();
+								if(rset6.next())
+								{
+									VSUB_BUYER_NOM_REV.add(rset6.getString(1)==null?"":rset6.getString(1));
+									VSUB_BUYER_NOM_QTY.add(nf.format(rset6.getDouble(2)));
+								}
+								else
+								{
+									VSUB_BUYER_NOM_REV.add("");
+									VSUB_BUYER_NOM_QTY.add("");
+								}
+								rset6.close();
+								stmt6.close();
+							}
+							else
+							{
+								queryString6="SELECT NOM_REV_NO,QTY_MMBTU,QTY_SCM "
+						  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+						  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+										+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+										+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+										+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+										+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CT_REF IS NULL AND CARGO_NO=? "
+										+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+										+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+										+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+										+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND A.BU_SEQ=B.BU_SEQ "
+										+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+										+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+								stmt6 = conn.prepareStatement(queryString6);
+								stmt6.setString(1, cont);
+								stmt6.setString(2, agmt);
+								stmt6.setString(3, companyCd);
+								stmt6.setString(4, countpty_cd);
+								stmt6.setString(5, transporter_cd);
+								stmt6.setString(6, transporter_plant_seq);
+								stmt6.setString(7, plant_seq);
+								stmt6.setString(8, cont_type);
+								stmt6.setString(9, bu_plant_seq);
+								stmt6.setString(10, gas_dt);
+								stmt6.setString(11, cargo_no);
+								rset6=stmt6.executeQuery();
+								if(rset6.next())
+								{
+									index1+=1;
+									
+									VSUB_NOM_REV_NO.add("");
+									VSUB_SEQ_NO.add("");
+									VSUB_CT_REF.add("");
+									VSUB_UTR_REF.add("");
+									
+									if(isInvoiceSubmitted > 0)
+									{
+										VSUB_QTY_MMBTU.add("");
+										VSUB_QTY_SCM.add("");
+									}
+									else
+									{
+										VSUB_QTY_MMBTU.add(nf.format(rset6.getDouble(2)));
+										VSUB_QTY_SCM.add(nf.format(rset6.getDouble(3)));
+									}
+									
+									VSUB_IS_EXIST.add("N");
+									VSUB_NOM_COLOR.add("");
+									
+									VSUB_BUYER_NOM_REV.add(rset6.getString(1)==null?"":rset6.getString(1));
+									VSUB_BUYER_NOM_QTY.add(nf.format(rset6.getDouble(2)));
+								}
+								rset6.close();
+								stmt6.close();
+							}
+							rset7.close();
+							stmt7.close();
+						}
+						VINDEX1.add(index1);
+					}
+					rset.close();
+					stmt.close();
+					
+					queryString1="SELECT SUM(QTY_MMBTU),SUM(QTY_SCM),SUM(QTY_BTU),SUM(RECONCIL_QTY_MMBTU),SUM(RECONCIL_QTY_SCM),SUM(RECONCIL_QTY_BTU),"
+							+ "SUM(TOTAL_QTY_MMBTU),SUM(TOTAL_QTY_SCM) "
+							+ "FROM FMS_METER_TICKET_READING "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND PLANT_SEQ=? AND METER_TYPE=? "
+							+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY')";
+					stmt1 = conn.prepareStatement(queryString1);
+					stmt1.setString(1, comp_cd);
+					stmt1.setString(2, trns_cd);
+					stmt1.setString(3, trns_plant_seq);
+					stmt1.setString(4, "R");
+					stmt1.setString(5, gas_dt);
+					rset1=stmt1.executeQuery();
+					if(rset1.next())
+					{
+						double tot_qty_mmbtu=rset1.getDouble(7);
+						double tot_qty_scm=rset1.getDouble(8);
+						
+						VMETER_QTY_MMBTU.add(nf.format(tot_qty_mmbtu));
+						VMETER_QTY_SCM.add(nf.format(tot_qty_scm));
+						
+						double gcv = 0;
+						double ncv = 0;
+						
+						if(tot_qty_mmbtu > 0)
+						{
+							gcv = (tot_qty_mmbtu * CommonVariable.multiplying_factor)/tot_qty_scm;
+							ncv = gcv/CommonVariable.dividing_factor;
+						}
+						
+						VMETER_GCV.add(nf2.format(gcv));
+						VMETER_NCV.add(nf2.format(ncv));
+					}
+					else
+					{
+						VMETER_QTY_MMBTU.add(nf.format(0));
+						VMETER_QTY_SCM.add(nf.format(0));
+						
+						VMETER_GCV.add(nf.format(0));
+						VMETER_NCV.add(nf.format(0));
+					}
+					rset1.close();
+					stmt1.close();
+					
+					/*
+					queryString="SELECT SUM(TOTAL_QTY_MMBTU),SUM(TOTAL_QTY_SCM) "
+							+ "FROM FMS_METER_TICKET_READING "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND PLANT_SEQ=? AND METER_TYPE=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY')";
+					stmt1=conn.prepareStatement(queryString);
+					stmt1.setString(1, comp_cd);
+					stmt1.setString(2, trns_cd);
+					stmt1.setString(3, trns_plant_seq);
+					stmt1.setString(4, "R");
+					stmt1.setString(5, gas_dt);
+					rset1=stmt1.executeQuery();
+					if(rset1.next())
+					{
+						VMETER_QTY_MMBTU.add(nf.format(rset1.getDouble(1)));
+						VMETER_QTY_SCM.add(nf.format(rset1.getDouble(2)));
+					}
+					else
+					{
+						VMETER_QTY_MMBTU.add(nf.format(0));
+						VMETER_QTY_SCM.add(nf.format(0));
+					}
+					rset1.close();
+					stmt1.close();
+					
+					queryString="SELECT AVG(CALC_GCV),AVG(CALC_NCV) "
+							+ "FROM FMS_METER_TICKET_READING "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND PLANT_SEQ=? AND METER_TYPE=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CALC_GCV>0";
+					stmt2=conn.prepareStatement(queryString);
+					stmt2.setString(1, comp_cd);
+					stmt2.setString(2, trns_cd);
+					stmt2.setString(3, trns_plant_seq);
+					stmt2.setString(4, "R");
+					stmt2.setString(5, gas_dt);
+					rset2=stmt2.executeQuery();
+					if(rset2.next())
+					{
+						VMETER_GCV.add(nf2.format(rset2.getDouble(1)));
+						VMETER_NCV.add(nf2.format(rset2.getDouble(2)));
+					}
+					else
+					{
+						VMETER_GCV.add(nf.format(0));
+						VMETER_NCV.add(nf.format(0));
+					}
+					rset2.close();
+					stmt2.close();*/
+					
+					VTRANS_PLANT_WISE_TOTAL_MMBTU.add(nf.format(trans_plant_wise_total_mmbtu));
+					VTRANS_PLANT_WISE_TOTAL_SCM.add(nf.format(trans_plant_wise_total_scm));
+					VSUB_INDEX.add(sub_index);
+					
+					String total_mmbtu_color="green";
+					if(submitted_count > 0 && partial_count > 0)
+					{
+						total_mmbtu_color="orange";
+					}
+					else if(submitted_count == 0 && partial_count > 0)
+					{
+						total_mmbtu_color="red";
+					}
+					VTOTAL_MMBTU_COLOR.add(total_mmbtu_color);
+				}
+				VINDEX.add(index);
+				rset3.close();
+				stmt3.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getSupplyContractDetail()
+	{
+		String function_nm="getSupplyContractDetail()";
+		try
+		{
+			counterparty_nm=""+utilBean.getCounterpartyName(conn,counterparty_cd);
+			if(contract_type.equals("S") || contract_type.equals("L") || contract_type.equals("X"))
+			{
+				queryString="SELECT TO_CHAR(START_DT,'DD/MM/YYYY'),TO_CHAR(END_DT,'DD/MM/YYYY'),DCQ,MDCQ_PERCENTAGE,CONT_NAME,TCQ,"
+						+ "CONT_REF_NO,TRADE_REF_NO "
+						+ "FROM FMS_SUPPLY_CONT_MST "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONT_NO=? "
+						+ "AND CONT_REV=? AND CONTRACT_TYPE=? "
+						+ "AND AGMT_NO=? AND AGMT_REV=?";
+				stmt = conn.prepareStatement(queryString);
+				stmt.setString(1, comp_cd);
+				stmt.setString(2, counterparty_cd);
+				stmt.setString(3, cont_no);
+				stmt.setString(4, cont_rev_no);
+				stmt.setString(5, contract_type);
+				stmt.setString(6, agmt_no);
+				stmt.setString(7, agmt_rev_no);
+				rset=stmt.executeQuery();
+				if(rset.next())
+				{
+					start_dt=rset.getString(1)==null?"":rset.getString(1);
+					end_dt=rset.getString(2)==null?"":rset.getString(2);
+					dcq=nf.format(rset.getDouble(3));
+					mdcq_percentage=rset.getString(4)==null?"":rset.getString(4);
+					cont_name=rset.getString(5)==null?"":rset.getString(5);
+					tcq=nf.format(rset.getDouble(6));
+					
+					cont_ref=rset.getString(7)==null?"":rset.getString(7);
+					if(contract_type.equals("X"))
+					{
+						cont_ref=rset.getString(8)==null?"":rset.getString(8);
+					}
+					
+					dis_mapp =utilBean.NewDealMappingId(comp_cd, counterparty_cd, agmt_no, agmt_rev_no, cont_no, cont_rev_no, contract_type, "");
+				}
+				rset.close();
+				stmt.close();
+			}
+			else
+			{
+				queryString="SELECT TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),TO_CHAR(TO_DATE(TO_CHAR(B.ACTUAL_RECPT_DT,'DD/MM/YYYY'),'DD/MM/YYYY')+NVL(STORAGE_DAYS-1,0)+NVL(STORAGE_EXT_DAYS,0),'DD/MM/YYYY'),B.CSOC_QTY,A.MDCQ_PERCENTAGE,A.CONT_NAME,B.EDQ_QTY,"
+						+ "B.CARGO_REF,NULL,A.SUG, "
+						+ "(SELECT SUM(C.ADQ_QTY) FROM FMS_LTCORA_CONT_CARGO_ADQ C WHERE A.COMPANY_CD=C.COMPANY_CD AND A.COUNTERPARTY_CD=C.COUNTERPARTY_CD AND B.CARGO_NO=C.CARGO_NO AND A.CONT_NO=C.CONT_NO "
+						+ "AND A.AGMT_NO=C.AGMT_NO AND A.AGMT_REV=C.AGMT_REV AND A.CONTRACT_TYPE=C.CONTRACT_TYPE AND A.BUY_SALE=C.BUY_SALE AND A.AGMT_TYPE=C.AGMT_TYPE) "
+						+ "FROM FMS_LTCORA_CONT_MST A,FMS_LTCORA_CONT_CARGO_DTL B "
+						+ "WHERE A.COMPANY_CD=? AND A.COUNTERPARTY_CD=? AND A.CONT_NO=? "
+						+ "AND A.CONT_REV=? AND A.CONTRACT_TYPE=? "
+						+ "AND A.AGMT_NO=? AND A.AGMT_REV=? AND B.CARGO_NO=? AND A.BUY_SALE=? AND A.AGMT_TYPE=? "
+						+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.CONT_NO=B.CONT_NO "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.AGMT_TYPE=B.AGMT_TYPE ";
+				stmt = conn.prepareStatement(queryString);
+				stmt.setString(1, comp_cd);
+				stmt.setString(2, counterparty_cd);
+				stmt.setString(3, cont_no);
+				stmt.setString(4, cont_rev_no);
+				stmt.setString(5, contract_type);
+				stmt.setString(6, agmt_no);
+				stmt.setString(7, agmt_rev_no);
+				stmt.setString(8, cargo_no);
+				stmt.setString(9, "C");
+				stmt.setString(10, "A");
+				rset=stmt.executeQuery();
+				if(rset.next())
+				{
+					start_dt=rset.getString(1)==null?"":rset.getString(1);
+					end_dt=rset.getString(2)==null?"":rset.getString(2);
+					dcq=nf.format(rset.getDouble(3));
+					mdcq_percentage=rset.getString(4)==null?"":rset.getString(4);
+					cont_name=rset.getString(5)==null?"":rset.getString(5);
+					//tcq=nf.format(rset.getDouble(6));
+					
+					cont_ref=rset.getString(7)==null?"":rset.getString(7);
+					
+					String sug_percent = rset.getString(9)==null?"":nf.format(rset.getDouble(9));
+					double adq_qty = rset.getDouble(10);
+					double edq_qty = rset.getDouble(6);
+					double tcq=0;
+					
+					queryString1="SELECT LTCORA_TARIFF,LTCORA_TARIFF_UNIT,SUG "
+							+ "FROM FMS_LTCORA_CONT_CARGO_MOD "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND BUY_SALE=? "
+							+ "AND AGMT_NO=? AND AGMT_REV=? AND AGMT_TYPE=? AND CONT_NO=? AND CONTRACT_TYPE=? AND CARGO_NO=? ";
+					stmt1=conn.prepareStatement(queryString1);
+					stmt1.setString(1, comp_cd);
+					stmt1.setString(2, counterparty_cd);
+					stmt1.setString(3, "C");
+					stmt1.setString(4, agmt_no);
+					stmt1.setString(5, agmt_rev_no);
+					stmt1.setString(6, "A");
+					stmt1.setString(7, cont_no);
+					stmt1.setString(8, contract_type);
+					stmt1.setString(9, cargo_no);
+					rset1=stmt1.executeQuery();
+					if(rset1.next())
+					{
+						sug_percent = rset1.getString(3)==null?"":nf.format(rset1.getDouble(3));
+					}
+					rset1.close();
+					stmt1.close();
+					
+					if(adq_qty > 0 && !sug_percent.equals(""))
+					{
+						tcq= adq_qty - (adq_qty * Double.parseDouble(sug_percent) / 100);
+					}
+					else if(edq_qty > 0 && !sug_percent.equals(""))
+					{
+						tcq= edq_qty - (edq_qty * Double.parseDouble(sug_percent) / 100);
+					}
+					
+					this.tcq=nf.format(tcq);
+					dis_mapp =utilBean.NewDealMappingId(comp_cd, counterparty_cd, agmt_no, agmt_rev_no, cont_no, cont_rev_no, contract_type, cargo_no);
+				}
+				rset.close();
+				stmt.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+
+	public void getPeriodicDate()
+	{
+		String function_nm="getPeriodicDate()";
+		try
+		{
+			String[] dtsplit=gas_dt.split("/");
+			String month=dtsplit[1];
+			String year=dtsplit[2];
+			
+			if(nomination_freq.equals("W"))
+			{
+				queryString = "SELECT TO_CHAR(NEXT_DAY(TO_DATE(?,'DD/MM/YYYY')-7,'MONDAY'),'DD/MM/YYYY') , TO_CHAR(NEXT_DAY(TO_DATE(?,'DD/MM/YYYY')-7,'MONDAY')+6,'DD/MM/YYYY') FROM DUAL";
+				stmt=conn.prepareStatement(queryString);
+				stmt.setString(1, gas_dt);
+				stmt.setString(2, gas_dt);
+				rset=stmt.executeQuery();
+				if(rset.next())
+				{
+					from_date = rset.getString(1)==null?"":rset.getString(1); 
+					to_date = rset.getString(2)==null?"":rset.getString(2);
+				}
+				rset.close();
+				stmt.close();
+			}
+			else if(nomination_freq.equals("M"))
+			{
+				from_date=""+dateUtil.getFirstDateOfMonth(month, year);
+				to_date=""+dateUtil.getLastDateOfMonth(month, year);
+			}
+			else if(nomination_freq.equals("F"))
+			{
+				int count=dateUtil.getDays(gas_dt, "15/"+month+"/"+year);
+				int count1=dateUtil.getDays(gas_dt, ""+dateUtil.getLastDateOfMonth(month, year));
+				
+				if(count <= 1)
+				{
+					from_date= "01/"+month+"/"+year;
+					to_date= "15/"+month+"/"+year;
+				}
+				else if(count1 <= 1)
+				{
+					from_date= "16/"+month+"/"+year;
+					to_date= ""+dateUtil.getLastDateOfMonth(month, year);
+				}
+			}
+			else
+			{
+				from_date=gas_dt;
+				to_date=gas_dt;
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+		
+	public void getDailyJointTicket()
+	{
+		String function_nm="getDailyJointTicket()";
+		try
+		{
+			Vector TEMP_PLANT_SEQ = new Vector();
+			Vector TEMP_BU_SEQ = new Vector();
+			Vector TEMP_COUNTERPARTY_CD = new Vector();
+			Vector TEMP_CONTRACT_TYPE = new Vector();
+			Vector TEMP_COMBINATION = new Vector();
+			Vector TEMP_CARGONO = new Vector();
+			
+			queryString="SELECT DISTINCT A.PLANT_SEQ,A.BU_SEQ,A.COUNTERPARTY_CD,A.CONTRACT_TYPE "
+					+ "FROM FMS_DAILY_ALLOCATION_DTL A, FMS_SUPPLY_CONT_MST B "
+	  				+ "WHERE A.COMPANY_CD=? AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND A.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+					+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+					+ "AND B.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST C WHERE C.COMPANY_CD=B.COMPANY_CD AND C.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND C.AGMT_NO=B.AGMT_NO AND C.AGMT_REV=B.AGMT_REV AND C.CONT_NO=B.CONT_NO AND C.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+					+ "AND B.AGMT_BASE=? AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE";
+			queryString+=" UNION ALL ";
+			queryString+="SELECT DISTINCT A.PLANT_SEQ,A.BU_SEQ,A.COUNTERPARTY_CD,A.CONTRACT_TYPE "
+					+ "FROM FMS_DAILY_ALLOCATION_DTL A, FMS_LTCORA_CONT_CARGO_DTL B "
+	  				+ "WHERE A.COMPANY_CD=? AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND A.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+					+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+					+ "AND B.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_LTCORA_CONT_CARGO_DTL C WHERE C.COMPANY_CD=B.COMPANY_CD AND C.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND C.AGMT_NO=B.AGMT_NO AND C.CONT_NO=B.CONT_NO AND C.CONTRACT_TYPE=B.CONTRACT_TYPE AND C.BUY_SALE=B.BUY_SALE AND B.CARGO_NO=C.CARGO_NO) "
+					+ "AND B.BUY_SALE=? AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND B.CARGO_NO=A.CARGO_NO ";
+			stmt0 =conn.prepareStatement(queryString);
+			stmt0.setString(1, comp_cd);
+			stmt0.setString(2, gas_dt);
+			stmt0.setString(3, "X");
+			stmt0.setString(4, comp_cd);
+			stmt0.setString(5, gas_dt);
+			stmt0.setString(6, "C");
+			//stmt0.setString(4, "C");
+			rset0=stmt0.executeQuery();
+			while(rset0.next())
+			{
+				String plantSeq=rset0.getString(1)==null?"":rset0.getString(1);
+				String buSeq=rset0.getString(2)==null?"":rset0.getString(2);
+				String countpty_cd=rset0.getString(3)==null?"":rset0.getString(3);
+				String cont_type=rset0.getString(4)==null?"":rset0.getString(4);
+				//String cargo_no=rset0.getString(5)==null?"":rset0.getString(5);
+				String combination=plantSeq+"-"+buSeq+"-"+countpty_cd+"-"+cont_type;
+				
+				TEMP_PLANT_SEQ.add(plantSeq);
+				TEMP_BU_SEQ.add(buSeq);
+				TEMP_COUNTERPARTY_CD.add(countpty_cd);
+				TEMP_CONTRACT_TYPE.add(cont_type);
+				TEMP_COMBINATION.add(combination);
+				//TEMP_CARGONO.add(cargo_no);
+			}
+			rset0.close();
+			stmt0.close();
+			
+			queryString6="SELECT DISTINCT A.EXIT_PT_MAPPING_ID,A.BU_SEQ,A.SELL_CONT_MAP "
+	  				+ "FROM FMS_DAILY_TRANSPORTER_ALLOC A "
+	  				+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CONTRACT_TYPE=? "
+					+ "AND ALLOC_REV_NO=(SELECT MAX(ALLOC_REV_NO) FROM FMS_DAILY_TRANSPORTER_ALLOC B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.SELL_CONT_MAP=A.SELL_CONT_MAP AND A.BU_SEQ=B.BU_SEQ "
+					+ "AND B.GAS_DT=A.GAS_DT AND A.ENTRY_PT_MAPPING_ID=B.ENTRY_PT_MAPPING_ID AND A.EXIT_PT_MAPPING_ID=B.EXIT_PT_MAPPING_ID) ";
+			stmt = conn.prepareStatement(queryString6);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, gas_dt);
+			stmt.setString(3, "C");
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String exit_pt_mapping_id = rset.getString(1)==null?"":rset.getString(1);
+				String buSeq=rset.getString(2)==null?"":rset.getString(2);
+				String cont_mapp=rset.getString(3)==null?"":rset.getString(3);
+				
+				String[] split = exit_pt_mapping_id.split("-");
+				String exitEntity=split[0];
+				String exitTransCd=split[1];
+				String exitTransPlant=split[2];
+				
+				String[] split1 = cont_mapp.split("-");
+				String countpty_cd=split1[0];
+				String cont_type=split1[1];
+				
+				String combination=exitTransPlant+"-"+buSeq+"-"+countpty_cd+"-"+cont_type;
+				
+				if(!TEMP_COMBINATION.contains(combination))
+				{
+					TEMP_PLANT_SEQ.add(exitTransPlant);
+					TEMP_BU_SEQ.add(buSeq);
+					TEMP_COUNTERPARTY_CD.add(countpty_cd);
+					TEMP_CONTRACT_TYPE.add(cont_type);
+					TEMP_COMBINATION.add(combination);
+				}
+			}
+			rset.close();
+			stmt.close();
+			
+			for(int i=0;i<TEMP_PLANT_SEQ.size();i++)
+			{
+				String plant_seq=""+TEMP_PLANT_SEQ.elementAt(i);
+				String bu_plant_seq=""+TEMP_BU_SEQ.elementAt(i);
+				String countpty_cd=""+TEMP_COUNTERPARTY_CD.elementAt(i);
+				String cont_type=""+TEMP_CONTRACT_TYPE.elementAt(i);
+				//String cargo_no=""+TEMP_CARGONO.elementAt(i);
+				
+				String exit_pt_mapping="C-"+countpty_cd+"-"+plant_seq;
+				String sellContMapp=countpty_cd+"-"+cont_type+"-%-%-%-%";
+				
+				String customer_abbr=utilBean.getCounterpartyABBR(conn,countpty_cd);
+				String plant_nm=utilBean.getCounterpartyPlantName(conn,countpty_cd, comp_cd, plant_seq, "C");
+				
+				
+				VCOUNTERPARTY_PLANT_SEQ.add(plant_seq);
+				VCOUNTERPARTY_PLANT_ABBR.add(plant_nm);
+				VBU_PLANT_SEQ.add(bu_plant_seq);
+				VBU_PLANT_ABBR.add(utilBean.getCounterpartyPlantABBR(conn,comp_cd, comp_cd, bu_plant_seq, "B"));
+				VCOUNTERPARTY_CD.add(countpty_cd);
+				VCOUNTERPARTY_ABBR.add(customer_abbr);
+				VCONTRACT_TYPE.add(cont_type);
+				//VCARGO_NO.add(cargo_no);
+				VCONTRACT_TYPE_NM.add(utilBean.getSalesContractName(cont_type));
+				
+				double mmbtu=0;
+				double scm=0;
+				
+				if(cont_type.equals("O") || cont_type.equals("Q"))
+				{
+					queryString1="SELECT SUM(A.QTY_MMBTU),SUM(A.QTY_SCM) "
+							+ "FROM FMS_DAILY_ALLOCATION_DTL A, FMS_LTCORA_CONT_CARGO_DTL B "
+							+ "WHERE A.COMPANY_CD=? AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+							+ "AND A.PLANT_SEQ=? AND A.BU_SEQ=? "
+							+ "AND A.COUNTERPARTY_CD=? AND A.CONTRACT_TYPE=? "
+							+ "AND A.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+							+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+							+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+							+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+							+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+							+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+							+ "AND B.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_LTCORA_CONT_CARGO_DTL C WHERE C.COMPANY_CD=B.COMPANY_CD AND C.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+							+ "AND C.AGMT_NO=B.AGMT_NO AND C.AGMT_REV=B.AGMT_REV AND C.CONT_NO=B.CONT_NO AND C.CONTRACT_TYPE=B.CONTRACT_TYPE AND B.BUY_SALE=C.BUY_SALE AND C.CARGO_NO=B.CARGO_NO) "
+							+ "AND B.BUY_SALE=? AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+							+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.CARGO_NO=B.CARGO_NO ";
+				}
+				else
+				{
+					queryString1="SELECT SUM(QTY_MMBTU),SUM(QTY_SCM) "
+							+ "FROM FMS_DAILY_ALLOCATION_DTL A, FMS_SUPPLY_CONT_MST B "
+			  				+ "WHERE A.COMPANY_CD=? AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+			  				+ "AND A.PLANT_SEQ=? AND A.BU_SEQ=? "
+			  				+ "AND A.COUNTERPARTY_CD=? AND A.CONTRACT_TYPE=? "
+							+ "AND A.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+							+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+							+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+							+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+							+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+							+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+							+ "AND B.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST C WHERE C.COMPANY_CD=B.COMPANY_CD AND C.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+							+ "AND C.AGMT_NO=B.AGMT_NO AND C.AGMT_REV=B.AGMT_REV AND C.CONT_NO=B.CONT_NO AND C.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+							+ "AND B.AGMT_BASE=? AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+							+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE ";
+				}
+				String temp_queryString=queryString1;
+				stmt1 = conn.prepareStatement(temp_queryString);
+				stmt1.setString(1, comp_cd);
+				stmt1.setString(2, gas_dt);
+				stmt1.setString(3, plant_seq);
+				stmt1.setString(4, bu_plant_seq);
+				stmt1.setString(5, countpty_cd);
+				stmt1.setString(6, cont_type);
+				//stmt1.setString(7, cargo_no);
+				if(cont_type.equals("O") || cont_type.equals("Q"))
+				{
+					stmt1.setString(7, "C");
+				}
+				else
+				{
+					stmt1.setString(7, "X");
+				}
+				rset1=stmt1.executeQuery();
+				if(rset1.next())
+				{
+					mmbtu=rset1.getDouble(1);
+					scm=rset1.getDouble(2);
+				}
+				rset1.close();
+				stmt1.close();
+				
+//				if(Double.doubleToRawLongBits(mmbtu)==Double.doubleToRawLongBits(0))
+				{
+					queryString2="SELECT SUM(EXIT_QTY_MMBTU),SUM(EXIT_QTY_SCM) "
+			  				+ "FROM FMS_DAILY_TRANSPORTER_ALLOC A "
+			  				+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CONTRACT_TYPE=?"
+			  				+ "AND EXIT_PT_MAPPING_ID=? AND SELL_CONT_MAP LIKE ? AND BU_SEQ=? "
+							+ "AND ALLOC_REV_NO=(SELECT MAX(ALLOC_REV_NO) FROM FMS_DAILY_TRANSPORTER_ALLOC B "
+							+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+							+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+							+ "AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.SELL_CONT_MAP=A.SELL_CONT_MAP AND A.BU_SEQ=B.BU_SEQ "
+							+ "AND B.GAS_DT=A.GAS_DT AND A.ENTRY_PT_MAPPING_ID=B.ENTRY_PT_MAPPING_ID AND A.EXIT_PT_MAPPING_ID=B.EXIT_PT_MAPPING_ID) ";
+					stmt2 = conn.prepareStatement(queryString2);
+					stmt2.setString(1, comp_cd);
+					stmt2.setString(2, gas_dt);
+					stmt2.setString(3, "C");
+					stmt2.setString(4, exit_pt_mapping);
+					stmt2.setString(5, sellContMapp);
+					stmt2.setString(6, bu_plant_seq);
+					rset2=stmt2.executeQuery();
+					if(rset2.next())
+					{
+						mmbtu+=rset2.getDouble(1);
+						scm+=rset2.getDouble(2);
+					}
+					rset2.close();
+					stmt2.close();
+				}
+				VQTY_MMBTU.add(nf.format(mmbtu));
+				VQTY_SCM.add(nf.format(scm));
+				
+				queryString3="SELECT SUM(QTY_MMBTU),SUM(QTY_SCM) "
+		  				+ "FROM FMS_DAILY_SELLER_NOM A "
+		  				+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? AND BU_SEQ=? "
+						+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+						+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND B.BU_SEQ=A.BU_SEQ "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+						+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+				stmt3 = conn.prepareStatement(queryString3);
+				stmt3.setString(1, comp_cd);
+				stmt3.setString(2, countpty_cd);
+				stmt3.setString(3, plant_seq);
+				stmt3.setString(4, cont_type);
+				stmt3.setString(5, bu_plant_seq);
+				stmt3.setString(6, gas_dt);
+				//stmt3.setString(7, cargo_no);
+				rset3=stmt3.executeQuery();
+				if(rset3.next())
+				{
+					VSELLER_NOM.add(nf.format(rset3.getDouble(1)));
+				}
+				else
+				{
+					VSELLER_NOM.add(nf.format(0));
+				}
+				rset3.close();
+				stmt3.close();
+				
+				Vector VTEMP_CONTACT_PERSON=new Vector();
+				Vector VTEMP_CONTACT_PERSON_CD=new Vector();
+				
+				VTEMP_CONTACT_PERSON.add("--Select--");
+				VTEMP_CONTACT_PERSON_CD.add("");
+				queryString4="SELECT CONTACT_PERSON, SEQ_NO "
+						+ "FROM FMS_ENTITY_CONTACT_MST A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+						+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+						+ "AND TYPE=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+						+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+				stmt4 = conn.prepareStatement(queryString4);
+				stmt4.setString(1, comp_cd);
+				stmt4.setString(2, countpty_cd);
+				stmt4.setString(3, "C");
+				stmt4.setString(4, "P"+plant_seq);
+				stmt4.setString(5, "Y");
+				stmt4.setString(6, "Y");
+				stmt4.setString(7, "Y");
+				stmt4.setString(8, "RLNG");
+				stmt4.setString(9, gas_dt);
+				rset4=stmt4.executeQuery();
+				while(rset4.next())
+				{
+					VTEMP_CONTACT_PERSON.add(rset4.getString(1)==null?"":rset4.getString(1));
+					VTEMP_CONTACT_PERSON_CD.add(rset4.getString(2)==null?"":rset4.getString(2));
+				}
+				rset4.close();
+				stmt4.close();
+				
+				String contact_person_cd="";
+				queryString5="SELECT SEQ_NO "
+						+ "FROM FMS_ENTITY_CONTACT_MST A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+						+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND TO_JT=? "
+						+ "AND TYPE=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+						+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+				stmt5 = conn.prepareStatement(queryString5);
+				stmt5.setString(1, comp_cd);
+				stmt5.setString(2, countpty_cd);
+				stmt5.setString(3, "C");
+				stmt5.setString(4, "P"+plant_seq);
+				stmt5.setString(5, "Y");
+				stmt5.setString(6, "Y");
+				stmt5.setString(7, "Y");
+				stmt5.setString(8, "Y");
+				stmt5.setString(9, "RLNG");
+				stmt5.setString(10, gas_dt);
+				rset5=stmt5.executeQuery();
+				if(rset5.next())
+				{
+					contact_person_cd=rset5.getString(1)==null?"0":rset5.getString(1);
+				}
+				rset5.close();
+				stmt5.close();
+				
+				VCONTACT_PERSON.add(VTEMP_CONTACT_PERSON);
+				VCONTACT_PERSON_CD.add(VTEMP_CONTACT_PERSON_CD);
+				VSEL_CONTACT_PERSON_CD.add(contact_person_cd);
+				
+				String remark="";
+				String contact_person="";
+				String pdf_name="";
+				String pdf_path="";
+				String email_flag="";
+				queryString4="SELECT REMARK,ADDRESSED_TO,PDF_NM,EMAIL_SENT "
+						+ "FROM FMS_DAILY_JOINT_TICKET A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? "
+						+ "AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND BU_SEQ=? AND ENTITY_TYPE='C'";
+				stmt4=conn.prepareStatement(queryString4);
+				stmt4.setString(1, comp_cd);
+				stmt4.setString(2, countpty_cd);
+				stmt4.setString(3, cont_type);
+				stmt4.setString(4, plant_seq);
+				stmt4.setString(5, gas_dt);
+				stmt4.setString(6, bu_plant_seq);
+				rset4=stmt4.executeQuery();
+				if(rset4.next())
+				{
+					remark=rset4.getString(1)==null?"":rset4.getString(1);
+					contact_person=rset4.getString(2)==null?"":rset4.getString(2);
+					pdf_name=rset4.getString(3)==null?"":rset4.getString(3);
+					email_flag=rset4.getString(4)==null?"":rset4.getString(4);
+					pdf_path=CommonVariable.join_ticket_pdf_path;
+				}
+				rset4.close();
+				stmt4.close();
+				
+				VREMARK.add(remark);
+				VADDRESSED_PERSON.add(contact_person);
+				VPDF_NAME.add(pdf_name);
+				VPDF_PATH.add(pdf_path);
+				VEMAIL_FLAG.add(email_flag);
+				
+				String pdf_exists="N";
+				
+				String directory_path=file_path+File.separator+pdf_name;
+				
+				File pdfFile = new File(directory_path);
+				if(pdfFile.exists() && !pdf_name.equals(""))
+				{
+					pdf_exists="Y";
+				}
+				VPDF_EXISTS.add(pdf_exists);
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getViewJointTicketData()
+	{
+		String function_nm="getViewJointTicketData()";
+		try
+		{
+			HashMap map_gas_dt = new HashMap();
+			HashMap map_sell_nom = new HashMap();
+			HashMap map_base = new HashMap();
+			HashMap map_base_val = new HashMap();
+			HashMap map_mmbtu = new HashMap();
+			HashMap map_scm = new HashMap();
+			HashMap map_grid = new HashMap();
+			HashMap map_customer_code = new HashMap();
+			HashMap map_ct_ref = new HashMap();
+			
+			double tot_sellNom=0;
+			double tot_mmbtu=0;
+			double tot_scm=0;
+			
+			String exit_pt_mapping="C-"+counterparty_cd+"-"+plant_seq;
+			String sellContMapp=counterparty_cd+"-"+contract_type+"-%-%-%-%";
+			int count=0;
+			int stmt_ct=0;
+			queryString="SELECT TRANSPORTER_CD,TRANS_SEQ,SUM(QTY_MMBTU),SUM(QTY_SCM),SUM(GCV),CT_REF "
+					+ "FROM ("//EX-TERMINAL CONT
+						+ "SELECT DISTINCT A.TRANSPORTER_CD,A.TRANS_SEQ,SUM(A.QTY_MMBTU) AS QTY_MMBTU,SUM(A.QTY_SCM) AS QTY_SCM,SUM(A.GCV) AS GCV,A.CT_REF AS CT_REF "
+						+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A, FMS_SUPPLY_CONT_MST B "
+		  				+ "WHERE A.COMPANY_CD=? AND A.COUNTERPARTY_CD=? AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+		  				+ "AND A.PLANT_SEQ=? AND A.BU_SEQ=? AND A.CONTRACT_TYPE=? AND DTL_CATEGORY='CT' "
+		  				+ "AND A.QTY_MMBTU > 0 "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+						+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+						+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO AND A.SEQ_NO=B.SEQ_NO) "
+						+ "AND B.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST C WHERE C.COMPANY_CD=B.COMPANY_CD AND C.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND C.AGMT_NO=B.AGMT_NO AND C.AGMT_REV=B.AGMT_REV AND C.CONT_NO=B.CONT_NO AND C.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+						+ "AND B.AGMT_BASE=? "
+						+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+						+ "GROUP BY A.TRANSPORTER_CD,A.TRANS_SEQ,A.CT_REF "
+						+ "UNION ALL "//LTCORA
+						+ "SELECT DISTINCT A.TRANSPORTER_CD,A.TRANS_SEQ,SUM(A.QTY_MMBTU) AS QTY_MMBTU,SUM(A.QTY_SCM) AS QTY_SCM,SUM(A.GCV) AS GCV,A.CT_REF AS CT_REF "
+						+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A, FMS_LTCORA_CONT_CARGO_DTL B "
+		  				+ "WHERE A.COMPANY_CD=? AND A.COUNTERPARTY_CD=? AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+		  				+ "AND A.PLANT_SEQ=? AND A.BU_SEQ=? AND A.CONTRACT_TYPE=? AND DTL_CATEGORY='CT' "
+		  				+ "AND A.QTY_MMBTU > 0 "
+		  				+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+						+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+						+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO AND A.SEQ_NO=B.SEQ_NO) "
+						+ "AND B.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_LTCORA_CONT_CARGO_DTL C WHERE C.COMPANY_CD=B.COMPANY_CD AND C.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND C.AGMT_NO=B.AGMT_NO AND C.AGMT_REV=B.AGMT_REV AND C.CONT_NO=B.CONT_NO AND C.CONTRACT_TYPE=B.CONTRACT_TYPE AND C.BUY_SALE=B.BUY_SALE AND C.CARGO_NO=B.CARGO_NO) "
+						+ "AND B.BUY_SALE=? AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.CARGO_NO=B.CARGO_NO "
+						+ "GROUP BY A.TRANSPORTER_CD,A.TRANS_SEQ,A.CT_REF "
+						+ "UNION ALL "//DLV BASE CONT
+						+ "SELECT DISTINCT A.COUNTERPARTY_CD AS TRANSPORTER_CD,TO_NUMBER(REGEXP_SUBSTR(A.ENTRY_PT_MAPPING_ID, '[^-]+', 1, 2)) AS TRANS_SEQ,"
+						+ "SUM(A.EXIT_QTY_MMBTU) AS QTY_MMBTU,SUM(A.EXIT_QTY_SCM) AS QTY_SCM,SUM(A.EXIT_GCV) AS GCV,C.CT_REF_NO AS CT_REF "
+						+ "FROM FMS_DAILY_TRANSPORTER_ALLOC A, FMS_SUPPLY_CONT_MST B,FMS_GTA_CONT_MST C "
+						+ "WHERE A.COMPANY_CD=? AND B.COUNTERPARTY_CD=? AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY')  "
+						+ "AND A.EXIT_PT_MAPPING_ID=? AND A.BU_SEQ=? AND B.CONTRACT_TYPE=? "
+						+ "AND A.EXIT_QTY_MMBTU > 0 "
+						+ "AND A.ALLOC_REV_NO = (SELECT MAX(C.ALLOC_REV_NO) FROM FMS_DAILY_TRANSPORTER_ALLOC C WHERE A.COMPANY_CD = C.COMPANY_CD AND A.COUNTERPARTY_CD = C.COUNTERPARTY_CD  "
+						+ "AND A.CONTRACT_TYPE = C.CONTRACT_TYPE AND A.AGMT_NO = C.AGMT_NO AND A.AGMT_REV = C.AGMT_REV AND A.CONT_NO = C.CONT_NO  "
+						+ "AND A.SELL_CONT_MAP = C.SELL_CONT_MAP AND A.GAS_DT = C.GAS_DT AND A.BU_SEQ = C.BU_SEQ AND A.ENTRY_PT_MAPPING_ID = C.ENTRY_PT_MAPPING_ID  "
+						+ "AND A.EXIT_PT_MAPPING_ID = C.EXIT_PT_MAPPING_ID) "
+						+ "AND B.AGMT_BASE = ? "
+						+ "AND B.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST C WHERE C.COMPANY_CD=B.COMPANY_CD AND C.COUNTERPARTY_CD=B.COUNTERPARTY_CD  "
+						+ "AND C.AGMT_NO=B.AGMT_NO AND C.AGMT_REV=B.AGMT_REV AND C.CONT_NO=B.CONT_NO AND C.CONTRACT_TYPE=B.CONTRACT_TYPE)  "
+						+ "AND A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.SELL_CONT_MAP LIKE B.COUNTERPARTY_CD || '-' || B.CONTRACT_TYPE || '-' || B.AGMT_NO || '-%-' || B.CONT_NO || '-%'  "
+						+ "AND C.COMPANY_CD=A.COMPANY_CD AND C.COUNTERPARTY_CD=A.COUNTERPARTY_CD AND C.AGMT_NO=A.AGMT_NO "
+						+ "AND C.CONT_NO=A.CONT_NO AND C.CONTRACT_TYPE=A.CONTRACT_TYPE "
+						+ "GROUP BY A.COUNTERPARTY_CD,A.ENTRY_PT_MAPPING_ID,C.CT_REF_NO"
+					+ ")"
+					+ "GROUP BY TRANSPORTER_CD,TRANS_SEQ,CT_REF";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(++stmt_ct, comp_cd);
+			stmt.setString(++stmt_ct, counterparty_cd);
+			stmt.setString(++stmt_ct, gas_dt);
+			stmt.setString(++stmt_ct, plant_seq);
+			stmt.setString(++stmt_ct, bu_plant_seq);
+			stmt.setString(++stmt_ct, contract_type);
+			stmt.setString(++stmt_ct, "X");
+			stmt.setString(++stmt_ct, comp_cd);
+			stmt.setString(++stmt_ct, counterparty_cd);
+			stmt.setString(++stmt_ct, gas_dt);
+			stmt.setString(++stmt_ct, plant_seq);
+			stmt.setString(++stmt_ct, bu_plant_seq);
+			stmt.setString(++stmt_ct, contract_type);
+			stmt.setString(++stmt_ct, "C");
+			stmt.setString(++stmt_ct, comp_cd);
+			stmt.setString(++stmt_ct, counterparty_cd);
+			stmt.setString(++stmt_ct, gas_dt);
+			stmt.setString(++stmt_ct, exit_pt_mapping);
+			stmt.setString(++stmt_ct, bu_plant_seq);
+			stmt.setString(++stmt_ct, contract_type);
+			stmt.setString(++stmt_ct, "D");
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				count+=1;
+				map_gas_dt.put(""+count, gas_dt);
+				
+				String trans_cd=rset.getString(1)==null?"":rset.getString(1);
+				String trans_plant_seq=rset.getString(2)==null?"":rset.getString(2);
+				
+				double mmbtu=rset.getDouble(3);
+				double scm=rset.getDouble(4);
+				double base_val=rset.getDouble(5);
+				String ct_ref=rset.getString(6)==null?"":rset.getString(6);
+				String customer_code=""+utilBean.getTranspoterCustomerCode(conn,comp_cd, trans_cd, counterparty_cd, plant_seq, gas_dt);
+				
+				map_base.put(""+count, "GCV");
+				map_base_val.put(""+count, nf2.format(base_val));
+				map_mmbtu.put(""+count, nf.format(mmbtu));
+				map_scm.put(""+count, nf.format(scm));
+				map_customer_code.put(""+count,customer_code);
+				map_ct_ref.put(""+count,ct_ref);
+				
+				double seller_nom=0;
+				queryString1="SELECT SUM(QTY_MMBTU),SUM(QTY_SCM) "
+		  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+		  				+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+		  				+ "AND PLANT_SEQ=? AND BU_SEQ=? AND CONTRACT_TYPE=? "
+		  				+ "AND TRANSPORTER_CD=? AND TRANS_SEQ=? ";
+  				if(ct_ref.equals(""))
+				{
+  					queryString1+="AND CT_REF IS NULL ";
+				}
+				else
+				{
+					queryString1+="AND CT_REF=? ";
+				}
+  				queryString1+= "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+						+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND B.BU_SEQ=A.BU_SEQ "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+						+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO AND A.SEQ_NO=B.SEQ_NO) ";
+				stmt1=conn.prepareStatement(queryString1);
+				stmt1.setString(1, comp_cd);
+				stmt1.setString(2, counterparty_cd);
+				stmt1.setString(3, gas_dt);
+				stmt1.setString(4, plant_seq);
+				stmt1.setString(5, bu_plant_seq);
+				stmt1.setString(6, contract_type);
+				stmt1.setString(7, trans_cd);
+				stmt1.setString(8, trans_plant_seq);
+				if(!ct_ref.equals(""))
+				{
+					stmt1.setString(9, ct_ref);
+				}
+				rset1=stmt1.executeQuery();
+				if(rset1.next())
+				{
+					seller_nom=rset1.getDouble(1);
+				}
+				rset1.close();
+				stmt1.close();
+				
+				map_sell_nom.put(""+count, nf.format(seller_nom));
+				map_grid.put(""+count, ""+utilBean.getCounterpartyPlantName(conn,trans_cd, comp_cd, trans_plant_seq, "R"));
+				
+				tot_mmbtu+=mmbtu;
+				tot_scm+=scm;
+				tot_sellNom+=seller_nom;
+			}
+			rset.close();
+			stmt.close();
+						
+			count+=1;
+			map_gas_dt.put(""+count, "Total");
+			map_base.put(""+count,"");
+			map_base_val.put(""+count, "-");
+			map_mmbtu.put(""+count, nf.format(tot_mmbtu));
+			map_scm.put(""+count, nf.format(tot_scm));
+			map_sell_nom.put(""+count, nf.format(tot_sellNom));
+			map_grid.put(""+count, "-");
+			map_grid.put(""+map_customer_code, "-");
+			map_grid.put(""+map_ct_ref, "-");
+			
+			view_join_ticket_data.put("v_gas_dt", map_gas_dt);
+			view_join_ticket_data.put("v_sell_nom", map_sell_nom);
+			view_join_ticket_data.put("v_base", map_base);
+			view_join_ticket_data.put("v_base_val", map_base_val);
+			view_join_ticket_data.put("v_mmbtu", map_mmbtu);
+			view_join_ticket_data.put("v_scm", map_scm);
+			view_join_ticket_data.put("v_grid", map_grid);
+			view_join_ticket_data.put("v_customer_code", map_customer_code);
+			view_join_ticket_data.put("v_ct_ref", map_ct_ref);
+			
+			
+			HashMap map_contracts = new HashMap();
+			HashMap map_cont_mmbtu = new HashMap();
+			
+			count=0;
+			stmt_ct=0;
+			
+			queryString4="SELECT AGMT_NO,CONT_NO,SUM(QTY_MMBTU),CONT_REF_NO,TRADE_REF_NO,AGMT_BASE "
+					+ "FROM ("//EX-TERMINAL CONT
+						+ "SELECT A.AGMT_NO,A.CONT_NO,SUM(A.QTY_MMBTU) AS QTY_MMBTU,B.CONT_REF_NO,B.TRADE_REF_NO,B.AGMT_BASE "
+						+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A, FMS_SUPPLY_CONT_MST B "
+		  				+ "WHERE A.COMPANY_CD=? AND A.COUNTERPARTY_CD=? AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+		  				+ "AND A.PLANT_SEQ=? AND A.BU_SEQ=? AND A.CONTRACT_TYPE=? AND DTL_CATEGORY='CT' "
+		  				+ "AND A.QTY_MMBTU > 0 "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+						+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+						+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO AND A.SEQ_NO=B.SEQ_NO) "
+						+ "AND B.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST C WHERE C.COMPANY_CD=B.COMPANY_CD AND C.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND C.AGMT_NO=B.AGMT_NO AND C.AGMT_REV=B.AGMT_REV AND C.CONT_NO=B.CONT_NO AND C.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+						+ "AND B.AGMT_BASE=? "
+						+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE "
+						+ "GROUP BY A.AGMT_NO,A.CONT_NO,B.CONT_REF_NO,B.TRADE_REF_NO,B.AGMT_BASE "
+						+ "UNION ALL "//LTCORA
+						+ "SELECT A.AGMT_NO,A.CONT_NO,SUM(A.QTY_MMBTU) AS QTY_MMBTU,B.CARGO_REF,NULL AS TRADE_REF_NO,NULL AS AGMT_BASE "
+						+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A, FMS_LTCORA_CONT_CARGO_DTL B "
+		  				+ "WHERE A.COMPANY_CD=? AND A.COUNTERPARTY_CD=? AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+		  				+ "AND A.PLANT_SEQ=? AND A.BU_SEQ=? AND A.CONTRACT_TYPE=? AND DTL_CATEGORY='CT' "
+		  				+ "AND A.QTY_MMBTU > 0 "
+		  				+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+						+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+						+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO AND A.SEQ_NO=B.SEQ_NO) "
+						+ "AND B.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_LTCORA_CONT_CARGO_DTL C WHERE C.COMPANY_CD=B.COMPANY_CD AND C.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND C.AGMT_NO=B.AGMT_NO AND C.AGMT_REV=B.AGMT_REV AND C.CONT_NO=B.CONT_NO AND C.CONTRACT_TYPE=B.CONTRACT_TYPE AND C.BUY_SALE=B.BUY_SALE AND C.CARGO_NO=B.CARGO_NO) "
+						+ "AND B.BUY_SALE=? AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.CARGO_NO=B.CARGO_NO "
+						+ "GROUP BY A.AGMT_NO,A.CONT_NO,B.CARGO_REF,NULL,NULL "
+						+ "UNION ALL "//DLV BASE CONT
+						+ "SELECT B.AGMT_NO,B.CONT_NO,SUM(A.EXIT_QTY_MMBTU) AS QTY_MMBTU,B.CONT_REF_NO,B.TRADE_REF_NO,B.AGMT_BASE "
+						+ "FROM FMS_DAILY_TRANSPORTER_ALLOC A, FMS_SUPPLY_CONT_MST B,FMS_GTA_CONT_MST C "
+						+ "WHERE A.COMPANY_CD=? AND B.COUNTERPARTY_CD=? AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY')  "
+						+ "AND A.EXIT_PT_MAPPING_ID=? AND A.BU_SEQ=? AND B.CONTRACT_TYPE=? "
+						+ "AND A.EXIT_QTY_MMBTU > 0 "
+						+ "AND A.ALLOC_REV_NO = (SELECT MAX(C.ALLOC_REV_NO) FROM FMS_DAILY_TRANSPORTER_ALLOC C WHERE A.COMPANY_CD = C.COMPANY_CD AND A.COUNTERPARTY_CD = C.COUNTERPARTY_CD  "
+						+ "AND A.CONTRACT_TYPE = C.CONTRACT_TYPE AND A.AGMT_NO = C.AGMT_NO AND A.AGMT_REV = C.AGMT_REV AND A.CONT_NO = C.CONT_NO  "
+						+ "AND A.SELL_CONT_MAP = C.SELL_CONT_MAP AND A.GAS_DT = C.GAS_DT AND A.BU_SEQ = C.BU_SEQ AND A.ENTRY_PT_MAPPING_ID = C.ENTRY_PT_MAPPING_ID  "
+						+ "AND A.EXIT_PT_MAPPING_ID = C.EXIT_PT_MAPPING_ID) "
+						+ "AND B.AGMT_BASE = ? "
+						+ "AND B.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST C WHERE C.COMPANY_CD=B.COMPANY_CD AND C.COUNTERPARTY_CD=B.COUNTERPARTY_CD  "
+						+ "AND C.AGMT_NO=B.AGMT_NO AND C.AGMT_REV=B.AGMT_REV AND C.CONT_NO=B.CONT_NO AND C.CONTRACT_TYPE=B.CONTRACT_TYPE)  "
+						+ "AND A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.SELL_CONT_MAP LIKE B.COUNTERPARTY_CD || '-' || B.CONTRACT_TYPE || '-' || B.AGMT_NO || '-%-' || B.CONT_NO || '-%'  "
+						+ "AND C.COMPANY_CD=A.COMPANY_CD AND C.COUNTERPARTY_CD=A.COUNTERPARTY_CD AND C.AGMT_NO=A.AGMT_NO "
+						+ "AND C.CONT_NO=A.CONT_NO AND C.CONTRACT_TYPE=A.CONTRACT_TYPE "
+						+ "GROUP BY B.AGMT_NO,B.CONT_NO,B.CONT_REF_NO,B.TRADE_REF_NO,B.AGMT_BASE "
+					+ ")"
+					+ "GROUP BY AGMT_NO,CONT_NO,CONT_REF_NO,TRADE_REF_NO,AGMT_BASE";
+			stmt4=conn.prepareStatement(queryString4);
+			stmt4.setString(++stmt_ct, comp_cd);
+			stmt4.setString(++stmt_ct, counterparty_cd);
+			stmt4.setString(++stmt_ct, gas_dt);
+			stmt4.setString(++stmt_ct, plant_seq);
+			stmt4.setString(++stmt_ct, bu_plant_seq);
+			stmt4.setString(++stmt_ct, contract_type);
+			stmt4.setString(++stmt_ct, "X");
+			stmt4.setString(++stmt_ct, comp_cd);
+			stmt4.setString(++stmt_ct, counterparty_cd);
+			stmt4.setString(++stmt_ct, gas_dt);
+			stmt4.setString(++stmt_ct, plant_seq);
+			stmt4.setString(++stmt_ct, bu_plant_seq);
+			stmt4.setString(++stmt_ct, contract_type);
+			stmt4.setString(++stmt_ct, "C");
+			stmt4.setString(++stmt_ct, comp_cd);
+			stmt4.setString(++stmt_ct, counterparty_cd);
+			stmt4.setString(++stmt_ct, gas_dt);
+			stmt4.setString(++stmt_ct, exit_pt_mapping);
+			stmt4.setString(++stmt_ct, bu_plant_seq);
+			stmt4.setString(++stmt_ct, contract_type);
+			stmt4.setString(++stmt_ct, "D");
+			rset4=stmt4.executeQuery();
+			while(rset4.next())
+			{
+				String agmt=rset4.getString(1)==null?"":rset4.getString(1);
+				String cont=rset4.getString(2)==null?"":rset4.getString(2);
+				double mmbtu=rset4.getDouble(3);
+				String cont_ref=rset4.getString(4)==null?"":rset4.getString(4);
+				String trade_ref=rset4.getString(5)==null?"":rset4.getString(5);
+				String agmt_base=rset4.getString(6)==null?"":rset4.getString(6);
+				
+				String deal_no =utilBean.NewDealMappingId(comp_cd, counterparty_cd, agmt, "", cont, "", contract_type, "");
+				
+				if(contract_type.equals("X"))
+				{
+					cont_ref=trade_ref;
+				}
+				
+				count+=1;
+				if(agmt_base.equals("D"))
+				{
+					if(!cont_ref.equals(""))
+					{
+						map_contracts.put(""+count, cont_ref+" (DLV)");
+					}
+					else
+					{
+						map_contracts.put(""+count, deal_no+" (DLV)");
+					}
+				}
+				else
+				{
+					if(!cont_ref.equals(""))
+					{
+						map_contracts.put(""+count, cont_ref);
+					}
+					else
+					{
+						map_contracts.put(""+count, deal_no);
+					}
+				}
+				map_cont_mmbtu.put(""+count, nf.format(mmbtu));
+			}
+			rset4.close();
+			stmt4.close();
+			
+			view_join_ticket_data.put("v_contracts", map_contracts);
+			view_join_ticket_data.put("v_cont_mmbtu", map_cont_mmbtu);
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getViewJointTicketInfo()
+	{
+		String function_nm="getViewJointTicketInfo()";
+		try
+		{
+			view_join_ticket_info.put("company_nm", ""+utilBean.getCompanyName(conn,comp_cd));
+			view_join_ticket_info.put("customer_nm", ""+utilBean.getCounterpartyName(conn,counterparty_cd));
+			view_join_ticket_info.put("customer_abbr", ""+utilBean.getCounterpartyABBR(conn,counterparty_cd));
+			view_join_ticket_info.put("plant_nm", ""+utilBean.getCounterpartyPlantName(conn,counterparty_cd, comp_cd, plant_seq, "C"));
+			view_join_ticket_info.put("emp_nm", ""+utilBean.getEmpName(conn,emp_cd));
+			
+			String contact_person_nm="";
+			String contact_person_phone="";
+			String contact_person_fax="";
+			queryString="SELECT CONTACT_PERSON,PHONE,FAX_1 "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND ENTITY=? AND SEQ_NO=? AND ADDR_FLAG=? "
+					+ "AND TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, counterparty_cd);
+			stmt.setString(3, "C");
+			stmt.setString(4, contact_person_cd);
+			stmt.setString(5, "P"+plant_seq);
+			stmt.setString(6, "RLNG");
+			stmt.setString(7, gas_dt);
+			rset=stmt.executeQuery();
+			if(rset.next())
+			{
+				contact_person_nm=rset.getString(1)==null?"":rset.getString(1);
+				contact_person_phone=rset.getString(2)==null?"":rset.getString(2);
+				contact_person_fax=rset.getString(3)==null?"":rset.getString(3);
+			}
+			rset.close();
+			stmt.close();
+			
+			String plantAddress="";
+			String plantCity="";
+			String plantState="";
+			String plantPin="";
+			String plantNm="";
+			
+			queryString1 = "SELECT PLANT_ADDR,PLANT_CITY,PLANT_STATE,PLANT_PIN,PLANT_NAME,PLANT_CITY "
+					+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+					+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? AND SEQ_NO=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) ";
+			stmt1=conn.prepareStatement(queryString1);
+			stmt1.setString(1, counterparty_cd);
+			stmt1.setString(2, "C");
+			stmt1.setString(3, comp_cd);
+			stmt1.setString(4, plant_seq);
+			rset1=stmt1.executeQuery();
+			if(rset1.next())
+			{
+				plantAddress  = rset1.getString(1)==null?"":rset1.getString(1);
+				plantCity  = rset1.getString(2)==null?"":rset1.getString(2);
+				plantState  = rset1.getString(3)==null?"":rset1.getString(3);
+				plantPin  = rset1.getString(4)==null?"":rset1.getString(4);
+				plantNm  = rset1.getString(5)==null?"":rset1.getString(5);
+			}
+			rset1.close();
+			stmt1.close();
+			
+			String bu_plantAddress="";
+			String bu_plantCity="";
+			String bu_plantState="";
+			String bu_plantPin="";
+			String bu_plantNm="";
+			
+			queryString2 = "SELECT PLANT_ADDR,PLANT_CITY,PLANT_STATE,PLANT_PIN,PLANT_NAME "
+					+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+					+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? AND SEQ_NO=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) ";
+			stmt2=conn.prepareStatement(queryString2);
+			stmt2.setString(1, comp_cd);
+			stmt2.setString(2, "B");
+			stmt2.setString(3, comp_cd);
+			stmt2.setString(4, bu_plant_seq);
+			rset2=stmt2.executeQuery();
+			if(rset2.next())
+			{
+				bu_plantAddress  = rset2.getString(1)==null?"":rset2.getString(1);
+				bu_plantCity  = rset2.getString(2)==null?"":rset2.getString(2);
+				bu_plantState  = rset2.getString(3)==null?"":rset2.getString(3);
+				bu_plantPin  = rset2.getString(4)==null?"":rset2.getString(4);
+				bu_plantNm  = rset2.getString(5)==null?"":rset2.getString(5);
+			}
+			rset2.close();
+			stmt2.close();
+			
+			String ownPhone="";
+			String ownEmail="";
+			queryString3="SELECT ADDR,CITY,STATE,PIN,COUNTRY,PHONE,EMAIL "
+					+ "FROM FMS_COMPANY_OWNER_ADDR_MST A "
+					+ "WHERE COMPANY_CD=? AND ADDRESS_TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COMPANY_OWNER_ADDR_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.ADDRESS_TYPE=B.ADDRESS_TYPE "
+					+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))";
+			stmt3=conn.prepareStatement(queryString3);
+			stmt3.setString(1, comp_cd);
+			stmt3.setString(2, "C");
+			rset3=stmt3.executeQuery();
+			if(rset3.next())
+			{
+				ownPhone  = rset3.getString(6)==null?"":rset3.getString(6);
+				ownEmail  = rset3.getString(7)==null?"":rset3.getString(7);
+			}
+			rset3.close();
+			stmt3.close();
+			
+			String remark="";
+			String seq_no="";
+			queryString2="SELECT REMARK,NVL((SEQ_NO),'0') "
+					+ "FROM FMS_DAILY_JOINT_TICKET A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? "
+					+ "AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND BU_SEQ=? AND ENTITY_TYPE='C'";
+			stmt2=conn.prepareStatement(queryString2);
+			stmt2.setString(1, comp_cd);
+			stmt2.setString(2, counterparty_cd);
+			stmt2.setString(3, contract_type);
+			stmt2.setString(4, plant_seq);
+			stmt2.setString(5, gas_dt);
+			stmt2.setString(6, bu_plant_seq);
+			rset2=stmt2.executeQuery();
+			if(rset2.next())
+			{
+				remark=rset2.getString(1)==null?"":rset2.getString(1);
+				seq_no =""+(rset2.getInt(2)+1);
+			}
+			else
+			{
+				remark="";
+				seq_no="1";
+			}
+			rset2.close();
+			stmt2.close();
+			
+			view_join_ticket_info.put("contact_person_nm",contact_person_nm);
+			view_join_ticket_info.put("contact_person_phone",contact_person_phone);
+			view_join_ticket_info.put("contact_person_fax",contact_person_fax);
+			view_join_ticket_info.put("plantAddress",plantAddress);
+			view_join_ticket_info.put("plantCity",plantCity);
+			view_join_ticket_info.put("plantState",plantState);
+			view_join_ticket_info.put("plantPin",plantPin);
+			view_join_ticket_info.put("plantNm",plantNm);
+			
+			view_join_ticket_info.put("bu_plantAddress",bu_plantAddress);
+			view_join_ticket_info.put("bu_plantCity",bu_plantCity);
+			view_join_ticket_info.put("bu_plantState",bu_plantState);
+			view_join_ticket_info.put("bu_plantPin",bu_plantPin);
+			view_join_ticket_info.put("bu_plantNm",bu_plantNm);
+			
+			view_join_ticket_info.put("ownPhone",ownPhone);
+			view_join_ticket_info.put("ownEmail",ownEmail);
+			view_join_ticket_info.put("seq_no",seq_no);
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getSellerAllocToTransporter()
+	{
+		String function_nm="getSellerAllocToTransporter()";
+		try
+		{
+			queryString="SELECT DISTINCT TRANSPORTER_CD "
+	  				+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A "
+	  				+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND DTL_CATEGORY=? "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+					+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO AND B.DTL_CATEGORY=A.DTL_CATEGORY) ";
+			stmt0 = conn.prepareStatement(queryString);
+			stmt0.setString(1, comp_cd);
+			stmt0.setString(2, gas_dt);
+			stmt0.setString(3, "CT");
+			rset0=stmt0.executeQuery();
+			while(rset0.next())
+			{
+				String trns_cd = rset0.getString(1)==null?"":rset0.getString(1);
+				String trns_abbr = ""+utilBean.getCounterpartyABBR(conn,trns_cd);
+				
+				VTRANSPORTER_CD.add(trns_cd);
+				VTRANSPORTER_ABBR.add(trns_abbr);
+			}
+			rset0.close();
+			stmt0.close();
+			
+			for(int i=0; i<VTRANSPORTER_CD.size(); i++)
+			{
+				int index=0;
+				
+				String transporterCd=""+VTRANSPORTER_CD.elementAt(i);
+				String transporterAbbr=""+utilBean.getCounterpartyABBR(conn,transporterCd);
+				
+				queryString="SELECT DISTINCT TRANS_SEQ "
+		  				+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A "
+		  				+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+		  				+ "AND TRANSPORTER_CD=? AND DTL_CATEGORY=? "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+						+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+						+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO AND B.DTL_CATEGORY=A.DTL_CATEGORY) ";
+				stmt = conn.prepareStatement(queryString);
+				stmt.setString(1, comp_cd);
+				stmt.setString(2, gas_dt);
+				stmt.setString(3, transporterCd);
+				stmt.setString(4, "CT");
+				rset=stmt.executeQuery();
+				while(rset.next())
+				{
+					index++;
+					String trns_plant_seq = rset.getString(1)==null?"":rset.getString(1);
+					String trns_plant_abbr = ""+utilBean.getCounterpartyPlantABBR(conn,transporterCd, comp_cd, trns_plant_seq, "R");
+					String trns_plant_nm = ""+utilBean.getCounterpartyPlantName(conn,transporterCd, comp_cd, trns_plant_seq, "R");
+					
+					VTRANSPORTER_PLANT_SEQ.add(trns_plant_seq);
+					VTRANSPORTER_PLANT_ABBR.add(trns_plant_abbr);
+					
+					Vector VTEMP_CONTACT_PERSON=new Vector();
+					Vector VTEMP_CONTACT_PERSON_CD=new Vector();
+					
+					VTEMP_CONTACT_PERSON.add("--Select--");
+					VTEMP_CONTACT_PERSON_CD.add("");
+					queryString1="SELECT CONTACT_PERSON, SEQ_NO "
+							+ "FROM FMS_ENTITY_CONTACT_MST A "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+							+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+							+ "AND TYPE=? "
+							+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+							+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+							+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+					stmt1=conn.prepareStatement(queryString1);
+					stmt1.setString(1, comp_cd);
+					stmt1.setString(2, transporterCd);
+					stmt1.setString(3, "R");
+					stmt1.setString(4, "P"+trns_plant_seq);
+					stmt1.setString(5, "Y");
+					stmt1.setString(6, "Y");
+					stmt1.setString(7, "Y");
+					stmt1.setString(8, "RLNG");
+					stmt1.setString(9, gas_dt);
+					rset1=stmt1.executeQuery();
+					while(rset1.next())
+					{
+						VTEMP_CONTACT_PERSON.add(rset1.getString(1)==null?"":rset1.getString(1));
+						VTEMP_CONTACT_PERSON_CD.add(rset1.getString(2)==null?"":rset1.getString(2));
+					}
+					rset1.close();
+					stmt1.close();
+					
+					String contact_person_cd="";
+					queryString2="SELECT SEQ_NO "
+							+ "FROM FMS_ENTITY_CONTACT_MST A "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+							+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND TO_JT=? "
+							+ "AND TYPE=? "
+							+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+							+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+							+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+					stmt2=conn.prepareStatement(queryString2);
+					stmt2.setString(1, comp_cd);
+					stmt2.setString(2, transporterCd);
+					stmt2.setString(3, "R");
+					stmt2.setString(4, "P"+trns_plant_seq);
+					stmt2.setString(5, "Y");
+					stmt2.setString(6, "Y");
+					stmt2.setString(7, "Y");
+					stmt2.setString(8, "Y");
+					stmt2.setString(9, "RLNG");
+					stmt2.setString(10, gas_dt);
+					rset2=stmt2.executeQuery();
+					if(rset2.next())
+					{
+						contact_person_cd=rset2.getString(1)==null?"0":rset2.getString(1);
+					}
+					rset2.close();
+					stmt2.close();
+					
+					VCONTACT_PERSON.add(VTEMP_CONTACT_PERSON);
+					VCONTACT_PERSON_CD.add(VTEMP_CONTACT_PERSON_CD);
+					VSEL_CONTACT_PERSON_CD.add(contact_person_cd);
+					
+					String remark="";
+					String contact_person="";
+					String pdf_name="";
+					String pdf_path="";
+					String email_flag="";
+					queryString4="SELECT REMARK,ADDRESSED_TO,PDF_NM,EMAIL_SENT "
+							+ "FROM FMS_DAILY_ALLOC_TRANS A "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND ENTITY_TYPE='R'";
+					stmt4=conn.prepareStatement(queryString4);
+					stmt4.setString(1, comp_cd);
+					stmt4.setString(2, transporterCd);
+					stmt4.setString(3, trns_plant_seq);
+					stmt4.setString(4, gas_dt);
+					rset4=stmt4.executeQuery();
+					if(rset4.next())
+					{
+						remark=rset4.getString(1)==null?"":rset4.getString(1);
+						contact_person=rset4.getString(2)==null?"":rset4.getString(2);
+						pdf_name=rset4.getString(3)==null?"":rset4.getString(3);
+						email_flag=rset4.getString(4)==null?"":rset4.getString(4);
+						pdf_path=CommonVariable.alloc_to_trans_pdf_path;
+					}
+					rset4.close();
+					stmt4.close();
+					
+					VREMARK.add(remark);
+					VADDRESSED_PERSON.add(contact_person);
+					VPDF_NAME.add(pdf_name);
+					VPDF_PATH.add(pdf_path);
+					VEMAIL_FLAG.add(email_flag);
+					
+					String pdf_exists="N";
+					
+					String directory_path=file_path+File.separator+pdf_name;
+					
+					File pdfFile = new File(directory_path);
+					if(pdfFile.exists() && !pdf_name.equals(""))
+					{
+						pdf_exists="Y";
+					}
+					VPDF_EXISTS.add(pdf_exists);
+				}
+				VINDEX.add(index);
+				rset.close();
+				stmt.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getViewSellerAllocToTransporterData()
+	{
+		String function_nm="getViewSellerAllocToTransporterData()";
+		try
+		{
+			HashMap map_gas_dt = new HashMap();
+			HashMap map_sell_nom = new HashMap();
+			HashMap map_gcv = new HashMap();
+			HashMap map_ncv = new HashMap();
+			HashMap map_send_out = new HashMap();
+			
+			int count=0;
+			double temp_ncv=0;
+			queryString="SELECT SUM(GCV),SUM(NCV),SUM(QTY_MMBTU),SUM(QTY_SCM) "
+	  				+ "FROM FMS_DAILY_SELLER_NOM A "
+	  				+ "WHERE COMPANY_CD=? AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+					+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND B.BU_SEQ=A.BU_SEQ "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+					+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, transCd);
+			stmt.setString(3, transPlantSeq);
+			stmt.setString(4, gas_dt);
+			rset=stmt.executeQuery();
+			if(rset.next())
+			{
+				count++;
+				double gcv = rset.getDouble(1);
+				double ncv = rset.getDouble(2);
+				double mmbtu = rset.getDouble(3);
+				
+				//temp_ncv=ncv; //AS PER VIJAY'S BUG ON 20241009
+				
+				map_gas_dt.put(""+count, gas_dt);
+				map_sell_nom.put(""+count, nf.format(mmbtu));
+				//map_gcv.put(""+count, nf2.format(gcv));
+				//map_ncv.put(""+count, nf2.format(ncv));
+			}
+			rset.close();
+			stmt.close();
+			
+			queryString1="SELECT SUM(QTY_MMBTU),SUM(GCV),SUM(NCV) "
+	  				+ "FROM FMS_DAILY_ALLOCATION_DTL A "
+	  				+ "WHERE COMPANY_CD=? AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+					+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+					+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+			stmt1=conn.prepareStatement(queryString1);
+			stmt1.setString(1, comp_cd);
+			stmt1.setString(2, transCd);
+			stmt1.setString(3, transPlantSeq);
+			stmt1.setString(4, gas_dt);
+			rset1=stmt1.executeQuery();
+			if(rset1.next())
+			{
+				double mmbtu = rset1.getDouble(1);
+				
+				map_send_out.put(""+count, nf.format(mmbtu));
+				
+				queryString3="SELECT SUM(QTY_MMBTU),SUM(QTY_SCM),SUM(QTY_BTU),SUM(RECONCIL_QTY_MMBTU),SUM(RECONCIL_QTY_SCM),SUM(RECONCIL_QTY_BTU),"
+						+ "SUM(TOTAL_QTY_MMBTU),SUM(TOTAL_QTY_SCM) "
+						+ "FROM FMS_METER_TICKET_READING "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND PLANT_SEQ=? AND METER_TYPE=? "
+						+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY')";
+				stmt3 = conn.prepareStatement(queryString3);
+				stmt3.setString(1, comp_cd);
+				stmt3.setString(2, transCd);
+				stmt3.setString(3, transPlantSeq);
+				stmt3.setString(4, "R");
+				stmt3.setString(5, gas_dt);
+				rset3=stmt3.executeQuery();
+				if(rset3.next())
+				{
+					double tot_qty_mmbtu=rset3.getDouble(7);
+					double tot_qty_scm=rset3.getDouble(8);
+					
+					double gcv = 0;
+					double ncv = 0;
+					
+					if(tot_qty_mmbtu > 0)
+					{
+						gcv = (tot_qty_mmbtu * CommonVariable.multiplying_factor)/tot_qty_scm;
+						ncv = gcv/CommonVariable.dividing_factor;
+					}
+					
+					temp_ncv=ncv; //AS PER VIJAY'S BUG ON 20241009
+					
+					map_gcv.put(""+count, nf2.format(gcv));
+					map_ncv.put(""+count, nf2.format(ncv));
+				}
+				else
+				{
+					map_gcv.put(""+count, nf2.format(0));
+					map_ncv.put(""+count, nf2.format(0));
+				}
+		
+				rset3.close();
+				stmt3.close();
+			}
+			rset1.close();
+			stmt1.close();
+			
+			view_seller_alloc_to_trans_data.put("v_gas_dt", map_gas_dt);
+			view_seller_alloc_to_trans_data.put("v_sell_nom", map_sell_nom);
+			view_seller_alloc_to_trans_data.put("v_gcv", map_gcv);
+			view_seller_alloc_to_trans_data.put("v_ncv", map_ncv);
+			view_seller_alloc_to_trans_data.put("v_send_out", map_send_out);
+			
+			
+			HashMap map_countpty_plantNm = new HashMap();
+			HashMap map_sell_nom_custplantwise = new HashMap();
+			HashMap map_gcv_mmbtu = new HashMap();
+			HashMap map_gcv_scm = new HashMap();
+			HashMap map_ncv_mmbtu = new HashMap();
+			HashMap map_ncv_scm = new HashMap();
+			HashMap map_customer_code = new HashMap();
+			HashMap map_ct_ref = new HashMap();
+			
+			count=0;
+			
+			queryString2="SELECT DISTINCT COUNTERPARTY_CD,PLANT_SEQ,SUM(QTY_MMBTU),CT_REF "
+	  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+	  				+ "WHERE COMPANY_CD=? AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+					+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND B.BU_SEQ=A.BU_SEQ "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+					+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO AND A.SEQ_NO=B.SEQ_NO) "
+					+ "GROUP BY COUNTERPARTY_CD,PLANT_SEQ,CT_REF";
+			//20230605-CT_REF AND CUSTOMER_CODE SUPPORT ADDED
+			//20230605 PICKING FROM FMS_DAILY_SELLER_NOM_DTL TABLE
+			stmt2=conn.prepareStatement(queryString2);
+			stmt2.setString(1, comp_cd);
+			stmt2.setString(2, transCd);
+			stmt2.setString(3, transPlantSeq);
+			stmt2.setString(4, gas_dt);
+			rset2=stmt2.executeQuery();
+			while(rset2.next())
+			{
+				
+				String countpty_cd = rset2.getString(1)==null?"":rset2.getString(1);
+				String plantSeq = rset2.getString(2)==null?"":rset2.getString(2);
+				
+				String countpty_abbr=utilBean.getCounterpartyABBR(conn,countpty_cd);
+				String plantNm=utilBean.getCounterpartyPlantName(conn,countpty_cd, comp_cd, plantSeq, "C");
+				
+				double mmbtu = rset2.getDouble(3);
+				String ct_ref = rset2.getString(4)==null?"":rset2.getString(4); //20230605 ADDED
+				String customer_code=""+utilBean.getTranspoterCustomerCode(conn,comp_cd, transCd, countpty_cd, plantSeq, gas_dt); //20230605 ADDED
+				
+				
+				double gcv_mmbtu=0;
+				double gcv_scm=0;
+				double ncv_mmbtu=0;
+				double ncv_scm=0;
+				queryString3="SELECT SUM(QTY_MMBTU),SUM(QTY_SCM) "
+		  				+ "FROM FMS_DAILY_ALLOCATION_DTL_CT A "
+		  				+ "WHERE COMPANY_CD=? AND TRANSPORTER_CD=? AND TRANS_SEQ=? "
+						+ "AND COUNTERPARTY_CD=? AND PLANT_SEQ=? "
+						+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND DTL_CATEGORY=? ";
+				if(ct_ref.equals(""))
+				{
+					queryString3+="AND CT_REF IS NULL AND QTY_MMBTU>0 ";
+				}
+				else
+				{
+					queryString3+="AND CT_REF=? ";
+				}
+				queryString3+= "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL_CT B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+						+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+						+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO AND B.DTL_CATEGORY=A.DTL_CATEGORY AND A.SEQ_NO=B.SEQ_NO) ";
+				if(ct_ref.equals(""))
+				{
+					queryString3+= "HAVING SUM(QTY_MMBTU)>0";
+				}
+				//20230605 PICKING FROM FMS_DAILY_ALLOCATION_DTL_CT TABLE
+				stmt3=conn.prepareStatement(queryString3);
+				stmt3.setString(1, comp_cd);
+				stmt3.setString(2, transCd);
+				stmt3.setString(3, transPlantSeq);
+				stmt3.setString(4, countpty_cd);
+				stmt3.setString(5, plantSeq);
+				stmt3.setString(6, gas_dt);
+				stmt3.setString(7, "CT");
+				if(!ct_ref.equals(""))
+				{
+					stmt3.setString(8, ct_ref);
+				}
+				rset3=stmt3.executeQuery();
+				if(rset3.next())
+				{
+					gcv_mmbtu = rset3.getDouble(1);
+					gcv_scm = rset3.getDouble(2);
+					
+					if(temp_ncv <= 0)
+					{
+						temp_ncv=1;
+					}
+					ncv_scm = gcv_scm;
+					ncv_mmbtu=(ncv_scm * temp_ncv) /(0.252 * 1000000); //1 MMBtu = 252,000 KiloCalorie
+					
+					count++;
+					map_countpty_plantNm.put(""+count, countpty_abbr+" - "+plantNm);
+					map_sell_nom_custplantwise.put(""+count, nf.format(mmbtu));
+					map_customer_code.put(""+count,customer_code); //20230605 ADDED
+					map_ct_ref.put(""+count,ct_ref); //20230605 ADDED
+					map_gcv_mmbtu.put(""+count,nf.format(gcv_mmbtu));
+					map_gcv_scm.put(""+count,nf.format(gcv_scm));
+					map_ncv_mmbtu.put(""+count,nf.format(ncv_mmbtu));
+					map_ncv_scm.put(""+count,nf.format(ncv_scm));
+				}
+				rset3.close();
+				stmt3.close();
+				
+				//if(Double.doubleToRawLongBits(mmbtu)!=Double.doubleToRawLongBits(0) && Double.doubleToRawLongBits(gcv_mmbtu)!=Double.doubleToRawLongBits(0))
+				/*if (!ct_ref.equals("") || (Double.doubleToRawLongBits(mmbtu) != Double.doubleToRawLongBits(0) && Double.doubleToRawLongBits(gcv_mmbtu) != Double.doubleToRawLongBits(0)))
+				{
+					System.out.println("CT_REF.."+ct_ref+"..Seller_mmbtu.."+mmbtu+"..alloc_mmbtu.."+gcv_mmbtu);
+					map_countpty_plantNm.put(""+count, countpty_abbr+" - "+plantNm);
+					map_sell_nom_custplantwise.put(""+count, nf.format(mmbtu));
+					map_customer_code.put(""+count,customer_code); //20230605 ADDED
+					map_ct_ref.put(""+count,ct_ref); //20230605 ADDED
+					map_gcv_mmbtu.put(""+count,nf.format(gcv_mmbtu));
+					map_gcv_scm.put(""+count,nf.format(gcv_scm));
+					map_ncv_mmbtu.put(""+count,nf.format(ncv_mmbtu));
+					map_ncv_scm.put(""+count,nf.format(ncv_scm));
+				}*/
+			}
+			rset2.close();
+			stmt2.close();
+			
+			view_seller_alloc_to_trans_data.put("v_countpty_plantNm", map_countpty_plantNm);
+			view_seller_alloc_to_trans_data.put("v_customer_code", map_customer_code);//20230605 ADDED
+			view_seller_alloc_to_trans_data.put("v_ct_ref", map_ct_ref);//20230605 ADDED
+			view_seller_alloc_to_trans_data.put("v_sell_nom_custplantwise", map_sell_nom_custplantwise);
+			view_seller_alloc_to_trans_data.put("v_gcv_mmbtu", map_gcv_mmbtu);
+			view_seller_alloc_to_trans_data.put("v_gcv_scm", map_gcv_scm);
+			view_seller_alloc_to_trans_data.put("v_ncv_mmbtu", map_ncv_mmbtu);
+			view_seller_alloc_to_trans_data.put("v_ncv_scm", map_ncv_scm);
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getViewSellerAllocToTransporterInfo()
+	{
+		String function_nm="getViewSellerAllocToTransporterInfo()";
+		try
+		{
+			view_seller_alloc_to_trans_info.put("company_nm", ""+utilBean.getCompanyName(conn,comp_cd));
+			view_seller_alloc_to_trans_info.put("transporter_nm", ""+utilBean.getCounterpartyName(conn,transCd));
+			view_seller_alloc_to_trans_info.put("transporter_abbr", ""+utilBean.getCounterpartyABBR(conn,transCd));
+			view_seller_alloc_to_trans_info.put("transporter_plant_nm", ""+utilBean.getCounterpartyPlantName(conn,transCd, comp_cd, transPlantSeq, "R"));
+			view_seller_alloc_to_trans_info.put("emp_nm", ""+utilBean.getEmpName(conn,emp_cd));
+			
+			String contact_person_nm="";
+			String contact_person_phone="";
+			String contact_person_fax="";
+			queryString="SELECT CONTACT_PERSON,PHONE,FAX_1 "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND ENTITY=? AND SEQ_NO=? AND ADDR_FLAG=? "
+					+ "AND TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, transCd);
+			stmt.setString(3, "R");
+			stmt.setString(4, contact_person_cd);
+			stmt.setString(5, "P"+transPlantSeq);
+			stmt.setString(6, "RLNG");
+			stmt.setString(7, gas_dt);
+			rset=stmt.executeQuery();
+			if(rset.next())
+			{
+				contact_person_nm=rset.getString(1)==null?"":rset.getString(1);
+				contact_person_phone=rset.getString(2)==null?"":rset.getString(2);
+				contact_person_fax=rset.getString(3)==null?"":rset.getString(3);
+			}
+			rset.close();
+			stmt.close();
+			
+			String plantAddress="";
+			String plantCity="";
+			String plantState="";
+			String plantPin="";
+			String plantNm="";
+			
+			queryString1 = "SELECT PLANT_ADDR,PLANT_CITY,PLANT_STATE,PLANT_PIN,PLANT_NAME,PLANT_CITY "
+					+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+					+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? AND SEQ_NO=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) ";
+			stmt1=conn.prepareStatement(queryString1);
+			stmt1.setString(1, transCd);
+			stmt1.setString(2, "R");
+			stmt1.setString(3, comp_cd);
+			stmt1.setString(4, transPlantSeq);
+			rset1=stmt1.executeQuery();
+			if(rset1.next())
+			{
+				plantAddress  = rset1.getString(1)==null?"":rset1.getString(1);
+				plantCity  = rset1.getString(2)==null?"":rset1.getString(2);
+				plantState  = rset1.getString(3)==null?"":rset1.getString(3);
+				plantPin  = rset1.getString(4)==null?"":rset1.getString(4);
+				plantNm  = rset1.getString(5)==null?"":rset1.getString(5);
+			}
+			rset1.close();
+			stmt1.close();
+			
+			String ownAddress="";
+			String ownCity="";
+			String ownState="";
+			String ownPin="";
+			String ownCountry="";
+			String ownPhone="";
+			String ownEmail="";
+			
+			queryString2="SELECT ADDR,CITY,STATE,PIN,COUNTRY,PHONE,EMAIL "
+					+ "FROM FMS_COMPANY_OWNER_ADDR_MST A "
+					+ "WHERE COMPANY_CD=? AND ADDRESS_TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COMPANY_OWNER_ADDR_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.ADDRESS_TYPE=B.ADDRESS_TYPE "
+					+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))";
+			stmt2=conn.prepareStatement(queryString2);
+			stmt2.setString(1, comp_cd);
+			stmt2.setString(2, "C");
+			rset2=stmt2.executeQuery();
+			if(rset2.next())
+			{
+				ownAddress  = rset2.getString(1)==null?"":rset2.getString(1);
+				ownCity  = rset2.getString(2)==null?"":rset2.getString(2);
+				ownState  = rset2.getString(3)==null?"":rset2.getString(3);
+				ownPin  = rset2.getString(4)==null?"":rset2.getString(4);
+				ownCountry  = rset2.getString(5)==null?"":rset2.getString(5);
+				ownPhone  = rset2.getString(6)==null?"":rset2.getString(6);
+				ownEmail  = rset2.getString(7)==null?"":rset2.getString(7);
+			}
+			rset2.close();
+			stmt2.close();
+			
+			String seq_no="";
+			String remark="";
+			queryString2="SELECT NVL((SEQ_NO),'0') "
+					+ "FROM FMS_DAILY_ALLOC_TRANS A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY')";
+			stmt2=conn.prepareStatement(queryString2);
+			stmt2.setString(1, comp_cd);
+			stmt2.setString(2, transCd);
+			stmt2.setString(3, transPlantSeq);
+			stmt2.setString(4, gas_dt);
+			rset2=stmt2.executeQuery();
+			if(rset2.next())
+			{
+				seq_no =""+(rset2.getInt(1)+1);
+			}
+			else
+			{
+				seq_no="1";
+			}
+			rset2.close();
+			stmt2.close();
+			
+			view_seller_alloc_to_trans_info.put("contact_person_nm",contact_person_nm);
+			view_seller_alloc_to_trans_info.put("contact_person_phone",contact_person_phone);
+			view_seller_alloc_to_trans_info.put("contact_person_fax",contact_person_fax);
+			view_seller_alloc_to_trans_info.put("plantAddress",plantAddress);
+			view_seller_alloc_to_trans_info.put("plantCity",plantCity);
+			view_seller_alloc_to_trans_info.put("plantState",plantState);
+			view_seller_alloc_to_trans_info.put("plantPin",plantPin);
+			view_seller_alloc_to_trans_info.put("plantNm",plantNm);
+			
+			view_seller_alloc_to_trans_info.put("ownAddress",ownAddress);
+			view_seller_alloc_to_trans_info.put("ownCity",ownCity);
+			view_seller_alloc_to_trans_info.put("ownState",ownState);
+			view_seller_alloc_to_trans_info.put("ownPin",ownPin);
+			view_seller_alloc_to_trans_info.put("ownCountry",ownCountry);
+			view_seller_alloc_to_trans_info.put("ownPhone",ownPhone);
+			view_seller_alloc_to_trans_info.put("ownEmail",ownEmail);
+			view_seller_alloc_to_trans_info.put("seq_no",seq_no);
+			//view_seller_alloc_to_trans_info.put("bu_plantNm",bu_plantNm);
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getSendMailJTDetail()
+	{
+		String function_nm="getSendMailJTDetail()";
+		try
+		{
+			String ownAddress="";
+			String ownCity="";
+			String ownState="";
+			String ownPin="";
+			String ownCountry="";
+			String ownPhone="";
+			String ownEmail="";
+			String sysdate=dateUtil.getSysdate();
+			
+			queryString="SELECT ADDR,CITY,STATE,PIN,COUNTRY,PHONE,EMAIL "
+					+ "FROM FMS_COMPANY_OWNER_ADDR_MST A "
+					+ "WHERE COMPANY_CD=? AND ADDRESS_TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COMPANY_OWNER_ADDR_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.ADDRESS_TYPE=B.ADDRESS_TYPE "
+					+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, "C");
+			rset=stmt.executeQuery();
+			if(rset.next())
+			{
+				ownAddress  = rset.getString(1)==null?"":rset.getString(1);
+				ownCity  = rset.getString(2)==null?"":rset.getString(2);
+				ownState  = rset.getString(3)==null?"":rset.getString(3);
+				ownPin  = rset.getString(4)==null?"":rset.getString(4);
+				ownCountry  = rset.getString(5)==null?"":rset.getString(5);
+				ownPhone  = rset.getString(6)==null?"":rset.getString(6);
+				ownEmail  = rset.getString(7)==null?"":rset.getString(7);
+			}
+			rset.close();
+			stmt.close();
+			
+			//get TO list
+			String to_list="";
+			queryString1="SELECT EMAIL "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND SEQ_NO=? "
+					+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+					+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+					+ "AND TYPE=? "//AND TO_INV='Y' "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+					+ "AND EMAIL IS NOT NULL";
+			stmt1=conn.prepareStatement(queryString1);
+			stmt1.setString(1, comp_cd);
+			stmt1.setString(2, counterparty_cd);
+			stmt1.setString(3, contact_person_cd);
+			stmt1.setString(4, "C");
+			stmt1.setString(5, "P"+plant_seq);
+			stmt1.setString(6, "Y");
+			stmt1.setString(7, "Y");
+			stmt1.setString(8, "Y");
+			stmt1.setString(9, "RLNG");
+			rset1=stmt1.executeQuery();
+			if(rset1.next())
+			{
+				String email=rset1.getString(1)==null?"":rset1.getString(1);
+				if(to_list.equals(""))
+				{
+					to_list=email;
+				}
+				else
+				{
+					to_list+=", "+email;
+				}
+			}
+			rset1.close();
+			stmt1.close();
+			
+			//get CC list
+			String cc_list="";
+			String bcc_list="";
+			queryString2="SELECT EMAIL "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND SEQ_NO!=? "
+					+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+					+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+					+ "AND TYPE=? " //AND (TO_INV='N' OR TO_INV IS NULL) "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+					+ "AND EMAIL IS NOT NULL";
+			stmt2=conn.prepareStatement(queryString2);
+			stmt2.setString(1, comp_cd);
+			stmt2.setString(2, counterparty_cd);
+			stmt2.setString(3, contact_person_cd);
+			stmt2.setString(4, "C");
+			stmt2.setString(5, "P"+plant_seq);
+			stmt2.setString(6, "Y");
+			stmt2.setString(7, "Y");
+			stmt2.setString(8, "Y");
+			stmt2.setString(9, "RLNG");
+			rset2=stmt2.executeQuery();
+			while(rset2.next())
+			{
+				String email=rset2.getString(1)==null?"":rset2.getString(1);
+				if(cc_list.equals(""))
+				{
+					cc_list=email;
+				}
+				else
+				{
+					cc_list+=", "+email;
+				}
+			}
+			rset2.close();
+			stmt2.close();
+			
+			queryString3="SELECT EMAIL "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+					+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND (TO_JT=? OR TO_JT IS NULL) "
+					+ "AND TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+					+ "AND EMAIL IS NOT NULL";
+			stmt3=conn.prepareStatement(queryString3);
+			stmt3.setString(1, comp_cd);
+			stmt3.setString(2, comp_cd);
+			stmt3.setString(3, "B");
+			stmt3.setString(4, "P"+bu_plant_seq);
+			stmt3.setString(5, "Y");
+			stmt3.setString(6, "Y");
+			stmt3.setString(7, "Y");
+			stmt3.setString(8, "N");
+			stmt3.setString(9, "RLNG");
+			rset3=stmt3.executeQuery();
+			while(rset3.next())
+			{
+				String email=rset3.getString(1)==null?"":rset3.getString(1);
+				if(cc_list.equals(""))
+				{
+					cc_list=email;
+				}
+				else
+				{
+					cc_list+=", "+email;
+				}
+			}
+			rset3.close();
+			stmt3.close();
+			
+			queryString3="SELECT EMAIL "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+					+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND (TO_JT=? OR TO_JT IS NULL) "
+					+ "AND TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+					+ "AND EMAIL IS NOT NULL";
+			stmt3=conn.prepareStatement(queryString3);
+			stmt3.setString(1, comp_cd);
+			stmt3.setString(2, comp_cd);
+			stmt3.setString(3, "B");
+			stmt3.setString(4, "P"+bu_plant_seq);
+			stmt3.setString(5, "Y");
+			stmt3.setString(6, "Y");
+			stmt3.setString(7, "Y");
+			stmt3.setString(8, "B");
+			stmt3.setString(9, "RLNG");
+			rset3=stmt3.executeQuery();
+			while(rset3.next())
+			{
+				String email=rset3.getString(1)==null?"":rset3.getString(1);
+				if(bcc_list.equals(""))
+				{
+					bcc_list=email;
+				}
+				else
+				{
+					bcc_list+=", "+email;
+				}
+			}
+			rset3.close();
+			stmt3.close();
+			
+			if(contract_type.equals("X")) //ADDITIONAL EMAIL IDs FOR IGX ONLY
+			{
+				queryString="SELECT B.AGMT_NO,B.AGMT_NO,B.CONT_NO,B.CONT_REV "
+						+ "FROM FMS_DAILY_ALLOCATION_DTL A, FMS_SUPPLY_CONT_MST B "
+		  				+ "WHERE A.COMPANY_CD=? AND A.COUNTERPARTY_CD=? "
+		  				+ "AND A.GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND A.CONTRACT_TYPE=? "
+		  				+ "AND A.PLANT_SEQ=? AND A.BU_SEQ=? "
+						+ "AND A.NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+						+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+						+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+						+ "AND B.CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST C WHERE C.COMPANY_CD=B.COMPANY_CD AND C.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND C.AGMT_NO=B.AGMT_NO AND C.AGMT_REV=B.AGMT_REV AND C.CONT_NO=B.CONT_NO AND C.CONTRACT_TYPE=B.CONTRACT_TYPE) "
+						+ "AND A.COMPANY_CD=B.COMPANY_CD AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+						+ "AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO AND A.CONTRACT_TYPE=B.CONTRACT_TYPE ";
+				stmt0 = conn.prepareStatement(queryString);
+				stmt0.setString(1, comp_cd);
+				stmt0.setString(2, counterparty_cd);
+				stmt0.setString(3, gas_dt);
+				stmt0.setString(4, contract_type);
+				stmt0.setString(5, plant_seq);
+				stmt0.setString(6, bu_plant_seq);
+				rset0=stmt0.executeQuery();
+				while(rset0.next())
+				{
+					String agmt=rset0.getString(1)==null?"":rset0.getString(1);
+					String agmtRev=rset0.getString(2)==null?"":rset0.getString(2);
+					String cont=rset0.getString(3)==null?"":rset0.getString(3);
+					String contRev=rset0.getString(4)==null?"":rset0.getString(4);
+					
+					Vector VGX_CD=new Vector();
+					Vector VGX_BU_CD=new Vector();
+					
+					queryString4="SELECT GX_COUNTERPARTY_CD,GX_BU_SEQ_NO "
+							+ "FROM FMS_SUPPLY_CONT_GX_BU "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONT_NO=? "
+							+ "AND CONT_REV=? AND AGMT_NO=? AND AGMT_REV=? "
+							+ "AND CONTRACT_TYPE=?";
+					stmt4 = conn.prepareStatement(queryString4);
+					stmt4.setString(1, comp_cd);
+					stmt4.setString(2, counterparty_cd);
+					stmt4.setString(3, cont);
+					stmt4.setString(4, contRev);
+					stmt4.setString(5, agmt);
+					stmt4.setString(6, agmtRev);
+					stmt4.setString(7, contract_type);
+					rset4=stmt4.executeQuery();
+					while(rset4.next())
+					{
+						String gx_cd=rset4.getString(1)==null?"":rset4.getString(1);
+						String gx_bu_cd=rset4.getString(2)==null?"":rset4.getString(2);
+						
+						if(!VGX_CD.contains(gx_cd) && !VGX_BU_CD.contains(gx_bu_cd))
+						{
+							VGX_CD.add(gx_cd);
+							VGX_BU_CD.add(gx_bu_cd);
+						}
+					}
+					rset4.close();
+					stmt4.close();
+					
+					for(int i=0;i<VGX_CD.size();i++)
+					{
+						queryString5="SELECT EMAIL "
+								+ "FROM FMS_ENTITY_CONTACT_MST A "
+								+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+								+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+								+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND TO_JT=? "
+								+ "AND TYPE=? "
+								+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+								+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+								+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+								+ "AND EMAIL IS NOT NULL";
+						stmt5=conn.prepareStatement(queryString5);
+						stmt5.setString(1, comp_cd);
+						stmt5.setString(2, ""+VGX_CD.elementAt(i));
+						stmt5.setString(3, "G");
+						stmt5.setString(4, "B"+VGX_BU_CD.elementAt(i));
+						stmt5.setString(5, "Y");
+						stmt5.setString(6, "Y");
+						stmt5.setString(7, "Y");
+						stmt5.setString(8, "Y");
+						stmt5.setString(9, "RLNG");
+						rset5=stmt5.executeQuery();
+						if(rset5.next())
+						{
+							String email=rset5.getString(1)==null?"":rset5.getString(1);
+							if(to_list.equals(""))
+							{
+								to_list=email;
+							}
+							else
+							{
+								to_list+=", "+email;
+							}
+						}
+						rset5.close();
+						stmt5.close();
+						
+						//get CC list
+						queryString6="SELECT EMAIL "
+								+ "FROM FMS_ENTITY_CONTACT_MST A "
+								+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+								+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+								+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND (TO_JT=? OR TO_JT IS NULL) "
+								+ "AND TYPE=? "
+								+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+								+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+								+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+								+ "AND EMAIL IS NOT NULL";
+						stmt6=conn.prepareStatement(queryString6);
+						stmt6.setString(1, comp_cd);
+						stmt6.setString(2, ""+VGX_CD.elementAt(i));
+						stmt6.setString(3, "G");
+						stmt6.setString(4, "B"+VGX_BU_CD.elementAt(i));
+						stmt6.setString(5, "Y");
+						stmt6.setString(6, "Y");
+						stmt6.setString(7, "Y");
+						stmt6.setString(8, "N");
+						stmt6.setString(9, "RLNG");
+						rset6=stmt6.executeQuery();
+						while(rset6.next())
+						{
+							String email=rset6.getString(1)==null?"":rset6.getString(1);
+							if(cc_list.equals(""))
+							{
+								cc_list=email;
+							}
+							else
+							{
+								cc_list+=", "+email;
+							}
+						}
+						rset6.close();
+						stmt6.close();
+					}
+				}
+				rset0.close();
+				stmt0.close();
+			}
+			
+			String pdf_name="";
+			queryString4="SELECT REMARK,ADDRESSED_TO,PDF_NM "
+					+ "FROM FMS_DAILY_JOINT_TICKET A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND CONTRACT_TYPE=? AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND BU_SEQ=? AND ENTITY_TYPE='C'";
+			stmt4=conn.prepareStatement(queryString4);
+			stmt4.setString(1, comp_cd);
+			stmt4.setString(2, counterparty_cd);
+			stmt4.setString(3, contract_type);
+			stmt4.setString(4, plant_seq);
+			stmt4.setString(5, gas_dt);
+			stmt4.setString(6, bu_plant_seq);
+			rset4=stmt4.executeQuery();
+			if(rset4.next())
+			{
+				pdf_name=rset4.getString(3)==null?"":rset4.getString(3);
+			}
+			rset4.close();
+			stmt4.close();
+			
+			String customer_abbr=utilBean.getCounterpartyABBR(conn,counterparty_cd);
+			String plant_nm=utilBean.getCounterpartyPlantName(conn,counterparty_cd, comp_cd, plant_seq, "C");
+			String company_abbr=utilBean.getCompanyAbbr(conn, comp_cd);
+			
+			String subject=company_abbr+"/";
+			if (gas_dt.equals(sysdate))
+			{
+				subject+="INTRADAY/";
+			}
+			
+			subject+="Daily Joint Ticket ("+customer_abbr+"-"+plant_nm+")-"+gas_dt;
+			
+			String directory_path=file_path+File.separator+pdf_name;
+			
+			File pdfFile = new File(directory_path);
+			if(!pdfFile.exists())
+			{
+				pdf_name="";
+			}
+			
+			String companyNm=utilBean.getCompanyName(conn,comp_cd);
+			String mail_body="Dear Sir/Madam,"
+					+ "\n\nPlease find enclosed the Joint Ticket details for the gas date "+gas_dt+"."
+					+ "\nIn case of any discrepancy, please revert to us by end of today or else it will be construed as deemed acceptance."
+					+ "\n\nIn case of any query, please contact us at "+ownEmail+""				
+					+ "\n\n\nThank You,"
+					+ "\n\n"+companyNm+""
+					+ "\n"+ownAddress+", "
+					+ "\n"+ownCity+", "+ownState+" - "+ownPin+""
+					+ "\nEmail: "+ownEmail+""
+					+ "\nPh: "+ownPhone+""
+					+ "\n\n***This is an auto-generated email from the system, please do not reply to this email.";
+			
+			VMAIL_FROM_LIST.add(utilBean.getFromMailId(conn));
+			VMAIL_TO_LIST.add(to_list);
+			VMAIL_CC_LIST.add(cc_list);
+			VMAIL_BCC_LIST.add(bcc_list);
+			VMAIL_SUBJECT.add(subject);
+			VMAIL_ATTACHMENT.add(pdf_name);
+			VMAIL_ATTACHMENT_PATH.add(CommonVariable.join_ticket_pdf_path);
+			VMAIL_BODY.add(mail_body);
+			
+			if(file.equals("ALL_MAIL") && !pdf_name.equals(""))
+			{
+				sendAllMail(to_list,mail_body,subject,directory_path,cc_list,bcc_list,"JOINT_TICKET");
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+
+	public void getSendMailAllocToTransDetail()
+	{
+		String function_nm="getSendMailAllocToTransDetail()";
+		try
+		{
+			String ownAddress="";
+			String ownCity="";
+			String ownState="";
+			String ownPin="";
+			String ownCountry="";
+			String ownPhone="";
+			String ownEmail="";
+			String sysdate=dateUtil.getSysdate();
+			
+			queryString="SELECT ADDR,CITY,STATE,PIN,COUNTRY,PHONE,EMAIL "
+					+ "FROM FMS_COMPANY_OWNER_ADDR_MST A "
+					+ "WHERE COMPANY_CD=? AND ADDRESS_TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COMPANY_OWNER_ADDR_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.ADDRESS_TYPE=B.ADDRESS_TYPE "
+					+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, "C");
+			rset=stmt.executeQuery();
+			if(rset.next())
+			{
+				ownAddress  = rset.getString(1)==null?"":rset.getString(1);
+				ownCity  = rset.getString(2)==null?"":rset.getString(2);
+				ownState  = rset.getString(3)==null?"":rset.getString(3);
+				ownPin  = rset.getString(4)==null?"":rset.getString(4);
+				ownCountry  = rset.getString(5)==null?"":rset.getString(5);
+				ownPhone  = rset.getString(6)==null?"":rset.getString(6);
+				ownEmail  = rset.getString(7)==null?"":rset.getString(7);
+			}
+			rset.close();
+			stmt.close();
+			
+			//get TO list
+			String to_list="";
+			queryString1="SELECT EMAIL "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND SEQ_NO=? "
+					+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+					+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+					+ "AND TYPE=? "//AND TO_INV='Y' "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE ) "
+					+ "AND EMAIL IS NOT NULL";
+			stmt1=conn.prepareStatement(queryString1);
+			stmt1.setString(1, comp_cd);
+			stmt1.setString(2, counterparty_cd);
+			stmt1.setString(3, contact_person_cd);
+			stmt1.setString(4, "R");
+			stmt1.setString(5, "P"+plant_seq);
+			stmt1.setString(6, "Y");
+			stmt1.setString(7, "Y");
+			stmt1.setString(8, "Y");
+			stmt1.setString(9, "RLNG");
+			rset1=stmt1.executeQuery();
+			if(rset1.next())
+			{
+				String email=rset1.getString(1)==null?"":rset1.getString(1);
+				if(to_list.equals(""))
+				{
+					to_list=email;
+				}
+				else
+				{
+					to_list+=", "+email;
+				}
+			}
+			rset1.close();
+			stmt1.close();
+			
+			//get CC list
+			String cc_list="";
+			String bcc_list="";
+			queryString2="SELECT EMAIL "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND SEQ_NO!=? "
+					+ "AND ENTITY=? AND ADDR_FLAG=? AND JT_FLAG=? "
+					+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+					+ "AND TYPE=? " //AND (TO_INV='N' OR TO_INV IS NULL) "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+					+ "AND EMAIL IS NOT NULL";
+			stmt2=conn.prepareStatement(queryString2);
+			stmt2.setString(1, comp_cd);
+			stmt2.setString(2, counterparty_cd);
+			stmt2.setString(3, contact_person_cd);
+			stmt2.setString(4, "R");
+			stmt2.setString(5, "P"+plant_seq);
+			stmt2.setString(6, "Y");
+			stmt2.setString(7, "Y");
+			stmt2.setString(8, "Y");
+			stmt2.setString(9, "RLNG");
+			rset2=stmt2.executeQuery();
+			while(rset2.next())
+			{
+				String email=rset2.getString(1)==null?"":rset2.getString(1);
+				if(cc_list.equals(""))
+				{
+					cc_list=email;
+				}
+				else
+				{
+					cc_list+=", "+email;
+				}
+			}
+			rset2.close();
+			stmt2.close();
+			
+			queryString5="SELECT DISTINCT BU_SEQ "
+	  				+ "FROM FMS_DAILY_ALLOCATION_DTL A "
+	  				+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+	  				+ "AND TRANSPORTER_CD=? "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_ALLOCATION_DTL B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+					+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) ";
+			stmt5=conn.prepareStatement(queryString5);
+			stmt5.setString(1, comp_cd);
+			stmt5.setString(2, gas_dt);
+			stmt5.setString(3, counterparty_cd);
+			rset5=stmt5.executeQuery();
+			while(rset5.next())
+			{
+				String bu_seq=rset5.getString(1)==null?"":rset5.getString(1);
+				
+				// CC List selected from Company Correspondence Address
+				queryString3="SELECT EMAIL "
+						+ "FROM FMS_ENTITY_CONTACT_MST A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND ENTITY=? AND ADDR_FLAG IN (?,?) AND JT_FLAG=? "
+						+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND (TO_JT=? OR TO_JT IS NULL) "
+						+ "AND TYPE=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+						+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+						+ "AND EMAIL IS NOT NULL";
+				stmt3=conn.prepareStatement(queryString3);
+				stmt3.setString(1, comp_cd);
+				stmt3.setString(2, comp_cd);
+				stmt3.setString(3, "B");
+				stmt3.setString(4, "C");
+				stmt3.setString(5, "P"+bu_seq);
+				stmt3.setString(6, "Y");
+				stmt3.setString(7, "Y");
+				stmt3.setString(8, "Y");
+				stmt3.setString(9, "N");
+				stmt3.setString(10, "RLNG");
+				rset3=stmt3.executeQuery();
+				while(rset3.next())
+				{
+					String email=rset3.getString(1)==null?"":rset3.getString(1);
+					if(cc_list.equals(""))
+					{
+						cc_list=email;
+					}
+					else
+					{
+						cc_list+=", "+email;
+					}
+				}
+				rset3.close();
+				stmt3.close();
+				
+				// BCC List selected from Company Correspondence Address
+				queryString2="SELECT EMAIL "
+						+ "FROM FMS_ENTITY_CONTACT_MST A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND ENTITY=? AND ADDR_FLAG IN (?,?) AND JT_FLAG=? "
+						+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND (TO_JT=? OR TO_JT IS NULL) "
+						+ "AND TYPE=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+						+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+						+ "AND EMAIL IS NOT NULL";
+				stmt2=conn.prepareStatement(queryString2);
+				stmt2.setString(1, comp_cd);
+				stmt2.setString(2, comp_cd);
+				stmt2.setString(3, "B");
+				stmt2.setString(4, "C");
+				stmt2.setString(5, "P"+bu_seq);
+				stmt2.setString(6, "Y");
+				stmt2.setString(7, "Y");
+				stmt2.setString(8, "Y");
+				stmt2.setString(9, "B");
+				stmt2.setString(10, "RLNG");
+				rset2=stmt2.executeQuery();
+				while(rset2.next())
+				{
+					String email=rset2.getString(1)==null?"":rset2.getString(1);
+					if(!to_list.contains(email))
+					{
+						if(bcc_list.equals(""))
+						{
+							bcc_list=email;
+						}
+						else
+						{
+							bcc_list+=", "+email;
+						}
+					}
+				}
+				rset2.close();
+				stmt2.close();
+			}
+			rset5.close();
+			stmt5.close();
+			
+			String pdf_name="";
+			queryString4="SELECT REMARK,ADDRESSED_TO,PDF_NM "
+					+ "FROM FMS_DAILY_ALLOC_TRANS A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND ENTITY_TYPE='R'";
+			stmt4=conn.prepareStatement(queryString4);
+			stmt4.setString(1, comp_cd);
+			stmt4.setString(2, counterparty_cd);
+			stmt4.setString(3, plant_seq);
+			stmt4.setString(4, gas_dt);
+			rset4=stmt4.executeQuery();
+			if(rset4.next())
+			{
+				pdf_name=rset4.getString(3)==null?"":rset4.getString(3);
+			}
+			rset4.close();
+			stmt4.close();
+			
+			String transporter_abbr=utilBean.getCounterpartyABBR(conn,counterparty_cd);
+			String trans_plant_nm=utilBean.getCounterpartyPlantName(conn,counterparty_cd, comp_cd, plant_seq, "R");
+			String company_abbr=utilBean.getCompanyAbbr(conn, comp_cd);
+			String subject=company_abbr+"/";
+			if (gas_dt.equals(sysdate))
+			{
+				subject+="INTRADAY/";
+			}
+			
+			subject+="Allocation To Transporter("+transporter_abbr+"-"+trans_plant_nm+")-"+gas_dt;
+			
+			String directory_path=file_path+File.separator+pdf_name;
+			
+			File pdfFile = new File(directory_path);
+			if(!pdfFile.exists())
+			{
+				pdf_name="";
+			}
+			
+			String companyNm=utilBean.getCompanyName(conn,comp_cd);
+			String mail_body="Dear Sir/Madam,"
+					+ "\n\nPlease find enclosed "+transporter_abbr+"-"+trans_plant_nm+" Allocation details for the gas date "+gas_dt+"."
+					+ "\nIn case of any discrepancy, please revert to us by end of today or else it will be construed as deemed acceptance."
+					+ "\n\nIn case of any query, please contact us at "+ownEmail+""				
+					+ "\n\n\nThank You,"
+					+ "\n\n"+companyNm+""
+					+ "\n"+ownAddress+", "
+					+ "\n"+ownCity+", "+ownState+" - "+ownPin+""
+					+ "\nEmail: "+ownEmail+""
+					+ "\nPh: "+ownPhone+""
+					+ "\n\n***This is an auto-generated email from the system, please do not reply to this email.";
+			
+			VMAIL_FROM_LIST.add(utilBean.getFromMailId(conn));
+			VMAIL_TO_LIST.add(to_list);
+			VMAIL_CC_LIST.add(cc_list);
+			VMAIL_BCC_LIST.add(bcc_list);
+			VMAIL_SUBJECT.add(subject);
+			VMAIL_ATTACHMENT.add(pdf_name);
+			VMAIL_ATTACHMENT_PATH.add(CommonVariable.alloc_to_trans_pdf_path);
+			VMAIL_BODY.add(mail_body);
+			
+			if(file.equals("ALL_MAIL") && !pdf_name.equals(""))
+			{
+				sendAllMail(to_list,mail_body,subject,directory_path,cc_list,bcc_list,"ALLOC_TO_TRANS");
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getContractTypeMasterForNomToCust()
+	{
+		String function_nm="getContractTypeMasterForNomToCust()";
+		try
+		{
+			queryString="SELECT DISTINCT CONTRACT_TYPE "
+	  				+ "FROM FMS_DAILY_SELLER_NOM "
+	  				+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+	  				+ "ORDER BY CONTRACT_TYPE ASC";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, gas_dt);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String contType=rset.getString(1)==null?"":rset.getString(1);
+				String contNm="";
+				if(contType.equals("S"))
+				{
+					contNm="Supply Notice";
+				}
+				else if(contType.equals("L"))
+				{
+					contNm="Letter of Agreement";
+				}
+				else if(contType.equals("X"))
+				{
+					contNm="IGX";
+				}
+				else if(contType.equals("O"))
+				{
+					contNm="LTCORA(Sell) CN";
+				}
+				else if(contType.equals("Q"))
+				{
+					contNm="LTCORA(Sell) Period";
+				}
+				
+				VMST_CONTRACT_TYPE.add(contType);
+				VMST_CONTRACT_TYPE_NM.add(contNm);
+			}
+			rset.close();
+			stmt.close();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getDailySellerNominationToCustomer()
+	{
+		String function_nm="getDailySellerNominationToCustomer()";
+		try
+		{
+			Vector TEMP_CONT_TYPE=new Vector();
+			Vector TEMP_CONT_TYPE_NM=new Vector();
+			
+			if(!contract_type.equals("") && !contract_type.equals("0"))
+			{
+				if(VMST_CONTRACT_TYPE.contains(contract_type))
+				{
+					TEMP_CONT_TYPE.add(VMST_CONTRACT_TYPE.get(VMST_CONTRACT_TYPE.indexOf(contract_type)));
+					TEMP_CONT_TYPE_NM.add(VMST_CONTRACT_TYPE_NM.get(VMST_CONTRACT_TYPE.indexOf(contract_type)));
+				}
+			}
+			else
+			{
+				TEMP_CONT_TYPE=VMST_CONTRACT_TYPE;
+				TEMP_CONT_TYPE_NM=VMST_CONTRACT_TYPE_NM;
+			}
+			
+			for(int i=0;i<TEMP_CONT_TYPE.size();i++)
+			{
+				String contType=""+TEMP_CONT_TYPE.elementAt(i);
+				String contType_nm=""+TEMP_CONT_TYPE_NM.elementAt(i);
+				
+				int index=0;
+				
+				queryString="SELECT DISTINCT COUNTERPARTY_CD,AGMT_NO,CONT_NO,PLANT_SEQ,CARGO_NO,BU_SEQ "
+		  				+ "FROM FMS_DAILY_SELLER_NOM "
+		  				+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+		  				+ "AND CONTRACT_TYPE=?";
+				stmt=conn.prepareStatement(queryString);
+				stmt.setString(1, comp_cd);
+				stmt.setString(2, gas_dt);
+				stmt.setString(3, contType);
+				rset=stmt.executeQuery();
+				while(rset.next())
+				{
+					index+=1;
+					
+					String counterpty_cd=rset.getString(1)==null?"":rset.getString(1);
+					String agmtno=rset.getString(2)==null?"":rset.getString(2);
+					String contno=rset.getString(3)==null?"":rset.getString(3);
+					String plantSeq=rset.getString(4)==null?"":rset.getString(4);
+					String cargo_no=rset.getString(5)==null?"":rset.getString(5);
+					String bu_seq=rset.getString(6)==null?"":rset.getString(6);
+					
+					String counterptyAbbr = utilBean.getCounterpartyABBR(conn,counterpty_cd);
+					String plantAbbr=utilBean.getCounterpartyPlantABBR(conn,counterpty_cd, comp_cd, plantSeq, "C");
+					String plantNm=utilBean.getCounterpartyPlantName(conn,counterpty_cd, comp_cd, plantSeq, "C");
+					
+					VCOUNTERPARTY_CD.add(counterpty_cd);
+					VCOUNTERPARTY_ABBR.add(counterptyAbbr);
+					VCOUNTERPARTY_NM.add(""+utilBean.getCounterpartyName(conn,counterpty_cd));
+					VCONTRACT_TYPE.add(contType);
+					VCONTRACT_TYPE_NM.add(contType_nm);
+					VCOUNTERPARTY_PLANT_SEQ.add(plantSeq);
+					VCOUNTERPARTY_PLANT_ABBR.add(plantAbbr);
+					VBU_PLANT_SEQ.add(bu_seq);
+					
+					String contRef="";
+					queryString1="SELECT CONT_REF_NO,TRADE_REF_NO "
+							+ "FROM FMS_SUPPLY_CONT_MST A "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND CONT_NO=? AND AGMT_NO=? AND CONTRACT_TYPE=? "
+							+ "AND CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+							+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO "
+							+ "AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE)";
+					stmt1=conn.prepareStatement(queryString1);
+					stmt1.setString(1, comp_cd);
+					stmt1.setString(2, counterpty_cd);
+					stmt1.setString(3, contno);
+					stmt1.setString(4, agmtno);
+					stmt1.setString(5, contType);
+					rset1=stmt1.executeQuery();
+					if(rset1.next())
+					{
+						contRef=rset1.getString(1)==null?"":rset1.getString(1);
+						String tradeRef=rset1.getString(2)==null?"":rset1.getString(2);
+						
+						if(contType.equals("X"))
+						{
+							contRef=tradeRef;
+						}
+					}
+					rset1.close();
+					stmt1.close();
+					
+					if(contType.equals("O") || contType.equals("Q"))
+					{
+						queryString1="SELECT CARGO_REF "
+								+ "FROM FMS_LTCORA_CONT_CARGO_DTL A "
+								+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+								+ "AND CONT_NO=? AND AGMT_NO=? AND CONTRACT_TYPE=? AND BUY_SALE=?  AND CARGO_NO=? "
+								+ "AND CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_LTCORA_CONT_CARGO_DTL B WHERE A.COMPANY_CD=B.COMPANY_CD "
+								+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO "
+								+ "AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.CARGO_NO=B.CARGO_NO)";
+						stmt1=conn.prepareStatement(queryString1);
+						stmt1.setString(1, comp_cd);
+						stmt1.setString(2, counterpty_cd);
+						stmt1.setString(3, contno);
+						stmt1.setString(4, agmtno);
+						stmt1.setString(5, contType);
+						stmt1.setString(6, "C");
+						stmt1.setString(7, cargo_no);
+						rset1=stmt1.executeQuery();
+						if(rset1.next())
+						{
+							contRef=rset1.getString(1)==null?"":rset1.getString(1);
+						}
+						rset1.close();
+						stmt1.close();
+					}
+					
+					String dealNo=utilBean.NewDealMappingId(comp_cd, counterpty_cd, agmtno, "", contno, "", contType, cargo_no);
+					VDIS_CONT_MAPPING.add(dealNo);
+					VAGMT_NO.add(agmtno);
+					VCONT_NO.add(contno);
+					VCARGO_NO.add(cargo_no);
+					VCONT_REF.add(contRef);
+					
+					Vector VTEMP_CONTACT_PERSON=new Vector();
+					Vector VTEMP_CONTACT_PERSON_CD=new Vector();
+					
+					VTEMP_CONTACT_PERSON.add("--Select--");
+					VTEMP_CONTACT_PERSON_CD.add("");
+					queryString2="SELECT CONTACT_PERSON, SEQ_NO "
+							+ "FROM FMS_ENTITY_CONTACT_MST A "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND ENTITY=? AND ADDR_FLAG=? AND NOM_FLAG=? "
+							+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+							+ "AND TYPE=? "
+							+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+							+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+							+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+					stmt2=conn.prepareStatement(queryString2);
+					stmt2.setString(1, comp_cd);
+					stmt2.setString(2, counterpty_cd);
+					stmt2.setString(3, "C");
+					stmt2.setString(4, "P"+plantSeq);
+					stmt2.setString(5, "Y");
+					stmt2.setString(6, "Y");
+					stmt2.setString(7, "Y");
+					stmt2.setString(8, "RLNG");
+					stmt2.setString(9, gas_dt);
+					rset2=stmt2.executeQuery();
+					while(rset2.next())
+					{
+						VTEMP_CONTACT_PERSON.add(rset2.getString(1)==null?"":rset2.getString(1));
+						VTEMP_CONTACT_PERSON_CD.add(rset2.getString(2)==null?"":rset2.getString(2));
+					}
+					rset2.close();
+					stmt2.close();
+					
+					String contact_person_cd="";
+					queryString3="SELECT SEQ_NO "
+							+ "FROM FMS_ENTITY_CONTACT_MST A "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND ENTITY=? AND ADDR_FLAG=? AND NOM_FLAG=? "
+							+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND TO_NOM=? "
+							+ "AND TYPE=? "
+							+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+							+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+							+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+					stmt3=conn.prepareStatement(queryString3);
+					stmt3.setString(1, comp_cd);
+					stmt3.setString(2, counterpty_cd);
+					stmt3.setString(3, "C");
+					stmt3.setString(4, "P"+plantSeq);
+					stmt3.setString(5, "Y");
+					stmt3.setString(6, "Y");
+					stmt3.setString(7, "Y");
+					stmt3.setString(8, "Y");
+					stmt3.setString(9, "RLNG");
+					stmt3.setString(10, gas_dt);
+					rset3=stmt3.executeQuery();
+					if(rset3.next())
+					{
+						contact_person_cd=rset3.getString(1)==null?"0":rset3.getString(1);
+					}
+					rset3.close();
+					stmt3.close();
+					
+					VCONTACT_PERSON.add(VTEMP_CONTACT_PERSON);
+					VCONTACT_PERSON_CD.add(VTEMP_CONTACT_PERSON_CD);
+					VSEL_CONTACT_PERSON_CD.add(contact_person_cd);
+					
+					String remark="";
+					String contact_person="";
+					String pdf_name="";
+					String pdf_path="";
+					String email_flag="";
+					queryString4="SELECT REMARK,ADDRESSED_TO,PDF_NM,EMAIL_SENT "
+							+ "FROM FMS_DAILY_SELLER_NOM_REMARK A "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND CONT_NO=? AND AGMT_NO=? AND CONTRACT_TYPE=? "
+							+ "AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=?";
+					stmt4=conn.prepareStatement(queryString4);
+					stmt4.setString(1, comp_cd);
+					stmt4.setString(2, counterpty_cd);
+					stmt4.setString(3, contno);
+					stmt4.setString(4, agmtno);
+					stmt4.setString(5, contType);
+					stmt4.setString(6, plantSeq);
+					stmt4.setString(7, gas_dt);
+					stmt4.setString(8, cargo_no);
+					rset4=stmt4.executeQuery();
+					if(rset4.next())
+					{
+						remark=rset4.getString(1)==null?"":rset4.getString(1);
+						contact_person=rset4.getString(2)==null?"":rset4.getString(2);
+						pdf_name=rset4.getString(3)==null?"":rset4.getString(3);
+						email_flag=rset4.getString(4)==null?"":rset4.getString(4);
+						pdf_path=CommonVariable.nom_to_customer_pdf_path;
+					}
+					rset4.close();
+					stmt4.close();
+					
+					VREMARK.add(remark);
+					VADDRESSED_PERSON.add(contact_person);
+					VPDF_NAME.add(pdf_name);
+					VPDF_PATH.add(pdf_path);
+					VEMAIL_FLAG.add(email_flag);
+					
+					String pdf_exists="N";
+					
+					String directory_path=file_path+File.separator+pdf_name;
+					
+					File pdfFile = new File(directory_path);
+					if(pdfFile.exists() && !pdf_name.equals(""))
+					{
+						pdf_exists="Y";
+					}
+					VPDF_EXISTS.add(pdf_exists);
+				}
+				VINDEX.add(index);
+				rset.close();
+				stmt.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getViewNominationToCustomerData()
+	{
+		String function_nm="getViewNominationToCustomerData()";
+		try
+		{
+			HashMap map_gas_dt = new HashMap();
+			HashMap map_mmbtu = new HashMap();
+			HashMap map_grid = new HashMap();
+			HashMap total_mmbtu = new HashMap();
+			double tot_mmbtu=0;
+			int count=0;
+			queryString="SELECT SUM(QTY_MMBTU),TRANSPORTER_CD,TRANS_SEQ "
+	  				+ "FROM FMS_DAILY_SELLER_NOM A "
+	  				+ "WHERE CONT_NO=? AND AGMT_NO=? "
+					+ "AND COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND PLANT_SEQ=? AND CONTRACT_TYPE=? "
+					+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=? "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND B.BU_SEQ=A.BU_SEQ "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+					+ "AND B.GAS_DT=A.GAS_DT AND B.CARGO_NO=A.CARGO_NO) "
+					+ "GROUP BY TRANSPORTER_CD,TRANS_SEQ "
+					+ "ORDER BY TRANSPORTER_CD,TRANS_SEQ ";
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, cont_no);
+			stmt.setString(2, agmt_no);
+			stmt.setString(3, comp_cd);
+			stmt.setString(4, counterparty_cd);
+			stmt.setString(5, plant_seq);
+			stmt.setString(6, contract_type);
+			stmt.setString(7, gas_dt);
+			stmt.setString(8, cargo_no);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				double mmbtu=rset.getDouble(1);
+				String transportCd=rset.getString(2)==null?"":rset.getString(2);
+				String transport_plant_seq=rset.getString(3)==null?"":rset.getString(3);
+				
+				String trans_abbr=""+utilBean.getCounterpartyABBR(conn,transportCd);
+				String trans_plant_nm=""+utilBean.getCounterpartyPlantName(conn,transportCd, comp_cd, transport_plant_seq, "R");
+				tot_mmbtu=tot_mmbtu+mmbtu;
+				
+				count+=1;
+				map_gas_dt.put(""+count, gas_dt);
+				map_mmbtu.put(""+count, nf.format(mmbtu));
+				map_grid.put(""+count,trans_abbr+" - "+trans_plant_nm);
+			}
+			rset.close();
+			stmt.close();
+			total_mmbtu.put(""+count, nf.format(tot_mmbtu));
+			
+			view_seller_nomination_to_customer_data.put("v_gas_dt", map_gas_dt);
+			view_seller_nomination_to_customer_data.put("v_mmbtu", map_mmbtu);
+			view_seller_nomination_to_customer_data.put("v_grid", map_grid);
+			view_seller_nomination_to_customer_data.put("v_total", total_mmbtu);
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getViewNominationToCustomerInfo()
+	{
+		String function_nm="getViewNominationToCustomerInfo()";
+		try
+		{
+			String ph_no="";
+			queryString="SELECT PH_NO "
+					+ "FROM FMS_EMP_MST "
+					+ "WHERE EMP_CD=? ";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, emp_cd);
+			rset=stmt.executeQuery();
+			if(rset.next())
+			{
+				ph_no=rset.getString(1)==null?"":rset.getString(1);
+			}
+			rset.close();
+			stmt.close();
+			
+			String company_nm = ""+utilBean.getCompanyName(conn,comp_cd);
+			String customer_nm = ""+utilBean.getCounterpartyName(conn,counterparty_cd);
+			view_seller_nomination_to_customer_info.put("company_nm", company_nm);
+			view_seller_nomination_to_customer_info.put("customer_nm", customer_nm);
+			view_seller_nomination_to_customer_info.put("customer_abbr", ""+utilBean.getCounterpartyABBR(conn,counterparty_cd));
+			view_seller_nomination_to_customer_info.put("plant_nm", ""+utilBean.getCounterpartyPlantName(conn,counterparty_cd, comp_cd, plant_seq, "C"));
+			view_seller_nomination_to_customer_info.put("emp_nm", ""+utilBean.getEmpName(conn,emp_cd));
+			view_seller_nomination_to_customer_info.put("emp_ph_no", ""+ph_no);
+			
+			String signing_dt="";
+			String agmtSigningDt="";
+			String contRef="";
+			String cargoRef="";
+			queryString1="SELECT TO_CHAR(SIGNING_DT,'DD-MON-YY'),CONT_REF_NO,TRADE_REF_NO "
+					+ "FROM FMS_SUPPLY_CONT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND CONT_NO=? AND AGMT_NO=? AND CONTRACT_TYPE=? "
+					+ "AND CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO "
+					+ "AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE)";
+			stmt1=conn.prepareStatement(queryString1);
+			stmt1.setString(1, comp_cd);
+			stmt1.setString(2, counterparty_cd);
+			stmt1.setString(3, cont_no);
+			stmt1.setString(4, agmt_no);
+			stmt1.setString(5, contract_type);
+			rset1=stmt1.executeQuery();
+			if(rset1.next())
+			{
+				signing_dt=rset1.getString(1)==null?"":rset1.getString(1);
+				contRef=rset1.getString(2)==null?"":rset1.getString(2);
+				if(contract_type.equals("X"))
+				{
+					contRef=rset1.getString(3)==null?"":rset1.getString(3);
+				}
+			}
+			rset1.close();
+			stmt1.close();
+			
+			if(contract_type.equals("O") || contract_type.equals("Q"))
+			{
+				queryString1="SELECT TO_CHAR(SIGNING_DT,'DD-MON-YY'),CONT_REF_NO "
+						+ "FROM FMS_LTCORA_CONT_MST A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND CONT_NO=? AND AGMT_NO=? AND CONTRACT_TYPE=? AND BUY_SALE=? "
+						+ "AND CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_LTCORA_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO "
+						+ "AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE)";
+				stmt1=conn.prepareStatement(queryString1);
+				stmt1.setString(1, comp_cd);
+				stmt1.setString(2, counterparty_cd);
+				stmt1.setString(3, cont_no);
+				stmt1.setString(4, agmt_no);
+				stmt1.setString(5, contract_type);
+				stmt1.setString(6, "C");
+				rset1=stmt1.executeQuery();
+				if(rset1.next())
+				{
+					signing_dt=rset1.getString(1)==null?"":rset1.getString(1);
+					contRef=rset1.getString(2)==null?"":rset1.getString(2);
+				}
+				rset1.close();
+				stmt1.close();
+				
+				queryString2="SELECT CARGO_REF "
+						+ "FROM FMS_LTCORA_CONT_CARGO_DTL A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND CONT_NO=? AND AGMT_NO=? AND CONTRACT_TYPE=? AND BUY_SALE=? AND CARGO_NO=? "
+						+ "AND CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_LTCORA_CONT_CARGO_DTL B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO "
+						+ "AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE AND A.BUY_SALE=B.BUY_SALE AND A.CARGO_NO=B.CARGO_NO)";
+				stmt2=conn.prepareStatement(queryString2);
+				stmt2.setString(1, comp_cd);
+				stmt2.setString(2, counterparty_cd);
+				stmt2.setString(3, cont_no);
+				stmt2.setString(4, agmt_no);
+				stmt2.setString(5, contract_type);
+				stmt2.setString(6, "C");
+				stmt2.setString(7, cargo_no);
+				rset2=stmt2.executeQuery();
+				if(rset2.next())
+				{
+					cargoRef=rset2.getString(1)==null?"":rset2.getString(1);
+				}
+				rset2.close();
+				stmt2.close();
+			}
+			
+			if(contract_type.equals("S"))
+			{
+				queryString2="SELECT TO_CHAR(SIGNING_DT,'DD-MON-YY')  "
+						+ "FROM FMS_AGMT_MST A "
+						+ "WHERE COMPANY_CD=? AND AGMT_TYPE=? "
+						+ "AND AGMT_NO=? AND COUNTERPARTY_CD=? "
+						+ "AND AGMT_REV = (SELECT MAX(AGMT_REV) FROM FMS_AGMT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.AGMT_TYPE=B.AGMT_TYPE) ";
+				stmt2=conn.prepareStatement(queryString2);
+				stmt2.setString(1, comp_cd);
+				stmt2.setString(2, "F");
+				stmt2.setString(3, agmt_no);
+				stmt2.setString(4, counterparty_cd);
+				rset2=stmt2.executeQuery();
+				if(rset2.next())
+				{
+					agmtSigningDt=rset2.getString(1)==null?"":rset2.getString(1);
+				}
+				rset2.close();
+				stmt2.close();
+			}
+			
+			String remark="";
+			String seq_no="";
+			queryString2="SELECT REMARK,NVL((SEQ_NO),'0') "
+					+ "FROM FMS_DAILY_SELLER_NOM_REMARK A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND CONT_NO=? AND AGMT_NO=? AND CONTRACT_TYPE=? "
+					+ "AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=?";
+			stmt2=conn.prepareStatement(queryString2);
+			stmt2.setString(1, comp_cd);
+			stmt2.setString(2, counterparty_cd);
+			stmt2.setString(3, cont_no);
+			stmt2.setString(4, agmt_no);
+			stmt2.setString(5, contract_type);
+			stmt2.setString(6, plant_seq);
+			stmt2.setString(7, gas_dt);
+			stmt2.setString(8, cargo_no);
+			rset2=stmt2.executeQuery();
+			if(rset2.next())
+			{
+				remark=rset2.getString(1)==null?"":rset2.getString(1);
+				seq_no =""+(rset2.getInt(2)+1);
+			}
+			else
+			{
+				remark="";
+				seq_no="1";
+			}
+			rset2.close();
+			stmt2.close();
+			
+			String contact_person_nm="";
+			String contact_person_phone="";
+			String contact_person_fax="";
+			queryString3="SELECT CONTACT_PERSON,PHONE,FAX_1 "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND ENTITY=? AND SEQ_NO=? AND ADDR_FLAG=? "
+					+ "AND TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+			stmt3=conn.prepareStatement(queryString3);
+			stmt3.setString(1, comp_cd);
+			stmt3.setString(2, counterparty_cd);
+			stmt3.setString(3, "C");
+			stmt3.setString(4, contact_person_cd);
+			stmt3.setString(5, "P"+plant_seq);
+			stmt3.setString(6, "RLNG");
+			stmt3.setString(7, gas_dt);
+			rset3=stmt3.executeQuery();
+			if(rset3.next())
+			{
+				contact_person_nm=rset3.getString(1)==null?"":rset3.getString(1);
+				contact_person_phone=rset3.getString(2)==null?"":rset3.getString(2);
+				contact_person_fax=rset3.getString(3)==null?"":rset3.getString(3);
+			}
+			rset3.close();
+			stmt3.close();
+			
+			String plantAddress="";
+			String plantCity="";
+			String plantState="";
+			String plantPin="";
+			String plantNm="";
+			
+			queryString4 = "SELECT PLANT_ADDR,PLANT_CITY,PLANT_STATE,PLANT_PIN,PLANT_NAME,PLANT_CITY "
+					+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+					+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? AND SEQ_NO=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) ";
+			stmt4=conn.prepareStatement(queryString4);
+			stmt4.setString(1, counterparty_cd);
+			stmt4.setString(2, "C");
+			stmt4.setString(3, comp_cd);
+			stmt4.setString(4, plant_seq);
+			rset4=stmt4.executeQuery();
+			if(rset4.next())
+			{
+				plantAddress  = rset4.getString(1)==null?"":rset4.getString(1);
+				plantCity  = rset4.getString(2)==null?"":rset4.getString(2);
+				plantState  = rset4.getString(3)==null?"":rset4.getString(3);
+				plantPin  = rset4.getString(4)==null?"":rset4.getString(4);
+				plantNm  = rset4.getString(5)==null?"":rset4.getString(5);
+			}
+			rset4.close();
+			stmt4.close();
+			
+			String ownAddress="";
+			String ownCity="";
+			String ownState="";
+			String ownPin="";
+			String ownCountry="";
+			String ownPhone="";
+			String ownEmail="";
+			
+			queryString5="SELECT ADDR,CITY,STATE,PIN,COUNTRY,PHONE,EMAIL "
+					+ "FROM FMS_COMPANY_OWNER_ADDR_MST A "
+					+ "WHERE COMPANY_CD=? AND ADDRESS_TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COMPANY_OWNER_ADDR_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.ADDRESS_TYPE=B.ADDRESS_TYPE "
+					+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))";
+			stmt5=conn.prepareStatement(queryString5);
+			stmt5.setString(1, comp_cd);
+			stmt5.setString(2, "C");
+			rset5=stmt5.executeQuery();
+			if(rset5.next())
+			{
+				ownAddress  = rset5.getString(1)==null?"":rset5.getString(1);
+				ownCity  = rset5.getString(2)==null?"":rset5.getString(2);
+				ownState  = rset5.getString(3)==null?"":rset5.getString(3);
+				ownPin  = rset5.getString(4)==null?"":rset5.getString(4);
+				ownCountry  = rset5.getString(5)==null?"":rset5.getString(5);
+				ownPhone  = rset5.getString(6)==null?"":rset5.getString(6);
+				ownEmail  = rset5.getString(7)==null?"":rset5.getString(7);
+			}
+			rset5.close();
+			stmt5.close();
+			
+			view_seller_nomination_to_customer_info.put("plantAddress",plantAddress);
+			view_seller_nomination_to_customer_info.put("plantCity",plantCity);
+			view_seller_nomination_to_customer_info.put("plantState",plantState);
+			view_seller_nomination_to_customer_info.put("plantPin",plantPin);
+			view_seller_nomination_to_customer_info.put("plantNm",plantNm);
+			
+			view_seller_nomination_to_customer_info.put("ownAddress",ownAddress);
+			view_seller_nomination_to_customer_info.put("ownCity",ownCity);
+			view_seller_nomination_to_customer_info.put("ownState",ownState);
+			view_seller_nomination_to_customer_info.put("ownPin",ownPin);
+			view_seller_nomination_to_customer_info.put("ownCountry",ownCountry);
+			view_seller_nomination_to_customer_info.put("ownPhone",ownPhone);
+			view_seller_nomination_to_customer_info.put("ownEmail",ownEmail);
+			
+			view_seller_nomination_to_customer_info.put("contact_person_nm",contact_person_nm);
+			view_seller_nomination_to_customer_info.put("contact_person_phone",contact_person_phone);
+			view_seller_nomination_to_customer_info.put("contact_person_fax",contact_person_fax);
+			view_seller_nomination_to_customer_info.put("signing_dt",signing_dt);
+			view_seller_nomination_to_customer_info.put("agmt_signing_dt",agmtSigningDt);
+			view_seller_nomination_to_customer_info.put("contRef",contRef);
+			view_seller_nomination_to_customer_info.put("remark",remark);
+			view_seller_nomination_to_customer_info.put("seq_no",seq_no);
+			
+			String contract_dtl_Str = "";
+			if (contract_type.equals("L"))
+			{
+				contract_dtl_Str = "Letter of Agreement ("+contRef+") executed on "+signing_dt+")";
+			}
+			else if (contract_type.equals("X"))
+			{
+				contract_dtl_Str = "Exchange Transaction ("+contRef+") executed on "+signing_dt+")";
+			}	
+			else if (contract_type.equals("S"))
+			{	
+				contract_dtl_Str = "Supply Notice ("+contRef+") executed on "+signing_dt+" "
+						+"pursuant to Framework Gas Sales Agreement executed on "+agmtSigningDt+"";
+			}
+			else if(contract_type.equals("O"))
+			{
+				contract_dtl_Str = "LTCORA(Sell) CN ("+contRef+") executed on "+signing_dt+" for Cargo "+cargoRef+ " ";
+			}
+			else if(contract_type.equals("Q"))
+			{
+				contract_dtl_Str = "LTCORA(Sell) Period ("+contRef+") executed on "+signing_dt+" for Cargo "+cargoRef+ " ";
+			}
+			
+			String emailBody = "As per requirement clause of "+contract_dtl_Str+" "
+					+ "between "+company_nm+" and "+customer_nm+", "
+					+ "the Seller Nomination notification for gas day "+gas_dt+" as follows:";
+			 
+			view_seller_nomination_to_customer_info.put("emailBody",emailBody);		 
+			
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getDailySellerNominationToTransporter()
+	{
+		String function_nm="getDailySellerNominationToTransporter()";
+		try
+		{
+			queryString="SELECT DISTINCT TRANSPORTER_CD "
+	  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+	  				+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+					+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+			stmt0=conn.prepareStatement(queryString);
+			stmt0.setString(1, comp_cd);
+			stmt0.setString(2, gas_dt);
+			rset0=stmt0.executeQuery();
+			while(rset0.next())
+			{
+				String trns_cd = rset0.getString(1)==null?"":rset0.getString(1);
+				String trns_abbr = ""+utilBean.getCounterpartyABBR(conn,trns_cd);
+				String trns_nm = ""+utilBean.getCounterpartyName(conn,trns_cd);
+				
+				VTRANSPORTER_CD.add(trns_cd);
+				VTRANSPORTER_ABBR.add(trns_abbr);
+				VTRANSPORTER_NM.add(trns_nm);
+			}
+			rset0.close();
+			stmt0.close();
+			
+			for(int i=0; i<VTRANSPORTER_CD.size(); i++)
+			{
+				int index=0;
+				
+				String transporterCd=""+VTRANSPORTER_CD.elementAt(i);
+				String transporterAbbr=""+VTRANSPORTER_ABBR.elementAt(i);
+				
+				queryString="SELECT DISTINCT TRANS_SEQ "
+		  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+		  				+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+		  				+ "AND TRANSPORTER_CD=? "
+						+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+						+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+						+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+						+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+						+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE AND B.BU_SEQ=A.BU_SEQ "
+						+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+				stmt=conn.prepareStatement(queryString);
+				stmt.setString(1, comp_cd);
+				stmt.setString(2, gas_dt);
+				stmt.setString(3, transporterCd);
+				rset=stmt.executeQuery();
+				while(rset.next())
+				{
+					index++;
+					String trns_plant_seq = rset.getString(1)==null?"":rset.getString(1);
+					String trns_plant_abbr = ""+utilBean.getCounterpartyPlantABBR(conn,transporterCd, comp_cd, trns_plant_seq, "R");
+					String trns_plant_nm = ""+utilBean.getCounterpartyPlantName(conn,transporterCd, comp_cd, trns_plant_seq, "R");
+					
+					VTRANSPORTER_PLANT_SEQ.add(trns_plant_seq);
+					VTRANSPORTER_PLANT_ABBR.add(trns_plant_abbr);
+					
+					Vector VTEMP_CONTACT_PERSON=new Vector();
+					Vector VTEMP_CONTACT_PERSON_CD=new Vector();
+					
+					VTEMP_CONTACT_PERSON.add("--Select--");
+					VTEMP_CONTACT_PERSON_CD.add("");
+					queryString1="SELECT CONTACT_PERSON, SEQ_NO "
+							+ "FROM FMS_ENTITY_CONTACT_MST A "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND ENTITY=? AND ADDR_FLAG=? AND NOM_FLAG=? "
+							+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+							+ "AND TYPE=? "
+							+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+							+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+							+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+					stmt1=conn.prepareStatement(queryString1);
+					stmt1.setString(1, comp_cd);
+					stmt1.setString(2, transporterCd);
+					stmt1.setString(3, "R");
+					stmt1.setString(4, "P"+trns_plant_seq);
+					stmt1.setString(5, "Y");
+					stmt1.setString(6, "Y");
+					stmt1.setString(7, "Y");
+					stmt1.setString(8, "RLNG");
+					stmt1.setString(9, gas_dt);
+					rset1=stmt1.executeQuery();
+					while(rset1.next())
+					{
+						VTEMP_CONTACT_PERSON.add(rset1.getString(1)==null?"":rset1.getString(1));
+						VTEMP_CONTACT_PERSON_CD.add(rset1.getString(2)==null?"":rset1.getString(2));
+					}
+					rset1.close();
+					stmt1.close();
+					
+					String contact_person_cd="";
+					queryString2="SELECT SEQ_NO "
+							+ "FROM FMS_ENTITY_CONTACT_MST A "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND ENTITY=? AND ADDR_FLAG=? AND NOM_FLAG=? "
+							+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND TO_NOM=? "
+							+ "AND TYPE=? "
+							+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+							+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+							+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+					stmt2=conn.prepareStatement(queryString2);
+					stmt2.setString(1, comp_cd);
+					stmt2.setString(2, transporterCd);
+					stmt2.setString(3, "R");
+					stmt2.setString(4, "P"+trns_plant_seq);
+					stmt2.setString(5, "Y");
+					stmt2.setString(6, "Y");
+					stmt2.setString(7, "Y");
+					stmt2.setString(8, "Y");
+					stmt2.setString(9, "RLNG");
+					stmt2.setString(10, gas_dt);
+					rset2=stmt2.executeQuery();
+					if(rset2.next())
+					{
+						contact_person_cd=rset2.getString(1)==null?"0":rset2.getString(1);
+					}
+					rset2.close();
+					stmt2.close();
+					
+					VCONTACT_PERSON.add(VTEMP_CONTACT_PERSON);
+					VCONTACT_PERSON_CD.add(VTEMP_CONTACT_PERSON_CD);
+					VSEL_CONTACT_PERSON_CD.add(contact_person_cd);
+					
+					String remark="";
+					String contact_person="";
+					String pdf_name="";
+					String pdf_path="";
+					String email_flag="";
+					queryString4="SELECT REMARK,ADDRESSED_TO,PDF_NM,EMAIL_SENT "
+							+ "FROM FMS_DAILY_SELLER_NOM_TRANS A "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+							+ "AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND ENTITY_TYPE='R'";
+					stmt4=conn.prepareStatement(queryString4);
+					stmt4.setString(1, comp_cd);
+					stmt4.setString(2, transporterCd);
+					stmt4.setString(3, trns_plant_seq);
+					stmt4.setString(4, gas_dt);
+					rset4=stmt4.executeQuery();
+					if(rset4.next())
+					{
+						remark=rset4.getString(1)==null?"":rset4.getString(1);
+						contact_person=rset4.getString(2)==null?"":rset4.getString(2);
+						pdf_name=rset4.getString(3)==null?"":rset4.getString(3);
+						email_flag=rset4.getString(4)==null?"":rset4.getString(4);
+						pdf_path=CommonVariable.nom_to_transporter_pdf_path;
+					}
+					rset4.close();
+					stmt4.close();
+					
+					VREMARK.add(remark);
+					VADDRESSED_PERSON.add(contact_person);
+					VPDF_NAME.add(pdf_name);
+					VPDF_PATH.add(pdf_path);
+					VEMAIL_FLAG.add(email_flag);
+					
+					String pdf_exists="N";
+					
+					String directory_path=file_path+File.separator+pdf_name;
+					
+					File pdfFile = new File(directory_path);
+					if(pdfFile.exists() && !pdf_name.equals(""))
+					{
+						pdf_exists="Y";
+					}
+					VPDF_EXISTS.add(pdf_exists);
+				}
+				VINDEX.add(index);
+				rset.close();
+				stmt.close();
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getViewNominationToTransporterData()
+	{
+		String function_nm="getViewNominationToTransporterData()";
+		try
+		{
+			HashMap map_gas_dt = new HashMap();
+			HashMap map_mmbtu = new HashMap();
+			HashMap map_mmscm = new HashMap();
+			HashMap map_grid = new HashMap();
+			HashMap map_customer_code = new HashMap();
+			HashMap map_ct_ref = new HashMap();
+			
+			int count=0;
+			
+			double tot_mmbtu=0;
+			double tot_mmscm=0;
+			
+			queryString="SELECT SUM(QTY_MMBTU),COUNTERPARTY_CD,PLANT_SEQ,CT_REF "
+	  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+	  				+ "WHERE COMPANY_CD=? AND TRANSPORTER_CD=? "
+					+ "AND TRANS_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ AND B.BU_SEQ=A.BU_SEQ "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+					+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) "
+					+ "GROUP BY COUNTERPARTY_CD,PLANT_SEQ,CT_REF "
+					+ "ORDER BY COUNTERPARTY_CD,PLANT_SEQ,CT_REF ";
+			//20230605 PICKING FROM FMS_DAILY_SELLER_NOM_DTL TABLE
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, counterparty_cd);
+			stmt.setString(3, plant_seq);
+			stmt.setString(4, gas_dt);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				double mmbtu=rset.getDouble(1);
+				double mmscm = 38900;
+				double mmscm_qty = mmbtu/mmscm;
+				
+				tot_mmbtu+=mmbtu;
+				tot_mmscm+=mmscm_qty;
+				
+				String counterptyCd=rset.getString(2)==null?"":rset.getString(2);
+				String plant_seq=rset.getString(3)==null?"":rset.getString(3);
+				
+				String counterpty_abbr=""+utilBean.getCounterpartyABBR(conn,counterptyCd);
+				String plant_nm=""+utilBean.getCounterpartyPlantName(conn,counterptyCd, comp_cd, plant_seq, "C");
+				
+				String ct_ref = rset.getString(4)==null?"":rset.getString(4); //20230605 ADDED
+				String customer_code=""+utilBean.getTranspoterCustomerCode(conn,comp_cd, counterparty_cd, counterptyCd, plant_seq, gas_dt); //20230605 ADDED
+				
+				count+=1;
+				map_gas_dt.put(""+count, gas_dt);
+				map_mmbtu.put(""+count, nf.format(mmbtu));
+				map_mmscm.put(""+count, nf.format(mmscm_qty));
+				map_grid.put(""+count,counterpty_abbr+" - "+plant_nm);
+				map_customer_code.put(""+count, customer_code);
+				map_ct_ref.put(""+count, ct_ref);
+			}
+			rset.close();
+			stmt.close();
+			
+			count+=1;
+			map_gas_dt.put(""+count, "");
+			map_mmbtu.put(""+count, nf.format(tot_mmbtu));
+			map_mmscm.put(""+count, nf.format(tot_mmscm));
+			map_customer_code.put(""+count, "");
+			map_ct_ref.put(""+count, "");
+			map_grid.put(""+count,"Total");
+			
+			view_data.put("v_gas_dt", map_gas_dt);
+			view_data.put("v_mmbtu", map_mmbtu);
+			view_data.put("v_mmscm", map_mmscm);
+			view_data.put("v_customer", map_grid);
+			view_data.put("v_customer_code", map_customer_code);
+			view_data.put("v_ct_ref", map_ct_ref);
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getViewNominationToTransporterInfo()
+	{
+		String function_nm="getViewNominationToTransporterInfo()";
+		try
+		{
+			String ph_no="";
+			queryString="SELECT PH_NO "
+					+ "FROM FMS_EMP_MST "
+					+ "WHERE EMP_CD=? ";
+			stmt0=conn.prepareStatement(queryString);
+			stmt0.setString(1, emp_cd);
+			rset0=stmt0.executeQuery();
+			if(rset0.next())
+			{
+				ph_no=rset0.getString(1)==null?"":rset0.getString(1);
+			}
+			rset0.close();
+			stmt0.close();
+			
+			String company_nm = ""+utilBean.getCompanyName(conn,comp_cd);
+			String transporter_nm = ""+utilBean.getCounterpartyName(conn,counterparty_cd);
+			view_info.put("company_nm", company_nm);
+			view_info.put("transporter_nm", transporter_nm);
+			view_info.put("transporter_abbr", ""+utilBean.getCounterpartyABBR(conn,counterparty_cd));
+			view_info.put("plant_nm", ""+utilBean.getCounterpartyPlantName(conn,counterparty_cd, comp_cd, plant_seq, "R"));
+			view_info.put("emp_nm", ""+utilBean.getEmpName(conn,emp_cd));
+			view_info.put("emp_ph_no", ""+ph_no);
+			
+			String seq_no="";
+			String remark="";
+			queryString2="SELECT NVL((SEQ_NO),'0') "
+					+ "FROM FMS_DAILY_SELLER_NOM_TRANS A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY')";
+			stmt2=conn.prepareStatement(queryString2);
+			stmt2.setString(1, comp_cd);
+			stmt2.setString(2, counterparty_cd);
+			stmt2.setString(3, plant_seq);
+			stmt2.setString(4, gas_dt);
+			rset2=stmt2.executeQuery();
+			if(rset2.next())
+			{
+				seq_no =""+(rset2.getInt(1)+1);
+			}
+			else
+			{
+				seq_no="1";
+			}
+			rset2.close();
+			stmt2.close();
+			
+			String contact_person_nm="";
+			String contact_person_phone="";
+			String contact_person_fax="";
+			queryString1="SELECT CONTACT_PERSON,PHONE,FAX_1 "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND ENTITY=? AND SEQ_NO=? AND ADDR_FLAG=? "
+					+ "AND TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(?,'DD/MM/YYYY') AND A.TYPE=B.TYPE)";
+			stmt1=conn.prepareStatement(queryString1);
+			stmt1.setString(1, comp_cd);
+			stmt1.setString(2, counterparty_cd);
+			stmt1.setString(3, "R");
+			stmt1.setString(4, contact_person_cd);
+			stmt1.setString(5, "P"+plant_seq);
+			stmt1.setString(6, "RLNG");
+			stmt1.setString(7, gas_dt);
+			rset1=stmt1.executeQuery();
+			if(rset1.next())
+			{
+				contact_person_nm=rset1.getString(1)==null?"":rset1.getString(1);
+				contact_person_phone=rset1.getString(2)==null?"":rset1.getString(2);
+				contact_person_fax=rset1.getString(3)==null?"":rset1.getString(3);
+			}
+			rset1.close();
+			stmt1.close();
+			
+			String plantAddress="";
+			String plantCity="";
+			String plantState="";
+			String plantPin="";
+			String plantNm="";
+			
+			queryString2 = "SELECT PLANT_ADDR,PLANT_CITY,PLANT_STATE,PLANT_PIN,PLANT_NAME,PLANT_CITY "
+					+ "FROM FMS_COUNTERPARTY_PLANT_DTL A "
+					+ "WHERE COUNTERPARTY_CD=? AND ENTITY=? AND COMPANY_CD=? AND SEQ_NO=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COUNTERPARTY_PLANT_DTL B WHERE A.COUNTERPARTY_CD=B.COUNTERPARTY_CD "
+					+ "AND A.SEQ_NO=B.SEQ_NO AND A.COMPANY_CD=B.COMPANY_CD AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.ENTITY=B.ENTITY) ";
+			stmt2=conn.prepareStatement(queryString2);
+			stmt2.setString(1, counterparty_cd);
+			stmt2.setString(2, "R");
+			stmt2.setString(3, comp_cd);
+			stmt2.setString(4, plant_seq);
+			rset2=stmt2.executeQuery();
+			if(rset2.next())
+			{
+				plantAddress  = rset2.getString(1)==null?"":rset2.getString(1);
+				plantCity  = rset2.getString(2)==null?"":rset2.getString(2);
+				plantState  = rset2.getString(3)==null?"":rset2.getString(3);
+				plantPin  = rset2.getString(4)==null?"":rset2.getString(4);
+				plantNm  = rset2.getString(5)==null?"":rset2.getString(5);
+			}
+			rset2.close();
+			stmt2.close();
+			
+			String ownAddress="";
+			String ownCity="";
+			String ownState="";
+			String ownPin="";
+			String ownCountry="";
+			String ownPhone="";
+			String ownEmail="";
+			
+			queryString3="SELECT ADDR,CITY,STATE,PIN,COUNTRY,PHONE,EMAIL "
+					+ "FROM FMS_COMPANY_OWNER_ADDR_MST A "
+					+ "WHERE COMPANY_CD=? AND ADDRESS_TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COMPANY_OWNER_ADDR_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.ADDRESS_TYPE=B.ADDRESS_TYPE "
+					+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))";
+			stmt3=conn.prepareStatement(queryString3);
+			stmt3.setString(1, comp_cd);
+			stmt3.setString(2, "C");
+			rset3=stmt3.executeQuery();
+			if(rset3.next())
+			{
+				ownAddress  = rset3.getString(1)==null?"":rset3.getString(1);
+				ownCity  = rset3.getString(2)==null?"":rset3.getString(2);
+				ownState  = rset3.getString(3)==null?"":rset3.getString(3);
+				ownPin  = rset3.getString(4)==null?"":rset3.getString(4);
+				ownCountry  = rset3.getString(5)==null?"":rset3.getString(5);
+				ownPhone  = rset3.getString(6)==null?"":rset3.getString(6);
+				ownEmail  = rset3.getString(7)==null?"":rset3.getString(7);
+			}
+			rset3.close();
+			stmt3.close();
+			
+			view_info.put("plantAddress",plantAddress);
+			view_info.put("plantCity",plantCity);
+			view_info.put("plantState",plantState);
+			view_info.put("plantPin",plantPin);
+			view_info.put("plantNm",plantNm);
+			
+			view_info.put("ownAddress",ownAddress);
+			view_info.put("ownCity",ownCity);
+			view_info.put("ownState",ownState);
+			view_info.put("ownPin",ownPin);
+			view_info.put("ownCountry",ownCountry);
+			view_info.put("ownPhone",ownPhone);
+			view_info.put("ownEmail",ownEmail);
+			
+			view_info.put("contact_person_nm",contact_person_nm);
+			view_info.put("contact_person_phone",contact_person_phone);
+			view_info.put("contact_person_fax",contact_person_fax);
+			view_info.put("remark",remark);		 
+			view_info.put("seq_no",seq_no);		 
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getSendMailSellerToCustomerDetail()
+	{
+		String function_nm="getSendMailSellerToCustomerDetail()";
+		try
+		{
+			String ownAddress="";
+			String ownCity="";
+			String ownState="";
+			String ownPin="";
+			String ownCountry="";
+			String ownPhone="";
+			String ownEmail="";
+			String sysdate=dateUtil.getSysdate();
+			
+			queryString="SELECT ADDR,CITY,STATE,PIN,COUNTRY,PHONE,EMAIL "
+					+ "FROM FMS_COMPANY_OWNER_ADDR_MST A "
+					+ "WHERE COMPANY_CD=? AND ADDRESS_TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COMPANY_OWNER_ADDR_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.ADDRESS_TYPE=B.ADDRESS_TYPE "
+					+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))";
+			stmt0=conn.prepareStatement(queryString);
+			stmt0.setString(1, comp_cd);
+			stmt0.setString(2, "C");
+			rset0=stmt0.executeQuery();
+			if(rset0.next())
+			{
+				ownAddress  = rset0.getString(1)==null?"":rset0.getString(1);
+				ownCity  = rset0.getString(2)==null?"":rset0.getString(2);
+				ownState  = rset0.getString(3)==null?"":rset0.getString(3);
+				ownPin  = rset0.getString(4)==null?"":rset0.getString(4);
+				ownCountry  = rset0.getString(5)==null?"":rset0.getString(5);
+				ownPhone  = rset0.getString(6)==null?"":rset0.getString(6);
+				ownEmail  = rset0.getString(7)==null?"":rset0.getString(7);
+			}
+			rset0.close();
+			stmt0.close();
+			
+			//get TO list
+			String to_list="";
+			queryString="SELECT EMAIL "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND SEQ_NO=? "
+					+ "AND ENTITY=? AND ADDR_FLAG=? AND NOM_FLAG=? "
+					+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+					+ "AND TYPE=? "//AND TO_INV='Y' "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+					+ "AND EMAIL IS NOT NULL";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, counterparty_cd);
+			stmt.setString(3, contact_person_cd);
+			stmt.setString(4, "C");
+			stmt.setString(5, "P"+plant_seq);
+			stmt.setString(6, "Y");
+			stmt.setString(7, "Y");
+			stmt.setString(8, "Y");
+			stmt.setString(9, "RLNG");
+			rset=stmt.executeQuery();
+			if(rset.next())
+			{
+				String email=rset.getString(1)==null?"":rset.getString(1);
+				if(!to_list.contains(email))
+				{
+					if(to_list.equals(""))
+					{
+						to_list=email;
+					}
+					else
+					{
+						to_list+=", "+email;
+					}
+				}
+			}
+			rset.close();
+			stmt.close();
+			
+			//get CC list
+			String cc_list="";
+			String bcc_list="";
+			queryString1="SELECT EMAIL "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND SEQ_NO!=? "
+					+ "AND ENTITY=? AND ADDR_FLAG=? AND NOM_FLAG=? "
+					+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+					+ "AND TYPE=? " //AND (TO_INV='N' OR TO_INV IS NULL) "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+					+ "AND EMAIL IS NOT NULL";
+			stmt1=conn.prepareStatement(queryString1);
+			stmt1.setString(1, comp_cd);
+			stmt1.setString(2, counterparty_cd);
+			stmt1.setString(3, contact_person_cd);
+			stmt1.setString(4, "C");
+			stmt1.setString(5, "P"+plant_seq);
+			stmt1.setString(6, "Y");
+			stmt1.setString(7, "Y");
+			stmt1.setString(8, "Y");
+			stmt1.setString(9, "RLNG");
+			rset1=stmt1.executeQuery();
+			while(rset1.next())
+			{
+				String email=rset1.getString(1)==null?"":rset1.getString(1);
+				if(!to_list.contains(email))
+				{
+					if(cc_list.equals(""))
+					{
+						cc_list=email;
+					}
+					else
+					{
+						cc_list+=", "+email;
+					}
+				}
+			}
+			rset1.close();
+			stmt1.close();
+			
+			queryString5="SELECT DISTINCT BU_SEQ "
+	  				+ "FROM FMS_DAILY_SELLER_NOM "
+	  				+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND COUNTERPARTY_CD=? "
+	  				+ "AND CONTRACT_TYPE=? AND CONT_NO=? AND AGMT_NO=? AND PLANT_SEQ=? AND CARGO_NO=?";
+			stmt5=conn.prepareStatement(queryString5);
+			stmt5.setString(1, comp_cd);
+			stmt5.setString(2, gas_dt);
+			stmt5.setString(3, counterparty_cd);
+			stmt5.setString(4, contract_type);
+			stmt5.setString(5, cont_no);
+			stmt5.setString(6, agmt_no);
+			stmt5.setString(7, plant_seq);
+			stmt5.setString(8, cargo_no);
+			rset5=stmt5.executeQuery();
+			while(rset5.next())
+			{
+				String bu_seq=rset5.getString(1)==null?"":rset5.getString(1);
+				// CC List selected from Company Correspondence Address
+				queryString2="SELECT EMAIL "
+						+ "FROM FMS_ENTITY_CONTACT_MST A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND ENTITY=? AND ADDR_FLAG IN (?,?) AND NOM_FLAG=? "
+						+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND (TO_NOM=? OR TO_NOM IS NULL) "
+						+ "AND TYPE=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+						+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+						+ "AND EMAIL IS NOT NULL";
+				stmt2=conn.prepareStatement(queryString2);
+				stmt2.setString(1, comp_cd);
+				stmt2.setString(2, comp_cd);
+				stmt2.setString(3, "B");
+				stmt2.setString(4, "C");
+				stmt2.setString(5, "P"+bu_seq);
+				stmt2.setString(6, "Y");
+				stmt2.setString(7, "Y");
+				stmt2.setString(8, "Y");
+				stmt2.setString(9, "N");
+				stmt2.setString(10, "RLNG");
+				rset2=stmt2.executeQuery();
+				while(rset2.next())
+				{
+					String email=rset2.getString(1)==null?"":rset2.getString(1);
+					if(!to_list.contains(email))
+					{
+						if(cc_list.equals(""))
+						{
+							cc_list=email;
+						}
+						else
+						{
+							cc_list+=", "+email;
+						}
+					}
+				}
+				rset2.close();
+				stmt2.close();
+				
+				// BCC List selected from Company Correspondence Address
+				queryString2="SELECT EMAIL "
+						+ "FROM FMS_ENTITY_CONTACT_MST A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND ENTITY=? AND ADDR_FLAG IN (?,?) AND NOM_FLAG=? "
+						+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND (TO_NOM=? OR TO_NOM IS NULL) "
+						+ "AND TYPE=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+						+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+						+ "AND EMAIL IS NOT NULL";
+				stmt2=conn.prepareStatement(queryString2);
+				stmt2.setString(1, comp_cd);
+				stmt2.setString(2, comp_cd);
+				stmt2.setString(3, "B");
+				stmt2.setString(4, "C");
+				stmt2.setString(5, "P"+bu_seq);
+				stmt2.setString(6, "Y");
+				stmt2.setString(7, "Y");
+				stmt2.setString(8, "Y");
+				stmt2.setString(9, "B");
+				stmt2.setString(10, "RLNG");
+				rset2=stmt2.executeQuery();
+				while(rset2.next())
+				{
+					String email=rset2.getString(1)==null?"":rset2.getString(1);
+					if(!to_list.contains(email))
+					{
+						if(bcc_list.equals(""))
+						{
+							bcc_list=email;
+						}
+						else
+						{
+							bcc_list+=", "+email;
+						}
+					}
+				}
+				rset2.close();
+				stmt2.close();
+			}
+			rset5.close();
+			stmt5.close();
+			
+			if(contract_type.equals("X")) //ADDITIONAL EMAIL IDs FOR IGX ONLY
+			{
+				queryString="SELECT AGMT_REV,CONT_REV "
+						+ "FROM FMS_SUPPLY_CONT_MST A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND CONT_NO=? AND AGMT_NO=? AND CONTRACT_TYPE=? "
+						+ "AND CONT_REV=(SELECT MAX(CONT_REV) FROM FMS_SUPPLY_CONT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.AGMT_NO=B.AGMT_NO AND A.CONT_NO=B.CONT_NO "
+						+ "AND A.AGMT_REV=B.AGMT_REV AND A.CONTRACT_TYPE=B.CONTRACT_TYPE)";
+				stmt_temp = conn.prepareStatement(queryString);
+				stmt_temp.setString(1, comp_cd);
+				stmt_temp.setString(2, counterparty_cd);
+				stmt_temp.setString(3, cont_no);
+				stmt_temp.setString(4, agmt_no);
+				stmt_temp.setString(5, contract_type);
+				rset_temp=stmt_temp.executeQuery();
+				if(rset_temp.next())
+				{
+					String agmtRev=rset_temp.getString(1)==null?"":rset_temp.getString(1);
+					String contRev=rset_temp.getString(2)==null?"":rset_temp.getString(2);
+					
+					queryString3="SELECT GX_COUNTERPARTY_CD,GX_BU_SEQ_NO "
+							+ "FROM FMS_SUPPLY_CONT_GX_BU "
+							+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONT_NO=? "
+							+ "AND CONT_REV=? AND AGMT_NO=? AND AGMT_REV=? "
+							+ "AND CONTRACT_TYPE=?";
+					stmt3=conn.prepareStatement(queryString3);
+					stmt3.setString(1, comp_cd);
+					stmt3.setString(2, counterparty_cd);
+					stmt3.setString(3, cont_no);
+					stmt3.setString(4, contRev);
+					stmt3.setString(5, agmt_no);
+					stmt3.setString(6, agmtRev);
+					stmt3.setString(7, contract_type);
+					rset3=stmt3.executeQuery();
+					while(rset3.next())
+					{
+						String gx_cd=rset3.getString(1)==null?"":rset3.getString(1);
+						String gx_bu_cd=rset3.getString(2)==null?"":rset3.getString(2);
+						
+						queryString4="SELECT EMAIL "
+								+ "FROM FMS_ENTITY_CONTACT_MST A "
+								+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+								+ "AND ENTITY=? AND ADDR_FLAG=? AND NOM_FLAG=? "
+								+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND TO_NOM=? "
+								+ "AND TYPE=? "
+								+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+								+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+								+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+								+ "AND EMAIL IS NOT NULL";
+						stmt4=conn.prepareStatement(queryString4);
+						stmt4.setString(1, comp_cd);
+						stmt4.setString(2, gx_cd);
+						stmt4.setString(3, "G");
+						stmt4.setString(4, "B"+gx_bu_cd);
+						stmt4.setString(5, "Y");
+						stmt4.setString(6, "Y");
+						stmt4.setString(7, "Y");
+						stmt4.setString(8, "Y");
+						stmt4.setString(9, "RLNG");
+						rset4=stmt4.executeQuery();
+						if(rset4.next())
+						{
+							String email=rset4.getString(1)==null?"":rset4.getString(1);
+							if(!to_list.contains(email))
+							{
+								if(to_list.equals(""))
+								{
+									to_list=email;
+								}
+								else
+								{
+									to_list+=", "+email;
+								}
+							}
+						}
+						rset4.close();
+						stmt4.close();
+						
+						//get CC list
+						queryString5="SELECT EMAIL "
+								+ "FROM FMS_ENTITY_CONTACT_MST A "
+								+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+								+ "AND ENTITY=? AND ADDR_FLAG=? AND NOM_FLAG=? "
+								+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND (TO_NOM=? OR TO_NOM IS NULL) "
+								+ "AND TYPE=? "
+								+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+								+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+								+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+								+ "AND EMAIL IS NOT NULL";
+						stmt5=conn.prepareStatement(queryString5);
+						stmt5.setString(1, comp_cd);
+						stmt5.setString(2, gx_cd);
+						stmt5.setString(3, "G");
+						stmt5.setString(4, "B"+gx_bu_cd);
+						stmt5.setString(5, "Y");
+						stmt5.setString(6, "Y");
+						stmt5.setString(7, "Y");
+						stmt5.setString(8, "N");
+						stmt5.setString(9, "RLNG");
+						rset5=stmt5.executeQuery();
+						while(rset5.next())
+						{
+							String email=rset5.getString(1)==null?"":rset5.getString(1);
+							if(!to_list.contains(email))
+							{
+								if(cc_list.equals(""))
+								{
+									cc_list=email;
+								}
+								else
+								{
+									cc_list+=", "+email;
+								}
+							}
+						}
+						rset5.close();
+						stmt5.close();
+					}
+					rset3.close();
+					stmt3.close();
+				}
+				rset_temp.close();
+				stmt_temp.close();
+			}
+			
+			String pdf_name="";
+			queryString4="SELECT REMARK,ADDRESSED_TO,PDF_NM "
+					+ "FROM FMS_DAILY_SELLER_NOM_REMARK A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND CONT_NO=? AND AGMT_NO=? AND CONTRACT_TYPE=? "
+					+ "AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=?";
+			stmt4=conn.prepareStatement(queryString4);
+			stmt4.setString(1, comp_cd);
+			stmt4.setString(2, counterparty_cd);
+			stmt4.setString(3, cont_no);
+			stmt4.setString(4, agmt_no);
+			stmt4.setString(5, contract_type);
+			stmt4.setString(6, plant_seq);
+			stmt4.setString(7, gas_dt);
+			stmt4.setString(8, cargo_no);
+			rset4=stmt4.executeQuery();
+			if(rset4.next())
+			{
+				pdf_name=rset4.getString(3)==null?"":rset4.getString(3);
+			}
+			rset4.close();
+			stmt4.close();
+			
+			String counterparty_abbr=utilBean.getCounterpartyABBR(conn,counterparty_cd);
+			String plant_nm=utilBean.getCounterpartyPlantName(conn,counterparty_cd, comp_cd, plant_seq, "C");
+			String company_abbr=utilBean.getCompanyAbbr(conn, comp_cd);
+			String subject=company_abbr+"/";
+			if (gas_dt.equals(sysdate))
+			{
+				subject+="INTRADAY/";
+			}
+			
+			subject+="Seller Nomination To Customer("+counterparty_abbr+"-"+plant_nm+")-"+gas_dt;
+			
+			String directory_path=file_path+File.separator+pdf_name;
+			
+			File pdfFile = new File(directory_path);
+			if(!pdfFile.exists())
+			{
+				pdf_name="";
+			}
+			
+			String companyNm=utilBean.getCompanyName(conn,comp_cd);
+			String mail_body="Dear Sir/Madam,"
+					+ "\n\nPlease find enclosed "+counterparty_abbr+"-"+plant_nm+" Seller Nomination details for the gas date "+gas_dt+"."
+					+ "\nIn case of any discrepancy, please revert to us by end of today or else it will be construed as deemed acceptance."
+					+ "\n\nIn case of any query, please contact us at "+ownEmail+""				
+					+ "\n\n\nThank You,"
+					+ "\n\n"+companyNm+""
+					+ "\n"+ownAddress+", "
+					+ "\n"+ownCity+", "+ownState+" - "+ownPin+""
+					+ "\nEmail: "+ownEmail+""
+					+ "\nPh: "+ownPhone+""
+					+ "\n\n***This is an auto-generated email from the system, please do not reply to this email.";
+			
+			VMAIL_FROM_LIST.add(utilBean.getFromMailId(conn));
+			VMAIL_TO_LIST.add(to_list);
+			VMAIL_CC_LIST.add(cc_list);
+			VMAIL_BCC_LIST.add(bcc_list);
+			VMAIL_SUBJECT.add(subject);
+			VMAIL_ATTACHMENT.add(pdf_name);
+			VMAIL_ATTACHMENT_PATH.add(CommonVariable.nom_to_customer_pdf_path);
+			VMAIL_BODY.add(mail_body);
+			
+			if(file.equals("ALL_MAIL") && !pdf_name.equals(""))
+			{
+				sendAllMail(to_list,mail_body,subject,directory_path,cc_list,bcc_list,"NOM_TO_CUST");
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	//Created by AP20250502 to send all selected mail
+	public void sendAllMail(String email_to,String email_body,String subject,String attachment,String email_cc,String email_bcc,String rpt_typ)
+	{
+		String function_nm="sendAllMail()";
+		try
+		{
+			if(email_to != null)
+			{
+				//for(int i=0;i<email_to.length;i++)
+				{
+					email_body=email_body.replaceAll("\n", "<br>");
+					email_body="<html>"
+							+ "<span style='font-size:"+CommonVariable.mail_font_size+";font-family:"+CommonVariable.mail_font_family+";'>"+email_body+"</span>"
+							+ "</html>";
+					
+					if(!email_to.equals("") && !email_body.equals(""))
+					{
+						mailDelv.sendMail(comp_cd,email_to, subject, email_body, attachment, email_cc, email_bcc);
+						
+						if(rpt_typ.equals("NOM_TO_CUST"))
+						{
+							queryString3="UPDATE FMS_DAILY_SELLER_NOM_REMARK SET MODIFIY_BY=?,MODIFIY_DT=SYSDATE,EMAIL_SENT='Y' "
+									+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND AGMT_NO=? AND CONT_NO=? "
+									+ "AND CONTRACT_TYPE=? AND PLANT_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND CARGO_NO=?";
+							stmt1 = conn.prepareStatement(queryString3);
+							stmt1.setString(1, emp_cd);
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, counterparty_cd);
+							stmt1.setString(4, agmt_no);
+							stmt1.setString(5, cont_no);
+							stmt1.setString(6, contract_type);
+							stmt1.setString(7, plant_seq);
+							stmt1.setString(8, gas_dt);
+							stmt1.setString(9, cargo_no);
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+						}
+						else if(rpt_typ.equals("NOM_TO_TRANS"))
+						{
+							queryString3="UPDATE FMS_DAILY_SELLER_NOM_TRANS SET MODIFIY_BY=?,MODIFIY_DT=SYSDATE,EMAIL_SENT='Y' "
+									+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND PLANT_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND ENTITY_TYPE='R'";
+							stmt1 = conn.prepareStatement(queryString3);
+							stmt1.setString(1, emp_cd);
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, counterparty_cd);
+							stmt1.setString(4, plant_seq);
+							stmt1.setString(5, gas_dt);
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+						}
+						else if(rpt_typ.equals("JOINT_TICKET"))
+						{
+							queryString3="UPDATE FMS_DAILY_JOINT_TICKET SET MODIFIY_BY=?,MODIFIY_DT=SYSDATE,EMAIL_SENT='Y' "
+									+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND CONTRACT_TYPE=? AND PLANT_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND BU_SEQ=? AND ENTITY_TYPE='C'";
+							stmt1 = conn.prepareStatement(queryString3);
+							stmt1.setString(1, emp_cd);
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, counterparty_cd);
+							stmt1.setString(4, contract_type);
+							stmt1.setString(5, plant_seq);
+							stmt1.setString(6, gas_dt);
+							stmt1.setString(7, bu_plant_seq);
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+						}
+						else if(rpt_typ.equals("ALLOC_TO_TRANS"))
+						{
+							queryString3="UPDATE FMS_DAILY_ALLOC_TRANS SET MODIFIY_BY=?,MODIFIY_DT=SYSDATE,EMAIL_SENT='Y' "
+									+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+									+ "AND PLANT_SEQ=? "
+									+ "AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND ENTITY_TYPE='R'";
+							stmt1 = conn.prepareStatement(queryString3);
+							stmt1.setString(1, emp_cd);
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, counterparty_cd);
+							stmt1.setString(4, plant_seq);
+							stmt1.setString(5, gas_dt);
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+						}
+						all_mail_sent="Y";
+						String msg = "Email Sent for "+subject;
+						String emp_nm=utilBean.getEmpName(conn, emp_cd);
+						
+						try
+						{
+							new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,emp_nm, ip, form_id, form_name,mod_id,mod_name, "", "", msg);  	
+						}
+						catch(Exception infoLogger)
+						{
+							new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+						}
+					}
+				}
+			}
+			conn.commit();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getSendMailSellerToTransporterDetail()
+	{
+		String function_nm="getSendMailSellerToTransporterDetail()";
+		try
+		{
+			String ownAddress="";
+			String ownCity="";
+			String ownState="";
+			String ownPin="";
+			String ownCountry="";
+			String ownPhone="";
+			String ownEmail="";
+			String sysdate=dateUtil.getSysdate();
+			
+			queryString="SELECT ADDR,CITY,STATE,PIN,COUNTRY,PHONE,EMAIL "
+					+ "FROM FMS_COMPANY_OWNER_ADDR_MST A "
+					+ "WHERE COMPANY_CD=? AND ADDRESS_TYPE=? "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_COMPANY_OWNER_ADDR_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.ADDRESS_TYPE=B.ADDRESS_TYPE "
+					+ "AND B.EFF_DT<=TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY'))";
+			stmt=conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, "C");
+			rset=stmt.executeQuery();
+			if(rset.next())
+			{
+				ownAddress  = rset.getString(1)==null?"":rset.getString(1);
+				ownCity  = rset.getString(2)==null?"":rset.getString(2);
+				ownState  = rset.getString(3)==null?"":rset.getString(3);
+				ownPin  = rset.getString(4)==null?"":rset.getString(4);
+				ownCountry  = rset.getString(5)==null?"":rset.getString(5);
+				ownPhone  = rset.getString(6)==null?"":rset.getString(6);
+				ownEmail  = rset.getString(7)==null?"":rset.getString(7);
+			}
+			rset.close();
+			stmt.close();
+			
+			//get TO list
+			String to_list="";
+			queryString1="SELECT EMAIL "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND SEQ_NO=? "
+					+ "AND ENTITY=? AND ADDR_FLAG=? AND NOM_FLAG=? "
+					+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+					+ "AND TYPE=? "//AND TO_INV='Y' "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+					+ "AND EMAIL IS NOT NULL";
+			stmt1=conn.prepareStatement(queryString1);
+			stmt1.setString(1, comp_cd);
+			stmt1.setString(2, counterparty_cd);
+			stmt1.setString(3, contact_person_cd);
+			stmt1.setString(4, "R");
+			stmt1.setString(5, "P"+plant_seq);
+			stmt1.setString(6, "Y");
+			stmt1.setString(7, "Y");
+			stmt1.setString(8, "Y");
+			stmt1.setString(9, "RLNG");
+			rset1=stmt1.executeQuery();
+			if(rset1.next())
+			{
+				String email=rset1.getString(1)==null?"":rset1.getString(1);
+				if(to_list.equals(""))
+				{
+					to_list=email;
+				}
+				else
+				{
+					to_list+=", "+email;
+				}
+			}
+			rset1.close();
+			stmt1.close();
+			
+			//get CC list
+			String cc_list="";
+			String bcc_list="";
+			queryString2="SELECT EMAIL "
+					+ "FROM FMS_ENTITY_CONTACT_MST A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND SEQ_NO!=? "
+					+ "AND ENTITY=? AND ADDR_FLAG=? AND NOM_FLAG=? "
+					+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? "
+					+ "AND TYPE=? " //AND (TO_INV='N' OR TO_INV IS NULL) "
+					+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+					+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+					+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+					+ "AND EMAIL IS NOT NULL";
+			stmt2=conn.prepareStatement(queryString2);
+			stmt2.setString(1, comp_cd);
+			stmt2.setString(2, counterparty_cd);
+			stmt2.setString(3, contact_person_cd);
+			stmt2.setString(4, "R");
+			stmt2.setString(5, "P"+plant_seq);
+			stmt2.setString(6, "Y");
+			stmt2.setString(7, "Y");
+			stmt2.setString(8, "Y");
+			stmt2.setString(9, "RLNG");
+			rset2=stmt2.executeQuery();
+			while(rset2.next())
+			{
+				String email=rset2.getString(1)==null?"":rset2.getString(1);
+				if(cc_list.equals(""))
+				{
+					cc_list=email;
+				}
+				else
+				{
+					cc_list+=", "+email;
+				}
+			}
+			rset2.close();
+			stmt2.close();
+			
+			queryString5="SELECT DISTINCT BU_SEQ "
+	  				+ "FROM FMS_DAILY_SELLER_NOM_DTL A "
+	  				+ "WHERE COMPANY_CD=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') "
+	  				+ "AND TRANSPORTER_CD=? "
+					+ "AND NOM_REV_NO=(SELECT MAX(NOM_REV_NO) FROM FMS_DAILY_SELLER_NOM_DTL B "
+					+ "WHERE B.CONT_NO=A.CONT_NO AND B.AGMT_NO=A.AGMT_NO "
+					+ "AND B.COMPANY_CD=A.COMPANY_CD AND B.COUNTERPARTY_CD=A.COUNTERPARTY_CD "
+					+ "AND B.TRANSPORTER_CD=A.TRANSPORTER_CD AND B.TRANS_SEQ=A.TRANS_SEQ "
+					+ "AND B.PLANT_SEQ=A.PLANT_SEQ AND B.CONTRACT_TYPE=A.CONTRACT_TYPE "
+					+ "AND B.GAS_DT=A.GAS_DT AND B.SEQ_NO=A.SEQ_NO AND B.CARGO_NO=A.CARGO_NO) ";
+			stmt5=conn.prepareStatement(queryString5);
+			stmt5.setString(1, comp_cd);
+			stmt5.setString(2, gas_dt);
+			stmt5.setString(3, counterparty_cd);
+			rset5=stmt5.executeQuery();
+			while(rset5.next())
+			{
+				String bu_seq=rset5.getString(1)==null?"":rset5.getString(1);
+			// CC List selected from Company Correspondence Address
+				queryString3="SELECT EMAIL "
+						+ "FROM FMS_ENTITY_CONTACT_MST A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND ENTITY=? AND ADDR_FLAG IN (?,?) AND NOM_FLAG=? "
+						+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND (TO_NOM=? OR TO_NOM IS NULL) "
+						+ "AND TYPE=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+						+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+						+ "AND EMAIL IS NOT NULL";
+				stmt3=conn.prepareStatement(queryString3);
+				stmt3.setString(1, comp_cd);
+				stmt3.setString(2, comp_cd);
+				stmt3.setString(3, "B");
+				stmt3.setString(4, "C");
+				stmt3.setString(5, "P"+bu_seq);
+				stmt3.setString(6, "Y");
+				stmt3.setString(7, "Y");
+				stmt3.setString(8, "Y");
+				stmt3.setString(9, "N");
+				stmt3.setString(10, "RLNG");
+				rset3=stmt3.executeQuery();
+				while(rset3.next())
+				{
+					String email=rset3.getString(1)==null?"":rset3.getString(1);
+					if(cc_list.equals(""))
+					{
+						cc_list=email;
+					}
+					else
+					{
+						cc_list+=", "+email;
+					}
+				}
+				rset3.close();
+				stmt3.close();
+				
+				// BCC List selected from Company Correspondence Address
+				queryString2="SELECT EMAIL "
+						+ "FROM FMS_ENTITY_CONTACT_MST A "
+						+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+						+ "AND ENTITY=? AND ADDR_FLAG IN (?,?) AND NOM_FLAG=? "
+						+ "AND ACTIVE_FLAG=? AND ADDR_IS_ACTIVE=? AND (TO_NOM=? OR TO_NOM IS NULL) "
+						+ "AND TYPE=? "
+						+ "AND EFF_DT=(SELECT MAX(B.EFF_DT) FROM FMS_ENTITY_CONTACT_MST B WHERE A.COMPANY_CD=B.COMPANY_CD "
+						+ "AND A.COUNTERPARTY_CD=B.COUNTERPARTY_CD AND A.ENTITY=B.ENTITY AND A.SEQ_NO=B.SEQ_NO "
+						+ "AND EFF_DT <= TO_DATE(TO_CHAR(SYSDATE,'DD/MM/YYYY'),'DD/MM/YYYY') AND A.TYPE=B.TYPE) "
+						+ "AND EMAIL IS NOT NULL";
+				stmt2=conn.prepareStatement(queryString2);
+				stmt2.setString(1, comp_cd);
+				stmt2.setString(2, comp_cd);
+				stmt2.setString(3, "B");
+				stmt2.setString(4, "C");
+				stmt2.setString(5, "P"+bu_seq);
+				stmt2.setString(6, "Y");
+				stmt2.setString(7, "Y");
+				stmt2.setString(8, "Y");
+				stmt2.setString(9, "B");
+				stmt2.setString(10, "RLNG");
+				rset2=stmt2.executeQuery();
+				while(rset2.next())
+				{
+					String email=rset2.getString(1)==null?"":rset2.getString(1);
+					if(!to_list.contains(email))
+					{
+						if(bcc_list.equals(""))
+						{
+							bcc_list=email;
+						}
+						else
+						{
+							bcc_list+=", "+email;
+						}
+					}
+				}
+				rset2.close();
+				stmt2.close();
+			}
+			rset5.close();
+			stmt5.close();
+			
+			String pdf_name="";
+			queryString4="SELECT REMARK,ADDRESSED_TO,PDF_NM "
+					+ "FROM FMS_DAILY_SELLER_NOM_TRANS A "
+					+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? "
+					+ "AND PLANT_SEQ=? AND GAS_DT=TO_DATE(?,'DD/MM/YYYY') AND ENTITY_TYPE='R'";
+			stmt4=conn.prepareStatement(queryString4);
+			stmt4.setString(1, comp_cd);
+			stmt4.setString(2, counterparty_cd);
+			stmt4.setString(3, plant_seq);
+			stmt4.setString(4, gas_dt);
+			rset4=stmt4.executeQuery();
+			if(rset4.next())
+			{
+				pdf_name=rset4.getString(3)==null?"":rset4.getString(3);
+			}
+			rset4.close();
+			stmt4.close();
+			
+			String transporter_abbr=utilBean.getCounterpartyABBR(conn,counterparty_cd);
+			String trans_plant_nm=utilBean.getCounterpartyPlantName(conn,counterparty_cd, comp_cd, plant_seq, "R");
+			String company_abbr=utilBean.getCompanyAbbr(conn, comp_cd);
+			String subject=company_abbr+"/";
+			if (gas_dt.equals(sysdate))
+			{
+				subject+="INTRADAY/";
+			}
+			
+			subject+="Seller Nomination To Transporter("+transporter_abbr+"-"+trans_plant_nm+")-"+gas_dt;
+			
+			String directory_path=file_path+File.separator+pdf_name;
+			
+			File pdfFile = new File(directory_path);
+			if(!pdfFile.exists())
+			{
+				pdf_name="";
+			}
+			
+			String companyNm=utilBean.getCompanyName(conn,comp_cd);
+			String mail_body="Dear Sir/Madam,"
+					+ "\n\nPlease find enclosed "+transporter_abbr+"-"+trans_plant_nm+" Seller Nomination details for the gas date "+gas_dt+"."
+					+ "\nIn case of any discrepancy, please revert to us by end of today or else it will be construed as deemed acceptance."
+					+ "\n\nIn case of any query, please contact us at "+ownEmail+""				
+					+ "\n\n\nThank You,"
+					+ "\n\n"+companyNm+""
+					+ "\n"+ownAddress+", "
+					+ "\n"+ownCity+", "+ownState+" - "+ownPin+""
+					+ "\nEmail: "+ownEmail+""
+					+ "\nPh: "+ownPhone+""
+					+ "\n\n***This is an auto-generated email from the system, please do not reply to this email.";
+			
+			VMAIL_FROM_LIST.add(utilBean.getFromMailId(conn));
+			VMAIL_TO_LIST.add(to_list);
+			VMAIL_CC_LIST.add(cc_list);
+			VMAIL_BCC_LIST.add(bcc_list);
+			VMAIL_SUBJECT.add(subject);
+			VMAIL_ATTACHMENT.add(pdf_name);
+			VMAIL_ATTACHMENT_PATH.add(CommonVariable.nom_to_transporter_pdf_path);
+			VMAIL_BODY.add(mail_body);
+			
+			if(file.equals("ALL_MAIL") && !pdf_name.equals(""))
+			{
+				sendAllMail(to_list,mail_body,subject,directory_path,cc_list,bcc_list,"NOM_TO_TRANS");
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void getMoleculeMaster()
+	{
+		String function_nm="getMoleculeMaster()";
+		try
+		{
+			queryString="SELECT A.PROD_CD,A.PROD_ABBR,B.MOLE_CD,B.MOLE_ABBR "
+					+ "FROM FMS_PRODUCT_MST A, FMS_PRODUCT_MOLECULE_MST B "
+					+ "WHERE A.PROD_FLAG='Y' AND B.MOLE_FLAG='Y' AND A.PROD_CD=B.PROD_CD "
+					+ "ORDER BY A.PROD_CD, B.MOLE_ABBR";
+			stmt=conn.prepareStatement(queryString);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String prod_cd=rset.getString(1)==null?"":rset.getString(1);
+				VPRODUCT_ABBR.add(rset.getString(2)==null?"":rset.getString(2));
+				String mole_cd=rset.getString(3)==null?"":rset.getString(3);
+				VMOLECULE_ABBR.add(rset.getString(4)==null?"":rset.getString(4));
+				VMOLECULE_MAPPING.add(prod_cd+"-"+mole_cd);
+			}
+			rset.close();
+			stmt.close();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+
+	
+	String callFlag = "";
+	public void setCallFlag(String callFlag) {this.callFlag = callFlag;}
+	String comp_cd = "";
+	public void setComp_cd(String comp_cd) {this.comp_cd = comp_cd;}
+	String opration = "";
+	public void setOpration(String opration) {this.opration = opration;}
+	
+	String counterparty_cd = "";
+	String gas_dt="";
+	String cont_no = "";
+	String cont_rev_no = "";
+	String agmt_no = "";
+	String agmt_rev_no = "";
+	String contract_type = "";
+	String nomination_freq="";
+	String from_date = "";
+	String to_date = "";
+	String agmt_base = "";
+	String plant_seq="";
+	String bu_plant_seq = "";
+	String contact_person_cd = "";
+	String emp_cd = "";
+	String transCd = "";
+	String transPlantSeq = "";
+	String file_path = "";
+	String cargo_no = "";
+	String file = "";
+	
+	String ip = "";
+	String form_id = "";
+	String form_name = "";
+	String mod_id = "";
+	String mod_name = "";
+	
+	public void setCounterparty_cd(String counterparty_cd) {this.counterparty_cd = counterparty_cd;}
+	public void setGas_dt(String gas_dt) {this.gas_dt = gas_dt;}
+	public void setCont_no(String cont_no) {this.cont_no = cont_no;}
+	public void setCont_rev_no(String cont_rev_no) {this.cont_rev_no = cont_rev_no;}
+	public void setAgmt_no(String agmt_no) {this.agmt_no = agmt_no;}
+	public void setAgmt_rev_no(String agmt_rev_no) {this.agmt_rev_no = agmt_rev_no;}
+	public void setContract_type(String contract_type) {this.contract_type = contract_type;}
+	public void setNomination_freq(String nomination_freq) {this.nomination_freq = nomination_freq;}
+	public void setFrom_date(String from_date) {this.from_date = from_date;}
+	public void setTo_date(String to_date) {this.to_date = to_date;}
+	public void setAgmt_base(String agmt_base) {this.agmt_base = agmt_base;}
+	public void setPlant_seq(String plant_seq) {this.plant_seq = plant_seq;}
+	public void setBu_plant_seq(String bu_plant_seq) {this.bu_plant_seq = bu_plant_seq;}
+	public void setContact_person_cd(String contact_person_cd) {this.contact_person_cd = contact_person_cd;}
+	public void setEmp_cd(String emp_cd) {this.emp_cd = emp_cd;}
+	public void setTransCd(String transCd) {this.transCd = transCd;}
+	public void setTransPlantSeq(String transPlantSeq) {this.transPlantSeq = transPlantSeq;}
+	public void setFile_path(String file_path) {this.file_path = file_path;}
+	public void setCargo_no(String cargo_no) {this.cargo_no = cargo_no;}
+	public void setFile(String file) {this.file = file;}
+	
+	public void setIp(String ip) {this.ip = ip;}
+	public void setForm_id(String form_id) {this.form_id = form_id;}
+	public void setForm_name(String form_name) {this.form_name = form_name;}
+	public void setMod_id(String mod_id) {this.mod_id = mod_id;}
+	public void setMod_name(String mod_name) {this.mod_name = mod_name;}
+	
+	public String getFrom_date() {return from_date;}
+	public String getTo_date() {return to_date;}
+	
+	Vector VCOUNTERPARTY_CD = new Vector();
+	Vector VCOUNTERPARTY_NM = new Vector();
+	Vector VCOUNTERPARTY_ABBR = new Vector();
+	Vector VCOUNTERPARTY_STATUS = new Vector();
+	Vector VTRANSPORTER_CD = new Vector();
+	Vector VTRANSPORTER_ABBR = new Vector();
+	Vector VTRANSPORTER_STATUS = new Vector();
+	Vector VTRANSPORTER_NM = new Vector();
+	Vector VTRANSPORTER_PLANT_SEQ = new Vector();
+	Vector VTRANSPORTER_PLANT_ABBR = new Vector();
+	Vector VCOUNTERPARTY_PLANT_SEQ = new Vector();
+	Vector VCOUNTERPARTY_PLANT_ABBR = new Vector();
+	Vector VNOM_REV_NO = new Vector();
+	Vector VGAS_DT = new Vector();
+	Vector VGEN_TIME = new Vector();
+	Vector VBASE = new Vector();
+	Vector VGCV = new Vector();
+	Vector VNCV = new Vector();
+	Vector VQTY_MMBTU = new Vector();
+	Vector VQTY_SCM = new Vector();
+	Vector VNOM_COLOR = new Vector();
+	Vector VGEN_DT = new Vector();
+	Vector VDCQ = new Vector();
+	Vector VMDCQ_QTY = new Vector();
+	Vector VCONT_NAME = new Vector();
+	Vector VCONT_REF = new Vector();
+	Vector VCONT_NO = new Vector();
+	Vector VCONT_REV_NO = new Vector();
+	Vector VAGMT_NO = new Vector();
+	Vector VAGMT_REV_NO = new Vector();
+	Vector VCONTRACT_TYPE = new Vector();
+	Vector VDIS_CONT_MAPPING = new Vector();
+	Vector VTRANS_PLANT_WISE_TOTAL_MMBTU = new Vector();
+	Vector VTRANS_PLANT_WISE_TOTAL_SCM = new Vector();
+	Vector VTRANS_PLANT_WISE_EXIT_TOTAL_MMBTU = new Vector();
+	Vector VTRANS_PLANT_WISE_EXIT_TOTAL_SCM = new Vector();
+	Vector VINTERNAL_MAP_ID = new Vector();
+	Vector VBUYER_NOM_REV_NO = new Vector();
+	Vector VBUYER_NOM = new Vector();
+	Vector VBU_CD = new Vector();
+	Vector VBU_PLANT_SEQ = new Vector();
+	Vector VBU_PLANT_ABBR = new Vector();
+	Vector VINDEX = new Vector();
+	Vector VINDEX1 = new Vector();
+	Vector VSUB_INDEX = new Vector();
+	Vector VTRANS_INDEX = new Vector();
+	Vector VGAS_INDEX = new Vector();
+	Vector VEXIT_BASE = new Vector();
+	Vector VEXIT_GCV = new Vector();
+	Vector VEXIT_NCV = new Vector();
+	Vector VEXIT_QTY_MMBTU = new Vector();
+	Vector VEXIT_QTY_SCM = new Vector();
+	Vector VLINKED_GTC = new Vector();
+	Vector VCARGO_NO = new Vector();
+	Vector VBOE_NO = new Vector();
+	
+	Vector VMETER_SEQ = new Vector();
+	Vector VMETER_ID = new Vector();
+	Vector VMETER_REF = new Vector();
+	Vector VMETER_STATUS = new Vector();
+	Vector VMETER_EFF_DT = new Vector();
+	Vector VQTY_BTU = new Vector();
+	Vector VRECONCIL_QTY_MMBTU = new Vector();
+	Vector VRECONCIL_QTY_SCM = new Vector();
+	Vector VRECONCIL_QTY_BTU = new Vector();
+	Vector VTOTAL_QTY_MMBTU = new Vector();
+	Vector VTOTAL_QTY_SCM = new Vector();
+	Vector VCALC_GCV = new Vector();
+	Vector VCALC_NCV = new Vector();
+	Vector VDEFINE_GCV = new Vector();
+	Vector VDEFINE_NCV = new Vector();
+	Vector VNOM_BLOCK = new Vector();
+	
+	Vector VTOT_QTY_MMBTU = new Vector();
+	Vector VTOT_QTY_SCM = new Vector();
+	Vector VTOT_QTY_BTU = new Vector();
+	Vector VTOT_RECONCIL_QTY_MMBTU = new Vector();
+	Vector VTOT_RECONCIL_QTY_SCM = new Vector();
+	Vector VTOT_RECONCIL_QTY_BTU = new Vector();
+	Vector VTOT_TOTAL_QTY_MMBTU = new Vector();
+	Vector VTOT_TOTAL_QTY_SCM = new Vector();
+	Vector VTOT_CALC_GCV = new Vector();
+	Vector VTOT_CALC_NCV = new Vector();
+	Vector VTOT_DEFINE_GCV = new Vector();
+	Vector VTOT_DEFINE_NCV = new Vector();
+	
+	Vector VMETER_QTY_MMBTU = new Vector();
+	Vector VMETER_QTY_SCM = new Vector();
+	Vector VMETER_GCV = new Vector();
+	Vector VMETER_NCV = new Vector();
+	
+	Vector VIS_EXIST = new Vector();
+	
+	Vector VCONT_INTERNAL_MAPP_ID = new Vector();
+	Vector VCONT_TCQ = new Vector();
+	Vector VCONT_BUYER_NOM = new Vector();
+	
+	Vector VTAX_DTL = new Vector();
+	Vector VGAS_DATE = new Vector();
+	Vector VIS_GTC = new Vector();
+	
+	Vector VGTA_NO = new Vector();
+	Vector VGTC_NO = new Vector();
+	
+	Vector VENTRY_POINT_MAP = new Vector();
+	Vector VEXIT_POINT_MAP = new Vector();
+	Vector VCONT_MAPPING = new Vector();
+	
+	Vector VSELLER_NOM = new Vector();
+	Vector VCONTRACT_TYPE_NM = new Vector();
+	Vector VCONTACT_PERSON = new Vector();
+	Vector VCONTACT_PERSON_CD = new Vector();
+	Vector VSEL_CONTACT_PERSON_CD = new Vector();
+	
+	Vector VMAIL_FROM_LIST = new Vector();
+	Vector VMAIL_TO_LIST = new Vector();
+	Vector VMAIL_CC_LIST = new Vector();
+	Vector VMAIL_BCC_LIST = new Vector();
+	Vector VMAIL_SUBJECT = new Vector();
+	Vector VMAIL_ATTACHMENT = new Vector();
+	Vector VMAIL_ATTACHMENT_PATH = new Vector();
+	Vector VMAIL_BODY = new Vector();
+	Vector VPDF_EXISTS = new Vector();
+	
+	Vector VMST_CONTRACT_TYPE = new Vector();
+	Vector VMST_CONTRACT_TYPE_NM = new Vector();
+	Vector VREMARK = new Vector();
+	Vector VCUSTOMER_CODE = new Vector();
+	
+	Vector VSUB_NOM_REV_NO = new Vector();
+	Vector VSUB_QTY_MMBTU = new Vector();
+	Vector VSUB_QTY_SCM = new Vector();
+	Vector VSUB_CT_REF = new Vector();
+	Vector VSUB_UTR_REF = new Vector();
+	Vector VSUB_IS_EXIST = new Vector();
+	Vector VSUB_SEQ_NO = new Vector();
+	Vector VSUB_NOM_COLOR = new Vector();
+	Vector VSUB_BUYER_NOM_QTY = new Vector();
+	Vector VSUB_BUYER_NOM_REV = new Vector();
+	Vector VSUB_NOM_SF_ID = new Vector();
+	
+	Vector VNOM_SF_ID = new Vector();
+	
+	Vector VROWSPAN = new Vector();
+	Vector VENTRY_RANGE = new Vector();
+	
+	Vector VPRODUCT_ABBR = new Vector();
+	Vector VMOLECULE_ABBR = new Vector();
+	Vector VMOLECULE_MAPPING = new Vector();
+	
+	Vector VALLOC_MOLE_MAPPING = new Vector();
+	Vector VALLOC_MOLE_SEQ_NO = new Vector();
+	Vector VALLOC_MOLE_QTY_MMBTU = new Vector();
+	Vector VALLOC_MOLE_QTY_SCM = new Vector();
+	Vector VALLOC_MOLE_EXIST = new Vector();
+	Vector VALLOC_MOLE_COLOR = new Vector();
+	
+	Vector VTOTAL_MMBTU_COLOR = new Vector();
+	Vector VADDRESSED_PERSON = new Vector();
+	Vector VPDF_NAME = new Vector();
+	Vector VPDF_PATH = new Vector();
+	Vector VEMAIL_FLAG = new Vector();
+	
+	Vector VCOUNTPTY_CD = new Vector();
+	Vector VPLANT_SEQ = new Vector();
+	Vector VCATEGORY = new Vector();
+	Vector VQTY_MMSCM = new Vector();
+	Vector VOBLG_MMSCM = new Vector();
+	Vector VTEMP_TRANSPORTER_CD = new Vector();
+	Vector VTOT_MMSCM = new Vector();
+	Vector VTOT_MMBTU = new Vector();
+	Vector VTOT_OBLG_MMSCM = new Vector();
+	
+	Vector VTEMP_COUNTERPARTY_CD = new Vector();
+	Vector VTEMP_TRANS_CD = new Vector();
+	Vector VTEMP_TRANSPORTER_PLANT_SEQ = new Vector();
+	Vector VTEMP_TRANS_PLANT_SEQ = new Vector();
+	Vector VCUST_WISE_MMSCM = new Vector();
+	Vector VCUST_WISE_MMBTU = new Vector();
+	Vector VCUST_WISE_OBLG = new Vector();
+	Vector VPLANT_NM = new Vector();
+	Vector VPLANT_ABBR = new Vector();
+	Vector VEXP_MMSCM = new Vector();
+	
+	Vector VLINKJT_NCV = new Vector();
+	Vector VLINKJT_GCV = new Vector();
+	Vector VLINKJT_TRANSPORTER_NM = new Vector();
+	Vector VLINKJT_TRANSPORTER_ABBR = new Vector();
+	Vector VLINKJT_SELLER_NOM_QTY_MMBTU = new Vector();
+	Vector VLINKJT_TRANSPORTER_QTY_MMBTU = new Vector();
+	Vector VLINKJT_QTY_SCM = new Vector();
+	Vector VLINKJT_QTY_MMBTU = new Vector();
+	Vector VLINKCONTID = new Vector();
+	Vector VLINKCUSTID = new Vector();
+	
+	Vector VIS_ALLOCATION_DONE = new Vector();
+
+	Vector VIS_ACTIVE = new Vector();
+	
+	public Vector getVTRANSPORTER_CD() {return VTRANSPORTER_CD;}
+	public Vector getVTRANSPORTER_ABBR() {return VTRANSPORTER_ABBR;}
+	public Vector getVTRANSPORTER_STATUS() {return VTRANSPORTER_STATUS;}
+	public Vector getVTRANSPORTER_NM() {return VTRANSPORTER_NM;}
+	public Vector getVTRANSPORTER_PLANT_SEQ() {return VTRANSPORTER_PLANT_SEQ;}
+	public Vector getVTRANSPORTER_PLANT_ABBR() {return VTRANSPORTER_PLANT_ABBR;}
+	public Vector getVCOUNTERPARTY_CD() {return VCOUNTERPARTY_CD;}
+	public Vector getVCOUNTERPARTY_NM() {return VCOUNTERPARTY_NM;}
+	public Vector getVCOUNTERPARTY_STATUS() {return VCOUNTERPARTY_STATUS;}
+	public Vector getVCOUNTERPARTY_ABBR() {return VCOUNTERPARTY_ABBR;}
+	public Vector getVCOUNTERPARTY_PLANT_SEQ() {return VCOUNTERPARTY_PLANT_SEQ;}
+	public Vector getVCOUNTERPARTY_PLANT_ABBR() {return VCOUNTERPARTY_PLANT_ABBR;}
+	public Vector getVNOM_REV_NO() {return VNOM_REV_NO;}
+	public Vector getVGAS_DT() {return VGAS_DT;}
+	public Vector getVGEN_TIME() {return VGEN_TIME;}
+	public Vector getVBASE() {return VBASE;}
+	public Vector getVGCV() {return VGCV;}
+	public Vector getVNCV() {return VNCV;}
+	public Vector getVQTY_MMBTU() {return VQTY_MMBTU;}
+	public Vector getVQTY_SCM() {return VQTY_SCM;}
+	public Vector getVNOM_COLOR() {return VNOM_COLOR;}
+	public Vector getVGEN_DT() {return VGEN_DT;}
+	public Vector getVDCQ() {return VDCQ;}
+	public Vector getVMDCQ_QTY() {return VMDCQ_QTY;}
+	public Vector getVCONT_NAME() {return VCONT_NAME;}
+	public Vector getVCONT_REF() {return VCONT_REF;}
+	public Vector getVCONT_NO() {return VCONT_NO;}
+	public Vector getVCONT_REV_NO() {return VCONT_REV_NO;}
+	public Vector getVAGMT_NO() {return VAGMT_NO;}
+	public Vector getVAGMT_REV_NO() {return VAGMT_REV_NO;}
+	public Vector getVCONTRACT_TYPE() {return VCONTRACT_TYPE;}
+	public Vector getVDIS_CONT_MAPPING() {return VDIS_CONT_MAPPING;}
+	public Vector getVTRANS_PLANT_WISE_TOTAL_MMBTU() {return VTRANS_PLANT_WISE_TOTAL_MMBTU;}
+	public Vector getVTRANS_PLANT_WISE_TOTAL_SCM() {return VTRANS_PLANT_WISE_TOTAL_SCM;}
+	public Vector getVTRANS_PLANT_WISE_EXIT_TOTAL_MMBTU() {return VTRANS_PLANT_WISE_EXIT_TOTAL_MMBTU;}
+	public Vector getVTRANS_PLANT_WISE_EXIT_TOTAL_SCM() {return VTRANS_PLANT_WISE_EXIT_TOTAL_SCM;}
+	public Vector getVINTERNAL_MAP_ID() {return VINTERNAL_MAP_ID;}
+	public Vector getVBUYER_NOM_REV_NO() {return VBUYER_NOM_REV_NO;}
+	public Vector getVBUYER_NOM() {return VBUYER_NOM;}
+	public Vector getVBU_CD() {return VBU_CD;}
+	public Vector getVBU_PLANT_SEQ() {return VBU_PLANT_SEQ;}
+	public Vector getVBU_PLANT_ABBR() {return VBU_PLANT_ABBR;}
+	public Vector getVINDEX() {return VINDEX;}
+	public Vector getVINDEX1() {return VINDEX1;}
+	public Vector getVSUB_INDEX() {return VSUB_INDEX;}
+	public Vector getVTRANS_INDEX() {return VTRANS_INDEX;}
+	public Vector getVGAS_INDEX() {return VGAS_INDEX;}
+	public Vector getVEXIT_BASE() {return VEXIT_BASE;}
+	public Vector getVEXIT_GCV() {return VEXIT_GCV;}
+	public Vector getVEXIT_NCV() {return VEXIT_NCV;}
+	public Vector getVEXIT_QTY_MMBTU() {return VEXIT_QTY_MMBTU;}
+	public Vector getVEXIT_QTY_SCM() {return VEXIT_QTY_SCM;}
+	public Vector getVLINKED_GTC() {return VLINKED_GTC;}
+	public Vector getVCARGO_NO() {return VCARGO_NO;}
+	public Vector getVBOE_NO() {return VBOE_NO;}
+	
+	public Vector getVMETER_SEQ() {return VMETER_SEQ;}
+	public Vector getVMETER_ID() {return VMETER_ID;}
+	public Vector getVMETER_REF() {return VMETER_REF;}
+	public Vector getVMETER_STATUS() {return VMETER_STATUS;}
+	public Vector getVMETER_EFF_DT() {return VMETER_EFF_DT;}
+	public Vector getVQTY_BTU() {return VQTY_BTU;}
+	public Vector getVRECONCIL_QTY_MMBTU() {return VRECONCIL_QTY_MMBTU;}
+	public Vector getVRECONCIL_QTY_SCM() {return VRECONCIL_QTY_SCM;}
+	public Vector getVRECONCIL_QTY_BTU() {return VRECONCIL_QTY_BTU;}
+	public Vector getVTOTAL_QTY_MMBTU() {return VTOTAL_QTY_MMBTU;}
+	public Vector getVTOTAL_QTY_SCM() {return VTOTAL_QTY_SCM;}
+	public Vector getVCALC_GCV() {return VCALC_GCV;}
+	public Vector getVCALC_NCV() {return VCALC_NCV;}
+	public Vector getVDEFINE_GCV() {return VDEFINE_GCV;}
+	public Vector getVDEFINE_NCV() {return VDEFINE_NCV;}
+	public Vector getVNOM_BLOCK() {return VNOM_BLOCK;}
+	
+	public Vector getVTOT_QTY_MMBTU() {return VTOT_QTY_MMBTU;}
+	public Vector getVTOT_QTY_SCM() {return VTOT_QTY_SCM;}
+	public Vector getVTOT_QTY_BTU() {return VTOT_QTY_BTU;}
+	public Vector getVTOT_RECONCIL_QTY_MMBTU() {return VTOT_RECONCIL_QTY_MMBTU;}
+	public Vector getVTOT_RECONCIL_QTY_SCM() {return VTOT_RECONCIL_QTY_SCM;}
+	public Vector getVTOT_RECONCIL_QTY_BTU() {return VTOT_RECONCIL_QTY_BTU;}
+	public Vector getVTOT_TOTAL_QTY_MMBTU() {return VTOT_TOTAL_QTY_MMBTU;}
+	public Vector getVTOT_TOTAL_QTY_SCM() {return VTOT_TOTAL_QTY_SCM;}
+	public Vector getVTOT_CALC_GCV() {return VTOT_CALC_GCV;}
+	public Vector getVTOT_CALC_NCV() {return VTOT_CALC_NCV;}
+	public Vector getVTOT_DEFINE_GCV() {return VTOT_DEFINE_GCV;}
+	public Vector getVTOT_DEFINE_NCV() {return VTOT_DEFINE_NCV;}
+	
+	public Vector getVMETER_QTY_MMBTU() {return VMETER_QTY_MMBTU;}
+	public Vector getVMETER_QTY_SCM() {return VMETER_QTY_SCM;}
+	public Vector getVMETER_GCV() {return VMETER_GCV;}
+	public Vector getVMETER_NCV() {return VMETER_NCV;}
+	
+	public Vector getVIS_EXIST() {return VIS_EXIST;}
+	
+	public Vector getVCONT_INTERNAL_MAPP_ID() {return VCONT_INTERNAL_MAPP_ID;}
+	public Vector getVCONT_TCQ() {return VCONT_TCQ;}
+	public Vector getVCONT_BUYER_NOM() {return VCONT_BUYER_NOM;}
+	
+	public Vector getVTAX_DTL() {return VTAX_DTL;}
+	public Vector getVGAS_DATE() {return VGAS_DATE;}
+	
+	public Vector getVIS_GTC() {return VIS_GTC;}
+	
+	public Vector getVGTA_NO() {return VGTA_NO;}
+	public Vector getVGTC_NO() {return VGTC_NO;}
+	
+	public Vector getVENTRY_POINT_MAP() {return VENTRY_POINT_MAP;}
+	public Vector getVEXIT_POINT_MAP() {return VEXIT_POINT_MAP;}
+	public Vector getVCONT_MAPPING() {return VCONT_MAPPING;}
+
+	public Vector getVSELLER_NOM() {return VSELLER_NOM;}
+	public Vector getVCONTRACT_TYPE_NM() {return VCONTRACT_TYPE_NM;}
+	public Vector getVCONTACT_PERSON() {return VCONTACT_PERSON;}
+	public Vector getVCONTACT_PERSON_CD() {return VCONTACT_PERSON_CD;}
+	public Vector getVSEL_CONTACT_PERSON_CD() {return VSEL_CONTACT_PERSON_CD;}
+	
+	public Vector getVMAIL_FROM_LIST() {return VMAIL_FROM_LIST;}
+	public Vector getVMAIL_TO_LIST() {return VMAIL_TO_LIST;}
+	public Vector getVMAIL_CC_LIST() {return VMAIL_CC_LIST;}
+	public Vector getVMAIL_BCC_LIST() {return VMAIL_BCC_LIST;}
+	public Vector getVMAIL_SUBJECT() {return VMAIL_SUBJECT;}
+	public Vector getVMAIL_ATTACHMENT() {return VMAIL_ATTACHMENT;}
+	public Vector getVMAIL_ATTACHMENT_PATH() {return VMAIL_ATTACHMENT_PATH;}
+	public Vector getVMAIL_BODY() {return VMAIL_BODY;}
+	public Vector getVPDF_EXISTS() {return VPDF_EXISTS;}
+	
+	public Vector getVMST_CONTRACT_TYPE() {return VMST_CONTRACT_TYPE;}
+	public Vector getVMST_CONTRACT_TYPE_NM() {return VMST_CONTRACT_TYPE_NM;}
+	public Vector getVREMARK() {return VREMARK;}
+	public Vector getVCUSTOMER_CODE() {return VCUSTOMER_CODE;}
+	
+	public Vector getVSUB_NOM_REV_NO() {return VSUB_NOM_REV_NO;}
+	public Vector getVSUB_QTY_MMBTU() {return VSUB_QTY_MMBTU;}
+	public Vector getVSUB_QTY_SCM() {return VSUB_QTY_SCM;}
+	public Vector getVSUB_CT_REF() {return VSUB_CT_REF;}
+	public Vector getVSUB_UTR_REF() {return VSUB_UTR_REF;}
+	public Vector getVSUB_IS_EXIST() {return VSUB_IS_EXIST;}
+	public Vector getVSUB_SEQ_NO() {return VSUB_SEQ_NO;}
+	public Vector getVSUB_NOM_COLOR() {return VSUB_NOM_COLOR;}
+	public Vector getVSUB_BUYER_NOM_QTY() {return VSUB_BUYER_NOM_QTY;}
+	public Vector getVSUB_BUYER_NOM_REV() {return VSUB_BUYER_NOM_REV;}
+	public Vector getVSUB_NOM_SF_ID() {return VSUB_NOM_SF_ID;}
+	
+	public Vector getVNOM_SF_ID() {return VNOM_SF_ID;}
+	
+	public Vector getVROWSPAN() {return VROWSPAN;}
+	public Vector getVENTRY_RANGE() {return VENTRY_RANGE;}
+	
+	public Vector getVPRODUCT_ABBR() {return VPRODUCT_ABBR;}
+	public Vector getVMOLECULE_ABBR() {return VMOLECULE_ABBR;}
+	public Vector getVMOLECULE_MAPPING() {return VMOLECULE_MAPPING;}
+	
+	public Vector getVALLOC_MOLE_MAPPING() {return VALLOC_MOLE_MAPPING;}
+	public Vector getVALLOC_MOLE_SEQ_NO() {return VALLOC_MOLE_SEQ_NO;}
+	public Vector getVALLOC_MOLE_QTY_MMBTU() {return VALLOC_MOLE_QTY_MMBTU;}
+	public Vector getVALLOC_MOLE_QTY_SCM() {return VALLOC_MOLE_QTY_SCM;}
+	public Vector getVALLOC_MOLE_EXIST() {return VALLOC_MOLE_EXIST;}
+	public Vector getVALLOC_MOLE_COLOR() {return VALLOC_MOLE_COLOR;}
+	
+	public Vector getVTOTAL_MMBTU_COLOR() {return VTOTAL_MMBTU_COLOR;}
+	public Vector getVADDRESSED_PERSON() {return VADDRESSED_PERSON;}
+	public Vector getVPDF_NAME() {return VPDF_NAME;}
+	public Vector getVPDF_PATH() {return VPDF_PATH;}
+	public Vector getVEMAIL_FLAG() {return VEMAIL_FLAG;}
+	
+	public Vector getVCOUNTPTY_CD() {return VCOUNTPTY_CD;}
+	public Vector getVPLANT_SEQ() {return VPLANT_SEQ;}
+	public Vector getVCATEGORY() {return VCATEGORY;}
+	public Vector getVQTY_MMSCM() {return VQTY_MMSCM;}
+	public Vector getVOBLG_MMSCM() {return VOBLG_MMSCM;}
+	public Vector getVTEMP_TRANSPORTER_CD() {return VTEMP_TRANSPORTER_CD;}
+	public Vector getVTOT_MMSCM() {return VTOT_MMSCM;}
+	public Vector getVTOT_MMBTU() {return VTOT_MMBTU;}
+	public Vector getVTOT_OBLG_MMSCM() {return VTOT_OBLG_MMSCM;}
+	
+	public Vector getVTEMP_COUNTERPARTY_CD() {return VTEMP_COUNTERPARTY_CD;}
+	public Vector getVTEMP_TRANS_CD() {return VTEMP_TRANS_CD;}
+	public Vector getVCUST_WISE_MMSCM() {return VCUST_WISE_MMSCM;}
+	public Vector getVCUST_WISE_MMBTU() {return VCUST_WISE_MMBTU;}
+	public Vector getVCUST_WISE_OBLG() {return VCUST_WISE_OBLG;}
+	public Vector getVPLANT_NM() {return VPLANT_NM;}
+	public Vector getVPLANT_ABBR() {return VPLANT_ABBR;}
+	public Vector getVEXP_MMSCM() {return VEXP_MMSCM;}
+	public Vector getVTEMP_TRANS_PLANT_SEQ() {return VTEMP_TRANS_PLANT_SEQ;}
+	public Vector getVTEMP_TRANSPORTER_PLANT_SEQ() {return VTEMP_TRANSPORTER_PLANT_SEQ;}
+	
+	public Vector getVLINKJT_GCV() {return VLINKJT_GCV;}
+	public Vector getVLINKJT_NCV() {return VLINKJT_NCV;}
+	public Vector getVLINKJT_TRANSPORTER_NM() {return VLINKJT_TRANSPORTER_NM;}
+	public Vector getVLINKJT_TRANSPORTER_ABBR() {return VLINKJT_TRANSPORTER_ABBR;}
+	public Vector getVLINKJT_SELLER_NOM_QTY_MMBTU() {return VLINKJT_SELLER_NOM_QTY_MMBTU;}
+	public Vector getVLINKJT_TRANSPORTER_QTY_MMBTU() {return VLINKJT_TRANSPORTER_QTY_MMBTU;}
+	public Vector getVLINKJT_QTY_SCM() {return VLINKJT_QTY_SCM;}
+	public Vector getVLINKJT_QTY_MMBTU() {return VLINKJT_QTY_MMBTU;}
+	public Vector getVLINKCUSTID() {return VLINKCUSTID;}
+	public Vector getVLINKCONTID() {return VLINKCONTID;}
+	
+	public Vector getVIS_ALLOCATION_DONE() {return VIS_ALLOCATION_DONE;}
+
+	String counterparty_nm = "";
+	String dateTime = "";
+	String gen_time = "";
+	String start_dt = "";
+	String end_dt = "";
+	String cont_name = "";
+	String dcq = "";
+	String tcq = "";
+	String cont_ref = "";
+	String mdcq_percentage = "";
+	String dis_mapp = "";
+	
+	String multiplyFactor = "";
+	String dividFactor = "";
+	String all_mail_sent="";
+	
+	String tot_mmscm="";
+	String tot_mmbtu="";
+	String tot_obl_mcm="";
+	String ask_nom_mcm="";
+	String ask_obl_mcm="";
+	String ask_nom_mmbtu="";
+	
+	public String getCounterparty_nm() {return counterparty_nm;}
+	public String getDateTime() {return dateTime;}
+	public String getGen_time() {return gen_time;}
+	public String getStart_dt() {return start_dt;}
+	public String getEnd_dt() {return end_dt;}
+	public String getCont_name() {return cont_name;}
+	public String getDcq() {return dcq;}
+	public String getTcq() {return tcq;}
+	public String getCont_ref() {return cont_ref;}
+	public String getMdcq_percentage() {return mdcq_percentage;}
+	public String getDis_mapp() {return dis_mapp;}
+	public String getMultiplyFactor() {return multiplyFactor;}
+	public String getDividFactor() {return dividFactor;}
+	public String getAll_mail_sent() {return all_mail_sent;}
+	
+	public String getTot_mmscm() {return tot_mmscm;}
+	public String getTot_mmbtu() {return tot_mmbtu;}
+	public String getTot_obl_mcm() {return tot_obl_mcm;}
+	public String getAsk_nom_mcm() {return ask_nom_mcm;}
+	public String getAsk_obl_mcm() {return ask_obl_mcm;}
+	public String getAsk_nom_mmbtu() {return ask_nom_mmbtu;}
+	
+	double totalBuyerNom=0;
+	
+	public double getTotalBuyerNom() {return totalBuyerNom;}
+
+
+	HashMap<String, HashMap<String, String>> view_join_ticket_data = new HashMap();
+	HashMap<String, String> view_join_ticket_info = new HashMap();
+	HashMap<String, HashMap<String, String>> view_seller_alloc_to_trans_data = new HashMap();
+	HashMap<String, String> view_seller_alloc_to_trans_info = new HashMap();
+	HashMap<String, HashMap<String, String>> view_seller_nomination_to_customer_data = new HashMap();
+	HashMap<String, String> view_seller_nomination_to_customer_info = new HashMap();
+	
+	HashMap<String, HashMap<String, String>> view_data = new HashMap();
+	HashMap<String, String> view_info = new HashMap();
+	
+
+	public HashMap<String, HashMap<String, String>> getView_join_ticket_data() {return view_join_ticket_data;}
+	public HashMap<String, String> getView_join_ticket_info() {return view_join_ticket_info;}
+	public HashMap<String, HashMap<String, String>> getView_seller_alloc_to_trans_data() {return view_seller_alloc_to_trans_data;}
+	public HashMap<String, String> getView_seller_alloc_to_trans_info() {return view_seller_alloc_to_trans_info;}
+	public HashMap<String, HashMap<String, String>> getView_seller_nomination_to_customer_data() {return view_seller_nomination_to_customer_data;}
+	public HashMap<String, String> getView_seller_nomination_to_customer_info() {return view_seller_nomination_to_customer_info;}
+	
+	public HashMap<String, HashMap<String, String>> getView_data() {return view_data;}
+	public HashMap<String, String> getView_info() {return view_info;}
+	
+}

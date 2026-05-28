@@ -1,0 +1,15 @@
+
+
+<<START>>,<<FMS_COUNTERPARTY_BU_DTL>>,,,,, 	(21-FEB-2025 15:04:15)
+ 
+COMPANY_CD,CD,ABBR,ENTITY,SEQ_NO,EFF_DT,TIMESTAMP
+2 , 264 , SSAPL , SGSINDIA , 1 , 01/04/2013 00:00:00, 	(21-FEB-2025 15:04:15)
+**********AutomationEMS Error  (21-FEB-2025 15:04:15) **********
+java.sql.SQLException: ORA-12899: value too large for column "EMSNG"."FMS_COUNTERPARTY_BU_DTL"."ENTITY" (actual: 8, maximum: 1)
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_COUNTERPARTY_BU_DTL(Master_SEIPL_Data_Reader.java:2509)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:157)
+**************************************************
+
+<<FUNCTION FMS_COUNTERPARTY_BU_DTL() ENDED WITH ERRORS>>

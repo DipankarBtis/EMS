@@ -1,0 +1,13 @@
+
+
+<<START>>,<<FMS_SUPPLY_CONT_MST>>,, 	(22-APR-2025 18:20:28)
+ 
+COMPANY_CD,COUNTERPARTY_CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,CONTRACT_TYPE,TIMESTAMP,
+**********AutomationEMS Error  (22-APR-2025 18:20:29) **********
+java.sql.SQLException: Invalid column index
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_SUPPLY_CONT_MST(Sales_SEIPL_Data_Reader.java:2073)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:131)
+**************************************************
+
+<<FUNCTION FMS_SUPPLY_CONT_MST() ENDED WITH ERRORS>>

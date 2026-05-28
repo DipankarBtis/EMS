@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_TANK_INVENTORY_DTL()>>
+**********AutomationEMS Error  (06-MAR-2025 14:45:11) **********
+java.io.FileNotFoundException: D:\Projects\EMSNG_Workspace\EMSNG\migration\EXPORT\FMS_TANK_INVENTORY_DTL_01012007_06032025.xlsx (The process cannot access the file because it is being used by another process)
+
+com.etrm.fms.migration.TermOps_SEIPL_Data_Extractor.FMS_TANK_INVENTORY_DTL(TermOps_SEIPL_Data_Extractor.java:540)
+com.etrm.fms.migration.TermOps_SEIPL_Data_Extractor.init(TermOps_SEIPL_Data_Extractor.java:106)
+**************************************************
+
+<<FUNCTION FMS_TANK_INVENTORY_DTL() ENDED WITH ERRORS>>

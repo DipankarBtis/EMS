@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_SUPPLY_CONT_BU()>>
+**********AutomationEMS Error  (23-APR-2025 11:19:29) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_SUPPLY_CONT_BU"."AGMT_NO")
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_SUPPLY_CONT_BU(Sales_SEIPL_Data_Reader.java:2852)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:140)
+**************************************************
+
+<<FUNCTION FMS_SUPPLY_CONT_BU() ENDED WITH ERRORS>>

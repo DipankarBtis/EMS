@@ -1,0 +1,17 @@
+
+
+<<START>>,<<FMS_INVOICE_MST_TAXCD_UPDATE>>,, 	(23-JAN-2026 10:25:03)
+ 
+COMPANY_CD,COUNTERPARTY_CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,CONTRACT_TYPE,BU_UNIT,BU_STATE_TIN,BU_CONTACT_PERSON_CD,PLANT_SEQ_NO,CONTACT_PERSON_CD,TIMESTAMP,
+2,1 , 1,0,19001,0,O,1,24,5,1,24,0, 	(23-JAN-2026 10:25:03)	 (Not Inserted)
+2,1 , 1,0,19001,0,O,1,24,5,1,24,0, 	(23-JAN-2026 10:25:03)	 (Not Inserted)
+2,1 , 1,0,19001,0,O,1,24,5,2,46,67, 	(23-JAN-2026 10:25:03)
+**********AutomationEMS Error  (23-JAN-2026 10:25:03) **********
+java.sql.SQLException: ORA-01830: date format picture ends before converting entire input string
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST_TAXCD_UPDATE(Sales_SEIPL_Data_Reader.java:16381)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:279)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST_TAXCD_UPDATE() ENDED WITH ERRORS>>

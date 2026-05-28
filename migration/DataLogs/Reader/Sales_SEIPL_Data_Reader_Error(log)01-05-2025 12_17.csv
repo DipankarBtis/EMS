@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_SUPPLY_BILLING_DTL()>>
+**********AutomationEMS Error  (01-MAY-2025 12:17:25) **********
+java.sql.SQLSyntaxErrorException: ORA-01722: invalid number
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_SUPPLY_BILLING_DTL(Sales_SEIPL_Data_Reader.java:3619)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:153)
+**************************************************
+
+<<FUNCTION FMS_SUPPLY_BILLING_DTL() ENDED WITH ERRORS>>

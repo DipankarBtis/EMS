@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_SECURITY_DEAL_MAP(S)()>>
+**********AutomationEMS Error  (19-MAY-2025 15:32:36) **********
+java.sql.SQLException: Missing IN or OUT parameter at index:: 8
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_SECURITY_DEAL_MAP(Sales_SEIPL_Data_Reader.java:9827)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:228)
+**************************************************
+
+<<FUNCTION FMS_SECURITY_DEAL_MAP(S)() ENDED WITH ERRORS>>

@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_INVOICE_MST_TAXCD_UPDATE()>>
+**********AutomationEMS Error  (23-JAN-2026 10:27:06) **********
+java.sql.SQLException: Missing IN or OUT parameter at index:: 16
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST_TAXCD_UPDATE(Sales_SEIPL_Data_Reader.java:16381)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:279)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST_TAXCD_UPDATE() ENDED WITH ERRORS>>

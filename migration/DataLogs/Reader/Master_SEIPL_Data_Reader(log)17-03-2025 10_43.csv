@@ -1,0 +1,15 @@
+
+
+<<START>>,<<FMS_ENTITY_TCS_TDS_MST>>, 	(17-MAR-2025 10:43:31)
+ 
+COMPANY_CD,COUNTERPARTY_CD,ENTITY,INVOICE_TYPE,TAX_CATEGORY,TAX_APP,EFF_DT, 	(17-MAR-2025 10:43:31)
+ 
+**********AutomationEMS Error  (17-MAR-2025 10:43:31) **********
+java.sql.SQLException: ORA-00936: missing expression
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_ENTITY_TCS_TDS_MST(Master_SEIPL_Data_Reader.java:7450)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:245)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_TCS_TDS_MST() ENDED WITH ERRORS>>

@@ -1,0 +1,49 @@
+
+
+<<START>>,<<FMS_PRODUCT_MOLECULE_MST>>, 	(09-JUN-2025 15:37:11)
+ 
+MOLE_CD,MOLE_ABBR,TIMESTAMP,
+MOLE_CD,MOLE_ABBR,TIMESTAMP,
+**********AutomationEMS Error  (09-JUN-2025 15:37:11) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_PRODUCT_MOLECULE_MST) violated
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_PRODUCT_MOLECULE_MST(Master_SEIPL_Data_Reader.java:8055)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:246)
+**************************************************
+
+<<FUNCTION FMS_PRODUCT_MOLECULE_MST() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_PRODUCT_MOLECULE_MST>>, 	(09-JUN-2025 15:37:40)
+ 
+MOLE_CD,MOLE_ABBR,TIMESTAMP,
+MOLE_CD,MOLE_ABBR,TIMESTAMP,
+1 , 2, 	(09-JUN-2025 15:37:40)
+2 , 2, 	(09-JUN-2025 15:37:40)
+3 , 2, 	(09-JUN-2025 15:37:40)
+4 , 2, 	(09-JUN-2025 15:37:40)
+5 , 2, 	(09-JUN-2025 15:37:40)
+6 , 4, 	(09-JUN-2025 15:37:40)
+7 , 4, 	(09-JUN-2025 15:37:40)
+8 , 4, 	(09-JUN-2025 15:37:40)
+9 , 4, 	(09-JUN-2025 15:37:40)
+10 , 4, 	(09-JUN-2025 15:37:40)
+11 , 4, 	(09-JUN-2025 15:37:40)
+12 , 4, 	(09-JUN-2025 15:37:40)
+13 , 4, 	(09-JUN-2025 15:37:40)
+14 , 4, 	(09-JUN-2025 15:37:40)
+15 , 4, 	(09-JUN-2025 15:37:40)
+16 , 1, 	(09-JUN-2025 15:37:40)
+17 , 1, 	(09-JUN-2025 15:37:40)
+
+TOTAL DATA IN EXCEL : ,0, 	(09-JUN-2025 15:37:40)
+ 
+
+TOTAL DATA INSERTED : ,17, 	(09-JUN-2025 15:37:40)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(09-JUN-2025 15:37:40)
+ 
+<<END>>,<<FMS_PRODUCT_MOLECULE_MST>>, 	(09-JUN-2025 15:37:40)
+ 

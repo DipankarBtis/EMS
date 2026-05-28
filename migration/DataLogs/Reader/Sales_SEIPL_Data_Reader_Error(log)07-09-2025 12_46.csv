@@ -1,0 +1,31 @@
+
+<<ERROR IN FMS_FFLOW_INV_MST()>>
+**********AutomationEMS Error  (07-SEP-2025 12:46:01) **********
+java.sql.SQLException: Missing IN or OUT parameter at index:: 26
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_FFLOW_INV_MST(Sales_SEIPL_Data_Reader.java:16735)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:281)
+**************************************************
+
+<<FUNCTION FMS_FFLOW_INV_MST() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_FFLOW_INV_DTL()>>
+**********AutomationEMS Error  (07-SEP-2025 12:46:01) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_FFLOW_INV_DTL"."ADDR_FLAG")
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_FFLOW_INV_DTL(Sales_SEIPL_Data_Reader.java:17104)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:285)
+**************************************************
+
+<<FUNCTION FMS_FFLOW_INV_DTL() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_FFLOW_INV_MST()>>
+**********AutomationEMS Error  (07-SEP-2025 12:46:07) **********
+java.sql.SQLException: Missing IN or OUT parameter at index:: 26
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_FFLOW_INV_MST(Sales_SEIPL_Data_Reader.java:16735)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:281)
+**************************************************
+
+<<FUNCTION FMS_FFLOW_INV_MST() ENDED WITH ERRORS>>

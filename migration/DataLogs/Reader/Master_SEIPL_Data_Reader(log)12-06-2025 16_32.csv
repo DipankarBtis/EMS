@@ -1,0 +1,27 @@
+
+
+<<START>>,<<FMS_ENTITY_TAX_STRUCT_DTL>>,,,,,, 	(12-JUN-2025 16:32:26)
+ 
+COMPANY_CD,CD,ABBR,ENTITY,PLANT_SEQ_NO,BU_UNIT,EFF_DT,TIMESTAMP
+2,1 , RIL , C , 18 , 2 , 01/06/2021 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,1 , RIL , C , 1 , 2 , 01/06/2021 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,1 , RIL , C , 15 , 1 , 01/04/2010 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,1 , RIL , C , 4 , 1 , 01/04/2010 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,1 , RIL , C , 8 , 1 , 01/04/2010 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,1 , RIL , C , 3 , 1 , 01/04/2010 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,1 , RIL , C , 5 , 1 , 01/04/2010 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,1 , RIL , C , 2 , 1 , 01/04/2010 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,1 , RIL , C , 6 , 1 , 01/04/2008 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,1 , RIL , C , 17 , 1 , 01/01/2019 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,1 , RIL , C , 16 , 1 , 01/01/2019 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,2 , MGL , C , 1 , 2 , 01/06/2021 00:00:00, 	(12-JUN-2025 16:32:26)	 (Not Inserted)
+2,2 , MGL , C , 1 , 1 , 01/04/2011 00:00:00, 	(12-JUN-2025 16:32:26)
+**********AutomationEMS Error  (12-JUN-2025 16:32:26) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_ENTITY_TAX_STRUCT_DTL"."INVOICE_TYPE")
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_ENTITY_TAX_STRUCT_DTL(Master_SEIPL_Data_Reader.java:6561)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:222)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_TAX_STRUCT_DTL() ENDED WITH ERRORS>>

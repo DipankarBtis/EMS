@@ -1,0 +1,333 @@
+<%@page import="com.etrm.fms.util.CommonVariable"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.HashMap"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+
+<script>
+function openPdf(url)
+{
+	var msg="PDF has been Generated!";
+	alert(msg)
+	window.open(url);
+	window.opener.refresh();
+	window.close();
+}
+</script>
+</head>
+<jsp:useBean class="com.etrm.fms.contract_mgmt.DataBean_ContractMgmt" id="cont_mgmt" scope="request"></jsp:useBean>
+<jsp:useBean class="com.etrm.fms.util.DataBean_Pdf_Generation" id="pdfFile" scope="request"/>
+<jsp:useBean class="com.etrm.fms.util.DateUtil" id="utildate" scope="request"></jsp:useBean>
+
+<%
+String sys_dt_time = utildate.getSysdateWithTime24hr();
+String prevdate = utildate.getPreviousDate();
+
+String gas_dt = request.getParameter("gas_dt")==null?prevdate:request.getParameter("gas_dt");
+String owner_cd=session.getAttribute("comp_cd").toString().equals("null")?"":""+session.getAttribute("comp_cd");
+String owner_abbr=""+session.getAttribute("comp_abbr")==null?"":""+session.getAttribute("comp_abbr");
+String owner_nm=""+session.getAttribute("comp_nm")==null?"":""+session.getAttribute("comp_nm");
+String owner_logo=""+session.getAttribute("comp_logo")==null?"":""+session.getAttribute("comp_logo");
+String emp_cd=""+session.getAttribute("emp_cd")==null?"":""+session.getAttribute("emp_cd");
+
+String counterparty_cd=request.getParameter("counterparty_cd")==null?"0":request.getParameter("counterparty_cd");
+String plant_seq=request.getParameter("plant_seq")==null?"0":request.getParameter("plant_seq");
+String contact_person_cd=request.getParameter("contact_person_cd")==null?"":request.getParameter("contact_person_cd");
+String file=request.getParameter("file")==null?"":request.getParameter("file");
+
+cont_mgmt.setCallFlag("VIEW_SELLER_NOMINATION_TO_TRANSPORTER");
+cont_mgmt.setComp_cd(owner_cd);
+cont_mgmt.setEmp_cd(emp_cd);
+cont_mgmt.setGas_dt(gas_dt);
+cont_mgmt.setCounterparty_cd(counterparty_cd);
+cont_mgmt.setPlant_seq(plant_seq);
+cont_mgmt.setContact_person_cd(contact_person_cd);
+cont_mgmt.init();
+
+HashMap view_data = cont_mgmt.getView_data();
+HashMap view_info = cont_mgmt.getView_info();
+%>
+<%if(file.equals("HTML")){ %>
+<body>
+<table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr valign="top">
+		<td width="50%">
+			<div align="left" >
+				<img src="../<%=CommonVariable.company_logo_path%>/<%=owner_logo%>" height="50px"/>
+			</div>
+		</td>
+		<td width="50%">
+			<div align="right">
+				<font size="2" face="Arial">
+					<font size="2" face="Arial"><%=view_info.get("company_nm")%><br></font>
+					<%=view_info.get("ownAddress")%><br>
+					<%=view_info.get("ownCity")%><%if(!view_info.get("ownPin").toString().trim().equals("")){%>&nbsp;-&nbsp;<%=view_info.get("ownPin")%><%}%><%if(!view_info.get("ownCity").toString().trim().equals("")){%>,<%}%><br>
+					<%=view_info.get("ownState")%><br>
+					Tel:&nbsp;<%=view_info.get("ownPhone")%><br>
+					Email:&nbsp;<%=view_info.get("ownEmail")%><br>
+				</font>
+			</div>
+		</td>
+	</tr>	
+</table>
+<hr>
+<table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr>
+		<td colspan="3">&nbsp;<br>&nbsp;</td>
+	</tr>
+	<tr>
+    	<td width="50%">
+			<div align="left">
+				<font size="2" face="Arial">
+					<b>To:</b><br>
+					<%=view_info.get("contact_person_nm")%><br>
+				 	<%=view_info.get("transporter_nm")%><br>
+					<%=view_info.get("plantAddress")%><br>
+					<%=view_info.get("plantCity")%><%if(!view_info.get("plantPin").toString().trim().equals("")){%>&nbsp;-&nbsp;<%=view_info.get("plantPin")%><%}%><%if(!view_info.get("plantCity").toString().trim().equals("")){%>,<%}%><br>
+					<%=view_info.get("plantState")%><br>
+					Tel:&nbsp;<%=view_info.get("contact_person_phone")%><br>
+					Fax:&nbsp;<%=view_info.get("contact_person_fax")%>
+				</font>
+			</div>
+		</td>
+		<td width="50%"></td>
+	</tr>
+</table>
+<br>
+<table width="80%" align="center" cellpadding="2" cellspacing="0">
+	<tr>
+		<td colspan="6"><div align="right"><font size=2.5 face="Arial"><b>Date:</b>&nbsp;<%=sys_dt_time%></font></div></td>		
+	</tr>
+</table>
+<br>
+<table width="80%"  border="1" align="center" cellpadding="2" cellspacing="0">
+	<tr>
+		<td colspan="6" style="background: #c2d1f0;"><div align="center"><font size="3px" face="Arial"><b>SELLER NOMINATION&nbsp;(<%=owner_abbr%> - <%=view_info.get("transporter_abbr")%>&nbsp;:&nbsp;<%=view_info.get("plant_nm")%>)</b></font></div></td>
+	</tr>
+</table>
+<br>
+<table width="80%"  border="1" align="center" cellpadding="2" cellspacing="0">	
+	<tr valign="bottom">
+		<td rowspan="2"><div align="center"><font size="2.5px" face="Arial"><b>Gas Day</b></font></div></td>
+		<td rowspan="2"><div align="center"><font size="2.5px" face="Arial"><b>Customer</b></font></div></td>
+		<td rowspan="2"><div align="center"><font size="2.5px" face="Arial"><b>Customer ID</b></font></div></td>
+		<td rowspan="2"><div align="center"><font size="2.5px" face="Arial"><b>Contract ID</b></font></div></td>
+		<td colspan="2"><div align="center"><font size="2.5px" face="Arial"><b>Seller Nominated</b></font></div></td>				
+	</tr>
+	<tr valign="bottom">
+		<td><div align="center"><font size="2.5px" face="Arial"><b>MMBTU</b></font></div></td>
+		<td><div align="center"><font size="2.5px" face="Arial"><b>MMSCM</b></font></div></td>
+	</tr>
+	<%
+	if(view_data.containsKey("v_gas_dt"))
+	{
+		HashMap transport_wise = (HashMap) view_data.get("v_gas_dt");
+		int key_count=0;
+	    for(int i=0; i<transport_wise.size();i++) 
+	    {
+	    	key_count+=1;
+	    %>
+	    <tr valign="top" <%if(key_count==transport_wise.size()){ %>style="font-weight:bold;"<%} %>>
+			<%if(key_count==transport_wise.size()){ %>
+			<td colspan="4">
+				<div align="right">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_customer")).get(""+key_count)%>&nbsp;:&nbsp;</font>
+				</div>
+			</td>
+			<%}else{ %>
+			<td>
+				<div align="center">
+					<font size="2.5px" face="Arial"><%=transport_wise.get(""+key_count) %></font>
+				</div>
+			</td>
+			<td>
+				<div align="center">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_customer")).get(""+key_count) %></font>
+				</div>
+			</td>
+			<td>
+				<div align="center">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_customer_code")).get(""+key_count) %></font>
+				</div>
+			</td>
+			<td>
+				<div align="center">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_ct_ref")).get(""+key_count) %></font>
+				</div>
+			</td>
+			<%} %>
+			<td>
+				<div align="right">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_mmbtu")).get(""+key_count) %></font>
+				</div>
+			</td>
+			<td>
+				<div align="right">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_mmscm")).get(""+key_count) %></font>
+				</div>
+			</td>		
+		</tr>	
+	    <% }%>
+	<%} %>
+</table>
+<%-- <br><br>
+<table width="80%" align="center" cellpadding="2" cellspacing="0">
+	<tr>
+		<td>
+		<div align="left"><font size="2.5px" face="Arial"><b>Note:</b>&nbsp;<%=view_info.get("remark")%></font></div>
+		</td>
+	</tr>
+</table> --%>
+
+<table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tr valign="bottom">
+		<td colspan="1" width="20%">
+			<div align="center">
+				<font size="2px" face="Arial">
+					<br><br><br><br><br><%=view_info.get("emp_nm")%>
+					<br>(<%=view_info.get("emp_ph_no")%>)
+					_________________________
+					<br>
+					Authorised Signatory
+					<br>
+					<%=view_info.get("company_nm")%>
+				</font>
+			</div>
+		</td>
+		<td colspan="3" width="60%">
+			<div align="center">
+				<font size="2px">
+					&nbsp;
+				</font>
+			</div>
+		</td>
+		<td colspan="1" width="20%">
+			<div align="center">
+				<font size="2px" face="Arial">
+					<br><br><br><br><br>&nbsp;
+					_________________________
+					<br>
+					Authorised Signatory
+					<br>
+					<%=view_info.get("transporter_nm")%>
+				</font>
+			</div>
+		</td>
+	</tr>
+</table>
+</body>
+<%}else if(file.equals("XLS")){ %>
+<%
+	response.setContentType("application/vnd.ms-excel");
+	response.setHeader("content-Disposition","inline; filename=Seller_NominationToTransporter_"+gas_dt.replaceAll("/", "")+".xls");
+%>
+<table>
+	<tr>
+		<td colspan="15">
+			<font size="4"><b>Seller Nomination To Transporter&nbsp;(<%=owner_abbr%> - <%=view_info.get("transporter_abbr")%>&nbsp;:&nbsp;<%=view_info.get("plant_nm")%>) - Gas Day <%=gas_dt%></b></font>
+		</td>
+	</tr>
+</table>
+<br>
+<br>
+<table width="80%"  border="1" align="center" cellpadding="2" cellspacing="0">	
+	<tr valign="bottom">
+		<td rowspan="2"><div align="center"><font size="2.5px" face="Arial"><b>Gas Day</b></font></div></td>
+		<td rowspan="2"><div align="center"><font size="2.5px" face="Arial"><b>Customer</b></font></div></td>
+		<td rowspan="2"><div align="center"><font size="2.5px" face="Arial"><b>Customer ID</b></font></div></td>
+		<td rowspan="2"><div align="center"><font size="2.5px" face="Arial"><b>Contract ID</b></font></div></td>
+		<td colspan="2"><div align="center"><font size="2.5px" face="Arial"><b>Seller Nominated</b></font></div></td>				
+	</tr>
+	<tr valign="bottom">
+		<td><div align="center"><font size="2.5px" face="Arial"><b>MMBTU</b></font></div></td>
+		<td><div align="center"><font size="2.5px" face="Arial"><b>MMSCM</b></font></div></td>
+	</tr>
+	<%
+	if(view_data.containsKey("v_gas_dt"))
+	{
+		HashMap transport_wise = (HashMap) view_data.get("v_gas_dt");
+		int key_count=0;
+	    for(int i=0; i<transport_wise.size();i++) 
+	    {
+	    	key_count+=1;
+	    %>
+	    <tr valign="top" <%if(key_count==transport_wise.size()){ %>style="font-weight:bold;"<%} %>>
+			<%if(key_count==transport_wise.size()){ %>
+			<td colspan="4">
+				<div align="right">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_customer")).get(""+key_count)%>&nbsp;:&nbsp;</font>
+				</div>
+			</td>
+			<%}else{ %>
+			<td>
+				<div align="center">
+					<font size="2.5px" face="Arial">&nbsp;<%=transport_wise.get(""+key_count) %>&nbsp;</font>
+				</div>
+			</td>
+				<td>
+				<div align="center">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_customer")).get(""+key_count) %></font>
+				</div>
+			</td>
+			<td>
+				<div align="center">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_customer_code")).get(""+key_count) %></font>
+				</div>
+			</td>
+			<td>
+				<div align="center">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_ct_ref")).get(""+key_count) %></font>
+				</div>
+			</td>
+			<%} %>
+			<td>
+				<div align="right">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_mmbtu")).get(""+key_count) %></font>
+				</div>
+			</td>
+			<td>
+				<div align="right">
+					<font size="2.5px" face="Arial"><%=((HashMap) view_data.get("v_mmscm")).get(""+key_count) %></font>
+				</div>
+			</td>		
+		</tr>	
+	    <% }%>
+	<%} %>
+</table>
+<%-- <br><br>
+<table width="80%" align="center" cellpadding="2" cellspacing="0">
+	<tr>
+		<td>
+		<div align="left"><font size="2.5px" face="Arial"><b>Note:</b>&nbsp;<%=view_info.get("remark")%></font></div>
+		</td>
+	</tr>
+</table> --%>
+<%}else if(file.equals("PDF")){ %>
+<% 
+HttpServletRequest req = request;
+
+pdfFile.setCallFlag("PDF_SELLER_NOMINATION_TO_TRANSPORTER");
+pdfFile.setRequest(req);
+pdfFile.setView_data(view_data);
+pdfFile.setView_info(view_info);
+pdfFile.setComp_logo(owner_logo);
+pdfFile.setComp_cd(owner_cd);
+pdfFile.setGas_dt(gas_dt);
+pdfFile.setCounterparty_cd(counterparty_cd);
+pdfFile.setPlant_seq(plant_seq);
+pdfFile.init();
+
+String file_url = pdfFile.getFile_url();
+String file_nm = pdfFile.getFile_nm();
+String pdfpath = file_url+"/"+CommonVariable.work_dir+owner_cd+""+CommonVariable.nom_to_customer_pdf_path+""+file_nm;
+%>
+<%if(!file_nm.equals("")){%>
+<script>
+openPdf('<%=pdfpath%>');
+</script>
+<%} %>
+<%} %>
+</html>

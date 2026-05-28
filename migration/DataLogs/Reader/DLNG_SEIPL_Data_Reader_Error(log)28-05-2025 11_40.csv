@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_SVC_CONT_MAP()>>
+**********AutomationEMS Error  (28-MAY-2025 11:40:32) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_SVC_CONT_MAP) violated
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_SVC_CONT_MAP(DLNG_SEIPL_Data_Reader.java:5987)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:182)
+**************************************************
+
+<<FUNCTION FMS_SVC_CONT_MAP() ENDED WITH ERRORS>>

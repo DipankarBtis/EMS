@@ -1,0 +1,11 @@
+
+<<ERROR IN LOG_FMS_SECURITY_MST()>>
+**********AutomationEMS Error  (09-APR-2025 11:13:09) **********
+java.sql.SQLSyntaxErrorException: ORA-00932: inconsistent datatypes: expected NUMBER got DATE
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.LOG_FMS_SECURITY_MST(Purchase_SEIPL_Data_RollBack.java:1311)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:142)
+**************************************************
+
+<<FUNCTION LOG_FMS_SECURITY_MST() ENDED WITH ERRORS>>

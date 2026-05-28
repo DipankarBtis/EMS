@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_TRUCK_DRIVER_TRANS_LINK()>>
+**********AutomationEMS Error  (09-APR-2025 12:03:07) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_TRUCK_DRIVER_TRANS_LINK"."DRIVER_CD")
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_TRUCK_DRIVER_TRANS_LINK(DLNG_SEIPL_Data_Reader.java:1367)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:126)
+**************************************************
+
+<<FUNCTION FMS_TRUCK_DRIVER_TRANS_LINK() ENDED WITH ERRORS>>

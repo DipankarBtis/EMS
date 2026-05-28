@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_GTA_CONT_MST()>>
+**********AutomationEMS Error  (09-JUN-2025 15:20:00) **********
+java.sql.SQLException: ORA-00904: "A"."EFF_DT": invalid identifier
+
+
+com.etrm.fms.migration.Transport_SEIPL_Data_Extractor.FMS_GTA_CONT_MST(Transport_SEIPL_Data_Extractor.java:1184)
+com.etrm.fms.migration.Transport_SEIPL_Data_Extractor.init(Transport_SEIPL_Data_Extractor.java:115)
+**************************************************
+
+<<FUNCTION FMS_GTA_CONT_MST() ENDED WITH ERRORS>>

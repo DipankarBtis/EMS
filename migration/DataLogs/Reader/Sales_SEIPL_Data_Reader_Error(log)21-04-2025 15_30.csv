@@ -1,0 +1,20 @@
+
+<<ERROR IN FMS_SUPPLY_CONT_MST()>>
+**********AutomationEMS Error  (21-APR-2025 15:30:23) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_SUPPLY_CONT_MST(Sales_SEIPL_Data_Reader.java:2064)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:131)
+**************************************************
+
+<<FUNCTION FMS_SUPPLY_CONT_MST() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_SUPPLY_CONT_MST()>>
+**********AutomationEMS Error  (21-APR-2025 15:30:53) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_SUPPLY_CONT_MST(Sales_SEIPL_Data_Reader.java:2064)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:131)
+**************************************************
+
+<<FUNCTION FMS_SUPPLY_CONT_MST() ENDED WITH ERRORS>>

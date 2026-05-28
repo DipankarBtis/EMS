@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_CUSTOM_PD_BOND_DTL()>>
+**********AutomationEMS Error  (12-JUN-2025 09:33:29) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_CUSTOM_PD_BOND_DTL) violated
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_CUSTOM_PD_BOND_DTL(Purchase_SEIPL_Data_Reader.java:10395)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:238)
+**************************************************
+
+<<FUNCTION FMS_CUSTOM_PD_BOND_DTL() ENDED WITH ERRORS>>

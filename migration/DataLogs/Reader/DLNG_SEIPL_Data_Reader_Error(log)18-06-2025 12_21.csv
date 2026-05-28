@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_FILLING_STATION_MST()>>
+**********AutomationEMS Error  (18-JUN-2025 12:21:08) **********
+java.sql.SQLSyntaxErrorException: ORA-00904: "ENTITY_TYPE": invalid identifier
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_FILLING_STATION_MST(DLNG_SEIPL_Data_Reader.java:997)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:122)
+**************************************************
+
+<<FUNCTION FMS_FILLING_STATION_MST() ENDED WITH ERRORS>>

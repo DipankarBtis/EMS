@@ -1,0 +1,105 @@
+
+
+<<START>>,<<FMS_ENTITY_CONTACT_MST>>,,,,,, 	(26-FEB-2025 10:15:01)
+ 
+COMPANY_CD,CD,ABBR,ENTITY,SEQ_NO,EFF_DT,ADDR_FLAG,TIMESTAMP
+2 ,1 , RIL , C , 52 , 31/01/2018 00:00:00 , P8, 	(26-FEB-2025 10:15:02)
+**********AutomationEMS Error  (26-FEB-2025 10:15:02) **********
+java.sql.SQLSyntaxErrorException: ORA-00917: missing comma
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_ENTITY_CONTACT_MST(Master_SEIPL_Data_Reader.java:4158)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:188)
+**************************************************
+
+<<FUNCTION FMS_ENTITY_CONTACT_MST() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_METER_MST>>,,,,, 	(26-FEB-2025 10:15:57)
+ 
+COMPANY_CD,CD,ABBR,PLANT_SEQ,METER_TYPE,METER_SEQ,TIMESTAMP
+2 ,29 , PipeInfra , 1 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 1 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 2 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 2 , R , 2, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,45 , GSPL , 1 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,45 , GSPL , 2 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,45 , GSPL , 3 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,45 , GSPL , 4 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,45 , GSPL , 4 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 1 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 2 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 3 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 1 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,4 , Gail , 1 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 2 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,4 , Gail , 2 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 1 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 1 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 2 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 3 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 1 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 2 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 3 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 1 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 2 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 3 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,4 , Gail , 1 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,4 , Gail , 2 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,305 , PARK-ANK , 1 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,305 , PARK-ANK , 2 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,53 , RGPL , 1 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,53 , RGPL , 2 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,307 , PARK-MSK , 1 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,308 , PARK-BHD , 1 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,309 , PARKPHUCBM , 1 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 1 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,4 , Gail , 1 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,4 , Gail , 1 , R , 2, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,4 , Gail , 1 , R , 3, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 2 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,4 , Gail , 2 , R , 2, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,4 , Gail , 3 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,4 , Gail , 3 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 4 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 4 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 5 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 6 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 7 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 7 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 8 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 8 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 9 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,4 , Gail , 9 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,53 , RGPL , 1 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,53 , RGPL , 1 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 1 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 1 , R , 2, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 1 , R , 3, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 2 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 3 , R , 1, 	(26-FEB-2025 10:15:57)	 (Not Inserted)
+2 ,29 , PipeInfra , 3 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 4 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 4 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 5 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 5 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 6 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 6 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 7 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 8 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,29 , PipeInfra , 8 , R , 2, 	(26-FEB-2025 10:15:57)
+2 ,168 , GSIGLIM , 1 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,168 , GSIGLIM , 2 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,134 , GSINLIM , 1 , R , 1, 	(26-FEB-2025 10:15:57)
+2 ,134 , GSINLIM , 1 , R , 2, 	(26-FEB-2025 10:15:57)
+
+TOTAL DATA IN EXCEL : ,74,,,,, 	(26-FEB-2025 10:15:57)
+ 
+
+TOTAL DATA INSERTED : ,49,,,,, 	(26-FEB-2025 10:15:57)
+ 
+
+TOTAL SKIPPED DATA ,25,,,,, 	(26-FEB-2025 10:15:57)
+ 
+<<END>>,<<FMS_METER_MST>>,,,,, 	(26-FEB-2025 10:15:57)
+ 

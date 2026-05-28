@@ -1,0 +1,63 @@
+
+<<START>>,<<FMS_PRODUCT_MOLECULE_MST>>, 	(23-SEP-2025 12:18:11)
+ 
+PROD_CD,PROD_ABBR,TIMESTAMP
+Liquified Natural Gas,Liquified Natural Gas, 	(23-SEP-2025 12:18:11)
+ReGasified Liquified Natural Gas,ReGasified Liquified Natural Gas, 	(23-SEP-2025 12:18:11)
+RLNG-Imported LNG ,RLNG-Imported LNG , 	(23-SEP-2025 12:18:11)
+RLNG-In tank purchase ,RLNG-In tank purchase , 	(23-SEP-2025 12:18:11)
+RLNG-Third Party,RLNG-Third Party, 	(23-SEP-2025 12:18:11)
+Domestic Gas-IGX ,Domestic Gas-IGX , 	(23-SEP-2025 12:18:11)
+Domestic Gas-D6,Domestic Gas-D6, 	(23-SEP-2025 12:18:11)
+Domestic Gas-CBM,Domestic Gas-CBM, 	(23-SEP-2025 12:18:11)
+Domestic Gas-ONGC Gas,Domestic Gas-ONGC Gas, 	(23-SEP-2025 12:18:11)
+Domestic Gas-SEMTIPL,Domestic Gas-SEMTIPL, 	(23-SEP-2025 12:18:11)
+Domestic Gas-RIL,Domestic Gas-RIL, 	(23-SEP-2025 12:18:11)
+Domestic Gas-BP,Domestic Gas-BP, 	(23-SEP-2025 12:18:11)
+Domestic Gas-HPCL,Domestic Gas-HPCL, 	(23-SEP-2025 12:18:11)
+Domestic Gas-AMNS,Domestic Gas-AMNS, 	(23-SEP-2025 12:18:11)
+Domestic Gas,Domestic Gas, 	(23-SEP-2025 12:18:11)
+Domestic Gas-D6 CAP,Domestic Gas-D6 CAP, 	(23-SEP-2025 12:18:11)
+Domestic Gas-IGX  CAP,Domestic Gas-IGX  CAP, 	(23-SEP-2025 12:18:11)
+1,TPLNG, 	(23-SEP-2025 12:18:11)
+
+TOTAL DATA EXTRACTED :,18,  	(23-SEP-2025 12:18:11)
+ 
+<<END>>,<<FMS_PRODUCT_MOLECULE_MST>>, 	(23-SEP-2025 12:18:11)
+ 
+<<START>>,<<FMS_SAC_MST>>, 	(23-SEP-2025 12:18:30)
+ 
+SAC_CODE,TIMESTAMP
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+1, 	(23-SEP-2025 12:18:30)
+
+TOTAL DATA EXTRACTED :,28,  	(23-SEP-2025 12:18:30)
+ 
+<<END>>,<<FMS_SAC_MST>>, 	(23-SEP-2025 12:18:30)
+ 

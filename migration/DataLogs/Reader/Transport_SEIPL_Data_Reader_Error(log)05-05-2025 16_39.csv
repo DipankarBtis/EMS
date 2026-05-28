@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_DAILY_TRANSPORTER_ALLOC()>>
+**********AutomationEMS Error  (05-MAY-2025 16:40:32) **********
+java.sql.SQLDataException: ORA-01438: value larger than specified precision allowed for this column
+
+
+com.etrm.fms.migration.Transport_SEIPL_Data_Reader.FMS_DAILY_TRANSPORTER_ALLOC(Transport_SEIPL_Data_Reader.java:2215)
+com.etrm.fms.migration.Transport_SEIPL_Data_Reader.init(Transport_SEIPL_Data_Reader.java:123)
+**************************************************
+
+<<FUNCTION FMS_DAILY_TRANSPORTER_ALLOC() ENDED WITH ERRORS>>

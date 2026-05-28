@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_DLNG_INVOICE_MST_LP()>>
+**********AutomationEMS Error  (12-FEB-2026 11:51:13) **********
+java.sql.SQLException: ORA-00904: "PERIOD_END_DT": invalid identifier
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_INVOICE_MST_LP(DLNG_SEIPL_Data_Reader.java:17159)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:297)
+**************************************************
+
+<<FUNCTION FMS_DLNG_INVOICE_MST_LP() ENDED WITH ERRORS>>

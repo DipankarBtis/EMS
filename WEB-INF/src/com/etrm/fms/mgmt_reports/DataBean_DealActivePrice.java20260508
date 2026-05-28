@@ -1,0 +1,3720 @@
+package com.etrm.fms.mgmt_reports;
+
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Vector;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
+
+import com.etrm.fms.mail.MailDelivery;
+import com.etrm.fms.util.CommonVariable;
+import com.etrm.fms.util.DateUtil;
+import com.etrm.fms.util.RuntimeConf;
+import com.etrm.fms.util.SystemErrorLogger;
+import com.etrm.fms.util.UtilBean;
+//import com.etrm.fms.market_risk.DataBean_VariablePricing;
+
+//Coded By          : Sagar Balwani
+//Code Reviewed by	:  
+//Status	  		: Developing
+
+public class DataBean_DealActivePrice
+{
+	String db_src_file_name="DataBean_DealActivePrice.java";
+	
+	Connection conn;
+	PreparedStatement stmt;
+	PreparedStatement stmt0;
+	PreparedStatement stmt1;
+	PreparedStatement stmt2;
+	PreparedStatement stmt3;
+	PreparedStatement stmt4;
+	PreparedStatement stmt5;
+	PreparedStatement stmt6;
+	PreparedStatement stmt7;
+	
+	ResultSet rset;
+	ResultSet rset0;
+	ResultSet rset1;
+	ResultSet rset2;
+	ResultSet rset3;
+	ResultSet rset4;
+	ResultSet rset5;
+	ResultSet rset6;
+	ResultSet rset7;
+
+	UtilBean utilBean = new UtilBean();
+	DateUtil utilDate = new DateUtil();
+	
+/*//	NumberFormat nf = new DecimalFormat("###########0.00");
+	NumberFormat nf2 = new DecimalFormat("###########0.0000");
+//	NumberFormat nf3 = new DecimalFormat("###########0.000");
+*/	//SB20251220///////////////Decimal Format
+	NumberFormat nf = new DecimalFormat("###########0");
+	NumberFormat nf1 = new DecimalFormat("###########0.0");
+	NumberFormat nf2 = new DecimalFormat("###########0.00");
+	NumberFormat nf3 = new DecimalFormat("###########0.000");
+	NumberFormat nf4 = new DecimalFormat("###########0.0000");
+	
+	static MailDelivery mailDelv = new MailDelivery();
+	//^^^^SB20251220//////////////////////////
+	
+	public HttpServletRequest request = null;
+	public void setRequest(HttpServletRequest request) {this.request = request;}
+	
+	public void init()
+	{
+		String function_nm="init()";
+		
+		try
+		{
+			Context initContext = new InitialContext();
+	    	if(initContext == null)
+	    	{
+	    		throw new Exception("Boom - No Context");
+	    	}
+	    	
+	    	Context envContext  = (Context)initContext.lookup("java:/comp/env");
+	    	DataSource ds = (DataSource)envContext.lookup(RuntimeConf.security_database);
+	    	if(ds != null) 
+	    	{
+	    		conn = ds.getConnection();       
+	    		if(conn != null)  
+	    		{
+	    			conn.setAutoCommit(false);
+	    			// SagarB20251202 Below Function Added For Active Deal Pricing
+	    			if (callFlag.equalsIgnoreCase("ACTIVE_DEAL_PRICE"))  // ACTIVE DEAL PRICING
+	    			{
+//	    				if (action.equals("list")) {
+		    				getSalesActiveDeals();
+		    				getPurActiveDeals();
+		    				getPurLngActiveDeals();
+		    				getCurrentAvailableCurvePrice();
+		    				getExchangeRate();
+		    			//	InsertEmailRecipientConfigForActiveDealPrice();
+		    				EmailRecipientForActiveDealPrice();
+		    				//System.out.println(VPriceAppl.size()+":Active Deal Price: "+VPriceAppl);
+//		    			}
+	    				if (action.equals("request")) {
+	    					reqPriceForAllDeal(rpt_dt);
+	    					PriceMailBody2(comp_cd);
+	    				}
+	    				else if (action.equals("approve")) {
+	    					approvePriceForAllDeal();
+	    					PriceMailBody2(comp_cd);
+	    				}
+	    				else if (action.equals("revoke")) {
+	    					revokePriceForAllDeal();
+	    				}
+	    				else if (action.equals("delete")) {
+	    					DeletePriceForAllDeal();
+	    				}
+	    			}
+	    			
+	    			// SagarB20251229 Added Below Condition for Fetching Variable Price 
+	    			else if(callFlag.equalsIgnoreCase("VARIABLE_PRICE_CONFIG")) {
+	    				getVariablePriceConfigDtl();
+	    				getPhysicalCurveMaster();
+	    				getFinancialCurveMaster();
+	    			}
+	    		}
+	    		conn.close();
+				conn = null;
+	    	}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		finally
+	    {
+	    	if(rset != null){try{rset.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset0 != null){try{rset0.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset1 != null){try{rset1.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset2 != null){try{rset2.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset3 != null){try{rset3.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset4 != null){try{rset4.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset5 != null){try{rset5.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset6 != null){try{rset6.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(rset7 != null){try{rset7.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+
+	    	if(stmt != null){try{stmt.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt0 != null){try{stmt0.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt1 != null){try{stmt1.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt2 != null){try{stmt2.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt3 != null){try{stmt3.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt4 != null){try{stmt4.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt5 != null){try{stmt5.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}	
+	    	if(stmt6 != null){try{stmt6.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    	if(stmt7 != null){try{stmt7.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}	
+	    	
+	    	if(conn != null){try{conn.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+	    }
+	}
+	
+	public void getExchangeRate() {
+		String function_nm = "getExchangeRate()";
+		
+		try {
+			
+			String fetchExchngVal = "SELECT NVL(B.EXCHG_VAL, 0) FROM FMS_EXCHG_RATE_MST A, FMS_EXCHG_RATE_ENTRY B "
+					+ " WHERE A.EXC_RATE_CD = B.EXCHG_RATE_CD AND A.EXC_RATE_NM = 'SHELL TREASURY RATE' ORDER BY EFF_DT DESC";
+			stmt = conn.prepareStatement(fetchExchngVal);
+			rset = stmt.executeQuery();
+			
+			if (rset.next()) {
+				exchgVal = rset.getString(1);
+			}
+			rset.close();
+			stmt.close();
+			
+		}
+		catch (Exception e) {
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	// SagarB20251202 Below Function Added For Active Deal Pricing
+	public void getSalesActiveDeals() {
+		String function_nm = "getSalesActiveDeals()";
+		
+		try {
+			String AprvDate="", ApplDate="";
+		String CounterPartyCd="";
+			ContMthYr=""; 
+			String query2 = "SELECT TO_CHAR(TO_DATE(?,'DD/MM/YYYY'),'MON-YYYY') FROM DUAL";//SB20230304
+			stmt = conn.prepareStatement(query2);
+			stmt.setString(1, rpt_dt);
+			rset = stmt.executeQuery();
+			if (rset.next()) {
+				ContMthYr=rset.getString(1) == null ? "" : rset.getString(1);
+			}
+			rset.close();
+			stmt.close();
+			// Queries in loop
+			String query = "SELECT PRICE_TYPE, PHYS_CURVE_NM FROM FMS_CONT_PRICE_DTL WHERE COMPANY_CD = ? AND CONTRACT_TYPE = ? AND MAPPING_ID = ? ";
+			stmt = conn.prepareStatement(query);
+			
+			String queryApprove = "SELECT NEW_SALE_PRICE, NVL(TO_CHAR(NEW_PRICE_EFF_DT, 'DD/MM/YYYY'), 'NA') FROM FMS_SUPPLY_ALLOC_REVISED WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONTRACT_TYPE = ? AND FLAG = 'A' AND NEW_PRICE_EFF_DT <= TO_DATE(?, 'DD/MM/YYYY') ORDER BY NEW_PRICE_EFF_DT DESC, MODIFICATION_SEQ_NO DESC";
+			stmt1 = conn.prepareStatement(queryApprove);
+			
+			String queryRequest = "SELECT NEW_SALE_PRICE, NVL(TO_CHAR(NEW_PRICE_EFF_DT, 'DD/MM/YYYY'), 'NA') FROM FMS_SUPPLY_ALLOC_REVISED WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONTRACT_TYPE = ? AND FLAG = 'R' AND NEW_PRICE_EFF_DT <= TO_DATE(?, 'DD/MM/YYYY') ORDER BY NEW_PRICE_EFF_DT DESC, MODIFICATION_SEQ_NO DESC";
+			stmt2 = conn.prepareStatement(queryRequest);
+
+			String query0 = "SELECT DISTINCT A.COUNTERPARTY_CD, B.COUNTERPARTY_ABBR, B.COUNTERPARTY_NM FROM FMS_SUPPLY_CONT_MST A, FMS_COUNTERPARTY_MST B "
+					+ " WHERE A.COMPANY_CD = ? AND A.START_DT <= TO_DATE(?, 'DD/MM/YYYY') AND A.END_DT >= TO_DATE(?, 'DD/MM/YYYY') "
+					+ " AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD "
+					+ " ORDER BY B.COUNTERPARTY_ABBR ";
+			
+			stmt0 = conn.prepareStatement(query0);
+			stmt0.setString(1, comp_cd);
+			stmt0.setString(2, rpt_dt);
+			stmt0.setString(3, rpt_dt);
+			rset0 = stmt0.executeQuery();
+			
+			while (rset0.next()) {
+				VMST_COUNTERPARTY_CD.add(rset0.getString(1) == null ? "" : rset0.getString(1));
+				VMST_COUNTERPARTY_ABBR.add(rset0.getString(2) == null ? "" : rset0.getString(2));
+				VMST_COUNTERPARTY_NM.add(rset0.getString(3) == null ? "" : rset0.getString(3));
+			}
+			rset0.close();
+			stmt0.close();
+			
+			
+			
+			query0 = "SELECT B.COUNTERPARTY_ABBR, B.COUNTERPARTY_NM, A.AGMT_NO, A.AGMT_REV, A.CONT_NO, A.CONT_REV, NVL(A.CONTRACT_TYPE, '0'), "
+					+ " A.CONT_REF_NO, TO_CHAR(A.SIGNING_DT, 'DD/MM/YYYY'), TO_CHAR(A.START_DT, 'DD/MM/YYYY'), TO_CHAR(A.END_DT, 'DD/MM/YYYY'), 'FIXED', RATE, RATE_UNIT, '-', 'RLNG_PHYS_INDIA', A.COUNTERPARTY_CD, A.CONT_STATUS, A.COUNTERPARTY_CD "
+					+ " FROM FMS_SUPPLY_CONT_MST A, FMS_COUNTERPARTY_MST B "
+					+ " WHERE A.COMPANY_CD = ? AND A.START_DT <= TO_DATE(?, 'DD/MM/YYYY') AND A.END_DT >= TO_DATE(?, 'DD/MM/YYYY') AND A.CONT_REV = (SELECT MAX(C.CONT_REV) FROM FMS_SUPPLY_CONT_MST C WHERE A.COMPANY_CD = C.COMPANY_CD AND A.COUNTERPARTY_CD = C.COUNTERPARTY_CD AND "
+					+ " A.AGMT_NO = C.AGMT_NO AND A.AGMT_REV = C.AGMT_REV AND A.CONT_NO = C.CONT_NO AND A.CONTRACT_TYPE = C.CONTRACT_TYPE) "
+					+ " AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND B.EFF_DT = (SELECT MAX(C.EFF_DT) FROM FMS_COUNTERPARTY_MST C WHERE B.COUNTERPARTY_CD = C.COUNTERPARTY_CD ) "
+			//SB20260309		+ " AND A.CONT_STATUS !='X' "
+			//SB20260407		+ " AND A.CONT_STATUS='Y' "; //SB20260309
+			+ " AND A.CONT_STATUS IN ('Y', 'P') "; //SB20260407 //SB20260309
+			if (counterparty_cd != null && !counterparty_cd.equals("0")) {
+					query0 += " AND A.COUNTERPARTY_CD = ?";
+			}
+			query0 += " ORDER BY B.COUNTERPARTY_NM, B.COUNTERPARTY_ABBR ";
+		//	System.out.println(rpt_dt+":"+query0);
+			stmt0 = conn.prepareStatement(query0);
+			stmt0.setString(1, comp_cd);
+			stmt0.setString(2, rpt_dt);
+			stmt0.setString(3, rpt_dt);		
+			if (counterparty_cd != null && !counterparty_cd.equals("0")) {
+				stmt0.setString(4, counterparty_cd);
+			}		
+			rset0 = stmt0.executeQuery();
+			while (rset0.next()) {				
+				// Assigning Variables 
+				agmt_no = rset0.getString(3);
+				agmt_rev = rset0.getString(4);
+				cont_no = rset0.getString(5);
+				cont_rev = rset0.getString(6);
+				cont_type = rset0.getString(7);
+				CounterPartyCd=rset0.getString(19);
+				
+				priceType = "Fixed";
+				appPrice = "-";
+				appDate = "-";
+				finCurv = "-";
+				physCurv = "-";
+				ApplDate=getBillingFreq(comp_cd, rset0.getString(17), agmt_no, agmt_rev, cont_no, cont_rev, cont_type, rpt_dt);
+				getContDtlFinBreakUp("Sell", rset0.getString(17) + "-" + agmt_no + "-" + cont_no); // New function for calculating applicable price
+				
+				String cont_status = rset0.getString(18);
+				if (rset0.getString(18).equals("Y")) {
+					cont_status = "Approved";
+				}
+				else if (rset0.getString(18).equals("C")) {
+					cont_status = "Closed";
+				}
+				else if (rset0.getString(18).equals("P")) {
+					cont_status = "Pending Approval";
+				}
+				else if (rset0.getString(18).equals("F")) {
+					cont_status = "New";
+				}
+				else if (rset0.getString(18).equals("T")) {
+					cont_status = "Terminated";
+				}
+				
+				String deal_type = "-";
+				if (rset0.getString(7).equals("F")) {
+					deal_type = "DLNG-SN";
+				}
+				else if (rset0.getString(7).equals("E")) {
+					deal_type = "DLNG-LOA";
+				}
+				else if (rset0.getString(7).equals("W")) {
+					deal_type = "DLNG-IGX";
+				}
+				else if (rset0.getString(7).equals("S")) {
+					deal_type = "RLNG-SN";
+				}
+				else if (rset0.getString(7).equals("L")) {
+					deal_type = "RLNG-LOA";
+				}
+				else if (rset0.getString(7).equals("X")) {
+					deal_type = "RLNG-IGX";
+				}
+				
+				String dealMapId = utilBean.NewDealMappingId(comp_cd, CounterPartyCd, agmt_no, agmt_rev, cont_no, cont_rev, cont_type, "");
+
+				// Below block is for deciding Approved Current Price
+				rate_unit = rset0.getString(14) == null ? "-" : rset0.getString(14);
+				String apprv_rate = rset0.getString(13) == null ? "" : rset0.getString(13);
+				if (rate_unit.equals("1")) {
+					// rate_unit = "Rs./MMBTU";
+					rate_unit = "INR";
+				}
+				else {
+					// rate_unit = "$/MMBTU";
+					rate_unit = "USD";
+				}
+			
+				stmt1.setString(1, comp_cd);
+				stmt1.setString(2, rset0.getString(17));
+				stmt1.setString(3, agmt_no);
+				stmt1.setString(4, agmt_rev);
+				stmt1.setString(5, cont_no);
+//				stmt1.setString(6, cont_rev);
+				stmt1.setString(6, cont_type);
+				stmt1.setString(7, rpt_dt);
+				rset1 = stmt1.executeQuery();
+				
+				if (rset1.next()) {
+					if (!rset1.getString(2).equals("NA"))
+						AprvDate=rset1.getString(2);
+				}
+				else
+					AprvDate=rset0.getString(10);
+				
+			//	System.out.println(appPrice+"::==::"+apprv_rate+"####"+ApplDate+":"+VBILL_FREQ_DT);
+				
+				int NoDays=0;
+				String queryString = "SELECT TO_DATE(?,'DD/MM/YYYY')-TO_DATE(?,'DD/MM/YYYY') FROM DUAL" ;//SB20230721: Removed +1 day
+				//	System.out.println(rset1.getString(2)+" DUAL: LAST: "+queryString);
+					stmt3 = conn.prepareStatement(queryString);
+			    	stmt3.setString(1, AprvDate);
+	       			stmt3.setString(2, ApplDate);//"01"+rpt_dt.substring(2));
+		   			rset3 = stmt3.executeQuery();
+					if(rset3.next()) {
+						NoDays = rset3.getInt(1);  //For Physical
+					}
+					rset3.close();
+					stmt3.close();
+		//	if(appPrice.equals(apprv_rate) && NoDays==0)
+			if(!appPrice.equals("") && !appPrice.equals("-"))
+			{
+				//SB20260309 if(Double.parseDouble(appPrice)==Double.parseDouble(apprv_rate) && NoDays<=0)
+				if(BigDecimal.valueOf(Double.parseDouble(appPrice)).compareTo(BigDecimal.valueOf(Double.parseDouble(apprv_rate)))==0 && NoDays<=0)
+					VPriceAppl.add("Y");
+				else
+					VPriceAppl.add("N");
+			}
+			else
+				VPriceAppl.add("N");
+			appPrice=appPrice+" "+rate_unit;
+			//////////////////^^^^^^^^^^^^^//////////////////////
+			apprv_rate = apprv_rate + " " + rate_unit;// + " <br> (" + AprvDate + ")";
+				// Below block is for deciding Awaiting For Approval Price
+				String req_rate = "";
+				
+				stmt2.setString(1, comp_cd);
+				stmt2.setString(2, rset0.getString(17));
+				stmt2.setString(3, agmt_no);
+				stmt2.setString(4, agmt_rev);
+				stmt2.setString(5, cont_no);
+//				stmt2.setString(6, cont_rev);
+				stmt2.setString(6, cont_type);
+				stmt2.setString(7, rpt_dt);
+				rset2 = stmt2.executeQuery();
+				
+				if (rset2.next()) {
+					req_rate = rset2.getString(1) + " " + rate_unit ;
+					if (!rset2.getString(2).equals("NA")) {
+						req_rate += " <br> [" + rset2.getString(2) + "]";
+					}
+				}
+			
+				if (physCurv.equals("-") && (cont_type.equals("E") || cont_type.equals("F") || cont_type.equals("W"))) //For DLNG Deals
+				{
+					physCurv = "LNG_PHYS_INDIA";
+				}
+				else if (physCurv.equals("-")) //For All Sales Deal S/L/X
+					physCurv = "RLNG_PHYS_INDIA";
+				// Assigning Vectors
+				VCOUNTERPARTY_CD.add(rset0.getString(17));
+				VCOUNTERPARTY_ABBR.add(rset0.getString(1));
+				VCOUNTERPARTY_NM.add(rset0.getString(2));
+				VDEAL_NUMBER.add(dealMapId);
+				VDEAL_TYPE.add(deal_type);
+				VDEAL_REF.add(rset0.getString(8));
+				VTRADE_DT.add(rset0.getString(9));
+				VCONT_PERIOD.add(rset0.getString(10) + " - " + rset0.getString(11));
+				VBUY_SALE.add("Sell");	
+				VPRICE_TYPE.add(priceType);
+				VAPPROVED_RATE.add(apprv_rate);
+				VAPPROVED_DATE.add(AprvDate);
+				VAWAITING_RATE.add(req_rate);
+				//SB20260101	VAPPLICABLE_RATE.add(appPrice + "<br> [" + appDate + "]");
+				if(!appPrice.equals("-") && !appPrice.equals("") && !appDate.equals(""))
+				{
+					VAPPLICABLE_RATE.add(appPrice);//SB20260101
+					VRATE_DT_RANGE.add("[" + appDate + "]");//SB20260101
+					VRATE_EFF_DT.add("("+ContMthYr+")");//SB20260101
+				}
+				else
+				{
+					VAPPLICABLE_RATE.add("");//SB20260101
+					VRATE_DT_RANGE.add("");//SB20260101
+					VRATE_EFF_DT.add("");//SB20260101
+				}
+				
+				VFIN_CURV.add(finCurv);
+				VPHY_CURV.add(physCurv);
+				VAGMT_NO.add(agmt_no);
+				VAGMT_REV.add(agmt_rev);
+				VCONT_NO.add(cont_no);
+				VCONT_REV.add(cont_rev);
+				VCONTRACT_TYPE.add(cont_type);
+				VCONT_STATUS.add(cont_status);
+				VCARGO_NO.add("");
+			}
+			rset0.close();
+			stmt0.close();
+	
+			rset1.close();
+			stmt1.close();
+			
+			rset2.close();
+			stmt2.close();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+	}
+	
+	
+	// SagarB20251215 Below Function Added For Active Deal Pricing: Purchase Deals (Domestic NG, IGX, In Tank)
+	public void getPurActiveDeals() {
+		String function_nm = "getPurActiveDeals()";		
+		try {
+			String AprvDate="", ApplDate="";
+			// Queries in loop
+			String query = "SELECT PRICE_TYPE, PHYS_CURVE_NM FROM FMS_CONT_PRICE_DTL WHERE COMPANY_CD = ? AND CONTRACT_TYPE = ? AND MAPPING_ID = ? ";
+			stmt = conn.prepareStatement(query);
+			
+			String queryApprove = "SELECT NEW_PRICE, NVL(TO_CHAR(EFF_DT, 'DD/MM/YYYY'), 'NA') FROM FMS_TRADER_CONT_PRICE_DTL WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? AND FLAG = 'Y' AND EFF_DT <= TO_DATE(?, 'DD/MM/YYYY') ORDER BY EFF_DT DESC, SEQ_NO DESC";
+			stmt1 = conn.prepareStatement(queryApprove);
+			
+			String queryRequest = "SELECT NEW_PRICE, NVL(TO_CHAR(EFF_DT, 'DD/MM/YYYY'), 'NA') FROM FMS_TRADER_CONT_PRICE_DTL WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? AND FLAG = 'R' AND EFF_DT <= TO_DATE(?, 'DD/MM/YYYY') ORDER BY EFF_DT DESC, SEQ_NO DESC";
+			stmt2 = conn.prepareStatement(queryRequest);
+			
+			String query0 = "SELECT DISTINCT A.COUNTERPARTY_CD, B.COUNTERPARTY_ABBR, B.COUNTERPARTY_NM FROM FMS_TRADER_CONT_MST A, FMS_COUNTERPARTY_MST B "
+					+ " WHERE A.COMPANY_CD = ? AND A.START_DT <= TO_DATE(?, 'DD/MM/YYYY') AND A.END_DT >= TO_DATE(?, 'DD/MM/YYYY') "
+					+ " AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD "
+					+ " ORDER BY B.COUNTERPARTY_ABBR ";
+			
+			stmt0 = conn.prepareStatement(query0);
+			stmt0.setString(1, comp_cd);
+			stmt0.setString(2, rpt_dt);
+			stmt0.setString(3, rpt_dt);
+			rset0 = stmt0.executeQuery();
+			
+			while (rset0.next() && rset0.getString(1) != null && !VMST_COUNTERPARTY_CD.contains(rset0.getString(1))) {
+				VMST_COUNTERPARTY_CD.add(rset0.getString(1) == null ? "" : rset0.getString(1));
+				VMST_COUNTERPARTY_ABBR.add(rset0.getString(2) == null ? "" : rset0.getString(2));
+				VMST_COUNTERPARTY_NM.add(rset0.getString(3) == null ? "" : rset0.getString(3));
+			}
+			rset0.close();
+			stmt0.close();
+			
+			
+			query0 = "SELECT B.COUNTERPARTY_ABBR, B.COUNTERPARTY_NM, A.AGMT_NO, A.AGMT_REV, A.CONT_NO, A.CONT_REV, NVL(A.CONTRACT_TYPE, '0'), "
+					+ " A.CONT_REF_NO, TO_CHAR(A.SIGNING_DT, 'DD/MM/YYYY'), TO_CHAR(A.START_DT, 'DD/MM/YYYY'), TO_CHAR(A.END_DT, 'DD/MM/YYYY'), 'FIXED', RATE, RATE_UNIT, '-', 'RLNG_PHYS_INDIA', A.COUNTERPARTY_CD, A.CONT_STATUS "
+					+ " FROM FMS_TRADER_CONT_MST A, FMS_COUNTERPARTY_MST B "
+					+ " WHERE A.COMPANY_CD = ? AND A.START_DT <= TO_DATE(?, 'DD/MM/YYYY') AND A.END_DT >= TO_DATE(?, 'DD/MM/YYYY') "
+					+ " AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND A.CONT_REV = (SELECT MAX(C.CONT_REV) FROM FMS_TRADER_CONT_MST C WHERE A.COMPANY_CD = C.COMPANY_CD AND A.COUNTERPARTY_CD = C.COUNTERPARTY_CD AND "
+					+ " A.CONT_NO = C.CONT_NO AND A.CONTRACT_TYPE = C.CONTRACT_TYPE) "
+					+ " AND B.EFF_DT = (SELECT MAX(C.EFF_DT) FROM FMS_COUNTERPARTY_MST C WHERE B.COUNTERPARTY_CD = C.COUNTERPARTY_CD )"
+					+ " AND A.CONT_STATUS='Y' ";
+			if (counterparty_cd != null && !counterparty_cd.equals("0")) {
+					query0 += " AND A.COUNTERPARTY_CD = ?";
+			}
+			query0 += " ORDER BY COUNTERPARTY_ABBR ";
+		//	System.out.println(rpt_dt+":"+query0);
+			stmt0 = conn.prepareStatement(query0);
+			stmt0.setString(1, comp_cd);
+			stmt0.setString(2, rpt_dt);
+			stmt0.setString(3, rpt_dt);
+			
+			if (counterparty_cd != null && !counterparty_cd.equals("0")) {
+				stmt0.setString(4, counterparty_cd);
+			}
+			
+			rset0 = stmt0.executeQuery();
+			while (rset0.next()) {
+				
+				// Assigning Variables 
+				agmt_no = rset0.getString(3);
+				agmt_rev = rset0.getString(4);
+				cont_no = rset0.getString(5);
+				cont_rev = rset0.getString(6);
+				cont_type = rset0.getString(7);
+				
+				priceType = "Fixed";
+				appPrice = "-";
+				appDate = "-";
+				finCurv = "-";
+				physCurv = "-";
+				AprvDate="";
+				 
+				ApplDate=getBillingFreqTrd(comp_cd, rset0.getString(17), agmt_no, agmt_rev, cont_no, cont_rev, cont_type, rpt_dt);
+				getContDtlFinBreakUp("Buy", rset0.getString(17) + "-" + agmt_no + "-" + cont_no); // New function for calculating applicable price
+				
+				String cont_status = rset0.getString(18);
+				if (rset0.getString(18).equals("Y")) {
+					cont_status = "Approved";
+				}
+				else if (rset0.getString(18).equals("C")) {
+					cont_status = "Closed";
+				}
+				else if (rset0.getString(18).equals("P")) {
+					cont_status = "Pending Approval";
+				}
+				else if (rset0.getString(18).equals("F")) {
+					cont_status = "New+";
+				}
+				else if (rset0.getString(18).equals("T")) {
+					cont_status = "Terminated";
+				}
+				else if (rset0.getString(18).equals("X")) {
+					cont_status = "Cancelled";
+				}
+				
+				String deal_type = "-";
+				if (rset0.getString(7).equals("D")) {
+					deal_type = "Domestic NG";
+				}
+				else if (rset0.getString(7).equals("I")) {
+					deal_type = "IGX";
+				}
+				else if (rset0.getString(7).equals("T")) {
+					deal_type = "In Tank LNG/RLNG";
+				}
+				
+				String dealMapId = utilBean.NewDealMappingId(comp_cd, counterparty_cd, agmt_no, agmt_rev, cont_no, cont_rev, cont_type, "");
+
+				// Below block is for deciding Approved Current Price
+				rate_unit = rset0.getString(14) == null ? "2" : rset0.getString(14);
+				String apprv_rate = rset0.getString(13) == null ? "-" : rset0.getString(13);
+				apprv_rate = nf4.format(rset0.getDouble(13));
+				if (rate_unit.equals("1")) {
+					//rate_unit = "Rs./MMBTU";
+					rate_unit = "INR";
+				}
+				else {
+					//rate_unit = "$/MMBTU";
+					rate_unit = "USD";
+				}
+			
+		//sb		apprv_rate = apprv_rate + " " + rate_unit + " <br> [" + rset0.getString(10) + "]";
+
+				stmt1.setString(1, comp_cd);
+				stmt1.setString(2, rset0.getString(17));
+				stmt1.setString(3, agmt_no);
+				stmt1.setString(4, agmt_rev);
+				stmt1.setString(5, cont_no);
+				stmt1.setString(6, cont_rev);
+				stmt1.setString(7, cont_type);
+				stmt1.setString(8, rpt_dt);
+				rset1 = stmt1.executeQuery();
+				
+				if (rset1.next()) {
+				/*	apprv_rate = rset1.getString(1) + " " + rate_unit ;
+					if (!rset1.getString(2).equals("NA")) {
+						apprv_rate += " <br> [" + rset1.getString(2) + "]";
+					}*/
+					if (!rset1.getString(2).equals("NA"))
+						AprvDate=rset1.getString(2);
+				}
+				else
+					AprvDate=rset0.getString(10);
+			//	System.out.println(appPrice+"::==::"+apprv_rate);
+				
+				int NoDays=0;
+				String queryString = "SELECT TO_DATE(?,'DD/MM/YYYY')-TO_DATE(?,'DD/MM/YYYY') FROM DUAL" ;//SB20230721: Removed +1 day
+				//	System.out.println(AprvDate+":"+ApplDate+":DUAL: LAST:"+queryString);
+					stmt3 = conn.prepareStatement(queryString);
+			    	stmt3.setString(1, AprvDate);
+	       			stmt3.setString(2, ApplDate);//"01"+rpt_dt.substring(2));
+		   			rset3 = stmt3.executeQuery();
+					if(rset3.next()) {
+						NoDays = rset3.getInt(1);  //For Physical
+					}
+					rset3.close();
+					stmt3.close();
+				//	System.out.println(NoDays+":::"+AprvDate+":"+ApplDate+":appPrice: apprv_rate:"+appPrice+"::"+apprv_rate);
+		//	if(appPrice.equals(apprv_rate) && NoDays==0)
+					if(!appPrice.equals("") && !appPrice.equals("-"))
+					{
+					//SB20260309	if(Double.parseDouble(appPrice)==Double.parseDouble(apprv_rate) && NoDays<=0)
+						if(BigDecimal.valueOf(Double.parseDouble(appPrice)).compareTo(BigDecimal.valueOf(Double.parseDouble(apprv_rate)))==0 && NoDays<=0)
+							VPriceAppl.add("Y");
+						else
+							VPriceAppl.add("N");
+					}
+					else
+						VPriceAppl.add("N");
+			
+			appPrice=appPrice+" "+rate_unit;
+			//////////////////^^^^^^^^^^^^^//////////////////////
+			apprv_rate = apprv_rate + " " + rate_unit;// + " <br> (" + AprvDate + ")";
+				// Below block is for deciding Awaiting For Approval Price
+				String req_rate = "";
+				
+				stmt2.setString(1, comp_cd);
+				stmt2.setString(2, rset0.getString(17));
+				stmt2.setString(3, agmt_no);
+				stmt2.setString(4, agmt_rev);
+				stmt2.setString(5, cont_no);
+				stmt2.setString(6, cont_rev);
+				stmt2.setString(7, cont_type);
+				stmt2.setString(8, rpt_dt);
+				rset2 = stmt2.executeQuery();
+				
+				if (rset2.next()) {
+					req_rate = rset2.getString(1) + " " + rate_unit ;
+					if (!rset2.getString(2).equals("NA")) {
+						req_rate += " <br> [" + rset2.getString(2) + "]";
+					}
+				}
+				
+				if (physCurv.equals("-") && (cont_type.equals("D") || cont_type.equals("I") || cont_type.equals("T"))) {
+					physCurv = "RLNG_PHYS_INDIA";
+				}
+				// Assigning Vectors
+				VCOUNTERPARTY_CD.add(rset0.getString(17));
+				VCOUNTERPARTY_ABBR.add(rset0.getString(1));
+				VCOUNTERPARTY_NM.add(rset0.getString(2));
+				VDEAL_NUMBER.add(dealMapId);
+				VDEAL_TYPE.add(deal_type);
+				VDEAL_REF.add(rset0.getString(8));
+				VTRADE_DT.add(rset0.getString(9));
+				VCONT_PERIOD.add(rset0.getString(10) + " - " + rset0.getString(11));
+				VBUY_SALE.add("Buy");	
+				VPRICE_TYPE.add(priceType);
+				VAPPROVED_RATE.add(apprv_rate);
+				VAPPROVED_DATE.add(AprvDate);
+				VAWAITING_RATE.add(req_rate);
+				if(!appPrice.equals("-") && !appPrice.equals("") && !appDate.equals(""))
+				{
+					VAPPLICABLE_RATE.add(appPrice);//SB20260101
+					VRATE_DT_RANGE.add("[" + appDate + "]");//SB20260101
+					VRATE_EFF_DT.add("("+ContMthYr+")");//SB20260101
+				}
+				else
+				{
+					VAPPLICABLE_RATE.add("");//SB20260101
+					VRATE_DT_RANGE.add("");//SB20260101
+					VRATE_EFF_DT.add("");//SB20260101
+				}
+				
+				VFIN_CURV.add(finCurv);
+				VPHY_CURV.add(physCurv);
+				VAGMT_NO.add(agmt_no);
+				VAGMT_REV.add(agmt_rev);
+				VCONT_NO.add(cont_no);
+				VCONT_REV.add(cont_rev);
+				VCONTRACT_TYPE.add(cont_type);
+				VCONT_STATUS.add(cont_status);
+				VCARGO_NO.add("");				
+			}
+			rset0.close();
+			stmt0.close();
+	
+			rset1.close();
+			stmt1.close();
+			
+			rset2.close();
+			stmt2.close();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+	}
+			
+	// SagarB20251215 Below Function Added For Active Deal Pricing: Purchase Deals (Domestic NG, IGX, In Tank)
+	public void getPurLngActiveDeals() {
+		String function_nm = "getPurLngActiveDeals()";
+		
+		try {
+			String AprvDate="", ApplDate="";
+			// Queries in loop
+			String query = "SELECT PRICE_TYPE, PHYS_CURVE_NM FROM FMS_CONT_PRICE_DTL WHERE COMPANY_CD = ? AND CONTRACT_TYPE = ? AND MAPPING_ID = ? ";
+			stmt = conn.prepareStatement(query);
+			
+			String queryApprove = "SELECT NEW_PRICE, NVL(TO_CHAR(EFF_DT, 'DD/MM/YYYY'), 'NA') FROM FMS_TRADER_CONT_PRICE_DTL WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? AND FLAG = 'Y' AND EFF_DT <= TO_DATE(?, 'DD/MM/YYYY') ORDER BY EFF_DT DESC, SEQ_NO DESC";
+			stmt1 = conn.prepareStatement(queryApprove);
+			
+			String queryRequest = "SELECT NEW_PRICE, NVL(TO_CHAR(EFF_DT, 'DD/MM/YYYY'), 'NA') FROM FMS_TRADER_CONT_PRICE_DTL WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? AND FLAG = 'R' AND EFF_DT <= TO_DATE(?, 'DD/MM/YYYY') ORDER BY EFF_DT DESC, SEQ_NO DESC";
+			stmt2 = conn.prepareStatement(queryRequest);
+			
+			
+			String query0 = "SELECT DISTINCT A.COUNTERPARTY_CD, B.COUNTERPARTY_ABBR, B.COUNTERPARTY_NM FROM FMS_TRADER_CARGO_MST A, FMS_COUNTERPARTY_MST B "
+					+ " WHERE A.COMPANY_CD = ? AND A.START_DT <= TO_DATE(?, 'DD/MM/YYYY') AND A.END_DT >= TO_DATE(?, 'DD/MM/YYYY') "
+					+ " AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD ";
+			
+			stmt0 = conn.prepareStatement(query0);
+			stmt0.setString(1, comp_cd);
+			stmt0.setString(2, rpt_dt);
+			stmt0.setString(3, rpt_dt);
+			rset0 = stmt0.executeQuery();
+			
+			while (rset0.next() && rset0.getString(1) != null && !VMST_COUNTERPARTY_CD.contains(rset0.getString(1))) {
+				VMST_COUNTERPARTY_CD.add(rset0.getString(1) == null ? "" : rset0.getString(1));
+				VMST_COUNTERPARTY_ABBR.add(rset0.getString(2) == null ? "" : rset0.getString(2));
+				VMST_COUNTERPARTY_NM.add(rset0.getString(3) == null ? "" : rset0.getString(3));
+			}
+			rset0.close();
+			stmt0.close();
+			
+			
+			query0 = "SELECT B.COUNTERPARTY_ABBR, B.COUNTERPARTY_NM, A.AGMT_NO, A.AGMT_REV, A.CONT_NO, A.CONT_REV, NVL(A.CONTRACT_TYPE, '0'), "
+					+ " A.CARGO_REF, TO_CHAR(D.SIGNING_DT, 'DD/MM/YYYY'), TO_CHAR(A.START_DT, 'DD/MM/YYYY'), TO_CHAR(A.END_DT, 'DD/MM/YYYY'), 'FIXED', A.RATE, A.RATE_UNIT, '-', 'RLNG_PHYS_INDIA', A.COUNTERPARTY_CD, A.CARGO_STATUS, A.CARGO_NO "
+					+ " FROM FMS_TRADER_CARGO_MST A, FMS_COUNTERPARTY_MST B, FMS_TRADER_CN_MST D "
+					+ " WHERE A.COMPANY_CD = ? AND A.START_DT <= TO_DATE(?, 'DD/MM/YYYY') AND A.END_DT >= TO_DATE(?, 'DD/MM/YYYY') "
+					+ " AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND A.CONT_REV = (SELECT MAX(C.CONT_REV) FROM FMS_TRADER_CARGO_MST C WHERE A.COMPANY_CD = C.COMPANY_CD AND A.COUNTERPARTY_CD = C.COUNTERPARTY_CD AND "
+					+ " A.CONT_NO = C.CONT_NO AND A.CONTRACT_TYPE = C.CONTRACT_TYPE)  "
+					+ " AND A.COMPANY_CD = D.COMPANY_CD AND A.COUNTERPARTY_CD = D.COUNTERPARTY_CD AND A.AGMT_NO = D.AGMT_NO AND A.AGMT_REV = D.AGMT_REV AND A.CONT_NO = D.CONT_NO AND A.CONT_REV = D.CONT_REV "
+					+ " AND A.AGMT_TYPE = D.AGMT_TYPE AND A.CONTRACT_TYPE = D.CONTRACT_TYPE "
+					+ " AND B.EFF_DT = (SELECT MAX(C.EFF_DT) FROM FMS_COUNTERPARTY_MST C WHERE B.COUNTERPARTY_CD = C.COUNTERPARTY_CD )";
+			if (counterparty_cd != null && !counterparty_cd.equals("0")) {
+					query0 += " AND A.COUNTERPARTY_CD = ?";
+			}
+			
+			stmt0 = conn.prepareStatement(query0);
+			stmt0.setString(1, comp_cd);
+			stmt0.setString(2, rpt_dt);
+			stmt0.setString(3, rpt_dt);
+			
+			if (counterparty_cd != null && !counterparty_cd.equals("0")) {
+				stmt0.setString(4, counterparty_cd);
+			}
+			
+			rset0 = stmt0.executeQuery();
+			while (rset0.next()) {
+				
+				// Assigning Variables 
+				agmt_no = rset0.getString(3);
+				agmt_rev = rset0.getString(4);
+				cont_no = rset0.getString(5);
+				cont_rev = rset0.getString(6);
+				cont_type = rset0.getString(7);
+
+				String cargo_no = rset0.getString(19);
+				
+				priceType = "Fixed";
+				appPrice = "-";
+				appDate = "-";
+				finCurv = "-";
+				physCurv = "-";
+				AprvDate="";
+				ApplDate=getBillingFreq(comp_cd, rset0.getString(17), agmt_no, agmt_rev, cont_no, cont_rev, cont_type, rpt_dt);
+				getContDtlFinBreakUp("Buy", rset0.getString(17) + "-" + agmt_no + "-" + cont_no + "-" + cargo_no); // New function for calculating applicable price
+				
+				String cont_status = rset0.getString(18);
+				if (rset0.getString(18).equals("Y")) {
+					cont_status = "Confirmed";
+				}
+				else if (rset0.getString(18).equals("N")) {
+					cont_status = "Not-Confirmed";
+				}
+				
+				String deal_type = "LNG";
+				
+				String dealMapId = utilBean.NewDealMappingId(comp_cd, counterparty_cd, agmt_no, agmt_rev, cont_no, cont_rev, cont_type, cargo_no);
+
+				// Below block is for deciding Approved Current Price
+				rate_unit = rset0.getString(14) == null ? "-" : rset0.getString(14);
+				String apprv_rate = rset0.getString(13) == null ? "-" : rset0.getString(13);
+				if (rate_unit.equals("1")) {
+				//	rate_unit = "Rs./MMBTU";
+					rate_unit = "INR";
+				}
+				else {
+					//rate_unit = "$/MMBTU";
+					rate_unit = "USD";
+				}
+				
+				int NoDays=0;
+				String queryString = "SELECT TO_DATE(?,'DD/MM/YYYY')-TO_DATE(?,'DD/MM/YYYY') FROM DUAL" ;//SB20230721: Removed +1 day
+					//System.out.println(AprvDate+":DUAL: LAST:"+queryString);
+					stmt3 = conn.prepareStatement(queryString);
+			    	stmt3.setString(1, AprvDate);
+	       			stmt3.setString(2, ApplDate);//"01"+rpt_dt.substring(2));
+		   			rset3 = stmt3.executeQuery();
+					if(rset3.next()) {
+						NoDays = rset3.getInt(1);  //For Physical
+					}
+					rset3.close();
+					stmt3.close();
+		//	if(appPrice.equals(apprv_rate) && NoDays==0)
+			if(!appPrice.equals("") && !appPrice.equals("-"))
+			{
+			//SB20260309	if(Double.parseDouble(appPrice)==Double.parseDouble(apprv_rate) && NoDays<=0)
+				if(BigDecimal.valueOf(Double.parseDouble(appPrice)).compareTo(BigDecimal.valueOf(Double.parseDouble(apprv_rate)))==0 && NoDays<=0)
+					VPriceAppl.add("Y");
+				else
+					VPriceAppl.add("N");
+			}
+			else
+				VPriceAppl.add("N");
+			appPrice=appPrice+" "+rate_unit;
+			//////////////////^^^^^^^^^^^^^//////////////////////
+				apprv_rate = apprv_rate + " " + rate_unit;// + " <br> [" + rset0.getString(10) + "]";
+				
+				stmt1.setString(1, comp_cd);
+				stmt1.setString(2, rset0.getString(17));
+				stmt1.setString(3, agmt_no);
+				stmt1.setString(4, agmt_rev);
+				stmt1.setString(5, cont_no);
+				stmt1.setString(6, cont_rev);
+				stmt1.setString(7, cont_type);
+				stmt1.setString(8, rpt_dt);
+				rset1 = stmt1.executeQuery();
+				if (rset1.next()) {
+						if (!rset1.getString(2).equals("NA"))
+							AprvDate=rset1.getString(2);
+					}
+					else
+						AprvDate=rset0.getString(10);
+				
+				// Below block is for deciding Awaiting For Approval Price
+				String req_rate = "";
+				
+				stmt2.setString(1, comp_cd);
+				stmt2.setString(2, rset0.getString(17));
+				stmt2.setString(3, agmt_no);
+				stmt2.setString(4, agmt_rev);
+				stmt2.setString(5, cont_no);
+				stmt2.setString(6, cont_rev);
+				stmt2.setString(7, cont_type);
+				stmt2.setString(8, rpt_dt);
+				rset2 = stmt2.executeQuery();
+				
+				if (rset2.next()) {
+					req_rate = rset2.getString(1) + " " + rate_unit ;
+					if (!rset2.getString(2).equals("NA")) {
+						req_rate += " <br> [" + rset2.getString(2) + "]";
+					}
+				}
+				
+				
+				// Assigning Vectors
+				VCOUNTERPARTY_CD.add(rset0.getString(17));
+				VCOUNTERPARTY_ABBR.add(rset0.getString(1));
+				VCOUNTERPARTY_NM.add(rset0.getString(2));
+				VDEAL_NUMBER.add(dealMapId);
+				VDEAL_TYPE.add(deal_type);
+				VDEAL_REF.add(rset0.getString(8));
+				VTRADE_DT.add(rset0.getString(9));
+				VCONT_PERIOD.add(rset0.getString(10) + " - " + rset0.getString(11));
+				VBUY_SALE.add("Buy");	
+				VPRICE_TYPE.add(priceType);
+				VAPPROVED_RATE.add(apprv_rate);
+				VAPPROVED_DATE.add(AprvDate);
+				VAWAITING_RATE.add(req_rate);
+				//SB20260101	VAPPLICABLE_RATE.add(appPrice + "<br> [" + appDate + "]");
+				if(!appPrice.equals("-") && !appPrice.equals("") && !appDate.equals(""))
+				{
+					VAPPLICABLE_RATE.add(appPrice);//SB20260101
+					VRATE_DT_RANGE.add("[" + appDate + "]");//SB20260101
+					VRATE_EFF_DT.add("("+ContMthYr+")");//SB20260101
+				}
+				else
+				{
+					VAPPLICABLE_RATE.add("");//SB20260101
+					VRATE_DT_RANGE.add("");//SB20260101
+					VRATE_EFF_DT.add("");//SB20260101
+				}
+				
+				VFIN_CURV.add(finCurv);
+				VPHY_CURV.add(physCurv);
+				VAGMT_NO.add(agmt_no);
+				VAGMT_REV.add(agmt_rev);
+				VCONT_NO.add(cont_no);
+				VCONT_REV.add(cont_rev);
+				VCONTRACT_TYPE.add(cont_type);
+				VCONT_STATUS.add(cont_status);
+				VCARGO_NO.add(cargo_no);
+				
+			//	VBILL_FREQ.add("*");
+			}
+			rset0.close();
+			stmt0.close();
+			
+			rset1.close();
+			stmt1.close();
+			
+			rset2.close();
+			stmt2.close();
+			
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+	}
+		
+	// SagarB20251206 Function to show latest available pricing data in the header of Active Deal Pricing page
+	public void getCurrentAvailableCurvePrice() {
+		String function_nm = "getCurrentAvailableCurvePrice()";
+		
+		try {
+			//////////////////SB20251215/////////////////////////////////
+		String ZemaPriceEntryDt=""; String LastPriceEntryDateTimeAprvBy="";//SB20251215
+		String queryString = "SELECT TO_CHAR(MAX(ENT_DT), 'DD/MM/YYYY'), TO_CHAR(MAX(CURVE_DT), 'DD/MM/YYYY'), TO_CHAR(MAX(MODIFY_DT), 'dd/mm/yyyy hh24:mi:ss'), TO_CHAR(MAX(ENT_DT), 'dd/mm/yyyy hh24:mi:ss') "
+				+ "FROM FMS_SPOT_PRICE_DTL "
+				+ "WHERE CURVE_TYPE='Spot' AND " 
+				//+ "TO_DATE(TO_DATE(ENT_DT,'DD/MM/YYYY'),'DD-MON-YY') <=TO_DATE(?, 'DD/MM/YYYY') ";
+			//	+ "TO_DATE(ENT_DT,'DD-MON-YY') <=TO_DATE(?, 'DD/MM/YYYY') ";
+				+ "ENT_DT <=TO_DATE(?, 'DD/MM/YYYY') ";
+		stmt = conn.prepareStatement(queryString);
+	//	System.out.println(rpt_dt+":"+queryString);
+		stmt.setString(1, rpt_dt);
+		rset = stmt.executeQuery();			
+		if (rset.next()) {
+			lastCurveEntDt = rset.getString(2); //SB: MAx/Last Spot Price Entered Date
+			LastPriceEntryDateTimeAprvBy = rset.getString(4)==null?"":rset.getString(4);
+			if(LastPriceEntryDateTimeAprvBy.equals(""))
+				LastPriceEntryDateTime = lastCurveEntDt; //incase of manual entry in table
+		}
+		LastPriceEntryDateTime=""+LastPriceEntryDateTimeAprvBy+"";//System.out.println(lastCurveEntDt+":"+LastPriceEntryDateTime);
+		rset.close();
+		stmt.close();
+			queryString = "SELECT DISTINCT(CURVE_NM) FROM FMS_CONT_PRICE_DTL "
+					+ "WHERE COMPANY_CD = ? AND FROM_DT <= TO_DATE(?, 'DD/MM/YYYY') AND TO_DT >= TO_DATE(?, 'DD/MM/YYYY') AND CURVE_NM IS NOT NULL AND PRICE_TYPE='M' ";
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, rpt_dt);
+			stmt.setString(3, rpt_dt);			
+			rset = stmt.executeQuery();			
+			while (rset.next()) {				
+				VApplicableCurves.add(rset.getString(1));
+			}
+			rset.close();
+			stmt.close();
+			queryString = "SELECT DISTINCT(CURVE_NM) FROM FMS_CONT_PRICE_MIN_DTL "
+					+ "WHERE COMPANY_CD = ? AND FROM_DT <= TO_DATE(?, 'DD/MM/YYYY') AND TO_DT >= TO_DATE(?, 'DD/MM/YYYY') AND CURVE_NM IS NOT NULL "
+					+ "AND CURVE_NM NOT IN (SELECT DISTINCT CURVE_NM FROM FMS_CONT_PRICE_DTL " 
+					+ "WHERE COMPANY_CD = ? "
+					+ "AND FROM_DT<=TO_DATE(?,'DD/MM/YYYY') AND TO_DT>=TO_DATE(?,'DD/MM/YYYY') AND CURVE_NM IS NOT NULL)"; 
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, rpt_dt);
+			stmt.setString(3, rpt_dt);
+			stmt.setString(4, comp_cd);
+			stmt.setString(5, rpt_dt);
+			stmt.setString(6, rpt_dt);			
+			rset = stmt.executeQuery();		
+			while (rset.next()) {				
+				VApplicableCurves.add(rset.getString(1));
+			}
+			rset.close();
+			stmt.close();
+			VApplicableCurves.add("ICE_WIM");
+			// Fetching Applicable Curves and its prices for the given date			
+			String curveSpotSQL = "SELECT TO_CHAR(CURVE_DT, 'DD-MON-YYYY'), COMMODITY_TYPE, CURVE_UNIT, SETTLE_PRICE FROM FMS_SPOT_PRICE_DTL "
+				//	+ "WHERE ENT_DT = TO_DATE(?, 'DD/MM/YYYY') AND PHYS_FIN = ? "
+					+ "WHERE CURVE_DT = TO_DATE(?, 'DD/MM/YYYY') AND ACTUAL_CURVE = ? "; //SB20260217
+		//	System.out.println(rpt_dt+":"+curveSpotSQL);
+			stmt1 = conn.prepareStatement(curveSpotSQL);
+
+			String curveForwardSQL = "SELECT TO_CHAR(CURVE_DT, 'DD-MON-YYYY'), COMMODITY_TYPE, CURVE_UNIT, SETTLE_PRICE, TO_CHAR(ENT_DT, 'dd/mm/yyyy hh24:mi:ss') FROM FMS_FORWARD_PRICE_DTL "
+					+ "WHERE CURVE_DT = TO_DATE(?, 'DD/MM/YYYY') "
+					+ "AND TO_DATE(REPORT_DT,'DD/MM/YYYY')=(SELECT TO_DATE(MAX(REPORT_DT),'DD/MM/YYYY') "
+					+ "FROM FMS_FORWARD_PRICE_DTL WHERE CURVE_DT=TO_DATE(?,'DD/MM/YYYY') AND CURVE_TYPE='Forward' AND "
+					+ "ENT_DT<=TO_DATE(?,'DD/MM/YYYY') AND CURVE_NM=?) AND CURVE_NM = ? "
+					+ "ORDER BY ENT_DT DESC ";
+			stmt2 = conn.prepareStatement(curveForwardSQL);
+		//	System.out.println(rpt_dt+":"+curveSpotSQL);
+			for (int i=0; i<VApplicableCurves.size(); i++)	
+			{
+				// Below block is fetching data for SPOT PRICES
+				//if (!rset.getString(1).equalsIgnoreCase("PPAC")) {
+				if (!VApplicableCurves.elementAt(i).equals("PPAC")) {
+					stmt1.setString(1, lastCurveEntDt);
+					stmt1.setString(2, ""+VApplicableCurves.elementAt(i));//rset.getString(1));
+					rset1 = stmt1.executeQuery();
+					
+					if (rset1.next()) {
+						VApplicableSpotPrice.add(nf4.format(rset1.getDouble(4)));
+						VApplicableSpotUnit.add(rset1.getString(3));
+						VApplicableCommodityType.add(rset1.getString(2));
+						VApplicableSpotFwdRegdDt.add(""+LastPriceEntryDateTime);
+					}
+					else {
+						VApplicableSpotPrice.add("NA");
+						VApplicableSpotUnit.add("NA");
+						VApplicableCommodityType.add("NA");
+						VApplicableSpotFwdRegdDt.add("NA");
+					}
+					
+				}
+				else if (VApplicableCurves.elementAt(i).equals("PPAC")) {
+					stmt2.setString(1, "01"+rpt_dt.substring(2));
+					stmt2.setString(2, "01"+rpt_dt.substring(2));//sb
+					stmt2.setString(3, rpt_dt);
+					stmt2.setString(4, ""+VApplicableCurves.elementAt(i));//sb //rset.getString(1));
+					stmt2.setString(5, ""+VApplicableCurves.elementAt(i));//sb
+					rset2 = stmt2.executeQuery();
+				
+					if (rset2.next()) {
+						VApplicableSpotPrice.add(nf4.format(rset2.getDouble(4)));
+						VApplicableSpotUnit.add(rset2.getString(3));
+						VApplicableCommodityType.add(rset2.getString(2));
+						VApplicableSpotFwdRegdDt.add(rset2.getString(5));
+					}
+					else {
+						VApplicableSpotPrice.add("NA");
+						VApplicableSpotUnit.add("NA");
+						VApplicableCommodityType.add("NA");
+						VApplicableSpotFwdRegdDt.add("NA");
+					}
+				}
+			}
+			rset1.close();
+			stmt1.close();
+			
+			rset2.close();
+			stmt2.close();
+			
+		
+			// Below Block is for fetching Contract Month Settle Price
+			String SettleStartDt=""; String SettleEndDt=""; String SettleDt="";
+			
+			String curveSettleDtSQL = "SELECT TO_CHAR(SETTLE_DT, 'DD/MM/YYYY'), TO_CHAR(SETTLE_START_DT, 'DD/MM/YYYY'), TO_CHAR(SETTLE_END_DT, 'DD/MM/YYYY') FROM FMS_CURVE_SETTLE_CALND "
+									+ "WHERE CONT_MONTH = TO_DATE(?, 'DD/MM/YYYY') AND CURVE_NM = ? ";
+		//	System.out.println(rpt_dt+":"+curveSettleDtSQL);
+			stmt = conn.prepareStatement(curveSettleDtSQL);
+			
+			String curveSpotSettleSQL = "SELECT AVG(SETTLE_PRICE) FROM FMS_SPOT_PRICE_DTL "
+									  + "WHERE SETTLE_PRICE > 0 AND CURVE_DT >= TO_DATE(?, 'DD/MM/YYYY') AND CURVE_DT <= TO_DATE(?, 'DD/MM/YYYY') "
+								//	  + "AND PHYS_FIN = ? ";
+									  + "AND ACTUAL_CURVE = ? "; //SB20260217
+		//	System.out.println(rpt_dt+":"+curveSpotSettleSQL);
+			stmt1 = conn.prepareStatement(curveSpotSettleSQL);
+			
+//			String curveForwardSettleSQL = "SELECT SETTLE_PRICE FROM FMS_FORWARD_PRICE_DTL "
+//										 + "WHERE CURVE_DT = TO_DATE(?, 'DD/MM/YYYY') AND ENT_DT <= TO_DATE(?, 'DD/MM/YYYY') AND CURVE_NM = ? ORDER BY ENT_DT DESC ";
+			String curveForwardSettleSQL = "SELECT (SETTLE_PRICE) FROM FMS_FORWARD_PRICE_DTL " + 
+				//	"WHERE CURVE_DT >= TO_DATE(?, 'DD/MM/YYYY') AND CURVE_DT <= TO_DATE(?, 'DD/MM/YYYY') AND CURVE_NM = ? " + 
+					"WHERE CURVE_DT = TO_DATE(?, 'DD/MM/YYYY') AND CURVE_NM = ? " + 
+					"AND TO_DATE(REPORT_DT,'DD/MM/YYYY')=(SELECT TO_DATE(MAX(REPORT_DT),'DD/MM/YYYY') FROM FMS_FORWARD_PRICE_DTL " + 
+					" WHERE CURVE_TYPE='Forward' AND ENT_DT<=TO_DATE(?,'DD/MM/YYYY') " + 
+					"AND CURVE_NM=? ) " + 
+					"ORDER BY CURVE_DT DESC";
+		//	System.out.println(rpt_dt+":"+curveForwardSettleSQL);
+			stmt2 = conn.prepareStatement(curveForwardSettleSQL);
+			
+			for (int i = 0; i < VApplicableCurves.size(); i++) {
+
+				// Fetching Settlement Date
+				stmt.setString(1, "01"+rpt_dt.substring(2));
+				stmt.setString(2, VApplicableCurves.elementAt(i).toString());
+				rset = stmt.executeQuery();
+				
+				if (rset.next()) {
+					SettleDt = rset.getString(1);
+					SettleStartDt = rset.getString(2);
+					SettleEndDt = rset.getString(3);
+				}
+				else {
+					SettleDt = rpt_dt;
+					SettleStartDt = rpt_dt;
+					SettleEndDt = rpt_dt;
+				}
+			//	System.out.println(rpt_dt+":"+SettleDt+":"+SettleStartDt+":"+SettleEndDt+":"+VApplicableCurves.elementAt(i));
+				if (!VApplicableCurves.elementAt(i).toString().equals("PPAC")) {
+					stmt1.setString(1, SettleStartDt);
+					stmt1.setString(2, SettleDt);
+					stmt1.setString(3, VApplicableCurves.elementAt(i).toString());
+					rset1 = stmt1.executeQuery();
+					
+					if (rset1.next()) {
+						VCurveContMthSettlePrice.add(nf4.format(rset1.getDouble(1))+"");
+						VCurveContMthSettlePeriod.add(SettleStartDt+" - "+SettleDt);
+					}
+					else {
+						VCurveContMthSettlePrice.add("-");
+						VCurveContMthSettlePeriod.add(" - ");
+					}
+					
+				}
+				else if(VApplicableCurves.elementAt(i).equals("PPAC")) {
+				//	System.out.println(SettleStartDt+":"+SettleDt+":"+rpt_dt+":"+VApplicableCurves.elementAt(i)+":FORWARD-AvgPRICE:"+curveForwardSettleSQL);
+					/*stmt2.setString(1, SettleStartDt);
+					stmt2.setString(2, SettleDt);
+					stmt2.setString(3, VApplicableCurves.elementAt(i).toString());
+					stmt2.setString(4, rpt_dt);
+					stmt2.setString(5, VApplicableCurves.elementAt(i).toString());*/
+				//	stmt2.setString(1, SettleStartDt);
+					stmt2.setString(1,  "01"+rpt_dt.substring(2));
+					stmt2.setString(2, VApplicableCurves.elementAt(i).toString());
+					stmt2.setString(3, rpt_dt);
+					stmt2.setString(4, VApplicableCurves.elementAt(i).toString());
+					rset2 = stmt2.executeQuery();
+					
+					if(rset2.next()) {
+						VCurveContMthSettlePrice.add(rset2.getString(1));
+						VCurveContMthSettlePeriod.add(SettleStartDt+" - "+SettleDt);
+					}
+					else {
+						VCurveContMthSettlePrice.add("-");
+						VCurveContMthSettlePeriod.add(" - ");
+					}
+				}
+				
+			}
+			//System.out.println(VCurveContMthSettlePrice.size()+":FORWARD-AvgPRICE:"+VCurveContMthSettlePrice);
+			rset.close();
+			stmt.close();
+			
+			rset1.close();
+			stmt1.close();
+			
+			rset2.close();
+			stmt2.close();
+			
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+	}
+	
+	// SagarB20251208 Below function is used to Get Variable Pricing BreakUp And Applicable Price
+	public void getContDtlFinBreakUp(String buy_sell, String map_id) {
+		String function_nm="getContDtlFinBreakUp()";
+		try
+		{
+		//	System.out.println(buy_sell+":"+map_id+":ACTION: "+function_nm);
+			String PriceDeci=""; String FinalPriceDeci=""; 	double PremDiscRate=0; //SB20241111
+			String PriceFormula="", DealName="", DealDerivative="", ContMthYr2=""; String queryString=""; 	int NoMth=3; int StartingPrevMth=1; int NoMth_FinCurve=3; //SB20251215
+			String FinCurve="", Slope="", Constant="", PriceRange="", RemarksMultiLeg="", RemarksMinMaxMultiLeg="";
+			String fetchVarPrice = "SELECT SEQ_NO, TO_CHAR(FROM_DT, 'DD/MM/YYYY'), TO_CHAR(TO_DT, 'DD/MM/YYYY'), PRICE_TYPE, NVL(PHYS_CURVE_NM, 'RLNG_PHYS_INDIA'), CURVE_NM, NVL(SLOPE, 1), NVL(CONST, 0), RATE, "
+					+ " RATE_UNIT, REMARKS, PRICE_RANGE, TO_CHAR(PRICE_START_DT, 'DD/MM/YYYY'), TO_CHAR(PRICE_END_DT, 'DD/MM/YYYY'), FORMULA "
+					+ ",PRICE_DECI, FINAL_PRICE_DECI, PREM_DISC_RATE " //SB20251229
+					+ " FROM FMS_CONT_PRICE_DTL "
+					+ " WHERE COMPANY_CD = ? AND MAPPING_ID = ? AND CONTRACT_TYPE = ? AND FROM_DT <= TO_DATE(?, 'DD/MM/YYYY') AND TO_DT >= TO_DATE(?, 'DD/MM/YYYY') ";
+			stmt3 = conn.prepareStatement(fetchVarPrice);
+			stmt3.setString(1, comp_cd);
+			stmt3.setString(2, map_id);
+			stmt3.setString(3, cont_type);
+			stmt3.setString(4, rpt_dt);
+			stmt3.setString(5, rpt_dt);
+			rset3 = stmt3.executeQuery();
+			if (rset3.next()) {
+				physCurv = rset3.getString(5);
+				FinCurve = rset3.getString(6)==null?"":rset3.getString(6);
+				Slope = rset3.getString(7)==null?"":rset3.getString(7);
+				Constant = rset3.getString(8)==null?"":rset3.getString(8);
+				PriceRange = rset3.getString(12)==null?"":rset3.getString(12);
+				from_dt = rset3.getString(13);
+				to_dt = rset3.getString(14);
+				PriceFormula=rset3.getString(15)==null?"":rset3.getString(15); //SB20251215;
+				PriceDeci=rset3.getString(16)==null?"4":rset3.getString(16);
+				FinalPriceDeci=rset3.getString(17)==null?"4":rset3.getString(17);
+				PremDiscRate=rset3.getDouble(18);
+				
+				if (rset3.getString(4).equals("F")) //Price_Type=Fixed
+				{
+					appPrice = rset3.getString(9);
+					appDate = rset3.getString(2);
+				//sb	finCurv = "-";
+					finCurv = ""; //SB20260101
+					priceType = "Fixed";
+				}
+				else //Price_Type=Float(Curve)
+				{
+					appPrice = rset3.getString(9);
+					priceType = "Float";
+					if (PriceFormula.equals("")) {	
+						finCurv = rset3.getString(6);
+						getCalcSingleCurve(finCurv, Slope, Constant, PriceRange, rpt_dt, PriceDeci,FinalPriceDeci,PremDiscRate );
+					}
+					else if (PriceFormula.contains("MULTI")) {	/// MULTI-LEG
+						finCurv = rset3.getString(6) + " " + rset3.getString(15).split("@")[0] + "("+rset3.getString(15).split("@")[1] + "," + rset3.getString(15).split("@")[2] + "," + rset3.getString(15).split("@")[3] + ")";
+						
+						String temp_appPrice = "0";
+						
+							String fetchDate = "";
+							int counter = 0;
+							
+							if (PriceFormula.split("@")[1].equalsIgnoreCase("Settled")) {
+								fetchDate = "SELECT TO_CHAR(ADD_MONTHS(TO_DATE(?, 'DD/MM/YYYY'), - ?), 'DD/MM/YYYY') FROM DUAL";
+							}
+							else {
+								fetchDate = "SELECT TO_CHAR(ADD_MONTHS(TO_DATE(?, 'DD/MM/YYYY'), + ?), 'DD/MM/YYYY') FROM DUAL"; 
+							}
+							stmt6 = conn.prepareStatement(fetchDate);
+							
+						for (int i = Integer.parseInt(PriceFormula.split("@")[2]); i <= Integer.parseInt(PriceFormula.split("@")[3]); i++) {
+							
+							stmt6.setString(1, "01"+rpt_dt.substring(2));
+							stmt6.setInt(2, i);
+							rset6 = stmt6.executeQuery();
+							if (rset6.next()) {
+								getCalcSingleCurve(FinCurve, Slope, Constant, PriceRange, rset6.getString(1), PriceDeci,FinalPriceDeci,PremDiscRate );
+								//System.out.println(appPrice+"::appPrice::");
+								if(!appPrice.equals("") && !appPrice.equals("-"))
+									temp_appPrice = nf4.format(Double.parseDouble(temp_appPrice) + Double.parseDouble(appPrice.split(" ")[0]));
+							}
+							counter++;
+							
+						}
+						rset6.close();
+						stmt6.close();
+						appPrice = nf4.format(Double.parseDouble(temp_appPrice) / counter);//System.out.println(appPrice+"::Final-appPrice::");
+					}
+					else if (PriceFormula.contains("MIN") || PriceFormula.contains("MAX")) //MIN/MAX or MIN_ADV
+					{
+					finCurv = PriceFormula.split("@")[0] + " of [" + PriceFormula.split("@")[1] + ", " + PriceFormula.split("@")[2] + "]";
+
+						String temp_appPrice = "0";
+						String fetchVarPriceDtl = "SELECT CURVE_NM, SLOPE, CONST, PRICE_RANGE, TO_CHAR(PRICE_START_DT, 'DD/MM/YYYY'), TO_CHAR(PRICE_END_DT, 'DD/MM/YYYY'), REMARKS, "
+								+ "PRICE_DECI, PREM_DISC_RATE, FORMULA " //SB20251229
+								+ "FROM FMS_CONT_PRICE_MIN_DTL "
+								+ " WHERE COMPANY_CD = ? AND MAPPING_ID = ? AND CONTRACT_TYPE = ? AND SEQ_NO = ? ";
+						stmt6 = conn.prepareStatement(fetchVarPriceDtl);
+						stmt6.setString(1, comp_cd);
+						stmt6.setString(2, map_id);
+						stmt6.setString(3, cont_type);
+						stmt6.setString(4, rset3.getString(1));
+						rset6 = stmt6.executeQuery();
+						while (rset6.next()) {
+							FinCurve = rset6.getString(1)==null?"":rset6.getString(1);
+							Slope = rset6.getString(2)==null?"":rset6.getString(2);
+							Constant = rset6.getString(3)==null?"":rset6.getString(3);
+							PriceRange = rset6.getString(4)==null?"":rset6.getString(4);
+							from_dt = rset6.getString(5)==null?"":rset6.getString(5);
+							to_dt = rset6.getString(6)==null?"":rset6.getString(6);
+							RemarksMultiLeg=rset6.getString(7)==null?"":rset6.getString(7);
+							PriceDeci=rset6.getString(8)==null?"4":rset6.getString(8);
+							PremDiscRate=rset6.getDouble(9);
+							RemarksMinMaxMultiLeg=rset6.getString(10)==null?"":rset6.getString(10);//System.out.println(RemarksMinMaxMultiLeg+"::RemarksMinMaxMultiLeg::");
+							if(RemarksMinMaxMultiLeg.equals("")) //No MULTI_LEG
+								getCalcSingleCurve(FinCurve, Slope, Constant, PriceRange, rpt_dt, PriceDeci,FinalPriceDeci,PremDiscRate );
+							else if(RemarksMinMaxMultiLeg.contains("MULTI_LEG")) //No MULTI_LEG
+							{
+								////////////////MULTI-LEG under MIN/MAX/////////////////////////
+								String fetchDate = "";
+								int counter = 0;	
+								if (RemarksMinMaxMultiLeg.split("@")[1].equalsIgnoreCase("Settled"))
+									fetchDate = "SELECT TO_CHAR(ADD_MONTHS(TO_DATE(?, 'DD/MM/YYYY'), - ?), 'DD/MM/YYYY') FROM DUAL";
+								else
+									fetchDate = "SELECT TO_CHAR(ADD_MONTHS(TO_DATE(?, 'DD/MM/YYYY'), + ?), 'DD/MM/YYYY') FROM DUAL"; 
+								stmt7 = conn.prepareStatement(fetchDate);		
+								for (int i = Integer.parseInt(RemarksMinMaxMultiLeg.split("@")[2]); i <= Integer.parseInt(RemarksMinMaxMultiLeg.split("@")[3]); i++) {	
+									stmt7.setString(1, "01"+rpt_dt.substring(2));
+									stmt7.setInt(2, i);
+									rset7 = stmt7.executeQuery();
+									if (rset7.next()) {
+										getCalcSingleCurve(FinCurve, Slope, Constant, PriceRange, rset7.getString(1), PriceDeci,FinalPriceDeci,PremDiscRate );
+										//System.out.println(appPrice+"::appPrice::");
+										if(!appPrice.equals("") && !appPrice.equals("-"))
+											temp_appPrice = nf4.format(Double.parseDouble(temp_appPrice) + Double.parseDouble(appPrice.split(" ")[0]));
+									}
+									counter++;							
+								}
+								rset7.close();
+								stmt7.close();
+								appPrice = nf4.format(Double.parseDouble(temp_appPrice) / counter);//System.out.println(appPrice+"::Final-appPrice::"+counter+":"+temp_appPrice);
+								temp_appPrice=appPrice; //Last Data based on MIN/MAX in temp_appPrice
+								////////////////^^^^MULTI_LEG////////////////////////////////////////////
+							}
+							if (!appPrice.equals("-") && (temp_appPrice.equals("0") || (PriceFormula.contains("MIN") && Double.parseDouble(temp_appPrice) > Double.parseDouble(appPrice.split(" ")[0])) || (PriceFormula.contains("MAX") && Double.parseDouble(temp_appPrice) < Double.parseDouble(appPrice.split(" ")[0])))) 
+							{
+								temp_appPrice=appPrice; //Last Data based on MIN/MAX in temp_appPrice
+							}
+						}
+						appPrice=temp_appPrice; //Final Price based on MIN/MAX
+						rset6.close();
+						stmt6.close();	
+					}
+					else {/*	// MIN/MAX
+						finCurv = rset3.getString(15).split("@")[0] + " of [" + rset3.getString(15).split("@")[1] + ", " + rset3.getString(15).split("@")[2] + "]";
+
+						String temp_appPrice = "0";
+						String fetchVarPriceDtl = "SELECT CURVE_NM, SLOPE, CONST, PRICE_RANGE, TO_CHAR(PRICE_START_DT, 'DD/MM/YYYY'), TO_CHAR(PRICE_END_DT, 'DD/MM/YYYY'), REMARKS, "
+								+ "PRICE_DECI, PREM_DISC_RATE " //SB20251229
+								+ "FROM FMS_CONT_PRICE_MIN_DTL "
+								+ " WHERE COMPANY_CD = ? AND MAPPING_ID = ? AND CONTRACT_TYPE = ? AND SEQ_NO = ? ";
+						stmt6 = conn.prepareStatement(fetchVarPriceDtl);
+						stmt6.setString(1, comp_cd);
+						stmt6.setString(2, map_id);
+						stmt6.setString(3, cont_type);
+						stmt6.setString(4, rset3.getString(1));
+						rset6 = stmt6.executeQuery();
+						while (rset6.next()) {
+							FinCurve = rset6.getString(1)==null?"":rset6.getString(1);
+							Slope = rset6.getString(2)==null?"":rset6.getString(2);
+							Constant = rset6.getString(3)==null?"":rset6.getString(3);
+							PriceRange = rset6.getString(4)==null?"":rset6.getString(4);
+							from_dt = rset6.getString(5)==null?"":rset6.getString(5);
+							to_dt = rset6.getString(6)==null?"":rset6.getString(6);
+							RemarksMultiLeg=rset6.getString(7)==null?"":rset6.getString(7);
+							PriceDeci=rset6.getString(8)==null?"4":rset6.getString(8);
+							PremDiscRate=rset6.getDouble(9);
+							
+							getCalcSingleCurve(FinCurve, Slope, Constant, PriceRange, rpt_dt, PriceDeci,FinalPriceDeci,PremDiscRate );
+						//	System.out.println(Slope+":"+PremDiscRate+":"+map_id+"::::::"+appPrice+":"+FinCurve+"::TempPrice:"+temp_appPrice);
+							if (!appPrice.equals("-") && (temp_appPrice.equals("0") || (rset3.getString(15).contains("MIN") && Double.parseDouble(temp_appPrice) > Double.parseDouble(appPrice.split(" ")[0])) || (rset3.getString(15).contains("MAX") && Double.parseDouble(temp_appPrice) < Double.parseDouble(appPrice.split(" ")[0])))) {
+							//	temp_appPrice = ""+(Double.parseDouble(appPrice.split(" ")[0]));
+								temp_appPrice=appPrice; //Last Data based on MIN/MAX in temp_appPrice
+							}
+						}
+						appPrice=temp_appPrice; //Final Price based on MIN/MAX
+						rset6.close();
+						stmt6.close();				
+					*/}					
+				}			
+				rate_unit = rset3.getString(10) == null ? "2" : rset3.getString(10);
+				if (rate_unit.equals("1")) {
+				//	rate_unit = "Rs./MMBTU";
+					rate_unit = "INR";
+				}
+				else {
+				//	rate_unit = "$/MMBTU";
+					rate_unit = "USD";
+				}
+				
+			}
+			else //SB20260101 Not Defined in Variable Pricing Table : FMS_CONT_PRICE_DTL
+			{
+				appPrice = "";
+				appDate = "";
+			}
+			rset3.close();
+			stmt3.close();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+	}
+	
+	
+	public void getCalcSingleCurve(String fin_curve, String slope, String constant, String price_flag, String report_dt, String PriceDeci, String FinalPriceDeci, double PremDiscRate) {
+		String function_nm = "getCalcSingleCurve()";
+		try {
+			//System.out.println(price_flag+":ACTION: "+function_nm);
+			priceType = "Float";
+			appPrice = "";
+			double appPrice2 =0;
+			
+			String fetchAppPrice = "", appPriceUnit = "USD";
+			String fetchSettleCalnd = "SELECT TO_CHAR(SETTLE_START_DT, 'DD/MM/YYYY'), TO_CHAR(SETTLE_DT, 'DD/MM/YYYY') FROM FMS_CURVE_SETTLE_CALND "
+					+ " WHERE CURVE_NM = ? AND CONT_MONTH = TO_DATE(?, 'DD/MM/YYYY') ";
+			
+			stmt4 = conn.prepareStatement(fetchSettleCalnd);
+			stmt4.setString(1, fin_curve);
+			stmt4.setString(2, "01"+report_dt.substring(2));
+			rset4 = stmt4.executeQuery();
+			
+			if (rset4.next()) {
+				String settle_start_dt = rset4.getString(1);
+				String settle_dt = rset4.getString(2);
+				
+				if (fin_curve.equals("PPAC")) {
+					fetchAppPrice = "SELECT SETTLE_PRICE, CURVE_UNIT FROM FMS_FORWARD_PRICE_DTL "
+					+ " WHERE CURVE_DT = TO_DATE(?, 'DD/MM/YYYY') AND CURVE_NM = ? AND "
+					+ "TO_DATE(REPORT_DT,'DD-MON-YY') = (SELECT TO_DATE(TO_DATE(MAX(REPORT_DT),'DD/MM/YYYY'),'DD-MON-YY') FROM FMS_FORWARD_PRICE_DTL " + 
+					" WHERE CURVE_TYPE='Forward' AND ENT_DT<=TO_DATE(?,'DD/MM/YYYY') " + 
+					" AND CURVE_NM=? ) ";
+				//	+ "<= TO_DATE(?, 'DD/MM/YYYY') AND CURVE_NM = ? ORDER BY REPORT_DT DESC";
+				//	System.out.println(settle_start_dt+":"+settle_dt+":PPAC: "+fetchAppPrice);
+			stmt5 = conn.prepareStatement(fetchAppPrice);
+			stmt5.setString(1, "01"+report_dt.substring(2));
+			stmt5.setString(2, fin_curve);
+			stmt5.setString(3, report_dt);
+			stmt5.setString(4, fin_curve);
+			
+			/* fetchAppPrice = "SELECT AVG(SETTLE_PRICE) FROM FMS_FORWARD_PRICE_DTL " + 
+						"WHERE CURVE_DT >= TO_DATE(?, 'DD/MM/YYYY') AND CURVE_DT <= TO_DATE(?, 'DD/MM/YYYY') AND CURVE_NM = ? " + 
+						"AND TO_DATE(REPORT_DT,'DD/MM/YYYY')=(SELECT TO_DATE(MAX(REPORT_DT),'DD/MM/YYYY') FROM FMS_FORWARD_PRICE_DTL " + 
+						" WHERE CURVE_TYPE='Forward' AND ENT_DT<=TO_DATE(?,'DD/MM/YYYY') " + 
+						"AND CURVE_NM=? ) " + 
+						"ORDER BY CURVE_DT DESC";
+				 	stmt5 = conn.prepareStatement(fetchAppPrice);
+					stmt5.setString(1, rset4.getString(1));
+					stmt5.setString(2, rset4.getString(2));
+					stmt5.setString(3, fin_curve);
+					stmt5.setString(4, report_dt);
+					stmt5.setString(5, fin_curve);*/
+					rset5 = stmt5.executeQuery();
+					
+					if (rset5.next()) {
+						appPrice = nf4.format(rset5.getDouble(1));//System.out.println(report_dt+":appPrice: "+appPrice);
+//						appPriceUnit =  rset5.getString(2);
+						appDate = settle_start_dt+"-"+settle_dt; //SB20260101
+						appPrice2=rset5.getDouble(1);//SB20251229
+						appPrice2=PriceDecimalPoint(PremDiscRate, PriceDeci, appPrice2);//SB20251229
+						//System.out.println(report_dt+":appPrice2: "+appPrice2);
+						appPrice=""+appPrice2;//SB20251229
+					}
+					else
+						appPrice="0";//SB20251229
+					rset5.close();
+					stmt5.close();
+				//	System.out.println(report_dt+":appPrice: "+appPrice);
+				}	
+				else {
+					if (price_flag.equals("A")) {	/// Average 
+						fetchAppPrice = "SELECT AVG(SETTLE_PRICE), CURVE_UNIT FROM FMS_SPOT_PRICE_DTL "
+								+ "WHERE CURVE_DT >= TO_DATE(?, 'DD/MM/YYYY') AND CURVE_DT <= TO_DATE(?, 'DD/MM/YYYY') AND (PHYS_FIN = ? OR ACTUAL_CURVE=? ) "
+								+ "GROUP BY CURVE_UNIT ";
+						stmt5 = conn.prepareStatement(fetchAppPrice);
+						stmt5.setString(1, settle_start_dt);
+						stmt5.setString(2, settle_dt);
+						stmt5.setString(3, fin_curve);
+						stmt5.setString(4, fin_curve);
+						rset5 = stmt5.executeQuery();
+						
+						if (rset5.next()) {
+							appPrice = nf4.format(rset5.getDouble(1));
+							appPriceUnit =  rset5.getString(2);
+//							appDate = settle_start_dt;
+							appDate = settle_start_dt+"-"+settle_dt; //SB20260101
+							appPrice2=rset5.getDouble(1);//SB20251229
+							appPrice2=PriceDecimalPoint(PremDiscRate, PriceDeci, appPrice2);//SB20251229
+							appPrice=""+appPrice2;//SB20251229						
+						}
+						else
+							appPrice="0";//SB20251229
+						stmt5.close();
+						rset5.close();
+					}
+					else if (price_flag.equals("F")) {	/// Final Settle Date
+						fetchSettleCalnd = "SELECT SETTLE_PRICE, CURVE_UNIT FROM FMS_SPOT_PRICE_DTL "
+								+ "WHERE CURVE_DT = TO_DATE(?, 'DD/MM/YYYY') "
+							//	+ "AND PHYS_FIN = ? ";
+						 + "AND ACTUAL_CURVE = ? "; //SB20260217
+						stmt5 = conn.prepareStatement(fetchSettleCalnd);
+						stmt5.setString(1, settle_dt);
+						stmt5.setString(2, fin_curve);
+						rset5 = stmt5.executeQuery();
+						
+						if (rset5.next()) {
+							appPrice = nf4.format(rset5.getDouble(1));
+							appPriceUnit =  rset5.getString(2);
+//							appDate = settle_start_dt;
+							appDate = settle_start_dt+"-"+settle_dt; //SB20260101
+							appPrice2=rset5.getDouble(1);//SB20251229
+							appPrice2=PriceDecimalPoint(PremDiscRate, PriceDeci, appPrice2);//SB20251229
+							appPrice=""+appPrice2;//SB20251229
+						}
+						else
+							appPrice="0";//SB20251229
+						stmt5.close();
+						rset5.close();
+					}
+					else if(price_flag.contains("O")) {	/// Other Average
+						fetchSettleCalnd = "SELECT AVG(SETTLE_PRICE), CURVE_UNIT FROM FMS_SPOT_PRICE_DTL "
+								+ "WHERE CURVE_DT >= (TO_DATE(?, 'DD/MM/YYYY')-?) AND CURVE_DT <= TO_DATE(?, 'DD/MM/YYYY') "
+							//	+ "AND PHYS_FIN = ? "
+								 + "AND ACTUAL_CURVE = ? " //SB20260217
+								+ " GROUP BY CURVE_UNIT";
+						stmt5 = conn.prepareStatement(fetchSettleCalnd);
+						stmt5.setString(1, settle_dt);
+						stmt5.setString(2, price_flag.substring(1));
+						stmt5.setString(3, settle_dt);
+						stmt5.setString(4, fin_curve);
+						rset5 = stmt5.executeQuery();
+						
+						if (rset5.next()) {
+							appPrice = nf4.format(rset5.getDouble(1));
+						//	appPriceUnit =  rset5.getString(2);
+//							appDate = settle_start_dt;
+							appDate = settle_start_dt+"-"+settle_dt; //SB20260101
+							appPrice2=rset5.getDouble(1);//SB20251229
+							appPrice2=PriceDecimalPoint(PremDiscRate, PriceDeci, appPrice2);//SB20251229
+							appPrice=""+appPrice2;//SB20251229
+						}
+						else
+							appPrice="0";//SB20251229
+						rset5.close();
+						stmt5.close();
+					}
+					else if (price_flag.contains("D")) {	/// Average Settle Date
+						fetchSettleCalnd = "SELECT AVG(SETTLE_PRICE), CURVE_UNIT FROM FMS_SPOT_PRICE_DTL "
+								+ "WHERE CURVE_DT >= TO_DATE(?, 'DD/MM/YYYY') AND CURVE_DT <= TO_DATE(?, 'DD/MM/YYYY') "
+							//	+ "AND PHYS_FIN = ? "
+								 + "AND ACTUAL_CURVE = ? " //SB20260217
+								+ " GROUP BY CURVE_UNIT";
+						stmt5 = conn.prepareStatement(fetchSettleCalnd);
+						stmt5.setString(1, from_dt);
+						stmt5.setString(2, to_dt);
+						stmt5.setString(3, fin_curve);
+						rset5 = stmt5.executeQuery();
+						
+						if (rset5.next()) {
+							appPrice = nf4.format(rset5.getDouble(1));
+							appPriceUnit =  rset5.getString(2);
+//							appDate = from_dt;
+					//sb		appDate = to_dt;
+							appDate = from_dt+"-"+to_dt; //SB20260101
+							appPrice2=rset5.getDouble(1);//SB20251229
+							appPrice2=PriceDecimalPoint(PremDiscRate, PriceDeci, appPrice2);//SB20251229
+							appPrice=""+appPrice2;//SB20251229
+						}
+						else
+							appPrice="0";//SB20251229
+						rset5.close();
+						stmt5.close();
+					}
+				}
+				
+				// In-Case of no pricing found.
+				if (!appPrice.equals("")) {	//System.out.println(appPrice+":appPrice:"+slope+"+"+constant+":"+fin_curve);
+				//SB20251229	appPrice = nf4.format(Double.parseDouble(appPrice) * Double.parseDouble(slope) + Double.parseDouble(constant));
+				//SB20251229	appPrice = appPrice + " " + appPriceUnit;
+					appPrice2 = (Double.parseDouble(appPrice) * Double.parseDouble(slope) + Double.parseDouble(constant));
+					appPrice2=PriceDecimalPointFinal(FinalPriceDeci, appPrice2);//SB20241111
+				//	appPrice = appPrice2 + " " + appPriceUnit;
+					appPrice = appPrice2+"";// + " USD";
+				}
+				else {
+					appPrice = "-";
+					appDate = "-";
+				}
+			//	System.out.println(appPrice+":appPrice2: "+appPrice2);
+		//		System.out.println(rset4.getString(1)+"=="+rset4.getString(2)+"=="+fin_curve);
+		//		System.out.println(agmt_no+"=="+agmt_rev+"=="+cont_no+"=="+cont_rev+"=="+cont_type+"=="+price_flag);
+			}
+			
+			rset4.close();
+			stmt4.close();
+			
+			
+		}
+		catch(Exception e) {
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	
+	public void reqPriceForAllDeal(String to_date ) {
+		String function_nm = "reqPriceForSalesDeal()";
+		try {
+			System.out.println("REQUEST for Price Change Started >>>>>>>>"+function_nm);
+			String PriceEffDate=to_date;
+			String tempStartDate[]=PriceEffDate.split("/");
+			String GenMth=tempStartDate[1]; 
+			String GenYr=tempStartDate[2]; 
+			String GenMthYr=GenMth+"/"+GenYr;
+			PriceEffDate="01/"+GenMthYr;//SB20260101
+			
+			String NEW_PRICE_EFF_DT = ""; msg="";
+			CountPriceExistNo=0;
+			int NoDays=0;
+			for (int i = 0; i < VCOUNTERPARTY_ABBR.size(); i++) {
+				
+			//	System.out.println(i+")"+VBILL_FREQ.elementAt(i)+"VBILL_FREQ_DT"+VBILL_FREQ_DT.elementAt(i));
+				NEW_PRICE_EFF_DT = "";
+				if (VBUY_SALE.elementAt(i).toString().equals("Sell") && chkUpdateFlag.split(":")[i].equals("Y")) {
+					msg +=VCOUNTERPARTY_ABBR.elementAt(i);
+					String fetchSalesDeal = "SELECT NVL(PRICE_REQUEST_FLAG, 'N'), NVL(PRICE_APPROVE_FLAG, 'N'), CONT_NAME, CONT_REV+1 , RATE " //SB20260303 added RATE
+							+ "FROM FMS_SUPPLY_CONT_MST "
+							+ "WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";
+					stmt = conn.prepareStatement(fetchSalesDeal);
+					stmt.setString(1, comp_cd);
+					stmt.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+					stmt.setString(3, VAGMT_NO.elementAt(i).toString());
+					stmt.setString(4, VAGMT_REV.elementAt(i).toString());
+					stmt.setString(5, VCONT_NO.elementAt(i).toString());
+					stmt.setString(6, VCONT_REV.elementAt(i).toString());
+					stmt.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+					rset = stmt.executeQuery();
+					appPrice="*";
+					if (rset.next() && (rset.getString(1).equals("N"))) {
+						
+			//			System.out.println(rset.getString(3)+"PRICE_REQUEST_FLAG: "+rset.getString(1));
+						String ContName = rset.getString(3)==null?"":rset.getString(3);
+						String modSeq = "1";  String NEW_SALE_PRICE = "0";  String PriceExist="";
+						String fetchLastPriceDate = "SELECT TO_CHAR(NEW_PRICE_EFF_DT,'DD/MM/YYYY'), NEW_SALE_PRICE FROM FMS_SUPPLY_ALLOC_REVISED A  "
+								+ " WHERE A.COMPANY_CD = ? AND A.COUNTERPARTY_CD = ? AND A.AGMT_NO = ? AND A.AGMT_REV = ? AND A.CONT_NO = ? AND A.CONTRACT_TYPE = ? "
+								+ "AND A.MODIFICATION_SEQ_NO = (SELECT MAX(B.MODIFICATION_SEQ_NO) FROM FMS_SUPPLY_ALLOC_REVISED B "
+								+ "WHERE A.COMPANY_CD = B.COMPANY_CD AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND A.AGMT_NO = B.AGMT_NO AND A.AGMT_REV = B.AGMT_REV AND A.CONT_NO = B.CONT_NO AND A.CONTRACT_TYPE = B.CONTRACT_TYPE "
+								+ "AND B.NEW_PRICE_EFF_DT<=TO_DATE(?,'DD/MM/YYYY') )";
+					//	System.out.println(VCONTRACT_TYPE.elementAt(i)+":"+VCOUNTERPARTY_CD.elementAt(i)+"-"+VAGMT_NO.elementAt(i)+"-"+VAGMT_REV.elementAt(i)+"-"+VCONT_NO.elementAt(i)+"-"+PriceEffDate+":fetchLastPriceDate: "+fetchLastPriceDate);
+						stmt2 = conn.prepareStatement(fetchLastPriceDate);
+						stmt2.setString(1, comp_cd);
+						stmt2.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+						stmt2.setString(3, VAGMT_NO.elementAt(i).toString());
+						stmt2.setString(4, VAGMT_REV.elementAt(i).toString());
+						stmt2.setString(5, VCONT_NO.elementAt(i).toString());
+						stmt2.setString(6, VCONTRACT_TYPE.elementAt(i).toString());
+						stmt2.setString(7, ""+PriceEffDate);
+						rset2 = stmt2.executeQuery();
+						
+						if (rset2.next()) {
+							NEW_PRICE_EFF_DT = rset2.getString(1) == null ? "" : rset2.getString(1);
+							NEW_SALE_PRICE = rset2.getString(2) == null ? "0" : rset2.getString(2);
+						//	System.out.println(NEW_SALE_PRICE+":IF:NEW_SALE_PRICE/NEW_PRICE_EFF_DT:"+NEW_PRICE_EFF_DT);
+						}
+						else //SB20260303
+							NEW_SALE_PRICE = rset.getString(5) == null ? "0" : rset.getString(5); //SB20260303
+						rset2.close();
+						stmt2.close();
+					//	System.out.println(NEW_SALE_PRICE+":NEW_SALE_PRICE/NEW_PRICE_EFF_DT:"+NEW_PRICE_EFF_DT);
+						String[] tempContName=ContName.split("REV");
+						//ContName=ContName.split("REV")[0]+"REV"+ContName.split("REV")[1]+"REV"+rset.getString(4);//SB20260101
+						if(tempContName.length>1)
+							ContName=tempContName[0]+"REV"+tempContName[1]+"REV"+rset.getString(4);//SB20260101
+						if(VCONTRACT_TYPE.elementAt(i).equals("X"))
+							ContName=tempContName[0]+"REV"+rset.getString(4);//SB20260101
+						
+						//ContName=ContName.substring(0, ContName.length()-1)+modSeq;//SB20260101
+					//	System.out.println("modSeq: "+modSeq);
+						String purCont = "0", cargo_no = "0", alloc_qty = "0", costPrice = "", salePrice = "";
+						String oriMargin = "", newMargin = "";
+						String oriAvgMargin = "0", newAvgMargin = "0";
+						String oriTotMargin = "", newTotMargin = "";
+						
+						String fetchPurCont = "SELECT PUR_CONT_NO, CARGO_NO, ALLOC_QTY, COST_PRICE, SALE_PRICE, MARGIN, TOTAL_MARGIN, AVG_MARGIN, CP_UNIT, RATE_UNIT FROM FMS_SUPPLY_PURCHASE_MAP_DTL A "
+								+ " WHERE A.COMPANY_CD = ? AND A.COUNTERPARTY_CD = ? AND A.AGMT_NO = ? AND A.AGMT_REV = ? AND A.CONT_NO = ? AND A.CONTRACT_TYPE = ? "
+								+ " AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_SUPPLY_PURCHASE_MAP_DTL B WHERE A.PUR_CONT_NO = B.PUR_CONT_NO "
+								+ " AND A.COMPANY_CD = B.COMPANY_CD AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND A.AGMT_NO = B.AGMT_NO AND A.CONT_NO = B.CONT_NO )";
+
+						stmt2 = conn.prepareStatement(fetchPurCont);
+						stmt2.setString(1, comp_cd);
+						stmt2.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+						stmt2.setString(3, VAGMT_NO.elementAt(i).toString());
+						stmt2.setString(4, VAGMT_REV.elementAt(i).toString());
+						stmt2.setString(5, VCONT_NO.elementAt(i).toString());
+						stmt2.setString(6, VCONTRACT_TYPE.elementAt(i).toString());
+						rset2 = stmt2.executeQuery();
+						
+						if (rset2.next()) {
+							purCont = rset2.getString(1);
+							cargo_no = rset2.getString(2);
+							alloc_qty = rset2.getString(3);
+							costPrice = rset2.getString(4);
+							salePrice = rset2.getString(5);
+							oriMargin = rset2.getString(6);
+//							oriAvgMargin = rset2.getString(8);
+							oriTotMargin = rset2.getString(7);
+							
+							if (rset2.getString(9).equals("1")) {
+								costPrice = nf4.format(rset2.getDouble(4) / Double.parseDouble(exchgVal));  
+							}
+							if (rset2.getString(10).equals("1")) {
+								salePrice = nf4.format(rset2.getDouble(5) / Double.parseDouble(exchgVal));  
+							}
+						}
+						rset2.close();
+						stmt2.close();
+						
+					//	System.out.println("costPrice: "+costPrice);		
+						appPrice = "0";
+						if (!VAPPLICABLE_RATE.elementAt(i).toString().contains("-")) {
+							appPrice = VAPPLICABLE_RATE.elementAt(i).toString().split(" ")[0];
+						}
+						if(appPrice.equals(""))
+							appPrice = "0";
+						if(costPrice.equals(""))//SB20260309
+							costPrice = "0"; //SB20260309
+						PriceEffDate=""+VBILL_FREQ_DT.elementAt(i);
+				//		System.out.println(VAPPLICABLE_RATE.elementAt(i).toString()+" :Applicable Price: "+appPrice);
+				//		System.out.println(PriceEffDate+":Applicable Date: "+appDate+":"+NEW_SALE_PRICE);
+						// Calculating new margins
+						newMargin = nf4.format(Double.parseDouble(appPrice) - Double.parseDouble(costPrice));
+						newTotMargin = nf4.format(Double.parseDouble(alloc_qty) * Double.parseDouble(newMargin));
+		
+						appDate=PriceEffDate;//SB20260101
+						remark = appPrice + " " + PriceEffDate + " (New Price Requested)";//SB20260101
+					//	if(NEW_SALE_PRICE.equals(appPrice))
+					//SB20260309	if(Double.parseDouble(NEW_SALE_PRICE)==Double.parseDouble(appPrice))
+						if(BigDecimal.valueOf(Double.parseDouble(NEW_SALE_PRICE)).compareTo(BigDecimal.valueOf(Double.parseDouble(appPrice)))==0)
+							PriceExist="Y";
+						else
+							PriceExist="N";
+					//	System.out.println(PriceExist+":appPrice: "+appPrice+":"+NEW_SALE_PRICE);
+						if (!PriceExist.equals("Y") && !appPrice.equals("0") && !appPrice.equals("")) 
+						{
+							String insertSalesRequest = "INSERT INTO FMS_SUPPLY_CONT_MST(COMPANY_CD,COUNTERPARTY_CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,CONTRACT_TYPE,"
+									+ "CONT_NAME,CONT_REF_NO,TRADE_REF_NO,SIGNING_DT,SIGNING_TIME,START_DT,END_DT,AGMT_BASE,AGMT_TYPE,TCQ,DCQ,VARIABLE_DCQ,QUANTITY_UNIT,"
+									+ "RATE,RATE_UNIT,VARIABLE_RATE,POST_MARGIN,TRANSPORTATION_CHARGE,BUYER_NOM_FLAG,BUYER_MONTH_NOM,BUYER_WEEK_NOM,BUYER_DAILY_NOM,"
+									+ "SELLER_NOM_FLAG,SELLER_MONTH_NOM,SELLER_WEEK_NOM,SELLER_DAILY_NOM,DAY_DEF_FLAG,DAY_START_TIME,DAY_END_TIME,MDCQ_FLAG,MDCQ_PERCENTAGE,FCC_FLAG,FCC_BY,FCC_DATE,"
+									+ "REMARK,RENEWAL_DT,ENT_DT,ENT_BY,MODIFY_DT,MODIFY_BY,CONT_STATUS,IS_ALLOCATED,DDA_DT,DDA_TIME,BUYER_FORNGT_NOM,SELLER_FORNGT_NOM,TXN_CHARGE,BUYER_NOM_CUTOFF,TXN_UNIT,"
+									+ "TCQ_SIGN,TCQ_REQUEST_FLAG,TCQ_REQUEST_CLOSE,TCQ_REQUEST_QTY,PRICE_REQUEST_FLAG,PRICE_APPROVE_FLAG,CHANGE_DATE_REQ,MEASUREMENT,MEASUREMENT_CLAUSE,MEAS_STANDARD,"
+									+ "MEAS_TEMPERATURE,PRESSURE_MIN_BAR,PRESSURE_MAX_BAR,OFF_SPEC_GAS,OFF_SPEC_GAS_CLAUSE,SPEC_GAS_ENERGY_BASE,SPEC_GAS_MIN_ENERGY,SPEC_GAS_MAX_ENERGY,LIABILITY,LIABILITY_CLAUSE,"
+									+ "BILLING_FLAG,BILLING_CLAUSE,TERMINATE_FLAG,TERMINATE_CLAUSE,TERMINATE_PLANED,TERMINATE_FORCE,SF_GEN_DT,CLOSURE_REQUEST_FLAG,CLOSE_EFF_DT,CLOSURE_ALLOC_QTY,"
+									+ "CLOSURE_REMARK,ADV_ADJUST,CHANGE_DATE_APPROVE,CHANGE_START_DT,CHANGE_END_DT) "
+									+ ""
+									+ " SELECT  COMPANY_CD,COUNTERPARTY_CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV+1,CONTRACT_TYPE,"
+									+ "?,CONT_REF_NO,TRADE_REF_NO,SIGNING_DT,SIGNING_TIME,START_DT,END_DT,AGMT_BASE,AGMT_TYPE,TCQ,DCQ,VARIABLE_DCQ,QUANTITY_UNIT,"
+									+ "RATE,RATE_UNIT,VARIABLE_RATE,POST_MARGIN,TRANSPORTATION_CHARGE,BUYER_NOM_FLAG,BUYER_MONTH_NOM,BUYER_WEEK_NOM,BUYER_DAILY_NOM,"
+									+ "SELLER_NOM_FLAG,SELLER_MONTH_NOM,SELLER_WEEK_NOM,SELLER_DAILY_NOM,DAY_DEF_FLAG,DAY_START_TIME,DAY_END_TIME,MDCQ_FLAG,MDCQ_PERCENTAGE,null,null,null,"
+									+ "REMARK,RENEWAL_DT,ENT_DT,ENT_BY,MODIFY_DT,MODIFY_BY,'P',IS_ALLOCATED,DDA_DT,DDA_TIME,BUYER_FORNGT_NOM,SELLER_FORNGT_NOM,TXN_CHARGE,BUYER_NOM_CUTOFF,TXN_UNIT,"
+									+ "TCQ_SIGN,TCQ_REQUEST_FLAG,TCQ_REQUEST_CLOSE,TCQ_REQUEST_QTY,'Y','N',CHANGE_DATE_REQ,MEASUREMENT,MEASUREMENT_CLAUSE,MEAS_STANDARD,"
+									+ "MEAS_TEMPERATURE,PRESSURE_MIN_BAR,PRESSURE_MAX_BAR,OFF_SPEC_GAS,OFF_SPEC_GAS_CLAUSE,SPEC_GAS_ENERGY_BASE,SPEC_GAS_MIN_ENERGY,SPEC_GAS_MAX_ENERGY,LIABILITY,LIABILITY_CLAUSE,"
+									+ "BILLING_FLAG,BILLING_CLAUSE,TERMINATE_FLAG,TERMINATE_CLAUSE,TERMINATE_PLANED,TERMINATE_FORCE,SF_GEN_DT,CLOSURE_REQUEST_FLAG,CLOSE_EFF_DT,CLOSURE_ALLOC_QTY,"
+									+ "CLOSURE_REMARK,ADV_ADJUST,CHANGE_DATE_APPROVE,CHANGE_START_DT,CHANGE_END_DT FROM FMS_SUPPLY_CONT_MST "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ?  ";
+					//		System.out.println(insertSalesRequest);
+							stmt1 = conn.prepareStatement(insertSalesRequest);
+							stmt1.setString(1, ContName);
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(5, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(6, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(7, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(8, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+
+						//	System.out.println("DATA INSERTED: FMS_SUPPLY_CONT_MST");
+							String fetchModSeq = "SELECT MAX(A.MODIFICATION_SEQ_NO) + 1 FROM FMS_SUPPLY_ALLOC_REVISED A  "
+									+ " WHERE A.COMPANY_CD = ? AND A.COUNTERPARTY_CD = ? AND A.AGMT_NO = ? AND A.AGMT_REV = ? AND A.CONT_NO = ? AND A.CONTRACT_TYPE = ? ";
+							stmt2 = conn.prepareStatement(fetchModSeq);
+							stmt2.setString(1, comp_cd);
+							stmt2.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt2.setString(3, VAGMT_NO.elementAt(i).toString());
+							stmt2.setString(4, VAGMT_REV.elementAt(i).toString());
+							stmt2.setString(5, VCONT_NO.elementAt(i).toString());
+							stmt2.setString(6, VCONTRACT_TYPE.elementAt(i).toString());
+							rset2 = stmt2.executeQuery();
+							
+							if (rset2.next()) {
+								modSeq = rset2.getString(1) == null ? "1" : rset2.getString(1);
+							}
+							rset2.close();
+							stmt2.close();
+							insertSalesRequest = "INSERT INTO FMS_SUPPLY_ALLOC_REVISED(COMPANY_CD, COUNTERPARTY_CD, AGMT_NO, AGMT_REV, CONT_NO, CONT_REV, CONTRACT_TYPE, MODIFICATION_SEQ_NO, PUR_CONT,"
+									+ " NEW_PRICE_EFF_DT, ORI_SALE_PRICE, NEW_SALE_PRICE, ORI_MARGIN, NEW_MARGIN, ORI_AVG_MARGIN, NEW_AVG_MARGIN, ORI_TOT_MARGIN, NEW_TOT_MARGIN, ENT_BY, ENT_DT, "
+									+ "APPROVE_BY, APPROVE_DT, FLAG, REMARK, ALLOC_QTY, CARGO_NO) "
+									+ "VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, "
+									+ "TO_DATE(?, 'DD/MM/YYYY'), ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate, "
+									+ "NULL, NULL, ?, ?, ?, ?)";
+						//	System.out.println(insertSalesRequest);
+							stmt1 = conn.prepareStatement(insertSalesRequest);
+							stmt1.setString(1, comp_cd);
+							stmt1.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(3, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(5, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(6, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.setString(7, modSeq);
+							stmt1.setString(8, purCont);
+							stmt1.setString(9, appDate);
+							stmt1.setString(10, NEW_SALE_PRICE);
+							//sb stmt1.setString(10, salePrice);
+							stmt1.setString(11, appPrice);
+							stmt1.setString(12, oriMargin);
+							stmt1.setString(13, newMargin);
+							stmt1.setString(14, oriAvgMargin);
+							stmt1.setString(15, newAvgMargin);
+							stmt1.setString(16, oriTotMargin);
+							stmt1.setString(17, newTotMargin);
+							stmt1.setString(18, empCD);
+							stmt1.setString(19, "R");
+							stmt1.setString(20, remark);
+							stmt1.setString(21, alloc_qty);
+							stmt1.setString(22, cargo_no);
+							stmt1.executeUpdate();
+							
+							stmt1.close();							
+						//	System.out.println("DATA INSERTED: FMS_SUPPLY_ALLOC_REVISED");
+					
+							////////////////SB20260101 Insert Rev Data /////////////////////
+							insertSalesRequest = "INSERT INTO FMS_SUPPLY_CONT_PLANT (COMPANY_CD, COUNTERPARTY_CD, AGMT_NO, AGMT_REV, CONT_NO, CONT_REV, CONTRACT_TYPE, PLANT_SEQ_NO, ENT_BY, ENT_DT ) "+
+									" SELECT COMPANY_CD, COUNTERPARTY_CD, AGMT_NO, AGMT_REV, CONT_NO, CONT_REV+1, CONTRACT_TYPE, PLANT_SEQ_NO, ?, SYSDATE "+
+									" FROM FMS_SUPPLY_CONT_PLANT WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";
+						//	System.out.println(insertSalesRequest);
+							stmt1 = conn.prepareStatement(insertSalesRequest);
+							stmt1.setString(1, empCD);
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(5, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(6, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(7, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(8, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							
+							stmt1.close();	
+						//	System.out.println("DATA INSERTED: FMS_SUPPLY_CONT_PLANT");
+							insertSalesRequest = "INSERT INTO FMS_SUPPLY_CONT_TRANSPTR(COMPANY_CD, COUNTERPARTY_CD,AGMT_NO,AGMT_REV, CONT_NO, CONT_REV, CONTRACT_TYPE, TRANSPORTER_CD, PLANT_SEQ_NO, ENT_BY, ENT_DT) "+
+							 " SELECT COMPANY_CD, COUNTERPARTY_CD,AGMT_NO,AGMT_REV, CONT_NO, CONT_REV+1, CONTRACT_TYPE, TRANSPORTER_CD, PLANT_SEQ_NO, ?, SYSDATE "
+							 + "FROM FMS_SUPPLY_CONT_TRANSPTR WHERE  COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";
+						//	System.out.println(insertSalesRequest);
+							stmt1 = conn.prepareStatement(insertSalesRequest);
+							stmt1.setString(1, empCD);
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(5, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(6, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(7, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(8, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+						
+							stmt1.close();	
+						//	System.out.println("DATA INSERTED: FMS_SUPPLY_CONT_TRANSPTR");
+							insertSalesRequest = "INSERT INTO FMS_SUPPLY_CONT_GX_BU(COMPANY_CD, COUNTERPARTY_CD, AGMT_NO, AGMT_REV, CONT_NO, CONT_REV, CONTRACT_TYPE, GX_COUNTERPARTY_CD, GX_BU_SEQ_NO, ENT_BY, ENT_DT) "+
+									" SELECT COMPANY_CD, COUNTERPARTY_CD,AGMT_NO,AGMT_REV, CONT_NO, CONT_REV+1, CONTRACT_TYPE, GX_COUNTERPARTY_CD, GX_BU_SEQ_NO, ?, SYSDATE "
+									 + "FROM FMS_SUPPLY_CONT_GX_BU WHERE  COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";
+						//	System.out.println(insertSalesRequest);
+							stmt1 = conn.prepareStatement(insertSalesRequest);
+							stmt1.setString(1, empCD);
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(5, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(6, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(7, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(8, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							
+							stmt1.close();	
+						//	System.out.println("DATA INSERTED: FMS_SUPPLY_CONT_GX_BU");
+							insertSalesRequest = "INSERT INTO FMS_SUPPLY_CONT_BU(COMPANY_CD, COUNTERPARTY_CD, AGMT_NO, AGMT_REV, CONT_NO, CONT_REV, CONTRACT_TYPE, PLANT_SEQ_NO, ENT_BY, ENT_DT) "+
+									" SELECT COMPANY_CD, COUNTERPARTY_CD,AGMT_NO,AGMT_REV, CONT_NO, CONT_REV+1, CONTRACT_TYPE, PLANT_SEQ_NO, ?, SYSDATE "
+									 + "FROM FMS_SUPPLY_CONT_BU WHERE  COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";
+						//	System.out.println(insertSalesRequest);
+							stmt1 = conn.prepareStatement(insertSalesRequest);
+							stmt1.setString(1, empCD);
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(5, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(6, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(7, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(8, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+											
+							
+							stmt1.close();	
+						//	System.out.println("DATA INSERTED: FMS_SUPPLY_CONT_BU");
+							insertSalesRequest = "INSERT INTO FMS_SUPPLY_CONT_PLANT_CHRG(COMPANY_CD, COUNTERPARTY_CD, AGMT_NO, AGMT_REV, CONT_NO, CONT_REV, CONTRACT_TYPE,PLANT_SEQ_NO, EFF_DT, CHARGE_ABBR, CHARGE_RATE,ENT_BY, ENT_DT) "+
+									" SELECT COMPANY_CD, COUNTERPARTY_CD, AGMT_NO, AGMT_REV,CONT_NO, CONT_REV+1, CONTRACT_TYPE,PLANT_SEQ_NO, EFF_DT, CHARGE_ABBR, CHARGE_RATE, ?, SYSDATE "+
+									 " FROM FMS_SUPPLY_CONT_PLANT_CHRG WHERE  COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";						
+					//		System.out.println(VCONTRACT_TYPE.elementAt(i)+":"+VCOUNTERPARTY_CD.elementAt(i)+":"+VAGMT_NO.elementAt(i)+":"+VAGMT_REV.elementAt(i)+":"+VCONT_NO.elementAt(i)+":"+VCONT_REV.elementAt(i)+":"+empCD+"::::"+insertSalesRequest);
+							stmt1 = conn.prepareStatement(insertSalesRequest);
+							stmt1.setString(1, empCD);
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(5, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(6, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(7, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(8, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							
+							stmt1.close();	
+						//	System.out.println("DATA INSERTED: FMS_SUPPLY_CONT_PLANT_CHRG");
+							////////////////^^///////////////////////////////////
+							msg += VCONT_NO.elementAt(i)+" Price("+appPrice+") Requested: ";
+							msg_type = "S";
+							conn.commit();
+							CountPriceExistNo++;
+						}
+						else {
+							if(!NEW_PRICE_EFF_DT.equals(""))
+								msg += VCONT_NO.elementAt(i)+" Price("+appPrice+") Available "+NEW_PRICE_EFF_DT+": ";
+							else
+								msg += VCONT_NO.elementAt(i)+" Price NA: ";
+							msg_type = "E";
+						}
+						
+					}
+					else {
+					//	msg = "Price already requested. Can't request Price again.";
+						msg += VCONT_NO.elementAt(i)+" Price("+appPrice+") Already Requested "+NEW_PRICE_EFF_DT+": ";
+						msg_type = "E";
+					}
+					stmt.close();
+					rset.close();
+					
+				}
+				else if(VBUY_SALE.elementAt(i).toString().equals("Buy") && !VDEAL_TYPE.elementAt(i).toString().equals("LNG") && chkUpdateFlag.split(":")[i].equals("Y")) {
+					msg +=VCOUNTERPARTY_ABBR.elementAt(i);
+					String modSeq = "1";
+		
+					String NEW_SALE_PRICE = "";  String PriceExist="";
+					String fetchLastPriceDate = "SELECT TO_CHAR(EFF_DT,'DD/MM/YYYY'), NEW_PRICE FROM FMS_TRADER_CONT_PRICE_DTL A  "
+							+ " WHERE A.COMPANY_CD = ? AND A.COUNTERPARTY_CD = ? AND A.AGMT_NO = ? AND A.AGMT_REV = ? AND A.CONT_NO = ? AND A.CONTRACT_TYPE = ? "
+							+ "AND A.SEQ_NO = (SELECT MAX(B.SEQ_NO) FROM FMS_TRADER_CONT_PRICE_DTL B "
+							+ "WHERE A.COMPANY_CD = B.COMPANY_CD AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND A.AGMT_NO = B.AGMT_NO AND A.AGMT_REV = B.AGMT_REV AND A.CONT_NO = B.CONT_NO AND A.CONTRACT_TYPE = B.CONTRACT_TYPE "
+							+ "AND B.EFF_DT<=TO_DATE(?,'DD/MM/YYYY') )";
+				//	System.out.println(PriceEffDate+":fetchLastPriceDate: "+fetchLastPriceDate);
+				//	System.out.println(VCONTRACT_TYPE.elementAt(i)+":"+VCOUNTERPARTY_CD.elementAt(i)+"-"+VAGMT_NO.elementAt(i)+"-"+VAGMT_REV.elementAt(i)+"-"+VCONT_NO.elementAt(i)+"-"+PriceEffDate+":fetchLastPriceDate: "+fetchLastPriceDate);
+					stmt2 = conn.prepareStatement(fetchLastPriceDate);
+					stmt2.setString(1, comp_cd);
+					stmt2.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+					stmt2.setString(3, VAGMT_NO.elementAt(i).toString());
+					stmt2.setString(4, VAGMT_REV.elementAt(i).toString());
+					stmt2.setString(5, VCONT_NO.elementAt(i).toString());
+					stmt2.setString(6, VCONTRACT_TYPE.elementAt(i).toString());
+					stmt2.setString(7, ""+PriceEffDate);
+					rset2 = stmt2.executeQuery();
+					
+					if (rset2.next()) {
+						NEW_PRICE_EFF_DT = rset2.getString(1) == null ? "" : rset2.getString(1);
+						NEW_SALE_PRICE = rset2.getString(2) == null ? "0" : rset2.getString(2);
+						//System.out.println(NEW_SALE_PRICE+":IF:NEW_SALE_PRICE/NEW_PRICE_EFF_DT:"+NEW_PRICE_EFF_DT);
+					}
+					else //SB20260303
+						NEW_SALE_PRICE = "0" ; //SB20260303
+					//System.out.println(NEW_SALE_PRICE+"::NEW_SALE_PRICE/NEW_PRICE_EFF_DT:"+NEW_PRICE_EFF_DT);
+					rset2.close();
+					stmt2.close();
+			
+					String fetchSalesDeal = "SELECT FLAG, SEQ_NO+1 FROM FMS_TRADER_CONT_PRICE_DTL "
+							+ "WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ORDER BY SEQ_NO DESC";
+					stmt = conn.prepareStatement(fetchSalesDeal);
+					stmt.setString(1, comp_cd);
+					stmt.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+					stmt.setString(3, VAGMT_NO.elementAt(i).toString());
+					stmt.setString(4, VAGMT_REV.elementAt(i).toString());
+					stmt.setString(5, VCONT_NO.elementAt(i).toString());
+					stmt.setString(6, VCONT_REV.elementAt(i).toString());
+					stmt.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+					rset = stmt.executeQuery();
+					
+					if (rset.next()) {
+						if (!rset.getString(1).equals("R")) {
+							modSeq = rset.getString(2) == null ? "1" : rset.getString(2);
+						}
+						else {
+							modSeq = "0";
+						}
+					}
+					rset.close();
+					stmt.close();
+					
+					if (!modSeq.equals("0")) {
+						String oldPrice = "", oldPriceUnit = "";
+						
+						String fetchPurCont = "SELECT RATE, RATE_UNIT FROM FMS_TRADER_CONT_MST "
+								+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";
+
+						stmt2 = conn.prepareStatement(fetchPurCont);
+						stmt2.setString(1, comp_cd);
+						stmt2.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+						stmt2.setString(3, VCONT_NO.elementAt(i).toString());
+						stmt2.setString(4, VCONT_REV.elementAt(i).toString());
+						stmt2.setString(5, VCONTRACT_TYPE.elementAt(i).toString());
+						rset2 = stmt2.executeQuery();
+						
+						if (rset2.next()) {
+							oldPrice = rset2.getString(1);
+							oldPriceUnit = rset2.getString(2);
+						}
+						rset2.close();
+						stmt2.close();
+						
+					//	System.out.println(comp_cd+VCONTRACT_TYPE.elementAt(i)+VCOUNTERPARTY_CD.elementAt(i)+"-"+VCONT_NO.elementAt(i)+"-"+VCONT_REV.elementAt(i)+":oldPrice:"+oldPrice);		
+						appPrice = "0";
+						if (!VAPPLICABLE_RATE.elementAt(i).toString().contains("-")) {
+							appPrice = VAPPLICABLE_RATE.elementAt(i).toString().split(" ")[0];
+						}
+						if(appPrice.equals(""))
+							appPrice = "0";
+						PriceEffDate=""+VBILL_FREQ_DT.elementAt(i);				
+						appDate=PriceEffDate;//SB20260101
+						remark = appPrice + " " + PriceEffDate + " (New Price Requested)";//SB20260101
+					//	if(NEW_SALE_PRICE.equals(appPrice))
+						if(NEW_SALE_PRICE.equals("0"))
+							NEW_SALE_PRICE=oldPrice;//System.out.println(appPrice+":::"+NEW_SALE_PRICE+":FINAL:NEW_SALE_PRICE/NEW_PRICE_EFF_DT:"+NEW_PRICE_EFF_DT);
+						if(!NEW_SALE_PRICE.equals("") && !appPrice.equals(""))
+						{
+					//SB20260309	if(Double.parseDouble(NEW_SALE_PRICE)==Double.parseDouble(appPrice))
+						if(BigDecimal.valueOf(Double.parseDouble(NEW_SALE_PRICE)).compareTo(BigDecimal.valueOf(Double.parseDouble(appPrice)))==0)
+							PriceExist="Y";
+						else
+							PriceExist="N";
+						}
+						else
+							PriceExist="N";
+					if (!PriceExist.equals("Y") && !appPrice.equals("0") && !appPrice.equals("")) 
+						{							
+							String insertPurRequest = "INSERT INTO FMS_TRADER_CONT_PRICE_DTL(COMPANY_CD, COUNTERPARTY_CD, AGMT_NO, AGMT_REV, CONT_NO, CONT_REV, CONTRACT_TYPE, EFF_DT, SEQ_NO, PRICE_UNIT,"
+									+ " OLD_PRICE, NEW_PRICE, FLAG, ENT_BY, ENT_DT, "
+									+ "APPROVE_BY, APPROVE_DT, MODIFIY_BY, MODIFIY_DT) "
+									+ "VALUES (?, ?, ?, ?, ?, ?, ?, TO_DATE(?, 'DD/MM/YYYY'), ?, ?, "
+									+ "?, ?, ?, ?, sysdate, "
+									+ "NULL, NULL, NULL, NULL)";
+					//		System.out.println(insertPurRequest);
+							stmt1 = conn.prepareStatement(insertPurRequest);
+							stmt1.setString(1, comp_cd);
+							stmt1.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(3, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(5, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(6, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.setString(8, appDate);
+							stmt1.setString(9, modSeq);
+							stmt1.setString(10, oldPriceUnit);
+							stmt1.setString(11, oldPrice);
+							stmt1.setString(12, appPrice);
+							stmt1.setString(13, "R");
+							stmt1.setString(14, empCD);
+							stmt1.executeUpdate();
+							
+							stmt1.close();							
+						//	System.out.println("FMS_TRADER_CONT_PRICE_DTL data inserted.");
+							
+							insertPurRequest="UPDATE FMS_SUPPLY_PURCHASE_MAP_DTL SET STATUS=?, AUTH_BY=?, AUTH_DT=sysdate "
+									+ "WHERE COMPANY_CD=? AND PUR_CONT_NO=?";
+							stmt1 = conn.prepareStatement(insertPurRequest);
+							stmt1.setString(1, "N");
+							stmt1.setString(2, empCD);
+							stmt1.setString(3, comp_cd);
+							stmt1.setString(4, VCONT_NO.elementAt(i).toString());
+							stmt1.executeUpdate();
+								
+							stmt1.close();	
+						//	System.out.println("FMS_SUPPLY_PURCHASE_MAP_DTL data UPDATED.");
+			
+							msg += VCONT_NO.elementAt(i)+" Price("+appPrice+") Requested: ";
+							msg_type = "S";
+							conn.commit();
+							CountPriceExistNo++;System.out.println("CountPriceExistNo:"+CountPriceExistNo);
+						}
+						else {
+							if(!NEW_PRICE_EFF_DT.equals(""))
+								msg += VCONT_NO.elementAt(i)+" Price("+appPrice+") Available "+NEW_PRICE_EFF_DT+": ";
+							else
+								msg += VCONT_NO.elementAt(i)+" Price NA: ";
+							msg_type = "E";
+						}
+						
+					}
+					else {
+						msg += VCONT_NO.elementAt(i)+" Price("+appPrice+") Already Requested "+NEW_PRICE_EFF_DT+": ";
+						msg_type = "E";
+					}
+					
+				}
+			}
+			msg="("+CountPriceExistNo+" "+action+")  "+msg;
+		}
+		catch(Exception e) {
+			msg = "Failed to Request Price.";
+			msg_type = "E";
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	public void approvePriceForAllDeal() {
+		String function_nm = "approvePriceForAllDeal()";
+		try {
+			String priceEffDt = "", newRate="0";//SB20260101
+			CountPriceExistNo=0;
+			msg = "";
+			for (int i = 0; i < VCOUNTERPARTY_ABBR.size(); i++) {
+				if (VBUY_SALE.elementAt(i).toString().equals("Sell") && chkUpdateFlag.split(":")[i].equals("Y")) {
+					msg +=VCOUNTERPARTY_ABBR.elementAt(i);
+					String chkAprvPrice = "SELECT A.MODIFICATION_SEQ_NO, A.FLAG, A.PUR_CONT, A.CARGO_NO, A.NEW_SALE_PRICE, TO_CHAR(A.NEW_PRICE_EFF_DT, 'DD/MM/YYYY'), NEW_MARGIN, NEW_TOT_MARGIN "
+							+ "FROM FMS_SUPPLY_ALLOC_REVISED A "
+							+ " WHERE A.COMPANY_CD = ? AND A.COUNTERPARTY_CD = ? AND A.AGMT_NO = ? AND  A.AGMT_REV = ? AND A.CONT_NO = ? AND A.CONTRACT_TYPE = ? "
+							+ " AND A.MODIFICATION_SEQ_NO = (SELECT MAX(C.MODIFICATION_SEQ_NO) FROM FMS_SUPPLY_ALLOC_REVISED C WHERE A.COMPANY_CD = C.COMPANY_CD AND A.COUNTERPARTY_CD = C.COUNTERPARTY_CD AND "
+							+ " A.AGMT_NO = C.AGMT_NO AND A.AGMT_REV = C.AGMT_REV AND A.CONT_NO = C.CONT_NO AND A.CONT_REV = C.CONT_REV AND A.CONTRACT_TYPE = C.CONTRACT_TYPE ) ";
+					stmt = conn.prepareStatement(chkAprvPrice);
+					stmt.setString(1, comp_cd);
+					stmt.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+					stmt.setString(3, VAGMT_NO.elementAt(i).toString());
+					stmt.setString(4, VAGMT_REV.elementAt(i).toString());
+					stmt.setString(5, VCONT_NO.elementAt(i).toString());
+//					stmt.setString(6, VCONT_REV.elementAt(i).toString());
+					stmt.setString(6, VCONTRACT_TYPE.elementAt(i).toString());
+					rset = stmt.executeQuery();
+					
+					if (rset.next()) {
+						if (rset.getString(2).equals("R")) {
+							String pur_cont = rset.getString(3)==null?"0":rset.getString(3);
+							String cargo_no = rset.getString(4)==null?"0":rset.getString(4);
+							String new_sales_rate = rset.getString(5)==null?"2":rset.getString(5);
+							String new_margin = rset.getString(7)==null?"0":rset.getString(7);
+							String new_total_margin = rset.getString(8)==null?"0":rset.getString(8);
+							
+							String remark = "Price Updated to " + rset.getString(5) + " (Approved) " + rset.getString(6);
+							String updPrice = "UPDATE FMS_SUPPLY_ALLOC_REVISED SET FLAG = ?, APPROVE_BY = ?, APPROVE_DT = SYSDATE, REMARK = ? "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONTRACT_TYPE = ? AND MODIFICATION_SEQ_NO = ? "
+									+ " AND PUR_CONT = ? AND CARGO_NO = ? ";
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, "A");
+							stmt1.setString(2, empCD);
+							stmt1.setString(3, remark);
+							stmt1.setString(4, comp_cd);
+							stmt1.setString(5, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(6, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(7, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(8, VCONT_NO.elementAt(i).toString());
+//							stmt1.setString(8, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(9, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.setString(10, rset.getString(1));
+							stmt1.setString(11, rset.getString(3));
+							stmt1.setString(12, rset.getString(4));
+							stmt1.executeUpdate();
+						
+							stmt1.close();
+							
+							updPrice = "UPDATE FMS_SUPPLY_CONT_MST SET PRICE_REQUEST_FLAG = ?, PRICE_APPROVE_FLAG = ?, RATE = ?  "
+									+ ", FCC_FLAG=?, FCC_BY=?,FCC_DATE=SYSDATE, CONT_STATUS=? "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";
+						//	System.out.println(updPrice);
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, "N");
+							stmt1.setString(2, "Y");
+							stmt1.setString(3, rset.getString(5));	
+							stmt1.setString(4, "Y");
+							stmt1.setString(5, empCD);
+							stmt1.setString(6, "Y");
+							stmt1.setString(7, comp_cd);
+							stmt1.setString(8, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(9, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(10, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(11, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(12, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(13, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+						
+							stmt1.close();
+						//	for(int j=0;j<cargo_no.length;j++) 
+							{
+								updPrice = "UPDATE FMS_SUPPLY_PURCHASE_MAP_DTL SET SALE_PRICE=?, MARGIN=?,"
+										+ "TOTAL_MARGIN=?, AVG_MARGIN=? "
+										+ "WHERE COMPANY_CD=? AND AGMT_NO=? AND AGMT_REV=? "
+										+ "AND CONT_NO=? AND CONT_REV=? AND PUR_CONT_NO=? "
+										+ "AND COUNTERPARTY_CD=? AND CONTRACT_TYPE=? AND CARGO_NO=? ";
+						//		System.out.println(VCONT_NO.elementAt(i)+":"+VCONT_REV.elementAt(i)+":"+pur_cont+":"+cargo_no+updPrice);
+								stmt2 = conn.prepareStatement(updPrice);
+								stmt2.setString(1, new_sales_rate);
+								stmt2.setString(2, new_margin);
+								stmt2.setString(3, new_total_margin);
+								stmt2.setString(4, new_total_margin);
+								stmt2.setString(5, comp_cd);
+								stmt2.setString(6, ""+VAGMT_NO.elementAt(i));
+								stmt2.setString(7, ""+VAGMT_REV.elementAt(i));
+								stmt2.setString(8, ""+VCONT_NO.elementAt(i));
+								stmt2.setString(9, ""+VCONT_REV.elementAt(i));
+								stmt2.setString(10, pur_cont);
+								stmt2.setString(11, ""+VCOUNTERPARTY_CD.elementAt(i));
+								stmt2.setString(12, ""+VCONTRACT_TYPE.elementAt(i));
+								stmt2.setString(13, cargo_no);
+								stmt2.executeUpdate();
+								stmt2.close();
+							}
+							msg += VCONT_NO.elementAt(i)+" Price("+rset.getString(5)+") Approved: ";
+							msg_type = "S";
+							conn.commit();
+							CountPriceExistNo++;
+						}
+						else {
+							msg += VCONT_NO.elementAt(i)+" Approval NA : ";
+							msg_type = "E";
+						}
+					}
+					else {
+						msg += VCONT_NO.elementAt(i)+" NA for Approval: ";
+						msg_type = "E";
+					}
+					
+					rset.close();
+					stmt.close();
+					
+				}
+				else if (VBUY_SALE.elementAt(i).toString().equals("Buy") && !VDEAL_TYPE.elementAt(i).toString().equals("LNG") && chkUpdateFlag.split(":")[i].equals("Y")) 
+				{
+					msg +=VCOUNTERPARTY_ABBR.elementAt(i);
+					String chkAprvPrice = "SELECT A.SEQ_NO, A.FLAG, A.NEW_PRICE, TO_CHAR(A.EFF_DT, 'DD/MM/YYYY') FROM FMS_TRADER_CONT_PRICE_DTL A "
+							+ " WHERE A.COMPANY_CD = ? AND A.COUNTERPARTY_CD = ? AND A.CONT_NO = ? AND A.CONT_REV = ? AND A.CONTRACT_TYPE = ? "
+							+ " AND A.SEQ_NO = (SELECT MAX(B.SEQ_NO) FROM FMS_TRADER_CONT_PRICE_DTL B WHERE A.COMPANY_CD = B.COMPANY_CD AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND "
+							+ " A.CONT_NO = B.CONT_NO AND A.CONT_REV = B.CONT_REV AND A.CONTRACT_TYPE = B.CONTRACT_TYPE ) ";
+					stmt = conn.prepareStatement(chkAprvPrice);
+					stmt.setString(1, comp_cd);
+					stmt.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+					stmt.setString(3, VCONT_NO.elementAt(i).toString());
+					stmt.setString(4, VCONT_REV.elementAt(i).toString());
+					stmt.setString(5, VCONTRACT_TYPE.elementAt(i).toString());
+					rset = stmt.executeQuery();
+					
+					if (rset.next()) {
+						if (rset.getString(2).equals("R")) {
+
+							String remark = "Price Updated to " + rset.getString(3) + " (Approved) " + rset.getString(4);
+							newRate=rset.getString(3)==null?"0":rset.getString(3);
+							priceEffDt = rset.getString(4);
+							String updPrice = "UPDATE FMS_TRADER_CONT_PRICE_DTL SET FLAG = ?, MODIFIY_BY = ?, MODIFIY_DT = SYSDATE, APPROVE_BY = ?, APPROVE_DT = SYSDATE "
+									+ " WHERE COMPANY_CD = ? AND  COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? AND SEQ_NO =? ";
+
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, "Y");
+							stmt1.setString(2, empCD);
+							stmt1.setString(3, empCD);
+							stmt1.setString(4, comp_cd);
+							stmt1.setString(5, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(6, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(7, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(8, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(9, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(10, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.setString(11, rset.getString(1));
+							stmt1.executeUpdate();
+						
+							stmt1.close();
+							
+							updPrice = "UPDATE FMS_TRADER_CONT_MST A SET A.RATE = ? "
+									+ " WHERE A.COMPANY_CD = ? AND  A.COUNTERPARTY_CD = ? AND A.AGMT_NO = ? AND A.AGMT_REV = ? AND A.CONT_NO = ? AND A.CONTRACT_TYPE = ? "
+									+ " AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_TRADER_CONT_MST B WHERE A.COMPANY_CD = B.COMPANY_CD AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND A.AGMT_NO = B.AGMT_NO "
+									+ " AND A.AGMT_REV = B.AGMT_REV AND A.CONT_NO = B.CONT_NO AND A.CONTRACT_TYPE = B.CONTRACT_TYPE )";
+
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, rset.getString(3));
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(5, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(6, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+							
+						//	msg = "Selected Price(s) have been Approved Successfully.";
+							msg += VCONT_NO.elementAt(i)+" Price("+rset.getString(3)+") Approved: ";
+							msg_type = "S";	
+							CountPriceExistNo++;
+						}
+						else {
+							msg += VCONT_NO.elementAt(i)+" Approval NA : ";
+							msg_type = "E";
+						}
+					}
+					else {
+						msg += VCONT_NO.elementAt(i)+" NA for Approval: ";
+						msg_type = "E";
+					}					
+					rset.close();
+					stmt.close();
+					
+					///////////UPDATE: FMS_SUPPLY_PURCHASE_MAP_DTL: /////////////////////////////
+									
+										chkAprvPrice="SELECT COUNTERPARTY_CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,ALLOC_QTY,SALE_PRICE,COST_PRICE,MARGIN,TOTAL_MARGIN,RATE_UNIT,"
+												+ "CONTRACT_TYPE, CP_UNIT "
+												+ "FROM FMS_SUPPLY_PURCHASE_MAP_DTL "
+												+ "WHERE COMPANY_CD=? AND PUR_CONT_NO=?";
+								//		System.out.println(comp_cd+VCONT_NO.elementAt(i)+":"+chkAprvPrice);
+										stmt = conn.prepareStatement(chkAprvPrice);
+										stmt.setString(1, comp_cd);
+										stmt.setString(2, ""+VCONT_NO.elementAt(i));
+										rset=stmt.executeQuery();
+										while(rset.next())
+										{
+											String countpty_cd=rset.getString(1)==null?"0":rset.getString(1);
+											String agmtNo=rset.getString(2)==null?"0":rset.getString(2);
+											String agmtRev=rset.getString(3)==null?"0":rset.getString(3);
+											String contNo=rset.getString(4)==null?"0":rset.getString(4);
+											String contRev=rset.getString(5)==null?"0":rset.getString(5);
+											
+											double alloc_qty=rset.getDouble(6);
+											double sale_price=rset.getDouble(7);
+											double cost_price=rset.getDouble(8);
+											double margin=rset.getDouble(9);
+											double total_margin=rset.getDouble(10);
+											
+											double new_cost_price = Double.parseDouble(""+newRate);
+											double new_margin = 0; 
+											
+											String sales_rate_unit = rset.getString(11)==null?"2":rset.getString(11);
+											String sales_cont_type = rset.getString(12)==null?"":rset.getString(12);
+											String cost_rate_unit = rset.getString(13)==null?"2":rset.getString(13);
+											
+											if(sale_price > 0)
+											{	
+												double SalesPrice=0;
+												double CostPrice=0;
+												if(sales_rate_unit.trim().equals("1"))
+												{
+													if(Double.parseDouble(exchgVal) > 0)
+													{
+														SalesPrice = (sale_price/Double.parseDouble(exchgVal));
+													}
+													else
+													{
+														SalesPrice = 0;
+													}
+												}
+												else
+												{
+													SalesPrice = sale_price;
+												}
+												
+												if(cost_rate_unit.equals("1"))
+												{
+													if(Double.parseDouble(exchgVal) > 0)
+													{
+														CostPrice = (new_cost_price/Double.parseDouble(exchgVal));
+													}
+													else
+													{
+														CostPrice = 0;
+													}
+												}
+												else
+												{
+													CostPrice = new_cost_price;
+												}
+												
+												new_margin = SalesPrice - CostPrice;
+											}
+											double new_total_margin=alloc_qty * new_margin;
+											
+											new_margin = Double.parseDouble(nf2.format(new_margin));
+											new_total_margin = Double.parseDouble(nf2.format(new_total_margin));
+											
+											String	updPrice="UPDATE FMS_SUPPLY_PURCHASE_MAP_DTL SET COST_PRICE=?,MARGIN=?,AVG_MARGIN=?,"
+													+ "TOTAL_MARGIN=?,STATUS=?,APRV_BY=?,APRV_DT=TO_DATE(?,'DD/MM/YYYY') "
+													+ "WHERE COMPANY_CD=? AND AGMT_NO=? "
+													+ "AND CONT_NO=? AND COUNTERPARTY_CD=? "
+													+ "AND CONTRACT_TYPE=? AND PUR_CONT_NO=? AND STATUS=?";
+									//		System.out.println(comp_cd+agmtNo+contNo+rset.getString(1)+sales_cont_type+VCONT_NO.elementAt(i)+"N:"+updPrice);
+											stmt1=conn.prepareStatement(updPrice);
+											stmt1.setString(1, ""+new_cost_price);
+											stmt1.setString(2, ""+new_margin);
+											stmt1.setString(3, ""+new_margin);
+											stmt1.setString(4, ""+new_total_margin);
+											stmt1.setString(5, "Y");
+											stmt1.setString(6, empCD);
+											stmt1.setString(7, priceEffDt);
+											stmt1.setString(8, comp_cd);
+											stmt1.setString(9, rset.getString(2));
+											stmt1.setString(10, rset.getString(4));
+											stmt1.setString(11, rset.getString(1));
+											stmt1.setString(12, sales_cont_type);
+											stmt1.setString(13, ""+VCONT_NO.elementAt(i));
+											stmt1.setString(14, "N");
+											stmt1.executeUpdate();
+											stmt1.close();
+										}
+										rset.close();
+										stmt.close();
+						///////^^^UPDATE :FMS_SUPPLY_PURCHASE_MAP_DTL: /////////////////////////////
+										conn.commit();
+				}
+			}
+			msg="("+CountPriceExistNo+" "+action+")  "+msg;
+		}
+		catch(Exception e) {
+			msg = "Failed to Approve Price.";
+			msg_type = "E";
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	
+	public void revokePriceForAllDeal() {
+		String function_nm = "revokePriceForAllDeal()";
+		try {
+		//	System.out.println("REVOKE: "+function_nm);
+			CountPriceExistNo=0;
+			msg="";
+			for (int i = 0; i < VCOUNTERPARTY_ABBR.size(); i++) {
+				
+//				System.out.println(">>"+i);
+				
+				if (VBUY_SALE.elementAt(i).toString().equals("Sell") && chkUpdateFlag.split(":")[i].equals("Y")) {
+					String chkAprvPrice = "SELECT A.MODIFICATION_SEQ_NO, A.FLAG, A.PUR_CONT, A.CARGO_NO, A.NEW_SALE_PRICE, TO_CHAR(A.NEW_PRICE_EFF_DT, 'DD/MM/YYYY'), A.ORI_SALE_PRICE FROM FMS_SUPPLY_ALLOC_REVISED A "
+							+ " WHERE A.COMPANY_CD = ? AND A.COUNTERPARTY_CD = ? AND A.AGMT_NO = ? AND  A.AGMT_REV = ? AND A.CONT_NO = ? AND A.CONTRACT_TYPE = ? "
+//							+ " AND A.PUR_CONT_NO = (SELECT B.PUR_CONT_NO FROM FMS_SUPPLY_PURCHASE_MAP_DTL B WHERE A.COMPANY_CD = B.COMPANY_CD AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND "
+//							+ " A.AGMT_NO = B.AGMT_NO AND A.AGMT_REV = B.AGMT_REV AND A.CONT_NO = B.CONT_NO AND A.CONT_REV = B.CONT_REV AND A.CONTRACT_TYPE = B.CONTRACT_TYPE ) "
+							+ " AND A.MODIFICATION_SEQ_NO = (SELECT MAX(C.MODIFICATION_SEQ_NO) FROM FMS_SUPPLY_ALLOC_REVISED C WHERE A.COMPANY_CD = C.COMPANY_CD AND A.COUNTERPARTY_CD = C.COUNTERPARTY_CD AND "
+							+ " A.AGMT_NO = C.AGMT_NO AND A.AGMT_REV = C.AGMT_REV AND A.CONT_NO = C.CONT_NO AND A.CONT_REV = C.CONT_REV AND A.CONTRACT_TYPE = C.CONTRACT_TYPE ) ";
+					stmt = conn.prepareStatement(chkAprvPrice);
+					stmt.setString(1, comp_cd);
+					stmt.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+					stmt.setString(3, VAGMT_NO.elementAt(i).toString());
+					stmt.setString(4, VAGMT_REV.elementAt(i).toString());
+					stmt.setString(5, VCONT_NO.elementAt(i).toString());
+//					stmt.setString(6, VCONT_REV.elementAt(i).toString());
+					stmt.setString(6, VCONTRACT_TYPE.elementAt(i).toString());
+					rset = stmt.executeQuery();
+					
+					if (rset.next()) {
+						if (rset.getString(2).equals("A")) {
+							String remark = "(" + rset.getString(5) + ") Approved Price dated " + rset.getString(6) + " (Revoked) " ;
+							
+							String updPrice = "UPDATE FMS_SUPPLY_ALLOC_REVISED SET FLAG = ?, APPROVE_BY = NULL, APPROVE_DT = NULL, REMARK = ? "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONTRACT_TYPE = ? AND MODIFICATION_SEQ_NO = ? "
+									+ " AND PUR_CONT = ? AND CARGO_NO = ? ";
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, "R");
+							stmt1.setString(2, remark);
+							stmt1.setString(3, comp_cd);
+							stmt1.setString(4, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(5, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(6, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(7, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(8, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.setString(9, rset.getString(1));
+							stmt1.setString(10, rset.getString(3));
+							stmt1.setString(11, rset.getString(4));
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+							
+							updPrice = "UPDATE FMS_SUPPLY_CONT_MST SET PRICE_REQUEST_FLAG = ?, PRICE_APPROVE_FLAG = ?, RATE = ?  "
+									+ ", FCC_FLAG=null, FCC_BY=null,FCC_DATE=null, CONT_STATUS='P' "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";
+							
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, "Y");
+							stmt1.setString(2, "N");
+							stmt1.setString(3, rset.getString(7));
+							stmt1.setString(4, comp_cd);
+							stmt1.setString(5, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(6, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(7, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(8, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(9, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(10, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+						
+							stmt1.close();
+							
+							msg += VCONT_NO.elementAt(i)+" Price("+rset.getString(5)+") Revoked: ";
+							msg_type = "S";
+							conn.commit();
+							CountPriceExistNo++;
+						}
+						else {
+							msg += VCONT_NO.elementAt(i)+" Price("+rset.getString(6)+") (NA Approval): ";
+							msg_type = "E";
+						}
+					}
+					else {
+						msg += VCONT_NO.elementAt(i)+" Price Not Approved: ";
+					//	msg = "Failed to Revoke Price. Sales Contract with Approved Price was Not Found.";
+						msg_type = "E";
+					}
+					
+					rset.close();
+					stmt.close();
+				}
+				else if (VBUY_SALE.elementAt(i).toString().equals("Buy") && !VDEAL_TYPE.elementAt(i).toString().equals("LNG") && chkUpdateFlag.split(":")[i].equals("Y")) {
+					String chkAprvPrice = "SELECT A.SEQ_NO, A.FLAG, A.NEW_PRICE, TO_CHAR(A.EFF_DT, 'DD/MM/YYYY'), OLD_PRICE FROM FMS_TRADER_CONT_PRICE_DTL A "
+							+ " WHERE A.COMPANY_CD = ? AND A.COUNTERPARTY_CD = ? AND A.CONT_NO = ? AND A.CONT_REV = ? AND A.CONTRACT_TYPE = ? "
+							+ " AND A.SEQ_NO = (SELECT MAX(B.SEQ_NO) FROM FMS_TRADER_CONT_PRICE_DTL B WHERE A.COMPANY_CD = B.COMPANY_CD AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND "
+							+ " A.CONT_NO = B.CONT_NO AND A.CONT_REV = B.CONT_REV AND A.CONTRACT_TYPE = B.CONTRACT_TYPE ) ";
+					stmt = conn.prepareStatement(chkAprvPrice);
+					stmt.setString(1, comp_cd);
+					stmt.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+					stmt.setString(3, VCONT_NO.elementAt(i).toString());
+					stmt.setString(4, VCONT_REV.elementAt(i).toString());
+					stmt.setString(5, VCONTRACT_TYPE.elementAt(i).toString());
+					rset = stmt.executeQuery();
+					
+					if (rset.next()) {
+						if (rset.getString(2).equals("Y")) {
+
+							String updPrice = "UPDATE FMS_TRADER_CONT_PRICE_DTL SET FLAG = ?, MODIFIY_BY = ?, MODIFIY_DT = SYSDATE, APPROVE_BY = ?, APPROVE_DT = SYSDATE "
+									+ " WHERE COMPANY_CD = ? AND  COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? AND SEQ_NO =? ";
+
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, "R");
+							stmt1.setString(2, empCD);
+							stmt1.setString(3, empCD);
+							stmt1.setString(4, comp_cd);
+							stmt1.setString(5, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(6, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(7, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(8, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(9, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(10, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.setString(11, rset.getString(1));
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+							
+							updPrice = "UPDATE FMS_TRADER_CONT_MST A SET A.RATE = ? "
+									+ " WHERE A.COMPANY_CD = ? AND  A.COUNTERPARTY_CD = ? AND A.AGMT_NO = ? AND A.AGMT_REV = ? AND A.CONT_NO = ? AND A.CONTRACT_TYPE = ? "
+									+ " AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_TRADER_CONT_MST B WHERE A.COMPANY_CD = B.COMPANY_CD AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND A.AGMT_NO = B.AGMT_NO "
+									+ " AND A.AGMT_REV = B.AGMT_REV AND A.CONT_NO = B.CONT_NO AND A.CONTRACT_TYPE = B.CONTRACT_TYPE )";
+
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, rset.getString(5));
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(5, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(6, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							
+							stmt1.close();
+
+							msg += VCONT_NO.elementAt(i)+" Price("+rset.getString(4)+") Revoked: "+rset.getString(5);
+							msg_type = "S";
+							conn.commit();
+							CountPriceExistNo++;
+						}
+						else {
+							msg += VCONT_NO.elementAt(i)+" Not Revoked: ";
+							msg_type = "E";
+						}
+					}
+					else {
+						msg += VCONT_NO.elementAt(i)+" Approved Price NA.";
+						msg_type = "E";
+					}
+					
+					rset.close();
+					stmt.close();
+				}
+			}
+			msg="("+CountPriceExistNo+" "+action+")  "+msg;
+		}
+		catch(Exception e) {
+			msg = "Failed to Revoke Price.";
+			msg_type = "E";
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+///////////////////////////////SB20260101: DELETE Price Modification/////////////////
+	public void DeletePriceForAllDeal() {
+		String function_nm = "DeletePriceForAllDeal()";
+		try {
+			CountPriceExistNo=0;
+			msg="";
+			for (int i = 0; i < VCOUNTERPARTY_ABBR.size(); i++) {			
+				if (VBUY_SALE.elementAt(i).toString().equals("Sell") && chkUpdateFlag.split(":")[i].equals("Y")) {
+					String chkAprvPrice = "SELECT A.MODIFICATION_SEQ_NO, A.FLAG, A.PUR_CONT, A.CARGO_NO, A.NEW_SALE_PRICE, TO_CHAR(A.NEW_PRICE_EFF_DT, 'DD/MM/YYYY'), A.ORI_SALE_PRICE FROM FMS_SUPPLY_ALLOC_REVISED A "
+							+ " WHERE A.COMPANY_CD = ? AND A.COUNTERPARTY_CD = ? AND A.AGMT_NO = ? AND  A.AGMT_REV = ? AND A.CONT_NO = ? AND A.CONTRACT_TYPE = ? "
+//							+ " AND A.PUR_CONT_NO = (SELECT B.PUR_CONT_NO FROM FMS_SUPPLY_PURCHASE_MAP_DTL B WHERE A.COMPANY_CD = B.COMPANY_CD AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND "
+//							+ " A.AGMT_NO = B.AGMT_NO AND A.AGMT_REV = B.AGMT_REV AND A.CONT_NO = B.CONT_NO AND A.CONT_REV = B.CONT_REV AND A.CONTRACT_TYPE = B.CONTRACT_TYPE ) "
+							+ " AND A.MODIFICATION_SEQ_NO = (SELECT MAX(C.MODIFICATION_SEQ_NO) FROM FMS_SUPPLY_ALLOC_REVISED C WHERE A.COMPANY_CD = C.COMPANY_CD AND A.COUNTERPARTY_CD = C.COUNTERPARTY_CD AND "
+							+ " A.AGMT_NO = C.AGMT_NO AND A.AGMT_REV = C.AGMT_REV AND A.CONT_NO = C.CONT_NO AND A.CONT_REV = C.CONT_REV AND A.CONTRACT_TYPE = C.CONTRACT_TYPE ) ";
+					stmt = conn.prepareStatement(chkAprvPrice);
+					stmt.setString(1, comp_cd);
+					stmt.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+					stmt.setString(3, VAGMT_NO.elementAt(i).toString());
+					stmt.setString(4, VAGMT_REV.elementAt(i).toString());
+					stmt.setString(5, VCONT_NO.elementAt(i).toString());
+//					stmt.setString(6, VCONT_REV.elementAt(i).toString());
+					stmt.setString(6, VCONTRACT_TYPE.elementAt(i).toString());
+					rset = stmt.executeQuery();
+					
+					if (rset.next()) {
+						if (rset.getString(2).equals("R")) {							
+							String updPrice = "DELETE FMS_SUPPLY_ALLOC_REVISED "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONTRACT_TYPE = ? AND MODIFICATION_SEQ_NO = ? "
+									+ " AND PUR_CONT = ? AND CARGO_NO = ? ";
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, comp_cd);
+							stmt1.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(3, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(5, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(6, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.setString(7, rset.getString(1));
+							stmt1.setString(8, rset.getString(3));
+							stmt1.setString(9, rset.getString(4));
+							stmt1.executeUpdate();
+							stmt1.close();
+							if (!VCONT_REV.elementAt(i).equals("0")) {	
+							updPrice = "DELETE FMS_SUPPLY_CONT_MST "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";							
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, comp_cd);
+							stmt1.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(3, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(5, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(6, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							stmt1.close();
+				
+							updPrice = "DELETE FMS_SUPPLY_CONT_BU "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";							
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, comp_cd);
+							stmt1.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(3, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(5, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(6, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							stmt1.close();
+						
+							updPrice = "DELETE FMS_SUPPLY_CONT_GX_BU "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";							
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, comp_cd);
+							stmt1.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(3, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(5, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(6, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							stmt1.close();
+						
+							updPrice = "DELETE FMS_SUPPLY_CONT_PLANT "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";							
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, comp_cd);
+							stmt1.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(3, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(5, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(6, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							stmt1.close();
+							
+							updPrice = "DELETE FMS_SUPPLY_CONT_PLANT_CHRG "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";							
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, comp_cd);
+							stmt1.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(3, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(5, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(6, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							stmt1.close();
+						
+							updPrice = "DELETE FMS_SUPPLY_CONT_TRANSPTR "
+									+ " WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? ";							
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, comp_cd);
+							stmt1.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(3, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(5, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(6, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							conn.commit();
+							stmt1.close();
+					
+							msg += VCONT_NO.elementAt(i)+" Price("+rset.getString(5)+") REMOVED: ";
+							msg_type = "S";
+							CountPriceExistNo++;
+							}//EoF VCONT_REV.elementAt(i)==0 check
+						}
+						else {
+							msg += VCONT_NO.elementAt(i)+" Price("+rset.getString(5)+") NA for Removal: ";
+							msg_type = "E";
+						}
+					}
+					else {
+						msg = VCONT_NO.elementAt(i)+"REQUESTED Price Not Found.";
+						msg_type = "E";
+					}
+					
+					rset.close();
+					stmt.close();
+				}
+				else if (VBUY_SALE.elementAt(i).toString().equals("Buy") && !VDEAL_TYPE.elementAt(i).toString().equals("LNG") && chkUpdateFlag.split(":")[i].equals("Y")) {
+					String chkAprvPrice = "SELECT A.SEQ_NO, A.FLAG, A.NEW_PRICE, TO_CHAR(A.EFF_DT, 'DD/MM/YYYY'), OLD_PRICE FROM FMS_TRADER_CONT_PRICE_DTL A "
+							+ " WHERE A.COMPANY_CD = ? AND A.COUNTERPARTY_CD = ? AND A.CONT_NO = ? AND A.CONT_REV = ? AND A.CONTRACT_TYPE = ? "
+							+ " AND A.SEQ_NO = (SELECT MAX(B.SEQ_NO) FROM FMS_TRADER_CONT_PRICE_DTL B WHERE A.COMPANY_CD = B.COMPANY_CD AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND "
+							+ " A.CONT_NO = B.CONT_NO AND A.CONT_REV = B.CONT_REV AND A.CONTRACT_TYPE = B.CONTRACT_TYPE ) ";
+					stmt = conn.prepareStatement(chkAprvPrice);
+					stmt.setString(1, comp_cd);
+					stmt.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+					stmt.setString(3, VCONT_NO.elementAt(i).toString());
+					stmt.setString(4, VCONT_REV.elementAt(i).toString());
+					stmt.setString(5, VCONTRACT_TYPE.elementAt(i).toString());
+					rset = stmt.executeQuery();
+					
+					if (rset.next()) {
+						if (rset.getString(2).equals("R")) {
+
+							String updPrice = "DELETE FMS_TRADER_CONT_PRICE_DTL "
+									+ " WHERE COMPANY_CD = ? AND  COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ? AND CONT_REV = ? AND CONTRACT_TYPE = ? AND SEQ_NO =? ";
+
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, comp_cd);
+							stmt1.setString(2, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(3, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(5, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(6, VCONT_REV.elementAt(i).toString());
+							stmt1.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.setString(8, rset.getString(1));
+							stmt1.executeUpdate();
+						//	conn.commit();
+							stmt1.close();
+					//		System.out.println(VCOUNTERPARTY_CD.elementAt(i)+""+VCONTRACT_TYPE.elementAt(i)+""+VCONT_NO.elementAt(i)+"-"+VCONT_REV.elementAt(i)+"--->FMS_TRADER_CONT_PRICE_DTL data REMOVED.");
+							updPrice = "UPDATE FMS_TRADER_CONT_MST A SET A.RATE = ? "
+									+ " WHERE A.COMPANY_CD = ? AND  A.COUNTERPARTY_CD = ? AND A.AGMT_NO = ? AND A.AGMT_REV = ? AND A.CONT_NO = ? AND A.CONTRACT_TYPE = ? "
+									+ " AND A.CONT_REV = (SELECT MAX(B.CONT_REV) FROM FMS_TRADER_CONT_MST B WHERE A.COMPANY_CD = B.COMPANY_CD AND A.COUNTERPARTY_CD = B.COUNTERPARTY_CD AND A.AGMT_NO = B.AGMT_NO "
+									+ " AND A.AGMT_REV = B.AGMT_REV AND A.CONT_NO = B.CONT_NO AND A.CONTRACT_TYPE = B.CONTRACT_TYPE )";
+
+							stmt1 = conn.prepareStatement(updPrice);
+							stmt1.setString(1, rset.getString(5));
+							stmt1.setString(2, comp_cd);
+							stmt1.setString(3, VCOUNTERPARTY_CD.elementAt(i).toString());
+							stmt1.setString(4, VAGMT_NO.elementAt(i).toString());
+							stmt1.setString(5, VAGMT_REV.elementAt(i).toString());
+							stmt1.setString(6, VCONT_NO.elementAt(i).toString());
+							stmt1.setString(7, VCONTRACT_TYPE.elementAt(i).toString());
+							stmt1.executeUpdate();
+							stmt1.close();
+					
+							msg += VCONT_NO.elementAt(i)+" Price("+rset.getString(3)+") REMOVED: ";
+							conn.commit();
+							msg_type = "S";
+							CountPriceExistNo++;
+						}
+						else {
+							msg += VCONT_NO.elementAt(i)+" Price("+rset.getString(3)+") NA for Removal: ";
+							msg_type = "E";
+						}
+					}
+					else {
+						msg = VCONT_NO.elementAt(i)+"REQUESTED Price Not Found.";
+						msg_type = "E";
+					}
+					
+					rset.close();
+					stmt.close();
+				}
+			}
+			msg="("+CountPriceExistNo+" "+action+")  "+msg;
+		}
+		catch(Exception e) {
+			msg = "Failed to Revoke Price.";
+			msg_type = "E";
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+
+	
+	public double PriceDecimalPoint(Double PremDiscRate, String PriceDeci, Double avgCommodityValue)
+	{
+		String function_nm = "PriceDecimalPoint()";
+		double price=0;
+		try
+		{
+			 ///////////////////////SB20240530: Price Decimal Point formating/////////////////////
+			//	System.out.println(PriceDeci+":AVG(Forward): avgCommodityValue: "+Min_Eff_avgCommodityValue);
+				if(PriceDeci.equals("0"))
+					avgCommodityValue=Double.parseDouble(nf.format(avgCommodityValue+PremDiscRate));
+				else if(PriceDeci.equals("1"))
+					avgCommodityValue=Double.parseDouble(nf1.format(avgCommodityValue+PremDiscRate));
+				else if(PriceDeci.equals("2"))
+					avgCommodityValue=Double.parseDouble(nf2.format(avgCommodityValue+PremDiscRate));
+				else if(PriceDeci.equals("3"))
+					avgCommodityValue=Double.parseDouble(nf3.format(avgCommodityValue+PremDiscRate));
+				else if(PriceDeci.equals("4"))
+					avgCommodityValue=Double.parseDouble(nf4.format(avgCommodityValue+PremDiscRate));
+				else
+					avgCommodityValue=Double.parseDouble(nf4.format(avgCommodityValue+PremDiscRate));
+				///////////////////////^^SB20240530: Price Decimal Point formating////////////////////
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}		
+		return avgCommodityValue;
+	}
+	
+	public double PriceDecimalPointFinal(String FinalPriceDeci, Double Eff_avgCommodityValue)
+	{
+		String function_nm = "PriceDecimalPointFinal()";
+		double price=0;
+		try
+		{
+			 ///////////////////////SB20240530: Price Decimal Point formating/////////////////////
+			//	System.out.println(PriceDeci+":AVG(Forward): avgCommodityValue: "+Min_Eff_avgCommodityValue);
+				if(FinalPriceDeci.equals("0"))
+					Eff_avgCommodityValue=Double.parseDouble(nf.format(Eff_avgCommodityValue));
+				else if(FinalPriceDeci.equals("1"))
+					Eff_avgCommodityValue=Double.parseDouble(nf1.format(Eff_avgCommodityValue));
+				else if(FinalPriceDeci.equals("2"))
+					Eff_avgCommodityValue=Double.parseDouble(nf2.format(Eff_avgCommodityValue));
+				else if(FinalPriceDeci.equals("3"))
+					Eff_avgCommodityValue=Double.parseDouble(nf3.format(Eff_avgCommodityValue));
+				else if(FinalPriceDeci.equals("4"))
+					Eff_avgCommodityValue=Double.parseDouble(nf4.format(Eff_avgCommodityValue));
+				else
+					Eff_avgCommodityValue=Double.parseDouble(nf4.format(Eff_avgCommodityValue));
+				///////////////////////^^SB20240530: Price Decimal Point formating////////////////////
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}		
+		return Eff_avgCommodityValue;
+	}
+	
+
+	// SagarB20251229 Function to Insert Columns (if not exists)
+	
+	// SagarB20251229 Function to fetch Variable Price
+	public void getVariablePriceConfigDtl()
+	{
+		String function_nm="getVariablePriceConfigDtl()";
+		try
+		{
+			counterparty_abbr=utilBean.getCounterpartyABBR(conn,counterparty_cd);
+			display_map_id=utilBean.NewDealMappingId(comp_cd, counterparty_cd, agmt_no, agmt_rev, cont_no, cont_rev, cont_type, cargo_no);
+			String sysdate = utilDate.getSysdate();
+			
+			String queryString="SELECT TO_CHAR(FROM_DT,'DD/MM/YYYY'),TO_CHAR(TO_DT,'DD/MM/YYYY'),RATE,RATE_UNIT,PRICE_TYPE,PHYS_CURVE_NM,"
+					+ "SLOPE,CONST,REMARKS,SEQ_NO,CURVE_NM,PRICE_RANGE,TO_CHAR(PRICE_START_DT,'DD/MM/YYYY'),TO_CHAR(PRICE_END_DT,'DD/MM/YYYY'),"
+					+ "CURVE_LOGIC,FORMULA "
+					+ ", NVL(PRICE_DECI, ''), NVL(FINAL_PRICE_DECI, ''), NVL(PREM_DISC_RATE, '') "
+					+ "FROM FMS_CONT_PRICE_DTL "
+					+ "WHERE COMPANY_CD=? AND CONTRACT_TYPE=? "
+					+ "AND MAPPING_ID=? "
+					+ "ORDER BY FROM_DT";
+		//	System.out.println(display_map_id+"::::"+comp_cd+":"+cont_type+":"+mapping_id+":InVarPrice: "+queryString);
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, comp_cd);
+			stmt.setString(2, cont_type);
+			stmt.setString(3, mapping_id);
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				String st_dt = rset.getString(1)==null?"":rset.getString(1);
+				String end_dt = rset.getString(2)==null?"":rset.getString(2);
+				
+				VSTART_DT.add(st_dt);
+				VEND_DT.add(end_dt);
+				VPRICE_RATE.add(rset.getString(3)==null?"":rset.getString(3));
+				String price_rate_unit=rset.getString(4)==null?"":rset.getString(4);
+				VPRICE_RATE_UNIT.add(price_rate_unit);
+				VPRICE_RATE_UNIT_NM.add(utilBean.getRateUnitNm(conn,price_rate_unit));
+				String price_type = rset.getString(5)==null?"":rset.getString(5);
+				VPRICE_TYPE.add(price_type);
+				VPHY_CURV.add(rset.getString(6)==null?"":rset.getString(6));
+				VREMARK.add(rset.getString(9)==null?"":rset.getString(9));
+				String seq_no=rset.getString(10)==null?"":rset.getString(10);
+				VSEQ_NO.add(rset.getString(10)==null?"":rset.getString(10));
+				String price_range = rset.getString(12)==null?"A":rset.getString(12);
+				String price_start_dt = rset.getString(13)==null?"":rset.getString(13);
+				String price_end_dt = rset.getString(14)==null?"":rset.getString(14);
+				
+				VPRICE_START_DT.add(price_start_dt);
+				VPRICE_END_DT.add(price_end_dt);
+				
+				int isExpired = utilDate.getDays(end_dt, sysdate);
+				
+				if(isExpired<0)
+				{
+					VIS_RADIO_ENABLE.add("N");
+				}
+				else
+				{
+					VIS_RADIO_ENABLE.add("Y");
+				}
+				
+				String formula=rset.getString(16)==null?"":rset.getString(16);
+				String curve_logic=rset.getString(15)==null?"":rset.getString(15);
+				VCURVE_LOGIC.add(curve_logic);
+				VFORMULA.add(formula);
+				
+				// SagarB20260212
+//				if(curve_logic.equals("MIN") || curve_logic.equals("MAX") || curve_logic.equals("AVG"))
+				if(curve_logic.equals("MIN") || curve_logic.equals("MAX") || curve_logic.equals("AVG") || curve_logic.equals("MIN_ADV"))
+				{
+					String slop_1="",cont_1="",cur_nm_1="",priceRange_1="",priceRangeNm_1="",date_1="";
+					String slop="",cont="",cur_nm="",priceRange="",priceRangeNm="",priceStDt="",priceEndDt="";
+					String  formula_1 = "", temp_formula = "";	// SagarB20260212
+					String PriceDeci="",PriceDisAdj="", PriceDeci2="", PriceDisAdj2=""; int RowCount=0;
+					String queryString1="SELECT CURVE_NM,SLOPE,CONST,PRICE_RANGE,TO_CHAR(PRICE_START_DT,'DD/MM/YYYY'),TO_CHAR(PRICE_END_DT,'DD/MM/YYYY') "
+							+ ", NVL(PRICE_DECI, ''), NVL(PREM_DISC_RATE, ''),"
+							+ " FORMULA "		// SagarB20260212
+							+ "FROM FMS_CONT_PRICE_MIN_DTL "
+							+ "WHERE COMPANY_CD=? AND CONTRACT_TYPE=? "
+							+ "AND MAPPING_ID=? AND SEQ_NO=?";
+					stmt1 = conn.prepareStatement(queryString1);
+					stmt1.setString(1, comp_cd);
+					stmt1.setString(2, cont_type);
+					stmt1.setString(3, mapping_id);
+					stmt1.setString(4, seq_no);
+					rset1=stmt1.executeQuery();
+					while(rset1.next())
+					{
+						cur_nm = rset1.getString(1)==null?"":rset1.getString(1);
+						slop = rset1.getString(2)==null?"":rset1.getString(2);
+						cont = rset1.getString(3)==null?"":rset1.getString(3);
+						priceRange=rset1.getString(4)==null?"A":rset1.getString(4);
+						priceStDt=rset1.getString(5)==null?"":rset1.getString(5); 
+						priceEndDt=rset1.getString(6)==null?"":rset1.getString(6);
+						PriceDeci=(rset1.getString(7)==null?"":rset1.getString(7));
+						PriceDisAdj=(rset1.getString(8)==null?"":rset1.getString(8));
+
+						temp_formula=rset1.getString(9)==null?"":rset1.getString(9);	// SagarB20260212
+						
+						priceRangeNm=getPriceRangeNm(priceRange,priceStDt,priceEndDt);
+						
+						if(slop_1.equals(""))
+						{
+							slop_1=slop;
+						}
+						else
+						{
+							slop_1+="<br>"+slop;
+						}
+						if(cont_1.equals(""))
+						{
+							cont_1=cont;
+						}
+						else
+						{
+							cont_1+="<br>"+cont;
+						}
+						if(cur_nm_1.equals(""))
+						{
+							cur_nm_1 = cur_nm;
+						}
+						else
+						{
+							cur_nm_1 += "<br>"+cur_nm;
+						}
+						if(priceRange_1.equals(""))
+						{
+							priceRange_1=priceRange;
+						}
+						else
+						{
+							priceRange_1+="<br>"+priceRange;
+						}
+						if(priceRangeNm_1.equals(""))
+						{
+							priceRangeNm_1=priceRangeNm;
+						}
+						else
+						{
+							priceRangeNm_1+="<br>"+priceRangeNm;
+						}
+						if(date_1.equals(""))
+						{
+							date_1=priceStDt+"-"+priceEndDt;
+						}
+						else
+						{
+							date_1+="<br>"+priceStDt+"-"+priceEndDt;
+						}
+						if(RowCount==0)
+						{
+							PriceDeci2=PriceDeci;
+							PriceDisAdj2=PriceDisAdj;
+						}
+						else
+						{
+							PriceDeci2+="<br>"+PriceDeci;
+							PriceDisAdj2+="<br>"+PriceDisAdj;
+						}
+						
+						// SagarB20260212
+						if(formula_1.equals(""))
+						{
+							formula_1=temp_formula.equals("")?" ":temp_formula;
+						}
+						else
+						{
+							formula_1+="<br>"+(temp_formula.equals("")?" ":temp_formula);
+						}
+						RowCount++;
+					}
+					VSLOPE.add(slop_1);
+					VCONSTANT.add(cont_1);
+					VCURVE_NM.add(cur_nm_1);
+					VPRICE_RANGE.add(priceRange_1);
+					VPRICE_RANGE_NM.add(priceRangeNm_1);
+					VMIN_PRICE_ST_END_DT.add(date_1);
+					VPRICE_DECI.add(PriceDeci2);
+					VFINAL_PRICE_DECI.add(rset.getString(18)==null?"":rset.getString(18));
+					VPREM_DISC_RATE.add(PriceDisAdj2);
+					VMIN_FORMULA.add(formula_1);	// SagarB20260212
+					
+					rset1.close();
+					stmt1.close();
+				}
+				else
+				{
+					VSLOPE.add(rset.getString(7)==null?"1":rset.getDouble(7));
+					VCONSTANT.add(rset.getString(8)==null?"0":rset.getDouble(8));
+					VCURVE_NM.add(rset.getString(11)==null?"":rset.getString(11));
+					VPRICE_RANGE.add(price_range);
+					if(price_type.equals("M"))
+					{
+						VPRICE_RANGE_NM.add(getPriceRangeNm(price_range,price_start_dt,price_end_dt));
+					}
+					else
+					{
+						VPRICE_RANGE_NM.add("");
+					}
+					VMIN_PRICE_ST_END_DT.add("");
+					VPRICE_DECI.add(rset.getString(17)==null?"":rset.getString(17));
+					VFINAL_PRICE_DECI.add(rset.getString(18)==null?"":rset.getString(18));
+					VPREM_DISC_RATE.add(rset.getString(19)==null?"":rset.getString(19));
+					VMIN_FORMULA.add("");	// SagarB20260212
+				}			
+			}
+			rset.close();
+			stmt.close();
+			
+			/*SB20260309	int NoDays=0, TotalDealDays=0;
+				
+				queryString = "SELECT TO_DATE(?,'DD/MM/YYYY')-TO_DATE(?,'DD/MM/YYYY') FROM DUAL" ;//SB20230721: Removed +1 day
+				//	System.out.println(rset1.getString(2)+" DUAL: LAST: "+queryString);
+					stmt3 = conn.prepareStatement(queryString);
+			
+				for(int i=0; i<VSTART_DT.size(); i++)
+				{		
+					NoDays=0;
+				    	stmt3.setString(1, ""+VEND_DT.elementAt(i));
+					stmt3.setString(2, ""+VSTART_DT.elementAt(i));//"01"+rpt_dt.substring(2));
+					rset3 = stmt3.executeQuery();
+						if(rset3.next()) {
+							NoDays = rset3.getInt(1);
+							TotalDealDays+=NoDays;
+						}
+					VPriceNoDays.add(NoDays+" Days");
+				}
+				rset3.close();
+				stmt3.close();*/
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	// SagarB20251229 Function to Fetch Physical Curve for Variable Pricing
+	public void getPhysicalCurveMaster()
+	{
+		String function_nm="getPhysicalCurveMaster()";
+		try
+		{
+			String queryString="SELECT DISTINCT CURVE_NM "
+					+ "FROM FMS_FORWARD_PRICE_DTL "
+					+ "WHERE UPPER(PHYS_FIN)=?";
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, "PHYSICAL");
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				VPHYSICAL_CURVE_MST.add(rset.getString(1)==null?"":rset.getString(1));
+			}
+			rset.close();
+			stmt.close();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	// SagarB20251229 Function to Fetch Financial Curve for Variable Pricing
+	public void getFinancialCurveMaster()
+	{
+		String function_nm="getFinancialCurveMaster()";
+		try
+		{
+			String queryString="SELECT DISTINCT CURVE_NM "
+					+ "FROM FMS_FORWARD_PRICE_DTL "
+					+ "WHERE UPPER(PHYS_FIN)=? "
+					+ "ORDER BY CURVE_NM ";
+			stmt = conn.prepareStatement(queryString);
+			stmt.setString(1, "FINANCIAL");
+			rset=stmt.executeQuery();
+			while(rset.next())
+			{
+				VFINANCIAL_CURVE_MST.add(rset.getString(1)==null?"":rset.getString(1));
+			}
+			rset.close();
+			stmt.close();
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+
+	// SagarB20251229 Function to get Price Range Name for Variable Pricing
+	public String getPriceRangeNm(String price_range, String price_st_dt, String price_end_dt)
+	{
+		String function_nm="getPriceRangeNm()";
+		String nm="";
+		try
+		{
+			if(price_range.equals("A"))
+			{
+				nm="Avg.";
+			}
+			else if(price_range.equals("F"))
+			{
+				nm="Final Settle Date";
+			}
+			if(price_range.startsWith("O"))
+			{
+				nm="Other Avg.("+price_range.substring(1,price_range.length())+")";
+			}
+			if(price_range.equals("D"))
+			{
+				nm="Avg. Settle Date("+price_st_dt+" - "+price_end_dt+")";
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return nm;
+	}
+	
+	public String getBillingFreq(String compCd, String CParty, String agmtNo, String agmtRevNo, String contNo, String contRevNo, String contType, String rptDt)
+	{
+		/////////////////////Get the list of Billing Cycle////////////////////
+		String function_nm="getBillingFreq()";
+		String nm="";
+		try
+		{
+		String BillFreq="F"; String PlantSeqNo="1";
+		String PriceEffDate=rptDt;
+		String tempStartDate[]=PriceEffDate.split("/");
+		String GenDate=tempStartDate[0]; 
+		String GenMth=tempStartDate[1]; 
+		String GenYr=tempStartDate[2]; 
+		String GenMthYr=GenMth+"/"+GenYr;
+		PriceEffDate="01/"+GenMthYr;//SB20260101
+
+		String queryBilling = "SELECT BILLING_FREQ, BILLING_FLAG, PLANT_SEQ_NO FROM FMS_SUPPLY_BILLING_DTL "
+			+ "WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ?  AND CONTRACT_TYPE = ? "//AND EFF_DT <= TO_DATE(?, 'DD/MM/YYYY') "
+		//	+ "AND CONT_REV = ? "
+			+"AND EFF_DT =(SELECT MAX(EFF_DT) FROM FMS_SUPPLY_BILLING_DTL "
+			+"WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ?  AND CONTRACT_TYPE = ? " 
+			+"AND EFF_DT <= TO_DATE(?, 'DD/MM/YYYY')) "
+			+ "ORDER BY EFF_DT DESC ";
+	//	System.out.println(contType+contNo+":"+contRevNo+":"+queryBilling);
+		stmt3 = conn.prepareStatement(queryBilling);		
+		stmt3.setString(1, compCd);
+		stmt3.setString(2, CParty);
+		stmt3.setString(3, agmtNo);
+		stmt3.setString(4, agmtRevNo);
+		stmt3.setString(5, contNo);
+		stmt3.setString(6, contType);
+		stmt3.setString(7, compCd);
+		stmt3.setString(8, CParty);
+		stmt3.setString(9, agmtNo);
+		stmt3.setString(10, agmtRevNo);
+		stmt3.setString(11, contNo);
+		stmt3.setString(12, contType);
+		stmt3.setString(13, rptDt);
+	//	stmt3.setString(8, contRevNo);
+		rset3 = stmt3.executeQuery();	
+		if (rset3.next()) {
+			BillFreq = rset3.getString(1)==null?"F":rset3.getString(1); 
+			PlantSeqNo= rset3.getString(3)==null?"1*":rset3.getString(3); 
+		//	System.out.println(contType+contNo+":"+contRevNo+":11:"+BillFreq);
+		}
+		rset3.close();
+		stmt3.close();//System.out.println(contType+contNo+":"+contRevNo+":22:"+BillFreq);
+			if(BillFreq.equals("F"))
+			{
+				nm="Fortnightly";
+				if(Integer.parseInt(GenDate)>15)
+					PriceEffDate="16/"+GenMthYr;
+			}
+			else if(BillFreq.equals("W"))
+			{
+				nm="Weekly";
+				if(Integer.parseInt(GenDate)>0 && Integer.parseInt(GenDate)<8)
+					{PriceEffDate="01/"+GenMthYr;}
+				else if(Integer.parseInt(GenDate)>7 && Integer.parseInt(GenDate)<15)
+					{PriceEffDate="08/"+GenMthYr;}
+				else if(Integer.parseInt(GenDate)>14 && Integer.parseInt(GenDate)<22)
+					{PriceEffDate="15/"+GenMthYr;}
+				else if(Integer.parseInt(GenDate)>21 && Integer.parseInt(GenDate)<29)
+					{PriceEffDate="22/"+GenMthYr;}
+				else if(Integer.parseInt(GenDate)>28)
+					{PriceEffDate="29/"+GenMthYr;}
+			}
+			else if(BillFreq.startsWith("M"))
+			{
+				nm="Monthly";
+			}
+			else if(BillFreq.equals("D"))
+			{
+				nm="Daily";
+				PriceEffDate=rpt_dt;
+			}
+			else
+			{
+				nm="NA";
+			}
+			nm="P"+PlantSeqNo+": "+nm;
+	
+				VBILL_FREQ.add(nm);
+				VBILL_FREQ_DT.add(PriceEffDate);
+				return PriceEffDate;
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return nm;
+	}
+	public String getBillingFreqTrd(String compCd, String CParty, String agmtNo, String agmtRevNo, String contNo, String contRevNo, String contType, String rptDt)
+	{
+		/////////////////////Get the list of Billing Cycle////////////////////
+		String function_nm="getBillingFreqTrd()";
+		String nm="";
+		try
+		{
+		String BillFreq="F"; String PlantSeqNo="";
+		String PriceEffDate=rptDt;
+		String tempStartDate[]=PriceEffDate.split("/");
+		String GenDate=tempStartDate[0]; 
+		String GenMth=tempStartDate[1]; 
+		String GenYr=tempStartDate[2]; 
+		String GenMthYr=GenMth+"/"+GenYr;
+		PriceEffDate="01/"+GenMthYr;//SB20260101
+
+		String queryBilling = "SELECT BILLING_FREQ, BILLING_FLAG, PLANT_SEQ_NO FROM FMS_TRADER_BILLING_DTL "
+			+ "WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ?  AND CONTRACT_TYPE = ? "//AND EFF_DT <= TO_DATE(?, 'DD/MM/YYYY') "
+		//	+ "AND CONT_REV = ? "
+			+"AND ENT_DT =(SELECT MAX(ENT_DT) FROM FMS_TRADER_BILLING_DTL "
+			+"WHERE COMPANY_CD = ? AND COUNTERPARTY_CD = ? AND AGMT_NO = ? AND AGMT_REV = ? AND CONT_NO = ?  AND CONTRACT_TYPE = ? " 
+			+"AND ENT_DT <= TO_DATE(?, 'DD/MM/YYYY')) "
+			+ "ORDER BY ENT_DT DESC ";
+	//	System.out.println(contType+contNo+":"+contRevNo+":"+queryBilling);
+		stmt3 = conn.prepareStatement(queryBilling);		
+		stmt3.setString(1, compCd);
+		stmt3.setString(2, CParty);
+		stmt3.setString(3, agmtNo);
+		stmt3.setString(4, agmtRevNo);
+		stmt3.setString(5, contNo);
+		stmt3.setString(6, contType);
+		stmt3.setString(7, compCd);
+		stmt3.setString(8, CParty);
+		stmt3.setString(9, agmtNo);
+		stmt3.setString(10, agmtRevNo);
+		stmt3.setString(11, contNo);
+		stmt3.setString(12, contType);
+		stmt3.setString(13, rptDt);
+	//	stmt3.setString(8, contRevNo);
+		rset3 = stmt3.executeQuery();	
+		if (rset3.next()) {
+			BillFreq = rset3.getString(1)==null?"F":rset3.getString(1); 
+			PlantSeqNo= rset3.getString(3)==null?"1*":rset3.getString(3); 
+		}
+		rset3.close();
+		stmt3.close();
+			if(BillFreq.equals("F"))
+			{
+				nm="Fortnightly";
+				if(Integer.parseInt(GenDate)>15)
+					PriceEffDate="16/"+GenMthYr;
+			}
+			else if(BillFreq.equals("W"))
+			{
+				nm="Weekly";
+				if(Integer.parseInt(GenDate)>0 && Integer.parseInt(GenDate)<8)
+					{PriceEffDate="01/"+GenMthYr;}
+				else if(Integer.parseInt(GenDate)>7 && Integer.parseInt(GenDate)<15)
+					{PriceEffDate="08/"+GenMthYr;}
+				else if(Integer.parseInt(GenDate)>14 && Integer.parseInt(GenDate)<22)
+					{PriceEffDate="15/"+GenMthYr;}
+				else if(Integer.parseInt(GenDate)>21 && Integer.parseInt(GenDate)<29)
+					{PriceEffDate="22/"+GenMthYr;}
+				else if(Integer.parseInt(GenDate)>28)
+					{PriceEffDate="29/"+GenMthYr;}
+			}
+			else if(BillFreq.startsWith("M"))
+			{
+				nm="Monthly";
+			}
+			else if(BillFreq.equals("D"))
+			{
+				nm="Daily";
+				PriceEffDate=rpt_dt;
+			}
+			else
+			{
+				nm="NA";
+			}
+			nm="P"+PlantSeqNo+": "+nm;
+		
+				VBILL_FREQ.add(nm);
+				VBILL_FREQ_DT.add(PriceEffDate);
+				return PriceEffDate;
+			
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		return nm;
+	}
+
+	public void InsertEmailRecipientConfigForActiveDealPrice() 
+	{
+		String function_nm="InsertEmailRecipientConfigForActiveDealPrice()";
+		try
+		{
+			int count=0;
+			String queryString ="SELECT COUNT(MENU_NAME) " 
+				 		+ "FROM FMS_EMAIL_SUPPORT_MST  "
+				 		+ "WHERE MENU_NAME='Active Deal Price' ";
+		//	System.out.println("FMS9_REPORT_SUPPORT_MST: "+queryString);
+				stmt= conn.prepareStatement(queryString);
+			rset = stmt.executeQuery();
+			if(rset.next())
+			{				
+				count=rset.getInt(1);
+			}
+			rset1.close();
+			stmt1.close();
+			if(count==0)
+			{
+				queryString="INSERT INTO FMS_EMAIL_SUPPORT_MST (MODULE_NAME,MENU_NAME,REPORT_FREQ,GENERATION_TYPE,SUPPORT_FLAG,SEQ_NO) "
+						+ "VALUES ('Mgmt Reports','Active Deal Price','NA','On-Event','Y','1')  ";
+				System.out.println("FMS9_REPORT_SUPPORT_MST: "+queryString);
+				stmt= conn.prepareStatement(queryString);
+				stmt.executeUpdate();
+				conn.commit();
+				stmt.close();
+				System.out.println("Active Deal Price: New entry created in FMS_EMAIL_SUPPORT_MST .............. ");
+			}
+			else
+			{
+				ToEmail = utilBean.getToMailReceipentList(conn,comp_cd,"Active Deal Price", "Mgmt Reports", "NA", "On-Event");
+			//	ToEmail += utilBean.getCcMailReceipentList(conn,comp_cd,"Active Deal Price", "Mgmt Reports", "NA", "On-Event");
+				System.out.println("Active Deal Price:: Exists in FMS_EMAIL_SUPPORT_MST .............. ");
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+
+		}	
+	}
+	public void EmailRecipientForActiveDealPrice() 
+	{
+		String function_nm="EmailRecipientForActiveDealPrice()";
+		try
+		{
+			{
+				ToEmail = utilBean.getToMailReceipentList(conn,comp_cd,"Active Deal Price", "Mgmt Reports", "NA", "On-Event");
+				System.out.println("Active Deal Price:: Exists in FMS_EMAIL_SUPPORT_MST .............. ");
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+
+		}	
+	}
+	
+	private String PriceMailBody2(String company_cd) throws Exception
+	{
+		String function_nm="PriceMailBody2()";
+		String mailBody="";
+		try
+		{
+		String CompanyName="";
+			String highlight_aprv="#00cc00";
+			String highlight_request="yellow";
+			String highlight_reje="red";
+			String mail_subject="Price Change ";
+			int count=0, NoCount=0;
+			String tempchkUpdateFlag[]=chkUpdateFlag.split(":");
+			String ReqAprRate="", ReqAprDate="", ReqAprBackColor="";
+			String context=utilBean.getAutomationKeyDetail(conn, "ENV_CONTEXT");
+			if(!context.contains("EMS"))
+				context="EMS "+context;
+			mail_subject=context+" Price Change ";
+			mailBody="<html>";
+		
+			if(action.equals("request"))
+				{
+					mailBody+="<font style='background:"+highlight_request+"' color='black'>Auto Price Change for "+VRATE_EFF_DT.elementAt(0)+"</font><br>"
+						+ "<span style='font-size:"+CommonVariable.mail_font_size+";font-family:"+CommonVariable.mail_font_family+";'>Execution Date: "+rpt_dt+"</span><br>";
+					mailBody+= "<span style='font-size:"+CommonVariable.mail_font_size+";font-family:"+CommonVariable.mail_font_family+";'>Following CounterParty Contract Prices have been Requested: ";
+					mail_subject+="(Requested): ";
+				}
+			else if(action.equals("approve"))
+				{
+					mailBody+="<font style='background:"+highlight_aprv+"' color='white'>Auto Price Change for "+VRATE_EFF_DT.elementAt(0)+"</font><br>"
+						+ "<span style='font-size:"+CommonVariable.mail_font_size+";font-family:"+CommonVariable.mail_font_family+";'>Execution Date: "+rpt_dt+"</span><br>";
+					mailBody+= "<span style='font-size:"+CommonVariable.mail_font_size+";font-family:"+CommonVariable.mail_font_family+";'>Following CounterParty Contract Prices have been Approved: ";
+					mail_subject+="(Approved): ";
+				}
+			if((action.equals("request") || action.equals("approve")))
+			{
+				if(company_cd.equals("1")) CompanyName="SEMTIPL";
+				else if(company_cd.equals("2")) CompanyName="SEIPL";
+				
+					mailBody+="<table bordercolor='black' style='font-size:"+CommonVariable.mail_font_size+";font-family:"+CommonVariable.mail_font_family+";padding:2px;' border='1' cellpadding='0' cellspacing='0'>";
+					mailBody+= "<tr style='background:lightgrey'>"
+							+ "<td align='center'><b>Sr#</b></td>"
+							+ "<td><b>&nbsp;"+CompanyName+": Legal Entity</b>&nbsp;</td>"
+							+ "<td align='center'><b>&nbsp;Contract# (Ref#)</b>&nbsp;</td>"
+							+ "<td align='center'><b>&nbsp;Deal Duration</b>&nbsp;</td>"
+							+ "<td align='center'><b>&nbsp;Deal Type</b>&nbsp;</td>"
+							+ "<td align='center'><b>&nbsp;Old Price</b></td>"
+							+ "<td align='center'><b>&nbsp;New Price</b></td>"
+							+ "</tr>";
+				//	System.out.println(VAPPLICABLE_RATE.size()+":VAPPLICABLE_RATE: "+VAPPLICABLE_RATE);
+				//	System.out.println(VAWAITING_RATE.size()+":VAWAITING_RATE: "+VAWAITING_RATE);
+				for (int i=0; i<VCOUNTERPARTY_ABBR.size(); i++)	
+				{ 
+					ReqAprRate="";	//System.out.println(tempchkUpdateFlag[i]+":Active Deal Price: "+VPriceAppl.elementAt(i));
+					if(action.equals("request")) { ReqAprRate=""+VAPPLICABLE_RATE.elementAt(i); ReqAprDate=""+VBILL_FREQ_DT.elementAt(i);ReqAprBackColor=highlight_request; }
+					else if(action.equals("approve")) { ReqAprRate=""+VAWAITING_RATE.elementAt(i); ReqAprBackColor=highlight_aprv; }
+					
+					if(tempchkUpdateFlag.length>1 && !VPriceAppl.elementAt(i).equals("Y"))
+					{
+				//	if (!VPriceAppl.elementAt(i).equals("Y")) 
+					//if((action.equals("request") || action.equals("approve") && !VAWAITING_RATE.elementAt(i).equals("")) && tempchkUpdateFlag[i].equals("Y"))
+						if(!ReqAprRate.equals("") && tempchkUpdateFlag[i].equals("Y"))
+						{
+							count++;
+							mail_subject+=VCOUNTERPARTY_ABBR.elementAt(i)+":"+VDEAL_NUMBER.elementAt(i)+"~";
+							mailBody+=""
+							+ "<tr>"
+							+ "<td>&nbsp;"+count+"&nbsp;</td>"
+							+ "<td>&nbsp;"+VCOUNTERPARTY_ABBR.elementAt(i)+"-"+VCOUNTERPARTY_NM.elementAt(i)+"&nbsp;</td>"
+							+ "<td>&nbsp;"+VDEAL_NUMBER.elementAt(i)+" ("+VDEAL_REF.elementAt(i)+")&nbsp;</td>"
+							+ "<td>&nbsp;"+VCONT_PERIOD.elementAt(i)+"&nbsp;</td>"
+							+ "<td>&nbsp;"+VBUY_SALE.elementAt(i)+" ("+VDEAL_TYPE.elementAt(i)+")&nbsp;</td>"
+							+ "<td style='background:D9D9F3';>&nbsp;"+VAPPROVED_RATE.elementAt(i)+"&nbsp;"+VAPPROVED_DATE.elementAt(i)+"</td>"
+							+ "<td style='background:"+ReqAprBackColor+"';>&nbsp;"+ReqAprRate+"&nbsp;"+ReqAprDate+"</td>"
+							+ "</tr>";					
+						}
+						else
+						{
+							NoCount++;
+						}
+					}
+			}
+			mailBody+= "<tr style='background:lightgrey'><td align='right' colspan=7><b>&nbsp;</b></td></tr>";
+			mailBody+= 	"</table>"
+					+ "<br><br><br><font style='font-size:"+CommonVariable.mail_font_size+";font-family:"+CommonVariable.mail_font_family+";'>Please maintain confidentiality."
+					+ "<br><b>NOTE:</b><i> System Generated Notification - Please do not Reply.</i>"
+					+ "</html>";
+			} //EoF if((action.equals("request") || action.equals("approve")))
+			String to_mail_list="";
+			String cc_mail_list="";
+			
+			if((action.equals("request") || action.equals("approve")))
+			{
+				to_mail_list = utilBean.getToMailReceipentList(conn,comp_cd,"Active Deal Price", "Mgmt Reports", "NA", "On-Event");
+				cc_mail_list = utilBean.getCcMailReceipentList(conn,comp_cd,"Active Deal Price", "Mgmt Reports", "NA", "On-Event");
+			}
+			System.out.println(action+":Email Delivered, No of Contract: "+CountPriceExistNo);
+			if((action.equals("request") || action.equals("approve")) && (!to_mail_list.equals("") && CountPriceExistNo>0))
+			{
+				mailDelv.sendMail(comp_cd,to_mail_list, mail_subject, mailBody, "", cc_mail_list, "");
+				System.out.println(action+":Email Delivered To: "+to_mail_list+":CC::"+cc_mail_list);
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+		
+		return mailBody;
+	}
+	String ToEmail="";//SB20240423 
+	public String getToEmail() {return ToEmail;}//SB20240423
+
+	String appPrice = "-";
+	String appPriceUnit = "USD";//SB
+	String appDate = "";
+	String exchgVal = "0";
+	String remark = "";
+	String finCurv = "";
+	String priceType = "";
+	String physCurv = "";
+	String rate_unit = "";
+	
+	String from_dt = "";
+	String to_dt = "";
+	
+	String callFlag = "";
+	public void setCallFlag(String callFlag) {this.callFlag = callFlag;}
+	String opration = "";
+	public void setOpration(String opration) {this.opration = opration;}
+	String comp_cd = "";
+	public void setComp_cd(String comp_cd) {this.comp_cd = comp_cd;}
+	
+	String agmt_type="";
+	public void setAgmt_type(String agmt_type) {this.agmt_type=agmt_type;}
+	
+	String msg="Data Listed Successfully.";
+	public String getMsg() {return this.msg;}
+	
+	String msg_type="S";
+	public String getMsgType() {return this.msg_type;}
+	
+	String agmt_no="";
+	public void setAgmt_no(String agmt_no) {this.agmt_no=agmt_no;}
+	
+	String agmt_rev="";
+	public void setAgmt_rev(String agmt_rev) {this.agmt_rev=agmt_rev;}
+	
+	String cont_no="";
+	public void setCont_no(String cont_no) {this.cont_no=cont_no;}
+	
+	String cont_rev="";
+	public void setCont_rev(String cont_rev) {this.cont_rev=cont_rev;}
+	
+	String cont_type="";
+	public void setCont_type(String cont_type) {this.cont_type=cont_type;}
+	
+	String cargo_no="";
+	public void setCargo_No(String cargo_no) {this.cargo_no=cargo_no;}
+	
+	String mapping_id="";
+	public void setMapping_id(String mapping_id) {this.mapping_id=mapping_id;}
+	
+	// SagarB20251202 Below block Added For Active Deal Pricing
+	String rpt_dt = "";
+	public void setReport_dt(String rpt_dt) {this.rpt_dt = rpt_dt;}
+	String action = "";
+	public void setAction(String action) {this.action = action;}
+	String chkUpdateFlag = "";
+	public void setChkUpdateFlag(String chkUpdateFlag) {this.chkUpdateFlag = chkUpdateFlag;}
+	String empCD = "";
+	public void setEmpCD(String empCD) {this.empCD = empCD;}
+	
+	
+	String counterparty_cd = "";
+	public void setCounterparty_cd(String counterparty_cd) {this.counterparty_cd = counterparty_cd;}
+	
+	String counterparty_abbr = "";
+	String display_map_id = "";
+	public String getCounterparty_abbr() {return counterparty_abbr;}
+	public String getDisplay_map_id() {return display_map_id;}
+	
+	Vector VMST_COUNTERPARTY_CD = new Vector();
+	Vector VMST_COUNTERPARTY_NM = new Vector();
+	Vector VMST_COUNTERPARTY_ABBR = new Vector();
+	Vector VCOUNTERPARTY_NM = new Vector();
+	Vector VCOUNTERPARTY_ABBR = new Vector();
+	Vector VTRADE_DT = new Vector();
+	Vector VDEAL_TYPE = new Vector();		// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VCONT_PERIOD = new Vector();		// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VPRICE_TYPE = new Vector();		// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VAPPROVED_RATE = new Vector();	// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VAWAITING_RATE = new Vector();	// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VAPPLICABLE_RATE = new Vector();	// SagarB20251202 Vector Added For Active Deal Pricing 
+	Vector VRATE_DT_RANGE = new Vector();	// SB20260101 Vector Added For Active Deal Pricing
+	Vector VRATE_EFF_DT = new Vector();		// SB20260101 Vector Added For Active Deal Pricing
+	Vector VBILL_FREQ = new Vector();		// SB20260101 Vector Added For Active Deal Pricing
+	Vector VBILL_FREQ_DT = new Vector();	// SB20260101 Vector Added For Active Deal Pricing
+	Vector VPriceAppl = new Vector();	    // SB20260101 Vector Added For Active Deal Pricing
+	Vector VPriceNoDays = new Vector();	    // SB20260101 Vector Added For Active Deal Pricing
+	Vector VAPPROVED_DATE = new Vector();	// SB20260101 Vector Added For Active Deal Pricing
+	Vector VFIN_CURV = new Vector();		// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VPHY_CURV = new Vector();		// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VCOUNTERPARTY_CD = new Vector();	// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VAGMT_NO = new Vector();			// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VAGMT_REV = new Vector();		// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VCONT_NO = new Vector();			// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VCONT_REV = new Vector();		// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VCONTRACT_TYPE = new Vector();	// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VCARGO_NO = new Vector();		// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VCONT_STATUS = new Vector();		// SagarB20251202 Vector Added For Active Deal Pricing
+	Vector VBUY_SALE = new Vector();
+	Vector VDEAL_NUMBER = new Vector();
+	Vector VDEAL_REF = new Vector();
+	
+	Vector VCALCULATION = new Vector();
+	public Vector getVCALCULATION() {return this.VCALCULATION;}
+	
+	//SB20251215//////////////////
+	
+	String ContMthYr="";
+	public String getContMthYr() {return ContMthYr;}//SB20260101
+	String LastPriceEntryDateTime="";
+	public String getLastPriceEntryDateTime() {return LastPriceEntryDateTime;}//SB20251215
+	// SagarB20251206 Declared below variables for getCurvePrice() function
+	String lastCurveEntDt = "";
+	public String getLastCurveEntDt() {return this.lastCurveEntDt;}
+	int CountPriceExistNo=0;
+	public Integer getCountPriceExistNo() {return CountPriceExistNo;}
+	
+	Vector VApplicableCurves = new Vector();
+	Vector VApplicableSpotPrice = new Vector();
+	Vector VApplicableSpotUnit = new Vector();
+	Vector VApplicableCommodityType = new Vector();
+	Vector VCurveContMthSettlePrice = new Vector();
+	Vector VCurveContMthSettlePeriod = new Vector();
+	Vector VApplicableSpotFwdRegdDt = new Vector();
+	
+	public Vector getVApplicableCurves() {return VApplicableCurves;}
+	public Vector getVApplicableSpotPrice() {return VApplicableSpotPrice;}
+	public Vector getVApplicableSpotUnit() {return VApplicableSpotUnit;}
+	public Vector getVApplicableCommodityType() {return VApplicableCommodityType;}
+	public Vector getVCurveContMthSettlePrice() {return VCurveContMthSettlePrice;}
+	public Vector getVCurveContMthSettlePeriod() {return VCurveContMthSettlePeriod;}
+	public Vector getVApplicableSpotFwdRegdDt() {return VApplicableSpotFwdRegdDt;}
+	
+	Vector VSTART_DT = new Vector();
+	Vector VEND_DT = new Vector();
+	Vector VPRICE_RATE = new Vector();
+	Vector VPRICE_RATE_UNIT = new Vector();
+	Vector VPRICE_RATE_UNIT_NM = new Vector();
+	Vector VREMARK = new Vector();
+	Vector VSEQ_NO = new Vector();
+	Vector VIS_RADIO_ENABLE = new Vector();
+	Vector VPHYSICAL_CURVE_MST = new Vector();
+	Vector VFINANCIAL_CURVE_MST = new Vector();
+	Vector VCURVE_NM = new Vector();
+	Vector VPRICE_START_DT = new Vector();
+	Vector VPRICE_END_DT = new Vector();
+	Vector VCURVE_LOGIC = new Vector();
+	Vector VFORMULA = new Vector();
+	Vector VSLOPE = new Vector();
+	Vector VCONSTANT = new Vector();
+	Vector VPRICE_RANGE = new Vector();
+	Vector VPRICE_RANGE_NM = new Vector();
+	Vector VMIN_PRICE_ST_END_DT = new Vector();
+	Vector VPRICE_DECI = new Vector();
+	Vector VFINAL_PRICE_DECI = new Vector();
+	Vector VPREM_DISC_RATE = new Vector();
+	
+	public Vector getVSTART_DT() {return VSTART_DT;}
+	public Vector getVEND_DT() {return VEND_DT;}
+	public Vector getVPRICE_RATE() {return VPRICE_RATE;}
+	public Vector getVPRICE_RATE_UNIT() {return VPRICE_RATE_UNIT;}
+	public Vector getVPRICE_RATE_UNIT_NM() {return VPRICE_RATE_UNIT_NM;}
+	public Vector getVREMARK() {return VREMARK;}
+	public Vector getVSEQ_NO() {return VSEQ_NO;}
+	public Vector getVIS_RADIO_ENABLE() {return VIS_RADIO_ENABLE;}
+	public Vector getVPHYSICAL_CURVE_MST() {return VPHYSICAL_CURVE_MST;}
+	public Vector getVFINANCIAL_CURVE_MST() {return VFINANCIAL_CURVE_MST;}
+	public Vector getVCURVE_NM() {return VCURVE_NM;}
+	public Vector getVPRICE_START_DT() {return VPRICE_START_DT;}
+	public Vector getVPRICE_END_DT() {return VPRICE_END_DT;}
+	public Vector getVCURVE_LOGIC() {return VCURVE_LOGIC;}
+	public Vector getVFORMULA() {return VFORMULA;}
+	public Vector getVSLOPE() {return VSLOPE;}
+	public Vector getVCONSTANT() {return VCONSTANT;}
+	public Vector getVPRICE_RANGE() {return VPRICE_RANGE;}
+	public Vector getVPRICE_RANGE_NM() {return VPRICE_RANGE_NM;}
+	public Vector getVMIN_PRICE_ST_END_DT() {return VMIN_PRICE_ST_END_DT;}
+	public Vector getVPRICE_DECI() {return VPRICE_DECI;}
+	public Vector getVFINAL_PRICE_DECI() {return VFINAL_PRICE_DECI;}
+	public Vector getVPREM_DISC_RATE() {return VPREM_DISC_RATE;}
+	///////
+	
+	public Vector getVMST_COUNTERPARTY_CD() {return VMST_COUNTERPARTY_CD;}
+	public Vector getVMST_COUNTERPARTY_NM() {return VMST_COUNTERPARTY_NM;}
+	public Vector getVMST_COUNTERPARTY_ABBR() {return VMST_COUNTERPARTY_ABBR;}
+	
+	public Vector getVDEAL_REF(){return VDEAL_REF;}
+	public Vector getVDEAL_NUMBER(){return VDEAL_NUMBER;}
+	public Vector getVBUY_SALE(){return VBUY_SALE;}
+	public Vector getVTRADE_DT(){return VTRADE_DT;}
+	public Vector getVDEAL_TYPE(){return VDEAL_TYPE;}				// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVCONT_PERIOD(){return VCONT_PERIOD;}			// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVPRICE_TYPE(){return VPRICE_TYPE;}				// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVAPPROVED_RATE(){return VAPPROVED_RATE;}		// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVAWAITING_RATE(){return VAWAITING_RATE;}		// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVAPPLICABLE_RATE(){return VAPPLICABLE_RATE;}	// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVRATE_DT_RANGE(){return VRATE_DT_RANGE;}		// SB20260101 Vector Added For Active Deal Pricing
+	public Vector getVRATE_EFF_DT(){return VRATE_EFF_DT;}			// SB20260101 Vector Added For Active Deal Pricing
+	public Vector getVBILL_FREQ(){return VBILL_FREQ;}			    // SB20260101 Vector Added For Active Deal Pricing
+	public Vector getVBILL_FREQ_DT(){return VBILL_FREQ_DT;}			// SB20260101 Vector Added For Active Deal Pricing
+	public Vector getVPriceAppl(){return VPriceAppl;}			    // SB20260101 Vector Added For Active Deal Pricing
+	public Vector getVPriceNoDays(){return VPriceNoDays;}			    // SB20260101 Vector Added For Active Deal Pricing
+	public Vector getVAPPROVED_DATE(){return VAPPROVED_DATE;}		// SB20260101 Vector Added For Active Deal Pricing
+	public Vector getVFIN_CURV(){return VFIN_CURV;}					// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVPHY_CURV(){return VPHY_CURV;}					// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVCOUNTERPARTY_CD(){return VCOUNTERPARTY_CD;}	// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVAGMT_NO(){return VAGMT_NO;}					// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVAGMT_REV(){return VAGMT_REV;}					// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVCONT_NO(){return VCONT_NO;}					// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVCONT_REV(){return VCONT_REV;}					// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVCARGO_NO(){return VCARGO_NO;}					// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVCONTRACT_TYPE(){return VCONTRACT_TYPE;}		// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVCONT_STATUS(){return VCONT_STATUS;}			// SagarB20251202 Vector Added For Active Deal Pricing
+	public Vector getVCOUNTERPARTY_ABBR(){return VCOUNTERPARTY_ABBR;}
+	public Vector getVCOUNTERPARTY_NM(){return VCOUNTERPARTY_NM;}
+	
+	// SagarB20260212 Added below vector for MIN_ADV
+	Vector VMIN_FORMULA = new Vector();
+	public Vector getVMIN_FORMULA() {return VMIN_FORMULA;}
+
+}

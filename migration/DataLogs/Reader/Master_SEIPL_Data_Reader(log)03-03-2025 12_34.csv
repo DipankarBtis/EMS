@@ -1,0 +1,38 @@
+
+
+<<START>>,<<FMS_AGMT_MST>>,, 	(03-MAR-2025 12:34:01)
+ 
+COMPANY_CD,COUNTERPARTY_CD,AGMT_TYPE,AGMT_NO,AGMT_REV,TIMESTAMP
+2,1,F,1,2, 	(03-MAR-2025 12:34:03)
+**********AutomationEMS Error  (03-MAR-2025 12:34:03) **********
+java.sql.SQLException: ORA-01830: date format picture ends before converting entire input string
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_AGMT_MST(Sales_SEIPL_Data_Reader.java:316)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:108)
+**************************************************
+
+<<FUNCTION FMS_AGMT_MST() ENDED WITH ERRORS>>
+
+COMPANY_CD,COUNTERPARTY_CD,AGMT_TYPE,AGMT_NO,AGMT_REV,TRANSPORTER_CD,PLANT_SEQ_NO,TIMESTAMP
+**********AutomationEMS Error  (03-MAR-2025 12:34:03) **********
+java.sql.SQLException: ORA-01830: date format picture ends before converting entire input string
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_AGMT_TRANSPTR(Sales_SEIPL_Data_Reader.java:515)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:112)
+**************************************************
+
+<<FUNCTION FMS_AGMT_TRANSPTR() ENDED WITH ERRORS>>
+
+COMPANY_CD,COUNTERPARTY_CD,AGMT_TYPE,AGMT_NO,AGMT_REV,PLANT_SEQ_NO,TIMESTAMP
+2,1 , RIL,F,1,2,1, 	(03-MAR-2025 12:34:03)
+**********AutomationEMS Error  (03-MAR-2025 12:34:03) **********
+java.sql.SQLException: ORA-01830: date format picture ends before converting entire input string
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_AGMT_PLANT(Sales_SEIPL_Data_Reader.java:710)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:116)
+**************************************************
+
+<<FUNCTION FMS_AGMT_PLANT() ENDED WITH ERRORS>>

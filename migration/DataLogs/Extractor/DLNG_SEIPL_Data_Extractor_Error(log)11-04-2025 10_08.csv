@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_TRUCK_DRIVER_MST()>>
+**********AutomationEMS Error  (11-APR-2025 10:08:47) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Extractor.FMS_TRUCK_DRIVER_MST(DLNG_SEIPL_Data_Extractor.java:515)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Extractor.init(DLNG_SEIPL_Data_Extractor.java:111)
+**************************************************
+
+<<FUNCTION FMS_TRUCK_DRIVER_MST() ENDED WITH ERRORS>>

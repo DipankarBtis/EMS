@@ -1,0 +1,22 @@
+
+<<ERROR IN FMS_BUY_CARGO_ALLOC_BOE()>>
+**********AutomationEMS Error  (23-MAY-2025 12:16:48) **********
+java.sql.SQLSyntaxErrorException: ORA-01722: invalid number
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.FMS_BUY_CARGO_ALLOC_BOE(Purchase_SEIPL_Data_RollBack.java:4095)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:106)
+**************************************************
+
+<<FUNCTION FMS_BUY_CARGO_ALLOC_BOE() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_TRADER_CN_MST()>>
+**********AutomationEMS Error  (23-MAY-2025 12:16:51) **********
+java.sql.SQLDataException: ORA-01861: literal does not match format string
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.FMS_TRADER_CN_MST(Purchase_SEIPL_Data_RollBack.java:322)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:166)
+**************************************************
+
+<<FUNCTION FMS_TRADER_CN_MST() ENDED WITH ERRORS>>

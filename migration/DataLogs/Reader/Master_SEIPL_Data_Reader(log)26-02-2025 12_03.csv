@@ -1,0 +1,42 @@
+
+
+<<START>>,<<FMS_HOLIDAY_DTL>>, 	(26-FEB-2025 12:03:00)
+ 
+**********AutomationEMS Error  (26-FEB-2025 12:03:00) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_HOLIDAY_DTL(Master_SEIPL_Data_Reader.java:6864)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:232)
+**************************************************
+
+<<FUNCTION FMS_HOLIDAY_DTL() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_HOLIDAY_DTL>>, 	(26-FEB-2025 12:03:12)
+ 
+**********AutomationEMS Error  (26-FEB-2025 12:03:12) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_HOLIDAY_DTL(Master_SEIPL_Data_Reader.java:6864)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:232)
+**************************************************
+
+<<FUNCTION FMS_HOLIDAY_DTL() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_PRODUCT_MST>>, 	(26-FEB-2025 12:03:20)
+ 
+PROD_CD,PROD_ABBR,TIMESTAMP,
+1 , LNG, 	(26-FEB-2025 12:03:20)	 (Not Inserted)
+2 , RLNG, 	(26-FEB-2025 12:03:20)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,2, 	(26-FEB-2025 12:03:20)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(26-FEB-2025 12:03:20)
+ 
+
+TOTAL SKIPPED DATA ,2, 	(26-FEB-2025 12:03:20)
+ 
+<<END>>,<<FMS_PRODUCT_MST>>, 	(26-FEB-2025 12:03:20)
+ 

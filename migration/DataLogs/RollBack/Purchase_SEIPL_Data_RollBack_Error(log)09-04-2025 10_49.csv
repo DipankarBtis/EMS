@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_CONT_PRICE_DTL()>>
+**********AutomationEMS Error  (09-APR-2025 10:49:26) **********
+java.lang.ArrayIndexOutOfBoundsException: 23
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.FMS_CONT_PRICE_DTL(Purchase_SEIPL_Data_RollBack.java:1450)
+com.etrm.fms.migration.Purchase_SEIPL_Data_RollBack.init(Purchase_SEIPL_Data_RollBack.java:138)
+**************************************************
+
+<<FUNCTION FMS_CONT_PRICE_DTL() ENDED WITH ERRORS>>

@@ -1,0 +1,28 @@
+
+
+<<START>>,<<FMS_AGMT_MST(DLNG)>>,,,, 	(27-MAY-2025 15:08:47)
+ 
+COMPANY_CD,COUNTERPARTY_CD,AGMT_TYPE,AGMT_NO,AGMT_REV,TIMESTAMP,
+**********AutomationEMS Error  (27-MAY-2025 15:08:47) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_AGMT_MST(DLNG_SEIPL_Data_Reader.java:2352)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:139)
+**************************************************
+
+<<FUNCTION FMS_AGMT_MST(DLNG)() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_AGMT_BU>>, 	(27-MAY-2025 15:08:47)
+ 
+
+TOTAL DATA IN EXCEL : ,0, 	(27-MAY-2025 15:08:47)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(27-MAY-2025 15:08:47)
+ 
+
+TOTAL SKIPPED DATA ,87, 	(27-MAY-2025 15:08:47)
+ 
+<<END>>,<<FMS_AGMT_BU>>, 	(27-MAY-2025 15:08:47)
+ 

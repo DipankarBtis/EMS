@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_FFLOW_INV_MST()>>
+**********AutomationEMS Error  (05-SEP-2025 15:09:33) **********
+java.sql.SQLException: Missing IN or OUT parameter at index:: 26
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_FFLOW_INV_MST(Sales_SEIPL_Data_Reader.java:16730)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:280)
+**************************************************
+
+<<FUNCTION FMS_FFLOW_INV_MST() ENDED WITH ERRORS>>

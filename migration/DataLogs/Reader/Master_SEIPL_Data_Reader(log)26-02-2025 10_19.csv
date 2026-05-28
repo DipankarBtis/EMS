@@ -1,0 +1,228 @@
+
+
+<<START>>,<<FMS_CUSTOM_TAX_STRUCT_DTL>>,,, 	(26-FEB-2025 10:19:00)
+ 
+COMPANY_CD,TAX_STRUCT_CD,TAX_STRUCT_DTL,EFF_DT,TIMESTAMP
+2 , , BCD 5%, ECS 2% , 09/07/2004 00:00:00, 	(26-FEB-2025 10:19:00)	 (Not Inserted)
+2 , , BCD 5%, ECS 2%, HECS 1% , 01/03/2007 00:00:00, 	(26-FEB-2025 10:19:00)
+2 , , BCD 2.5%, SWS 10% on BCD , 02/02/2018 00:00:00, 	(26-FEB-2025 10:19:00)
+
+TOTAL DATA IN EXCEL : ,3,,, 	(26-FEB-2025 10:19:00)
+ 
+
+TOTAL DATA INSERTED : ,2,,, 	(26-FEB-2025 10:19:00)
+ 
+
+TOTAL SKIPPED DATA ,1,,, 	(26-FEB-2025 10:19:00)
+ 
+<<END>>,<<FMS_CUSTOM_TAX_STRUCT_DTL>>,,, 	(26-FEB-2025 10:19:00)
+ 
+
+<<START>>,<<FMS_HOLIDAY_DTL>>, 	(26-FEB-2025 10:19:00)
+ 
+HOLIDAY_DT,HOLIDAY_NM,TIMESTAMP,
+16/02/2025 00:00:00 , SUNDAY, 	(26-FEB-2025 10:19:01)
+**********AutomationEMS Error  (26-FEB-2025 10:19:01) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("EMS"."FMS_HOLIDAY_DTL"."STATE_TIN")
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_HOLIDAY_DTL(Master_SEIPL_Data_Reader.java:6931)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:232)
+**************************************************
+
+<<FUNCTION FMS_HOLIDAY_DTL() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_PRODUCT_MST>>, 	(26-FEB-2025 10:19:01)
+ 
+PROD_CD,PROD_ABBR,TIMESTAMP,
+1 , LNG, 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+2 , RLNG, 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+201 , ImpLNG, 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+202 , ITankPur, 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+203 , TP(RLNG), 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+301 , IGX(DOMG) , 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+302 , D6(DOMG), 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+303 , CBM(DOMG), 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+304 , ONGC Gas , 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+305 , SEMTIPL(DOMG) , 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+306 , RIL(DOMG), 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+307 , BP(DOMG), 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+308 , HPCL(DOMG) , 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+309 , AMNS(DOMG), 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+3 , DOMG, 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+310 , D6(DOMG-CAP), 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+311 , IGX(DOMG-CAP) , 	(26-FEB-2025 10:19:01)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,17, 	(26-FEB-2025 10:19:01)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(26-FEB-2025 10:19:01)
+ 
+
+TOTAL SKIPPED DATA ,17, 	(26-FEB-2025 10:19:01)
+ 
+<<END>>,<<FMS_PRODUCT_MST>>, 	(26-FEB-2025 10:19:01)
+ 
+
+<<START>>,<<FMS_SAC_MST>>, 	(26-FEB-2025 10:19:01)
+ 
+SAC_CODE,TIMESTAMP,
+Other Miscellaneous services - Other Services n.e.c. ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Other employment & labour supply services n.e.c ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Other support services n.e.c. ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Road transport services of Goods including letters, parcels, live animals, household & office furnit ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Legal advisory and representation services concerning other fields of law. ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Sponsorship Services & Brand Promotion Services ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Coastal and transoceanic (overseas) water transport services of goods by refrigerator vessels, tanke ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Other administrative services of the government n.e.c. ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Maintenance and repair services of other machinery and equipments ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Courier services ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Other on-line contents n.e.c. ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+On-line text based information such as online books, newpapers, periodicals, directories etc ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+998349 - Other technical and scientific services n.e.c. ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Rental or leasing services involving own or leased non-residential property ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Management consulting and management services including financial, strategic, human resources, marke ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Information technology (IT) consulting and support services ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Commercial training and coaching services ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Hosting and information technology (IT) infrastructure provisioning services ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Repair services of bicycles ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Other professional, technical and business service ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+INSTALLATION SERVICES OF OTHER GOODS ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Other human health services including homeopathy, unani, ayurveda, naturopathy, acupuncture etc. ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Goods transport agency services for road transport ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+998434 - Software downloads ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+RENTAL SERVICES OF ROAD VEHICLES INVCLUDING BUSES,COACHES,CARS,TRUCKS AND OTHER MOTOR VEHICLES WITH  ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Maintenance and repair services of other goods n.e.c. under Heading No. 9987 Maintenance, repair and ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Licensing services for the right to use computer software and databases ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+Engineering advisory services ,  	(26-FEB-2025 10:19:01)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,28, 	(26-FEB-2025 10:19:01)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(26-FEB-2025 10:19:01)
+ 
+
+TOTAL SKIPPED DATA ,28, 	(26-FEB-2025 10:19:01)
+ 
+<<END>>,<<FMS_SAC_MST>>, 	(26-FEB-2025 10:19:01)
+ 
+
+<<START>>,<<FMS_CUSTOM_TAX_STRUCT_DTL>>,,, 	(26-FEB-2025 10:19:30)
+ 
+COMPANY_CD,TAX_STRUCT_CD,TAX_STRUCT_DTL,EFF_DT,TIMESTAMP
+2 , , BCD 5%, ECS 2% , 09/07/2004 00:00:00, 	(26-FEB-2025 10:19:30)
+2 , , BCD 5%, ECS 2%, HECS 1% , 01/03/2007 00:00:00, 	(26-FEB-2025 10:19:30)
+2 , , BCD 2.5%, SWS 10% on BCD , 02/02/2018 00:00:00, 	(26-FEB-2025 10:19:30)
+
+TOTAL DATA IN EXCEL : ,3,,, 	(26-FEB-2025 10:19:30)
+ 
+
+TOTAL DATA INSERTED : ,3,,, 	(26-FEB-2025 10:19:30)
+ 
+
+TOTAL SKIPPED DATA ,0,,, 	(26-FEB-2025 10:19:30)
+ 
+<<END>>,<<FMS_CUSTOM_TAX_STRUCT_DTL>>,,, 	(26-FEB-2025 10:19:30)
+ 
+
+<<START>>,<<FMS_HOLIDAY_DTL>>, 	(26-FEB-2025 10:19:30)
+ 
+HOLIDAY_DT,HOLIDAY_NM,TIMESTAMP,
+16/02/2025 00:00:00 , SUNDAY, 	(26-FEB-2025 10:19:31)
+**********AutomationEMS Error  (26-FEB-2025 10:19:31) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("EMS"."FMS_HOLIDAY_DTL"."STATE_TIN")
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_HOLIDAY_DTL(Master_SEIPL_Data_Reader.java:6931)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:232)
+**************************************************
+
+<<FUNCTION FMS_HOLIDAY_DTL() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_PRODUCT_MST>>, 	(26-FEB-2025 10:19:31)
+ 
+PROD_CD,PROD_ABBR,TIMESTAMP,
+1 , LNG, 	(26-FEB-2025 10:19:31)
+2 , RLNG, 	(26-FEB-2025 10:19:31)
+201 , ImpLNG, 	(26-FEB-2025 10:19:31)
+202 , ITankPur, 	(26-FEB-2025 10:19:31)
+203 , TP(RLNG), 	(26-FEB-2025 10:19:31)
+301 , IGX(DOMG) , 	(26-FEB-2025 10:19:31)
+302 , D6(DOMG), 	(26-FEB-2025 10:19:31)
+303 , CBM(DOMG), 	(26-FEB-2025 10:19:31)
+304 , ONGC Gas , 	(26-FEB-2025 10:19:31)
+305 , SEMTIPL(DOMG) , 	(26-FEB-2025 10:19:31)
+306 , RIL(DOMG), 	(26-FEB-2025 10:19:31)
+307 , BP(DOMG), 	(26-FEB-2025 10:19:31)
+308 , HPCL(DOMG) , 	(26-FEB-2025 10:19:31)
+309 , AMNS(DOMG), 	(26-FEB-2025 10:19:31)
+3 , DOMG, 	(26-FEB-2025 10:19:31)
+310 , D6(DOMG-CAP), 	(26-FEB-2025 10:19:31)
+311 , IGX(DOMG-CAP) , 	(26-FEB-2025 10:19:31)
+
+TOTAL DATA IN EXCEL : ,17, 	(26-FEB-2025 10:19:31)
+ 
+
+TOTAL DATA INSERTED : ,17, 	(26-FEB-2025 10:19:31)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(26-FEB-2025 10:19:31)
+ 
+<<END>>,<<FMS_PRODUCT_MST>>, 	(26-FEB-2025 10:19:31)
+ 
+
+<<START>>,<<FMS_SAC_MST>>, 	(26-FEB-2025 10:19:31)
+ 
+SAC_CODE,TIMESTAMP,
+Other Miscellaneous services - Other Services n.e.c. ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Other employment & labour supply services n.e.c ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Other support services n.e.c. ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Road transport services of Goods including letters, parcels, live animals, household & office furnit ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Legal advisory and representation services concerning other fields of law. ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Sponsorship Services & Brand Promotion Services ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Coastal and transoceanic (overseas) water transport services of goods by refrigerator vessels, tanke ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Other administrative services of the government n.e.c. ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Maintenance and repair services of other machinery and equipments ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Courier services ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Other on-line contents n.e.c. ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+On-line text based information such as online books, newpapers, periodicals, directories etc ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+998349 - Other technical and scientific services n.e.c. ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Rental or leasing services involving own or leased non-residential property ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Management consulting and management services including financial, strategic, human resources, marke ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Information technology (IT) consulting and support services ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Commercial training and coaching services ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Hosting and information technology (IT) infrastructure provisioning services ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Repair services of bicycles ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Other professional, technical and business service ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+INSTALLATION SERVICES OF OTHER GOODS ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Other human health services including homeopathy, unani, ayurveda, naturopathy, acupuncture etc. ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Goods transport agency services for road transport ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+998434 - Software downloads ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+RENTAL SERVICES OF ROAD VEHICLES INVCLUDING BUSES,COACHES,CARS,TRUCKS AND OTHER MOTOR VEHICLES WITH  ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Maintenance and repair services of other goods n.e.c. under Heading No. 9987 Maintenance, repair and ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Licensing services for the right to use computer software and databases ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+Engineering advisory services ,  	(26-FEB-2025 10:19:31)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,28, 	(26-FEB-2025 10:19:31)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(26-FEB-2025 10:19:31)
+ 
+
+TOTAL SKIPPED DATA ,28, 	(26-FEB-2025 10:19:31)
+ 
+<<END>>,<<FMS_SAC_MST>>, 	(26-FEB-2025 10:19:31)
+ 
+
+<<START>>,<<FMS_HOLIDAY_DTL>>, 	(26-FEB-2025 10:19:55)
+ 
+**********AutomationEMS Error  (26-FEB-2025 10:19:55) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_HOLIDAY_DTL(Master_SEIPL_Data_Reader.java:6864)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:232)
+**************************************************
+
+<<FUNCTION FMS_HOLIDAY_DTL() ENDED WITH ERRORS>>

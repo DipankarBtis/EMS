@@ -1,0 +1,22 @@
+
+<<ERROR IN FMS_INVOICE_MST_LP()>>
+**********AutomationEMS Error  (27-JAN-2026 11:22:26) **********
+java.sql.SQLDataException: ORA-01843: not a valid month
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST_LP(Sales_SEIPL_Data_Reader.java:24401)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:337)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST_LP() ENDED WITH ERRORS>>
+
+<<ERROR IN FMS_INVOICE_MST_LP()>>
+**********AutomationEMS Error  (27-JAN-2026 11:22:38) **********
+java.sql.SQLDataException: ORA-01843: not a valid month
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST_LP(Sales_SEIPL_Data_Reader.java:24401)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:337)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST_LP() ENDED WITH ERRORS>>

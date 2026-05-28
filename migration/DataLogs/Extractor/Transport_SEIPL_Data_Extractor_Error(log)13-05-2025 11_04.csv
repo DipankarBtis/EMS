@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_DAILY_TRANSPORTER_NOM()>>
+**********AutomationEMS Error  (13-MAY-2025 11:04:30) **********
+java.lang.NullPointerException
+
+com.etrm.fms.migration.Transport_SEIPL_Data_Extractor.FMS_DAILY_TRANSPORTER_NOM(Transport_SEIPL_Data_Extractor.java:1427)
+com.etrm.fms.migration.Transport_SEIPL_Data_Extractor.init(Transport_SEIPL_Data_Extractor.java:122)
+**************************************************
+
+<<FUNCTION FMS_DAILY_TRANSPORTER_NOM() ENDED WITH ERRORS>>

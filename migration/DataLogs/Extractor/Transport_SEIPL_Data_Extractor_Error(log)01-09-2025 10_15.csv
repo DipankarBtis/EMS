@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_GTA_FFLOW_INV_MST()>>
+**********AutomationEMS Error  (01-SEP-2025 10:15:57) **********
+java.lang.ArrayIndexOutOfBoundsException: 2
+
+com.etrm.fms.migration.Transport_SEIPL_Data_Extractor.FMS_GTA_FFLOW_INV_MST(Transport_SEIPL_Data_Extractor.java:8711)
+com.etrm.fms.migration.Transport_SEIPL_Data_Extractor.init(Transport_SEIPL_Data_Extractor.java:144)
+**************************************************
+
+<<FUNCTION FMS_GTA_FFLOW_INV_MST() ENDED WITH ERRORS>>

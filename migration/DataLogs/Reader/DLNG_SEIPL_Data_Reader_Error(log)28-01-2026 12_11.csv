@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_DLNG_INVOICE_MST_LP()>>
+**********AutomationEMS Error  (28-JAN-2026 12:11:51) **********
+java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because "date" is null
+
+com.etrm.fms.util.DateUtil.getDays(DateUtil.java:336)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_INVOICE_MST_LP(DLNG_SEIPL_Data_Reader.java:17183)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:297)
+**************************************************
+
+<<FUNCTION FMS_DLNG_INVOICE_MST_LP() ENDED WITH ERRORS>>

@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_INVOICE_MST()>>
+**********AutomationEMS Error  (11-SEP-2025 18:29:26) **********
+java.sql.SQLException: Missing IN or OUT parameter at index:: 92
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_INVOICE_MST(Sales_SEIPL_Data_Reader.java:14854)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:268)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST() ENDED WITH ERRORS>>

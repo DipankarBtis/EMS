@@ -1,0 +1,41 @@
+
+
+<<START>>,<<FMS_TRADER_CONT_PLANT>>,,,,,,, 	(29-MAR-2025 15:28:16)
+ 
+COMNPANY_CD,CD,AGMT_NO,AGMT_REV,CONT_NO,CONT_REV,PLANT_SEQ_NO,CONTRACT_TYPE,TIMESTAMP
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,1, 0, 0,825014,4,1,I, 	(29-MAR-2025 15:28:16)
+2,1, 0, 0,825014,4,1,I, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,1, 0, 0,825018,2,1,D, 	(29-MAR-2025 15:28:16)
+2,1, 0, 0,825018,2,1,D, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,1, 0, 0,825022,0,1,I, 	(29-MAR-2025 15:28:16)
+2,1, 0, 0,825020,1,1,I, 	(29-MAR-2025 15:28:16)
+2,1, 0, 0,825020,1,1,I, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,43, 0, 0,825024,1,1,D, 	(29-MAR-2025 15:28:16)
+2,1, 0, 0,825016,3,1,D, 	(29-MAR-2025 15:28:16)
+2,1, 0, 0,825016,3,1,D, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+2,null, 0, 0,,0,1,, 	(29-MAR-2025 15:28:16)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : 25,,,,,,,, 	(29-MAR-2025 15:28:16)
+ 
+
+TOTAL DATA INSERTED : 6,,,,,,,, 	(29-MAR-2025 15:28:16)
+ 
+
+TOTAL SKIPPED DATA 19,,,,,,,, 	(29-MAR-2025 15:28:16)
+ 
+<<END>><<FMS_TRADER_CONT_PLANT>>,,,,,,,, 	(29-MAR-2025 15:28:16)
+ 

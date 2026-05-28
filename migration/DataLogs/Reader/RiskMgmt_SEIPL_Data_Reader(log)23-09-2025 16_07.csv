@@ -1,0 +1,30 @@
+
+
+<<START>>,<<FMS_MR_EXPO_EOD_DTL>>,, 	(23-SEP-2025 16:07:09)
+ 
+COMPANY_CD,COUNTERPARTY_CD,REPORT_DT,BUY_SELL,CONTRACT_TYPE,MAPPING_ID,GAS_DT,SEQ_NO,TIMESTAMP,
+2,3,23/12/2022 00:00:00,Sell,X,K3-0-0-1-1,03/08/2022 00:00:00,0, 	(23-SEP-2025 16:07:09)
+**********AutomationEMS Error  (23-SEP-2025 16:07:09) **********
+java.sql.SQLSyntaxErrorException: ORA-00947: not enough values
+
+
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.FMS_MR_EXPO_EOD_DTL(RiskMgmt_SEIPL_Data_Reader.java:1941)
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.init(RiskMgmt_SEIPL_Data_Reader.java:151)
+**************************************************
+
+<<FUNCTION FMS_MR_EXPO_EOD_DTL() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_MR_EXPO_EOD_DTL>>,, 	(23-SEP-2025 16:07:25)
+ 
+COMPANY_CD,COUNTERPARTY_CD,REPORT_DT,BUY_SELL,CONTRACT_TYPE,MAPPING_ID,GAS_DT,SEQ_NO,TIMESTAMP,
+2,3,23/12/2022 00:00:00,Sell,X,K3-0-0-1-1,03/08/2022 00:00:00,0, 	(23-SEP-2025 16:07:25)
+**********AutomationEMS Error  (23-SEP-2025 16:07:25) **********
+java.sql.SQLSyntaxErrorException: ORA-00947: not enough values
+
+
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.FMS_MR_EXPO_EOD_DTL(RiskMgmt_SEIPL_Data_Reader.java:1941)
+com.etrm.fms.migration.RiskMgmt_SEIPL_Data_Reader.init(RiskMgmt_SEIPL_Data_Reader.java:151)
+**************************************************
+
+<<FUNCTION FMS_MR_EXPO_EOD_DTL() ENDED WITH ERRORS>>

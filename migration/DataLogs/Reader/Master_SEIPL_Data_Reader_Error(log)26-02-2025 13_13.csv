@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_SAC_MST()>>
+**********AutomationEMS Error  (26-FEB-2025 13:13:04) **********
+java.sql.SQLSyntaxErrorException: ORA-00913: too many values
+
+
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.FMS_SAC_MST(Master_SEIPL_Data_Reader.java:7284)
+com.etrm.fms.migration.Master_SEIPL_Data_Reader.init(Master_SEIPL_Data_Reader.java:238)
+**************************************************
+
+<<FUNCTION FMS_SAC_MST() ENDED WITH ERRORS>>

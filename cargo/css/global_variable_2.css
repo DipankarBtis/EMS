@@ -1,0 +1,26 @@
+:root
+{
+	--header_color: #0097BB;/* #e0deaa; */ /* gold; #a0333a; */
+	--header_font_color:white; /*#ededed;*/
+	
+	--login_box_bg_color:transparent;
+	
+	--navbar_dropdown_font_color:black;
+	
+	--font_size:12px;
+	--header_font_size:12px;
+	--top_header_font_size:20px;
+	--sub_header_font_size:16px;
+	
+	--tb_header_font_color: #203d78;
+	--top_header_font_color:#a0333a;
+	--sub_header_font_color:#203d78;
+	
+	--card_bg_color:#ededed;
+	
+	--com_button_color: #0097BB; /*  gold;*/
+	
+	--table-active-bg-color: #ffeb3b4d;/* #e0deaa; */ /*  #ffeb3b4d;*/
+	
+	--sei_profile_bgclr: gold;	
+}

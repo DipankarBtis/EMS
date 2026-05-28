@@ -1,0 +1,9 @@
+
+
+<<START>>,<<FMS_COUNTERPARTY_MST>>,,, 	(09-APR-2025 19:32:25)
+ 
+COUNTERPARTY_CD,EFF_DT,CATEGORY,WEB_ADDR,TIMESTAMP
+'RIL&@&1',14/09/2008 00:00:00 , 3rd Party , 'null' ,  	(09-APR-2025 19:32:48)
+'MGL&@&2',16/07/2009 00:00:00 , 3rd Party , 'www.mahanagargas.com' ,  	(09-APR-2025 19:33:42)
+'GSPCL&@&3',24/03/2005 00:00:00 , 3rd Party , 'www.gspcgroup.com' ,  	(09-APR-2025 19:35:07)
+'Gail&@&4',08/03/2007 00:00:00 , null , 'null' ,  	(09-APR-2025 19:37:00)

@@ -1,0 +1,93 @@
+
+
+<<START>>,<<FMS_DLNG_FFLOW_INV_MST>>,, 	(04-FEB-2026 13:16:25)
+ 
+COMPANY_CD,FINANCIAL_YEAR,BU_STATE_TIN,INVOICE_SEQ,INVOICE_TYPE,TIMESTAMP,
+2,2022-2023,24,1,LP,3, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,2023-2024,24,1,LP,11, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,2022-2023,24,2,LP,3, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,2023-2024,24,2,LP,11, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,2023-2024,24,3,LP,11, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,2023-2024,24,4,LP,11, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,2023-2024,24,5,LP,11, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,2023-2024,24,6,LP,11, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,2023-2024,24,7,LP,11, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,2023-2024,24,8,LP,11, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,2023-2024,24,10,LP,11, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,2023-2024,24,9,LP,11, 	(04-FEB-2026 13:16:25)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,12,,,,,, 	(04-FEB-2026 13:16:25)
+ 
+
+TOTAL DATA INSERTED : ,0,,,,,, 	(04-FEB-2026 13:16:25)
+ 
+
+TOTAL SKIPPED DATA ,12,,,,,, 	(04-FEB-2026 13:16:25)
+ 
+<<END>>,<<FMS_DLNG_FFLOW_INV_MST>>,,,,,, 	(04-FEB-2026 13:16:25)
+ 
+
+<<START>>,<<FMS_DLNG_FFLOW_INV_DTL>>,, 	(04-FEB-2026 13:16:25)
+ 
+COMPANY_CD,COUNTERPARTY_CD,FINANCIAL_YEAR,BU_STATE_TIN,INVOICE_TYPE,INVOICE_SEQ,LINE_NO,TIMESTAMP,
+**********AutomationEMS Error  (04-FEB-2026 13:16:25) **********
+java.sql.SQLException: Invalid column index
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_DLNG_FFLOW_INV_DTL_SERV(DLNG_SEIPL_Data_Reader.java:18292)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:304)
+**************************************************
+
+<<FUNCTION FMS_DLNG_FFLOW_INV_DTL_SERV() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_DLNG_FFLOW_INV_TAX_DTL_SERV>>, 	(04-FEB-2026 13:16:25)
+ 
+COMPANY_CD,BU_STATE_TIN,INVOICE_SEQ,FINANCIAL_YEAR,INVOICE_TYPE,TAX_STRUCT_CD,TAX_CODE, 	(04-FEB-2026 13:16:25)
+ 
+2,24,1,LP,113 ,  	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,24,1,LP,113 ,  	(04-FEB-2026 13:16:25)	 (Not Inserted)
+2,24,1,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,2,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,2,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,2,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,1,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,1,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,1,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,2,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,2,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,2,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,3,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,3,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,3,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,4,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,4,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,4,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,5,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,5,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,5,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,6,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,6,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,6,LP,113 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,7,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,7,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,7,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,8,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,8,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,8,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,9,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,9,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,9,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,10,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,10,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+2,24,10,LP,201 ,  	(04-FEB-2026 13:16:26)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : ,0, 	(04-FEB-2026 13:16:26)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(04-FEB-2026 13:16:26)
+ 
+
+TOTAL SKIPPED DATA ,36, 	(04-FEB-2026 13:16:26)
+ 
+<<END>>,<<FMS_DLNG_FFLOW_INV_TAX_DTL_SERV>>, 	(04-FEB-2026 13:16:26)
+ 

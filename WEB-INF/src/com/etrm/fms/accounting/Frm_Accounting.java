@@ -1,0 +1,674 @@
+package com.etrm.fms.accounting;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
+
+import com.etrm.fms.mail.MailDelivery;
+import com.etrm.fms.util.CommonVariable;
+import com.etrm.fms.util.RuntimeConf;
+import com.etrm.fms.util.SystemErrorLogger;
+import com.etrm.fms.util.UtilBean;
+import com.etrm.fms.util.escapeSingleQuotes;
+
+//Coded By          : Harsh Patel
+//Code Reviewed by	:  
+//CR Date			: 27/02/2023 
+//Status	  		: Developing
+
+@WebServlet("/servlet/Frm_Accounting")
+public class Frm_Accounting extends HttpServlet 
+{
+	static String db_src_file_name="Frm_Accounting.java"; 
+	public static Connection dbcon;
+	
+	public static String servletName = "Frm_Accounting";
+	public static String option = "";
+	public static String url = "";
+	public static String msg = "";
+	public static String msg_type = "";
+	public static String err_msg = "";
+	
+	private static String queryString = null;
+	private static String query = null;
+	private static String query1 = null;
+	private static String query2 = null;
+	private static PreparedStatement stmt = null;
+	private static PreparedStatement stmt1 = null;
+	private static PreparedStatement stmt2 = null;
+	private static PreparedStatement stmt3 = null;
+	private static PreparedStatement stmt4 = null;
+	
+	private static ResultSet rset = null;
+	private static ResultSet rset1 = null;
+	private static ResultSet rset2 = null;
+	private static ResultSet rset3 = null;
+	private static ResultSet rset4 = null;
+	
+	public static String form_id = "0";
+	public static String form_nm = "";
+	public static String mod_cd = "0";
+	public static String mod_nm = "";
+	public static String u = "";
+	
+	public static String old_value="";
+	public static String new_value="";
+	
+	public static String emp_cd="";
+	public static String comp_cd="";
+	public static String comp_abbr="";
+	public static String emp_nm="";
+	public static String ip="";
+	
+	public static String commonUrl_pra="";
+	
+	public static escapeSingleQuotes escObj = new escapeSingleQuotes();
+	
+	static UtilBean utilBean = new UtilBean();
+	static MailDelivery mailDelv = new MailDelivery();
+	static DataBean_Accounting DBaccounting = new DataBean_Accounting();
+	
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,IOException
+	{
+		String function_nm="doPost()";
+		HttpSession session = request.getSession();
+		if(session.getAttribute("emp_uid")==null || session.getAttribute("emp_uid")=="")
+		{
+			url="../sess/Expire.jsp";
+		}
+		else
+		{
+			try
+			{
+				Context Context = new InitialContext();
+				Context envContext  = (Context)Context.lookup("java:/comp/env");
+				DataSource ds = (DataSource)envContext.lookup(RuntimeConf.security_database);
+				
+				if(ds != null)
+				{
+					dbcon = ds.getConnection();				
+				}
+				else
+				{
+					System.out.println("Data Source Not Found");
+				}
+				if(dbcon != null)
+				{
+					dbcon.setAutoCommit(false);
+					
+					form_id=request.getParameter("form_cd")==null?"0":request.getParameter("form_cd");
+					form_nm=request.getParameter("form_nm")==null?"":request.getParameter("form_nm");
+					mod_cd=request.getParameter("mod_cd")==null?"0":request.getParameter("mod_cd");
+					mod_nm=request.getParameter("mod_nm")==null?"":request.getParameter("mod_nm");
+					
+					emp_cd = (String)session.getAttribute("emp_cd")==null?"":(String)session.getAttribute("emp_cd");
+					comp_cd = (String)session.getAttribute("comp_cd")==null?"":(String)session.getAttribute("comp_cd");
+					comp_abbr = (String)session.getAttribute("comp_abbr")==null?"":(String)session.getAttribute("comp_abbr");
+					emp_nm = (String)session.getAttribute("emp_nm")==null?"":(String)session.getAttribute("emp_nm");
+					ip = (String)session.getAttribute("ip")==null?"":(String)session.getAttribute("ip");
+					u=request.getParameter("u")==null?"":request.getParameter("u");
+					
+					new_value="";
+					old_value="";
+					
+					option=request.getParameter("option")==null?"":request.getParameter("option");
+					
+					commonUrl_pra = "&u="+u;
+					
+					if(option.equalsIgnoreCase("RECEIVABLE_TRACKING"))
+					{
+						InsertUpdateReceivableTrackingDetail(request);
+					}
+					else if(option.equalsIgnoreCase("INVOICE_SAP_APPROVE"))
+					{
+						InsertUpdateSapInvoiceApprove(request);
+					}
+					else if(option.equalsIgnoreCase("CRDR_INVOICE_SAP_APPROVE"))
+					{
+						InsertUpdateSapCrDrInvoiceApprove(request);
+					}
+				}
+				
+				dbcon.close();
+				dbcon=null;
+			}
+			catch(Exception e)
+			{
+				new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+				url=CommonVariable.errorpage_url+"?e="+e;
+			}
+			finally
+			{
+				if(rset != null){try {rset.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+				if(rset1 != null){try {rset1.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+				if(rset2 != null){try {rset2.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+				if(rset3 != null){try {rset3.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+				if(rset4 != null){try {rset4.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+				if(stmt != null){try {stmt.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+				if(stmt1 != null){try {stmt1.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+				if(stmt2 != null){try {stmt2.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+				if(stmt3 != null){try {stmt3.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+				if(stmt4 != null){try {stmt4.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+				if(dbcon != null){try {dbcon.close();}catch(SQLException e){new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);}}
+			}
+		}
+		
+		try {
+		response.sendRedirect(url);
+		}catch(IOException e) {
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+		}
+	}
+	
+	private void InsertUpdateReceivableTrackingDetail(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateReceivableTrackingDetail();";
+		msg="";
+		msg_type="";
+		url="";
+		
+		try
+		{
+			String month = request.getParameter("month")==null?"":request.getParameter("month");
+			String year = request.getParameter("year")==null?"":request.getParameter("year");
+			String month_to = request.getParameter("month_to")==null?"":request.getParameter("month_to");
+			String year_to = request.getParameter("year_to")==null?"":request.getParameter("year_to");
+			String segment = request.getParameter("segment")==null?"":request.getParameter("segment");
+			
+			String[] counterparty_cd = request.getParameterValues("counterparty_cd");
+			String[] agmt_no = request.getParameterValues("agmt_no");
+			String[] agmt_rev_no = request.getParameterValues("agmt_rev_no");
+			String[] cont_no = request.getParameterValues("cont_no");
+			String[] cont_rev_no = request.getParameterValues("cont_rev_no");
+			String[] contract_type = request.getParameterValues("contract_type");
+			String[] financial_year = request.getParameterValues("financial_year");
+			String[] invoice_seq = request.getParameterValues("invoice_seq");
+			String[] bu_state_tin = request.getParameterValues("bu_state_tin");
+			//String[] tds_on_gross = request.getParameterValues("tds_on_gross");
+			//String[] tds_on_gross_amt = request.getParameterValues("tds_on_gross_amt");
+			
+			//String[] tds_on_tax = request.getParameterValues("tds_on_tax");
+			//String[] tds_on_tax_amt = request.getParameterValues("tds_on_tax_amt");
+			//String[] net_payable_amt = request.getParameterValues("net_payable_amt");
+			String[] total_received_amt = request.getParameterValues("total_received_amt");
+			String[] pay_received_amt = request.getParameterValues("pay_received_amt");
+			String[] pay_received_dt = request.getParameterValues("pay_received_dt");
+			String[] remark = request.getParameterValues("remark");
+			String[] cargo_no = request.getParameterValues("cargo_no");
+			
+			String[] adjust_amt = request.getParameterValues("adjust_amt");
+			String[] adj_flag = request.getParameterValues("adj_flag");
+			
+			String[] hold_amt = request.getParameterValues("hold_amt");
+			String[] hold_flag = request.getParameterValues("hold_flag");
+			
+			String[] invoice_type = request.getParameterValues("invoice_type");
+			String[] type_flag = request.getParameterValues("type_flag");
+			
+			if(counterparty_cd!=null)
+			{
+				for(int i=0; i<counterparty_cd.length;i++)
+				{
+					if(type_flag[i].equals("FF"))
+					{
+						query="UPDATE FMS_FFLOW_INV_MST SET PAY_RECV_AMT=?,"
+								+ "PAY_RECV_DT=TO_DATE(?,'DD/MM/YYYY'),PAY_INSERT_BY=?,PAY_INSERT_DT=SYSDATE,"
+								+ "PAY_REMARK=? "
+								+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONT_NO=? "
+								+ "AND AGMT_NO=? AND CONTRACT_TYPE=? AND INVOICE_SEQ=? "
+								+ "AND BU_STATE_TIN=? AND FINANCIAL_YEAR=? AND INVOICE_TYPE=? AND CARGO_NO=? ";
+						stmt = dbcon.prepareStatement(query);
+						stmt.setString(1, total_received_amt[i]);
+						stmt.setString(2, pay_received_dt[i]);
+						stmt.setString(3, emp_cd);
+						stmt.setString(4, remark[i]);
+						stmt.setString(5, comp_cd);
+						stmt.setString(6, counterparty_cd[i]);
+						stmt.setString(7, cont_no[i]);
+						stmt.setString(8, agmt_no[i]);
+						stmt.setString(9, contract_type[i]);
+						stmt.setString(10, invoice_seq[i]);
+						stmt.setString(11, bu_state_tin[i]);
+						stmt.setString(12, financial_year[i]);
+						stmt.setString(13, invoice_type[i]);
+						stmt.setString(14, cargo_no[i]);
+						stmt.executeUpdate();
+						
+						stmt.close();
+						
+						query="SELECT NVL(MAX(SEQ_NO),0) "
+								+ "FROM FMS_FFLOW_INV_PAY_RECV_DTL "
+								+ "WHERE COMPANY_CD=? AND INVOICE_SEQ=? "
+								+ "AND BU_STATE_TIN=? AND FINANCIAL_YEAR=? AND INVOICE_TYPE=?";
+						stmt1 = dbcon.prepareStatement(query);
+						stmt1.setString(1, comp_cd);
+						stmt1.setString(2, invoice_seq[i]);
+						stmt1.setString(3, bu_state_tin[i]);
+						stmt1.setString(4, financial_year[i]);
+						stmt1.setString(5, invoice_type[i]);
+						rset1=stmt1.executeQuery();
+						if(rset1.next())
+						{
+							String seq_no=""+(rset1.getInt(1)+1);
+							
+							String holdAmt="";
+							if(hold_flag[i].equals("Y"))
+							{
+								holdAmt=hold_amt[i];
+							}
+							
+							query1="INSERT INTO FMS_FFLOW_INV_PAY_RECV_DTL(COMPANY_CD,BU_STATE_TIN,INVOICE_SEQ,FINANCIAL_YEAR,SEQ_NO,"
+									+ "PAY_RECV_DT,PAY_RECV_AMT,PAY_REMARK,ENT_BY,ENT_DT,INVOICE_TYPE,ADV_AMT,ADV_FLAG) "
+									+ "VALUES(?,?,?,?,?,"
+									+ "TO_DATE(?,'DD/MM/YYYY'),?,?,?,SYSDATE,?,?,?)";
+							stmt2 = dbcon.prepareStatement(query1);
+							stmt2.setString(1, comp_cd);
+							stmt2.setString(2, bu_state_tin[i]);
+							stmt2.setString(3, invoice_seq[i]);
+							stmt2.setString(4, financial_year[i]);
+							stmt2.setString(5, seq_no);
+							stmt2.setString(6, pay_received_dt[i]);
+							stmt2.setString(7, pay_received_amt[i]);
+							stmt2.setString(8, remark[i]);
+							stmt2.setString(9, emp_cd);
+							stmt2.setString(10, invoice_type[i]);
+							stmt2.setString(11, adjust_amt[i]);
+							stmt2.setString(12, adj_flag[i]);
+							stmt2.executeUpdate();
+							
+							stmt2.close();
+						}
+						rset1.close();
+						stmt1.close();
+						
+						msg = "Successful! - Data Submission Successfully!";
+						msg_type="S";
+					}
+					else if(type_flag[i].equals("S"))
+					{
+						
+						/*
+						query="UPDATE FMS_INVOICE_MST SET TDS_GROSS_AMT='"+tds_on_gross_amt[i]+"',TDS_GROSS_PERCENT='"+tds_on_gross[i]+"',"
+								+ "TDS_TAX_AMT='"+tds_on_tax_amt[i]+"',TDS_TAX_PERCENT='"+tds_on_tax[i]+"',PAY_RECV_AMT='"+pay_received_amt[i]+"',"
+								+ "PAY_RECV_DT=TO_DATE('"+pay_received_dt[i]+"','DD/MM/YYYY'),PAY_INSERT_BY='"+emp_cd+"',PAY_INSERT_DT=SYSDATE,"
+								+ "PAY_REMARK='"+remark[i]+"' "
+								+ "WHERE COMPANY_CD='"+comp_cd+"' AND COUNTERPARTY_CD='"+counterparty_cd[i]+"' AND CONT_NO='"+cont_no[i]+"' "
+								+ "AND AGMT_NO='"+agmt_no[i]+"' AND CONTRACT_TYPE='"+contract_type[i]+"' AND INVOICE_SEQ='"+invoice_seq[i]+"' "
+								+ "AND BU_STATE_TIN='"+bu_state_tin[i]+"' AND FINANCIAL_YEAR='"+financial_year[i]+"'";
+						stmt.executeUpdate(query);
+						*/
+						query="UPDATE FMS_INVOICE_MST SET PAY_RECV_AMT=?,"
+								+ "PAY_RECV_DT=TO_DATE(?,'DD/MM/YYYY'),PAY_INSERT_BY=?,PAY_INSERT_DT=SYSDATE,"
+								+ "PAY_REMARK=? "
+								+ "WHERE COMPANY_CD=? AND COUNTERPARTY_CD=? AND CONT_NO=? "
+								+ "AND AGMT_NO=? AND CONTRACT_TYPE=? AND INVOICE_SEQ=? "
+								+ "AND BU_STATE_TIN=? AND FINANCIAL_YEAR=? AND CARGO_NO=? ";
+						stmt = dbcon.prepareStatement(query);
+						stmt.setString(1, total_received_amt[i]);
+						stmt.setString(2, pay_received_dt[i]);
+						stmt.setString(3, emp_cd);
+						stmt.setString(4, remark[i]);
+						stmt.setString(5, comp_cd);
+						stmt.setString(6, counterparty_cd[i]);
+						stmt.setString(7, cont_no[i]);
+						stmt.setString(8, agmt_no[i]);
+						stmt.setString(9, contract_type[i]);
+						stmt.setString(10, invoice_seq[i]);
+						stmt.setString(11, bu_state_tin[i]);
+						stmt.setString(12, financial_year[i]);
+						stmt.setString(13, cargo_no[i]);
+						stmt.executeUpdate();
+						
+						stmt.close();
+						
+						query="SELECT NVL(MAX(SEQ_NO),0) "
+								+ "FROM FMS_INV_PAY_RECV_DTL "
+								+ "WHERE COMPANY_CD=? AND INVOICE_SEQ=? "
+								+ "AND BU_STATE_TIN=? AND FINANCIAL_YEAR=?";
+						stmt1 = dbcon.prepareStatement(query);
+						stmt1.setString(1, comp_cd);
+						stmt1.setString(2, invoice_seq[i]);
+						stmt1.setString(3, bu_state_tin[i]);
+						stmt1.setString(4, financial_year[i]);
+						rset1=stmt1.executeQuery();
+						if(rset1.next())
+						{
+							String seq_no=""+(rset1.getInt(1)+1);
+							
+							String holdAmt="";
+							if(hold_flag[i].equals("Y"))
+							{
+								holdAmt=hold_amt[i];
+							}
+							
+							query1="INSERT INTO FMS_INV_PAY_RECV_DTL(COMPANY_CD,BU_STATE_TIN,INVOICE_SEQ,FINANCIAL_YEAR,SEQ_NO,"
+									+ "PAY_RECV_DT,PAY_RECV_AMT,PAY_REMARK,ENT_BY,ENT_DT,ADV_AMT,ADV_FLAG) "
+									+ "VALUES(?,?,?,?,?,"
+									+ "TO_DATE(?,'DD/MM/YYYY'),?,?,?,SYSDATE,?,?)";
+							stmt2 = dbcon.prepareStatement(query1);
+							stmt2.setString(1, comp_cd);
+							stmt2.setString(2, bu_state_tin[i]);
+							stmt2.setString(3, invoice_seq[i]);
+							stmt2.setString(4, financial_year[i]);
+							stmt2.setString(5, seq_no);
+							stmt2.setString(6, pay_received_dt[i]);
+							stmt2.setString(7, pay_received_amt[i]);
+							stmt2.setString(8, remark[i]);
+							stmt2.setString(9, emp_cd);
+							stmt2.setString(10, adjust_amt[i]);
+							stmt2.setString(11, adj_flag[i]);
+							stmt2.executeUpdate();
+							
+							stmt2.close();
+						}
+						rset1.close();
+						stmt1.close();
+						
+						msg = "Successful! - Data Submission Successfully!";
+						msg_type="S";
+					}
+					else
+					{
+						msg = "Failed! - Data Submission Falied!";
+						msg_type="E";
+					}
+				}
+			}
+			else
+			{
+				msg="Failed! - Data Submission Failed!";
+				msg_type="E";
+			}
+			
+			url = "../accounting/frm_receivable_tracking.jsp?msg="+msg+"&msg_type="+msg_type+"&month="+month+"&year="+year+
+					"&month_to="+month_to+"&year_to="+year_to+"&segment="+segment+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			msg="Error In Exception! - Insert/Update Receivable Tracing Failed!";
+			url=CommonVariable.errorpage_url+"?e="+e;
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,emp_nm, ip, form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateSapInvoiceApprove(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateSapInvoiceApprove();";
+		msg="";
+		msg_type="";
+		url="";
+		
+		try
+		{
+			String accroid =request.getParameter("accroid")==null?"":request.getParameter("accroid");
+			String counterparty_cd = request.getParameter("counterparty_cd")==null?"":request.getParameter("counterparty_cd");
+			String invoice_no = request.getParameter("invoice_no")==null?"":request.getParameter("invoice_no");
+			String financial_year = request.getParameter("financial_year")==null?"":request.getParameter("financial_year");
+			String invoice_seq = request.getParameter("invoice_seq")==null?"":request.getParameter("invoice_seq");
+			String contract_type = request.getParameter("contract_type")==null?"":request.getParameter("contract_type");
+			String type_flag = request.getParameter("type_flag")==null?"":request.getParameter("type_flag");
+			String invoice_type = request.getParameter("invoice_type")==null?"":request.getParameter("invoice_type");
+			String bu_state_tin = request.getParameter("bu_state_tin")==null?"":request.getParameter("bu_state_tin");
+			String sap_approval_flag = request.getParameter("sap_approval_flag")==null?"":request.getParameter("sap_approval_flag");
+			String xmlfile_nm ="";
+			
+			if(!financial_year.equals("") && !invoice_seq.equals(""))
+			{
+				if(type_flag.equals("SG"))
+				{
+					query ="UPDATE FMS_INVOICE_MST SET SAP_APPROVAL=?,SAP_APPROVED_BY=?,SAP_APPROVED_DT=SYSDATE "
+							+ "WHERE COMPANY_CD=? AND FINANCIAL_YEAR=? "
+							+ "AND INVOICE_SEQ=? AND BU_STATE_TIN=? ";
+					sap_approval_flag="Y";
+					stmt = dbcon.prepareStatement(query);
+					stmt.setString(1, "Y");
+					stmt.setString(2, emp_cd);
+					stmt.setString(3, comp_cd);
+					stmt.setString(4, financial_year);
+					stmt.setString(5, invoice_seq);
+					stmt.setString(6, bu_state_tin);
+					stmt.executeUpdate();
+					
+					stmt.close();
+				}
+				else if(type_flag.equals("FFLOW"))
+				{
+					query ="UPDATE FMS_FFLOW_INV_MST SET SAP_APPROVAL=?,SAP_APPROVED_BY=?,SAP_APPROVED_DT=SYSDATE "
+							+ "WHERE COMPANY_CD=? AND FINANCIAL_YEAR=? "
+							+ "AND INVOICE_SEQ=? AND BU_STATE_TIN=? AND INVOICE_TYPE=?";
+					sap_approval_flag="Y";
+					stmt = dbcon.prepareStatement(query);
+					stmt.setString(1, "Y");
+					stmt.setString(2, emp_cd);
+					stmt.setString(3, comp_cd);
+					stmt.setString(4, financial_year);
+					stmt.setString(5, invoice_seq);
+					stmt.setString(6, bu_state_tin);
+					stmt.setString(7, invoice_type);
+					stmt.executeUpdate();
+					
+					stmt.close();
+				}
+				msg = "Successful! - "+utilBean.getCounterpartyABBR(dbcon,counterparty_cd)+" Invoice("+invoice_no+") Approved Successfully!";
+				msg_type="S";
+				
+				String workDir=CommonVariable.work_dir+comp_cd;
+				String sapxml_dir="";
+				sapxml_dir=CommonVariable.sap_xml;
+				String appPath = request.getServletContext().getRealPath(workDir+"/"+sapxml_dir+"/");
+				
+				DBaccounting.setCallFlag("GENERATE_SALES_SAP_XML");
+				DBaccounting.setRequest(request);
+				DBaccounting.setContract_type(contract_type);
+				DBaccounting.setFinancial_year(financial_year);
+				DBaccounting.setInvoice_seq(invoice_seq);
+				DBaccounting.setCounterparty_cd(counterparty_cd);
+				DBaccounting.setType_flag(type_flag);
+				DBaccounting.setInvoice_no(invoice_no);
+				DBaccounting.setInvoice_type(invoice_type);
+				DBaccounting.setComp_cd(comp_cd);
+				DBaccounting.setFile_path(appPath);
+				DBaccounting.setBu_state_tin(bu_state_tin);
+				DBaccounting.setSap_approval_flag(sap_approval_flag);
+				DBaccounting.setEmp_cd(emp_cd);
+				DBaccounting.init();
+				
+				xmlfile_nm = DBaccounting.getXmlfile_name();
+				
+				InvoiceMailBody(invoice_no, counterparty_cd);
+				//generatePurchaseInvoiceXML(request);
+			}
+			else
+			{	
+				sap_approval_flag="N";
+				msg = "Failed! - "+utilBean.getCounterpartyABBR(dbcon,counterparty_cd)+" Invoice("+invoice_no+") Approval Failed!";
+				msg_type="E";
+			}
+			
+			url = "../accounting/rpt_view_sales_invoice_sap_approval.jsp?financial_year="+financial_year+"&invoice_seq="+invoice_seq+
+					"&contract_type="+contract_type+"&type_flag="+type_flag+"&invoice_type="+invoice_type+
+					"&counterparty_cd="+counterparty_cd+"&invoice_no="+invoice_no+"&bu_state_tin="+bu_state_tin+"&sap_approval_flag="+sap_approval_flag+
+					"&xmlfile_nm="+xmlfile_nm+"&accroid="+accroid+"&msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			msg="Error In Exception! - Insert/Update SAP Approval Failed!";
+			url=CommonVariable.errorpage_url+"?e="+e;
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,emp_nm, ip, form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InsertUpdateSapCrDrInvoiceApprove(HttpServletRequest request) throws SQLException 
+	{
+		String function_nm="InsertUpdateSapCrDrInvoiceApprove();";
+		msg="";
+		msg_type="";
+		url="";
+		
+		try
+		{
+			String accroid =request.getParameter("accroid")==null?"":request.getParameter("accroid");
+			String counterparty_cd = request.getParameter("counterparty_cd")==null?"":request.getParameter("counterparty_cd");
+			String invoice_no = request.getParameter("invoice_no")==null?"":request.getParameter("invoice_no");
+			String financial_year = request.getParameter("financial_year")==null?"":request.getParameter("financial_year");
+			String invoice_seq = request.getParameter("invoice_seq")==null?"":request.getParameter("invoice_seq");
+			String contract_type = request.getParameter("contract_type")==null?"":request.getParameter("contract_type");
+			String type_flag = request.getParameter("type_flag")==null?"":request.getParameter("type_flag");
+			String invoice_type = request.getParameter("invoice_type")==null?"":request.getParameter("invoice_type");
+			String bu_state_tin = request.getParameter("bu_state_tin")==null?"":request.getParameter("bu_state_tin");
+			String sap_approval_flag = request.getParameter("sap_approval_flag")==null?"":request.getParameter("sap_approval_flag");
+			String xmlfile_nm ="";
+			
+			if(!financial_year.equals("") && !invoice_seq.equals(""))
+			{
+				if(type_flag.equals("SG"))
+				{
+					query ="UPDATE FMS_INVOICE_MST SET SAP_APPROVAL=?,SAP_APPROVED_BY=?,SAP_APPROVED_DT=SYSDATE "
+							+ "WHERE COMPANY_CD=? AND FINANCIAL_YEAR=? "
+							+ "AND INVOICE_SEQ=? AND BU_STATE_TIN=? ";
+					sap_approval_flag="Y";
+					stmt = dbcon.prepareStatement(query);
+					stmt.setString(1, "Y");
+					stmt.setString(2, emp_cd);
+					stmt.setString(3, comp_cd);
+					stmt.setString(4, financial_year);
+					stmt.setString(5, invoice_seq);
+					stmt.setString(6, bu_state_tin);
+					stmt.executeUpdate();
+					
+					stmt.close();
+				}
+				msg = "Successful! - "+utilBean.getCounterpartyABBR(dbcon,counterparty_cd)+" Invoice("+invoice_no+") Approved Successfully!";
+				msg_type="S";
+				
+				String workDir=CommonVariable.work_dir+comp_cd;
+				String sapxml_dir="";
+				sapxml_dir=CommonVariable.sap_xml;
+				String appPath = request.getServletContext().getRealPath(workDir+"/"+sapxml_dir+"/");
+				
+				DBaccounting.setCallFlag("GENERATE_CRDR_SALES_SAP_XML");
+				DBaccounting.setRequest(request);
+				DBaccounting.setContract_type(contract_type);
+				DBaccounting.setFinancial_year(financial_year);
+				DBaccounting.setInvoice_seq(invoice_seq);
+				DBaccounting.setCounterparty_cd(counterparty_cd);
+				DBaccounting.setType_flag(type_flag);
+				DBaccounting.setInvoice_no(invoice_no);
+				DBaccounting.setInvoice_type(invoice_type);
+				DBaccounting.setComp_cd(comp_cd);
+				DBaccounting.setFile_path(appPath);
+				DBaccounting.setBu_state_tin(bu_state_tin);
+				DBaccounting.setSap_approval_flag(sap_approval_flag);
+				DBaccounting.setEmp_cd(emp_cd);
+				DBaccounting.init();
+				
+				xmlfile_nm = DBaccounting.getXmlfile_name();
+				
+				InvoiceMailBody(invoice_no, counterparty_cd);
+			}
+			else
+			{	
+				sap_approval_flag="N";
+				msg = "Failed! - "+utilBean.getCounterpartyABBR(dbcon,counterparty_cd)+" Invoice("+invoice_no+") Approval Failed!";
+				msg_type="E";
+			}
+			
+			url = "../accounting/rpt_view_crdr_sales_inv_sap_approval.jsp?financial_year="+financial_year+"&invoice_seq="+invoice_seq+
+					"&contract_type="+contract_type+"&type_flag="+type_flag+"&invoice_type="+invoice_type+
+					"&counterparty_cd="+counterparty_cd+"&invoice_no="+invoice_no+"&bu_state_tin="+bu_state_tin+"&sap_approval_flag="+sap_approval_flag+
+					"&xmlfile_nm="+xmlfile_nm+"&accroid="+accroid+"&msg="+msg+"&msg_type="+msg_type+commonUrl_pra;
+			
+			dbcon.commit();
+		}
+		catch(Exception e)
+		{
+			dbcon.rollback();
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			msg="Error In Exception! - Insert/Update SAP Approval Failed!";
+			url=CommonVariable.errorpage_url+"?e="+e;
+		}
+		
+		try
+		{
+			new com.etrm.fms.util.InfoLogger().InsertInfoLogger(emp_cd, comp_cd,emp_nm, ip, form_id, form_nm,mod_cd,mod_nm, old_value, new_value, msg);  	
+		}
+		catch(Exception infoLogger)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, infoLogger);
+		}
+	}
+	
+	private void InvoiceMailBody(String inv_no,String conterparty_cd) throws Exception
+	{
+		String function_nm="InvoiceMailBody();";
+		String mailBody="";
+		try
+		{
+			String mail_subject="Sales Invoice "+inv_no+" - Approved by Fin. Ops.!";
+			
+			String highlight_aprv="#00cc00";
+			String highlight_reje="red";
+			
+			mailBody="<html>"
+					+ "<span style='font-size:"+CommonVariable.mail_font_size+";font-family:"+CommonVariable.mail_font_family+";'>Dear Recipients,</span><br><br>";
+			mailBody+= "<span style='font-size:"+CommonVariable.mail_font_size+";font-family:"+CommonVariable.mail_font_family+";'>Following Sales Invoice is "
+					+ "<font style='background:"+highlight_aprv+"' color='white'>Approved</font> by Fin. Ops. for SAP P80 posting!</span><br><br>";
+					
+			mailBody+="<table bordercolor='black' style='font-size:"+CommonVariable.mail_font_size+";font-family:"+CommonVariable.mail_font_family+";' border='1' cellpadding='0' cellspacing='0'>"
+					+ "<tr><td><b>Customer</b>&nbsp;</td><td>&nbsp;"+utilBean.getCounterpartyName(dbcon,conterparty_cd)+"&nbsp;</td></tr>"
+					+ "<tr><td><b>Invoice#</b>&nbsp;</td><td>&nbsp;"+inv_no+"&nbsp;</td></tr>"
+					+ "</table>";
+			mailBody+=CommonVariable.mail_disclaimer;
+			mailBody+="</html>";
+			
+			String to_mail_list = utilBean.getToMailReceipentList(dbcon,comp_cd,"Invoice Fin. Ops. Approval Notification", "Sell", "NA", "On-Event");
+			String cc_mail_list = utilBean.getCcMailReceipentList(dbcon,comp_cd,"Invoice Fin. Ops. Approval Notification", "Sell", "NA", "On-Event");
+			
+			if(!to_mail_list.equals("") && !mailBody.equals(""))
+			{
+				mailDelv.sendMail(comp_cd,to_mail_list, mail_subject, mailBody, "", cc_mail_list, "");
+			}
+		}
+		catch(Exception e)
+		{
+			new SystemErrorLogger().InsertErrorLogger(db_src_file_name, function_nm, e);
+			throw e;
+		}
+	}
+}

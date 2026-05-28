@@ -1,0 +1,10 @@
+
+<<ERROR IN FMS_INVOICE_MST_TAXCD_UPDATE()>>
+**********AutomationEMS Error  (23-JAN-2026 14:27:50) **********
+java.io.FileNotFoundException: D:\Projects\EMSNG_Workspace\EMSNG\migration\EXPORT\FMS_INVOICE_MST_TAXCD_UPDATE_01012000_23012026.csv (The process cannot access the file because it is being used by another process)
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Extractor.FMS_INVOICE_MST_TAXCD_UPDATE(Sales_SEIPL_Data_Extractor.java:31229)
+com.etrm.fms.migration.Sales_SEIPL_Data_Extractor.init(Sales_SEIPL_Data_Extractor.java:278)
+**************************************************
+
+<<FUNCTION FMS_INVOICE_MST_TAXCD_UPDATE() ENDED WITH ERRORS>>

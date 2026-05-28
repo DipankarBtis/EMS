@@ -1,0 +1,43 @@
+
+
+<<START>>,<<FMS_CONT_PRICE_MIN_DTL>>,,,, 	(06-MAY-2025 10:48:31)
+ 
+COMPANY_CD,MAPPING_ID,CONTRACT_TYPE,SEQ_NO,CURVE_NM,TIMESTAMP
+2 ,154-0-825133, D ,1, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825133, D ,1, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825133, D ,2, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825132, D ,1, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825132, D ,1, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825132, D ,2, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825132, D ,2, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825135, D ,1, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825135, D ,1, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825137, D ,1, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825137, D ,1, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825136, D ,1, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,154-0-825136, D ,1, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,1-0-825056, D ,1, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,1-0-825056, D ,1, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,1-0-825058, D ,1, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,1-0-825058, D ,1, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,1-0-825060, D ,1, ICE_DATED_BRENT, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,1-0-825060, D ,1, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,1-0-825060, D ,2, ICE_DATED_BRENT, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,278--, D ,1, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,278--, D ,2, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,278--, D ,2, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,278--, D ,1, ICE_JKM, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,278--, D ,1, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,278--, T ,1, ICE_DATED_BRENT, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+2 ,278--, T ,1, PPAC, 	(06-MAY-2025 10:48:31)	 (Not Inserted)
+
+TOTAL DATA IN EXCEL : 27 	(06-MAY-2025 10:48:31)
+ 
+
+TOTAL DATA INSERTED : 0 	(06-MAY-2025 10:48:31)
+ 
+
+TOTAL SKIPPED DATA 27 	(06-MAY-2025 10:48:31)
+ 
+<<END>><<FMS_CONT_PRICE_MIN_DTL>> 	(06-MAY-2025 10:48:31)
+ 

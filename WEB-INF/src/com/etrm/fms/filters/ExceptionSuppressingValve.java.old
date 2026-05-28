@@ -1,0 +1,30 @@
+package com.etrm.fms.filters;
+
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+
+import org.apache.catalina.connector.Request;
+import org.apache.catalina.connector.Response;
+import org.apache.catalina.valves.ValveBase;
+
+public class ExceptionSuppressingValve extends ValveBase {
+
+    private static final Logger LOGGER = Logger.getLogger(ExceptionSuppressingValve.class.getName());
+
+    @Override
+    public void invoke(Request request, Response response) throws IOException, ServletException {
+        try {
+            getNext().invoke(request, response);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage() != null && e.getMessage().contains("Invalid character found in the request target")) {
+                LOGGER.log(Level.WARNING, "Suppressed invalid URI exception: {0}", e.getMessage());
+                response.sendError(400, "Bad request – suppressed invalid character error");
+            } else {
+                throw e;
+            }
+        }
+    }
+}

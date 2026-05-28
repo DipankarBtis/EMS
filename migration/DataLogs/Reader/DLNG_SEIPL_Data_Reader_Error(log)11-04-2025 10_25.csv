@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_TRUCK_DRIVER_MST()>>
+**********AutomationEMS Error  (11-APR-2025 10:25:42) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-00001: unique constraint (MIGRATE2EMS.PK_FMS_TRUCK_DRIVER_MST) violated
+
+
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.FMS_TRUCK_DRIVER_MST(DLNG_SEIPL_Data_Reader.java:726)
+com.etrm.fms.migration.DLNG_SEIPL_Data_Reader.init(DLNG_SEIPL_Data_Reader.java:114)
+**************************************************
+
+<<FUNCTION FMS_TRUCK_DRIVER_MST() ENDED WITH ERRORS>>

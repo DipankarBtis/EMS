@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_TANK_INVENTORY_DTL()>>
+**********AutomationEMS Error  (06-MAR-2025 13:12:56) **********
+java.sql.SQLException: ORA-01722: invalid number
+
+
+com.etrm.fms.migration.TermOps_SEIPL_Data_Reader.FMS_TANK_INVENTORY_DTL(TermOps_SEIPL_Data_Reader.java:503)
+com.etrm.fms.migration.TermOps_SEIPL_Data_Reader.init(TermOps_SEIPL_Data_Reader.java:112)
+**************************************************
+
+<<FUNCTION FMS_TANK_INVENTORY_DTL() ENDED WITH ERRORS>>

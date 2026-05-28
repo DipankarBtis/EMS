@@ -1,0 +1,67 @@
+
+
+<<START>>,<<FMS_FFLOW_INV_MST>>,, 	(04-SEP-2025 16:03:23)
+ 
+COMPANY_CD,FINANCIAL_YEAR,BU_STATE_TIN,INVOICE_SEQ,INVOICE_TYPE,TIMESTAMP,
+2,2016-2017,24,1,DR, 	(04-SEP-2025 16:03:23)	 (Not Inserted)
+2,2016-2017,24,1,CR, 	(04-SEP-2025 16:03:23)	 (Not Inserted)
+2,2016-2017,24,1,CR, 	(04-SEP-2025 16:03:23)	 (Not Inserted)
+2,2016-2017,24,1,CR, 	(04-SEP-2025 16:03:23)	 (Not Inserted)
+2,2016-2017,24,1,CR, 	(04-SEP-2025 16:03:23)	 (Not Inserted)
+2,2017-2018,24,1,CR, 	(04-SEP-2025 16:03:23)	 (Not Inserted)
+2,2017-2018,24,1,CR, 	(04-SEP-2025 16:03:23)	 (Not Inserted)
+2,2019-2020,24,1,DR, 	(04-SEP-2025 16:03:23)
+**********AutomationEMS Error  (04-SEP-2025 16:03:23) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_FFLOW_INV_MST"."ADDR_FLAG")
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_FFLOW_INV_MST(Sales_SEIPL_Data_Reader.java:16509)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:279)
+**************************************************
+
+<<FUNCTION FMS_FFLOW_INV_MST() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_FFLOW_INV_TAX_DTL>>, 	(04-SEP-2025 16:03:23)
+ 
+COMPANY_CD,BU_STATE_TIN,INVOICE_SEQ,FINANCIAL_YEAR,TAX_STRUCT_CD,TAX_CODE, 	(04-SEP-2025 16:03:23)
+ 
+2,24,8,DI,201 ,  	(04-SEP-2025 16:03:23)
+
+<<START>>,<<FMS_FFLOW_INV_MST>>,, 	(04-SEP-2025 16:03:51)
+ 
+COMPANY_CD,FINANCIAL_YEAR,BU_STATE_TIN,INVOICE_SEQ,INVOICE_TYPE,TIMESTAMP,
+2,2016-2017,24,1,DR, 	(04-SEP-2025 16:03:51)	 (Not Inserted)
+2,2016-2017,24,1,CR, 	(04-SEP-2025 16:03:51)	 (Not Inserted)
+2,2016-2017,24,1,CR, 	(04-SEP-2025 16:03:51)	 (Not Inserted)
+2,2016-2017,24,1,CR, 	(04-SEP-2025 16:03:51)	 (Not Inserted)
+2,2016-2017,24,1,CR, 	(04-SEP-2025 16:03:51)	 (Not Inserted)
+2,2017-2018,24,1,CR, 	(04-SEP-2025 16:03:51)	 (Not Inserted)
+2,2017-2018,24,1,CR, 	(04-SEP-2025 16:03:51)	 (Not Inserted)
+2,2019-2020,24,1,DR, 	(04-SEP-2025 16:03:51)
+**********AutomationEMS Error  (04-SEP-2025 16:03:51) **********
+java.sql.SQLIntegrityConstraintViolationException: ORA-01400: cannot insert NULL into ("MIGRATE2EMS"."FMS_FFLOW_INV_MST"."ADDR_FLAG")
+
+
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.FMS_FFLOW_INV_MST(Sales_SEIPL_Data_Reader.java:16509)
+com.etrm.fms.migration.Sales_SEIPL_Data_Reader.init(Sales_SEIPL_Data_Reader.java:279)
+**************************************************
+
+<<FUNCTION FMS_FFLOW_INV_MST() ENDED WITH ERRORS>>
+
+
+<<START>>,<<FMS_FFLOW_INV_TAX_DTL>>, 	(04-SEP-2025 16:03:51)
+ 
+COMPANY_CD,BU_STATE_TIN,INVOICE_SEQ,FINANCIAL_YEAR,TAX_STRUCT_CD,TAX_CODE, 	(04-SEP-2025 16:03:51)
+ 
+
+TOTAL DATA IN EXCEL : ,0, 	(04-SEP-2025 16:03:51)
+ 
+
+TOTAL DATA INSERTED : ,0, 	(04-SEP-2025 16:03:51)
+ 
+
+TOTAL SKIPPED DATA ,0, 	(04-SEP-2025 16:03:51)
+ 
+<<END>>,<<FMS_FFLOW_INV_TAX_DTL>>, 	(04-SEP-2025 16:03:51)
+ 

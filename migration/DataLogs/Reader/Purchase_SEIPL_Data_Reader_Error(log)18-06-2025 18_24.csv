@@ -1,0 +1,11 @@
+
+<<ERROR IN FMS_PUR_SG_INV_MST_PURCHASE()>>
+**********AutomationEMS Error  (18-JUN-2025 18:24:48) **********
+java.sql.SQLSyntaxErrorException: ORA-00942: table or view does not exist
+
+
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.FMS_PUR_SG_INV_MST_PURCHASE(Purchase_SEIPL_Data_Reader.java:11003)
+com.etrm.fms.migration.Purchase_SEIPL_Data_Reader.init(Purchase_SEIPL_Data_Reader.java:233)
+**************************************************
+
+<<FUNCTION FMS_PUR_SG_INV_MST_PURCHASE() ENDED WITH ERRORS>>
